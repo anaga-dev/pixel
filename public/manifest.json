@@ -1,0 +1,20 @@
+{
+  "short_name": "Games Studio",
+  "name": "Games Studio",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "type": "image/svg+xml",
+      "sizes": "32x32"
+    }
+  ],
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "background_color": "#2b2b2f",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#2b2b2f",
+  "shortcuts": [],
+  "description": "Games Studio",
+  "screenshots": []
+}

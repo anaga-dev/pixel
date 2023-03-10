@@ -1,0 +1,47 @@
+{
+  "name": "detect-it",
+  "version": "3.0.7",
+  "description": "Detect if a device is mouse only, touch only, or hybrid",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "rm -rf lib && babel src -d lib --presets=env",
+    "prepublish": "yarn build",
+    "dev": "yarn link && babel src -d lib --watch --presets=env"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafgraph/detect-it.git"
+  },
+  "keywords": [
+    "detect",
+    "device",
+    "mouse",
+    "touch",
+    "hybrid",
+    "passive events"
+  ],
+  "author": "Rafael Pedicini <rafael@rafgraph.dev>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rafgraph/detect-it/issues"
+  },
+  "homepage": "https://github.com/rafgraph/detect-it#readme",
+  "dependencies": {
+    "detect-hover": "^1.0.3",
+    "detect-passive-events": "^1.0.5",
+    "detect-pointer": "^1.0.3",
+    "detect-touch-events": "^2.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-plugin-import": "^2.2.0"
+  }
+}
