@@ -152,6 +152,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
         const frameContext = frameCanvas.getContext('2d')
         for (const layer of this.layers.list) {
           if (!layer.visible) continue
+          frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
           frameContext.save()
           frameContext.globalAlpha = layer.opacity
           frameContext.globalCompositeOperation = layer.blendMode
@@ -738,6 +739,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
         const context = frame.canvas.getContext('2d')
         for (const layer of this.layers.list) {
           if (!layer.visible) continue
+          context.clearRect(0, 0, layer.canvas.width, layer.canvas.height)
           context.save()
           context.globalAlpha = layer.opacity
           context.globalCompositeOperation = layer.blendMode
