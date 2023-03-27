@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { v4 as uuid } from 'uuid'
 import { usePointer } from '../composables/usePointer'
 import { useZoom } from '../composables/useZoom'
@@ -26,6 +26,8 @@ import AnimationState from '../enums/AnimationState'
 import Layer from '../composables/layers/PixelLayer'
 import PixelLayer from '../composables/layers/PixelLayer'
 import TransformMode from '../enums/TransformMode'
+import PaletteTypes from '../constants/PaletteTypes'
+import GIMP from '../formats/palettes/GIMP'
 
 // TODO: Creo que una buena cantidad de este código se podrían convertir
 // en composables que más tarde utilicemos en las stores.
@@ -97,6 +99,8 @@ export const useDocumentStore = defineStore('pixelDocument', {
       mode: SelectMode.ADD, // add, subtract, transform
       contiguous: true // sólo válido en el modo de color
     },
+    selectionCanvas: null,
+    selectionMaskImageData: null,
     dropper: {
       includeReferenceLayers: true
     },
@@ -665,16 +669,20 @@ export const useDocumentStore = defineStore('pixelDocument', {
         }
       } else if (this.tool === Tool.DROPPER && this.pointer.pressure > 0) {
         this.eyeDropper(this.pointer.current.x, this.pointer.current.y)
-      } else if (this.tool === Tool.SELECT && this.pointer.pressure > 0) {
-        // TODO: Implementar la selección. Lo suyo sería utilizar algo como
-        // this.selectionMask = new ImageData(this.width, this.height)
-        // Y que la selección afecte específicamente sólo a los píxeles de esa
-        // selección.
       } else if (this.tool === Tool.TRANSFORM && this.pointer.pressure > 0) {
         // TODO: Esto es MUY mejorable.
         const x = this.pointer.relative.x
         const y = this.pointer.relative.y
         this.transformation(x, y)
+      } else if (this.tool === Tool.SELECT && this.pointer.pressure > 0) {
+        const x = this.pointer.current.x
+        const y = this.pointer.current.y
+        ImageDataUtils.putColor(
+          this.selectionMaskImageData,
+          x,
+          y,
+          Color.fromRGBA(1, 1, 1, 1)
+        )
       }
     },
     /**
@@ -887,21 +895,32 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     async loadPalette() {
       const [fileHandle] = await window.showOpenFilePicker({
-        types: [
-          {
-            description: 'Palettes',
-            accept: {
-              '*/*': ['.pal', '.act', '.gpl']
-            }
-          }
-        ],
+        types: PaletteTypes,
+        excludeAcceptAllOption: true,
+        multiple: false
+      })
+      if (fileHandle.kind === 'file')
+      {
+        const file = await fileHandle.getFile()
+        if (/(.*)\.gpl$/i.test(file.name))
+        {
+          const palette = await GIMP.load(file)
+          this.palette.splice(0, this.palette.length, ...palette)
+        }
+      }
+      console.log(fileHandle)
+    },
+    async savePalette() {
+      const fileHandle = await window.showSaveFilePicker({
+        types: PaletteTypes,
         excludeAcceptAllOption: true,
         multiple: false
       })
       console.log(fileHandle)
-    },
-    async savePalette() {
-
+      const writable = await fileHandle.createWritable()
+      console.log(writable)
+      await writable.write(await GIMP.save(this.palette))
+      await writable.close()
     },
     addPaletteColor() {
       this.history.add({
@@ -1060,3 +1079,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     }
   }
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useDocumentStore, import.meta.hot))
+}
