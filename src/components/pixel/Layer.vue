@@ -105,7 +105,7 @@ function onDrop(e) {
   }
   const { index: fromIndex, layer } = JSON.parse(payload)
   // console.log(index, layer)
-  const destination = e.path.find((element) => element.classList.contains('layer'))
+  const destination = e.target
   const toIndex = parseInt(destination.dataset.index, 10)
   console.log('from', fromIndex, 'to', toIndex)
   document.swapLayers(fromIndex, toIndex)
