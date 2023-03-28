@@ -1,22 +1,24 @@
 <template>
-  <div class="tool-settings-fill">
-    <button class="pill" type="button" id="fill" :class="{ active: document.fill.type === 'fill' }" @click="document.setFillType('fill')">
-      <i class="bx bxs-droplet"></i>
-      Fill
-    </button>
-    <button class="pill" type="button" id="eraser" :class="{ active: document.fill.type === 'erase' }" @click="document.setFillType('erase')">
-      <i class="bx bxs-eraser"></i>
-      Erase
-    </button>
-    <button class="pill" type="button" id="contiguous" :class="{ active: document.fill.contiguous }" @click="document.toggleFillContiguous()">
-      <i class="bx bx-tone"></i>
-      Contiguous
-    </button>
-  </div>
+  <ToolButton :class="{ active: document.fill.type === 'fill' }" @click="document.setFillType('fill')">
+    <Icon i="droplet" />
+    Fill
+  </ToolButton>
+  <ToolButton :class="{ active: document.fill.type === 'erase' }" @click="document.setFillType('erase')">
+    <Icon i="eraser" />
+    Erase
+  </ToolButton>
+  <Divider vertical />
+  <ToolButton :class="{ active: document.fill.contiguous }" @click="document.toggleFillContiguous()">
+    <Icon i="contiguous" />
+    Contiguous
+  </ToolButton>
 </template>
 
 <script setup>
 import { useDocumentStore } from '../stores/PixelDocument'
+import ToolButton from '@components/ToolButton.vue'
+import Divider from '@components/Divider.vue'
+import Icon from '@components/Icon.vue'
 
 const document = useDocumentStore()
 </script>

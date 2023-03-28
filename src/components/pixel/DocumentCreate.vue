@@ -1,5 +1,5 @@
 <template>
-  <div class="document-create">
+  <Modal title="Create new document" nondismissable>
     <form class="form" @submit.prevent="onSubmit">
       <!--
 
@@ -20,9 +20,8 @@
         640x360
 
       -->
-      <div class="presets">
-        <label for="preset">Preset</label>
-        <select id="preset" v-model="preset">
+      <Field label="Preset" for="preset">
+        <Select id="preset" v-model="preset">
           <option value="custom">Custom</option>
           <option value="8x8">8x8</option>
           <option value="16x16">16x16</option>
@@ -36,25 +35,22 @@
           <option value="256x192">Canvas</option>
           <option value="480x270">Widescreen</option>
           <option value="640x360">16:9</option>
-        </select>
-      </div>
+        </Select>
+      </Field>
       <div class="size">
-        <div class="form-input">
-          <label for="width">Width</label>
+        <Field label="Width" for="width">
           <input type="number" min="1" max="4096" v-model="width" />
-        </div>
-        <button type="button" class="pill" @click="onLink">
-          <i v-if="!linked" class="bx bx-link"></i>
-          <i v-else class="bx bx-unlink"></i>
-        </button>
-        <div class="form-input">
-          <label for="height">Height</label>
+        </Field>
+        <Button label="Lock aspect ratio" variant="ghost" @click="onLink">
+          <Icon i="linked" v-if="linked" />
+          <Icon i="unlinked" v-else />
+        </Button>
+        <Field label="Height" for="height">
           <input type="number" min="1" max="4096" v-model="height" :disabled="linked" />
-        </div>
+        </Field>
       </div>
-      <div class="palette">
-        <label for="palette">Palette</label>
-        <select id="palette" v-model="palette">
+      <Field label="Palette" for="palette">
+        <Select id="palette" v-model="palette">
           <option value="palettes/cga.json">CGA</option>
           <option value="palettes/gameboy.json">Gameboy</option>
           <option value="palettes/edg77.json">EDG77</option>
@@ -67,18 +63,21 @@
           <option value="palettes/vinik24.json">Vinik 24</option>
           <option value="palettes/zughy32.json">Ziggy 32</option>
           <option value="palettes/commodore64.json">Commodore 64</option>
-        </select>
-      </div>
-      <button type="submit" class="pill">
-        Create
-      </button>
+        </Select>
+      </Field>
+      <Button label="Create new document" type="submit" variant="primary">Create</Button>
     </form>
-  </div>
+  </Modal>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useDocumentStore } from '../../stores/PixelDocument'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import Modal from '@components/Modal.vue'
+import Button from '@components/Button.vue'
+import Field from '@components/Field.vue'
+import Icon from '@components/Icon.vue'
+import Select from '@components/Select.vue'
 
 const document = useDocumentStore()
 
@@ -124,17 +123,16 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-.document-create, .form {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+form {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spaceL);
 }
 .size {
-  display: flex;
-  gap: 1rem;
-}
-
-label {
-  margin-right: 0.5rem;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: end;
+  justify-content: start;
+  gap: var(--spaceM);
 }
 </style>

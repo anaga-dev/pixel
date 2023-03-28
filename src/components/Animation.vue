@@ -1,40 +1,30 @@
 <template>
-  <div class="animation">
-    <div class="controls">
-      <div class="left">
-        <button type="button" @click="document.addFrame()">
-          <i class="bx bx-duplicate"></i>
-        </button>
-        <button type="button" @click="document.duplicateFrame()">
-          <i class="bx bx-duplicate"></i>
-        </button>
-      </div>
-      <div class="center">
-        <button type="button" :disabled="!document.canGoToFirstFrame" @click="document.goToFirstFrame()">
-          <i class="bx bx-skip-previous"></i>
-        </button>
-        <button type="button" :disabled="!document.canGoToPreviousFrame" @click="document.goToPreviousFrame()">
-          <i class="bx bx-skip-previous"></i>
-        </button>
-        <button type="button" :disabled="!document.canPlayAnimation" @click="document.toggleAnimation()">
-          <i v-if="document.isPlaying" class="bx bx-pause"></i>
-          <i v-else class="bx bx-play"></i>
-        </button>
-        <button type="button" :disabled="!document.canGoToNextFrame" @click="document.goToNextFrame()">
-          <i class="bx bx-skip-next"></i>
-        </button>
-        <button type="button" :disabled="!document.canGoToLastFrame" @click="document.goToLastFrame()">
-          <i class="bx bx-skip-next"></i>
-        </button>
-      </div>
-      <div class="right">
-        <button type="button" @click="document.addFrame()">
-          <i class="bx bx-duplicate"></i>
-        </button>
-        <button type="button" @click="document.duplicateFrame()">
-          <i class="bx bx-duplicate"></i>
-        </button>
-      </div>
+  <section class="Animation">
+    <div class="playback">
+      <Button label="Skip to first frame" variant="ghost" :disabled="!document.canGoToFirstFrame" @click="document.goToFirstFrame()">
+        <Icon i="skip-first" />
+      </Button>
+      <Button label="Skip to previous frame" variant="ghost" :disabled="!document.canGoToPreviousFrame" @click="document.goToPreviousFrame()">
+        <Icon i="skip-previous" />
+      </Button>
+      <Button :label="document.isPlaying ? 'Pause' : 'Play'" variant="ghost" :disabled="!document.canPlayAnimation" @click="document.toggleAnimation()">
+        <Icon i="pause" v-if="document.isPlaying" />
+        <Icon i="play" v-else />
+      </Button>
+      <Button label="Skip to next frame" variant="ghost" :disabled="!document.canGoToNextFrame" @click="document.goToNextFrame()">
+        <Icon i="skip-next" />
+      </Button>
+      <Button label="Skip to last frame" variant="ghost" :disabled="!document.canGoToLastFrame" @click="document.goToLastFrame()">
+        <Icon i="skip-last" />
+      </Button>
+    </div>
+    <div class="actions">
+      <Button label="Duplicate active frame" variant="ghost" @click="document.duplicateFrame()">
+        <Icon i="duplicate-frame" />
+      </Button>
+      <Button label="Add new empty frame" variant="ghost" @click="document.addFrame()">
+        <Icon i="add-item" />
+      </Button>
     </div>
     <div class="frames">
       <AnimationFrame
@@ -44,44 +34,52 @@
         :active="index === document.animation.current"
         @click="document.setCurrentFrame(index)"></AnimationFrame>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/PixelDocument'
-import AnimationFrame from './AnimationFrame.vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import AnimationFrame from '@components/AnimationFrame.vue'
+import Button from '@components/Button.vue'
+import Icon from '@components/Icon.vue'
 
 const document = useDocumentStore()
 </script>
 
 <style scoped>
-.animation {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+.Animation {
+  display: grid;
+  padding-bottom: var(--spaceM);
+  grid-template-areas: 
+    "playback actions"
+    "frames frames";
+    justify-content: space-between;
+    align-items: center;
 }
 
-.controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1 0 auto;
-  box-sizing: border-box;
-  padding: .5rem;
-  width: 100%; /* No entiendo por qué esto no funciona sin el width: 100% */
+.playback, .actions {
+  padding: var(--spaceS) var(--spaceM);
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spaceS);
 }
 
-.left, .center, .right {
-  display: flex;
-  gap: 0.25rem;
+.playback {
+  grid-area: playback;
+  justify-self: start;
+}
+
+.actions {
+  justify-self: end;
+  grid-area: actions;
 }
 
 .frames {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  grid-area: frames;
+  justify-self: center;
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spaceM);
   max-width: 100vw;
   overflow-y: hidden;
   overflow-x: auto;

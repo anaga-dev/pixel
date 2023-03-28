@@ -1,35 +1,33 @@
 <template>
-  <div class="color-sliders">
-    <div class="form-input">
-      <label for="hue">hue</label>
-      <input id="hue" type="range" min="0" max="360" :value="hue" @input="onInput('hue', $event.target.valueAsNumber)" />
-    </div>
-    <div class="form-input">
-      <label for="saturation">saturation</label>
-      <input id="saturation" type="range" min="0" max="100" :value="saturation" @input="onInput('saturation', $event.target.valueAsNumber)" />
-    </div>
-    <div class="form-input">
-      <label for="lightness">lightness</label>
-      <input id="lightness" type="range" min="0" max="100" :value="lightness" @input="onInput('lightness', $event.target.valueAsNumber)" />
-    </div>
-    <div class="form-input">
-      <label for="red">red</label>
-      <input id="red" type="range" min="0" max="255" :value="red" @input="onInput('red', $event.target.valueAsNumber)" />
-    </div>
-    <div class="form-input">
-      <label for="green">green</label>
-      <input id="green" type="range" min="0" max="255" :value="green" @input="onInput('green', $event.target.valueAsNumber)" />
-    </div>
-    <div class="form-input">
-      <label for="blue">blue</label>
-      <input id="blue" type="range" min="0" max="255" :value="blue" @input="onInput('blue', $event.target.valueAsNumber)" />
-    </div>
+  <div class="ColorSliders">
+    <Field label="Hue" for="hue">
+      <Slider id="hue" :min="0" :max="100" :data="hue" @update="onUpdate('hue', parseInt($event))" />
+    </Field>
+    <Field label="Saturation" for="saturation">
+      <Slider id="saturation" :min="0" :max="100" :data="saturation" @update="onUpdate('saturation', parseInt($event))" />
+    </Field>
+    <Field label="Lightness" for="lightness">
+      <Slider id="lightness" :min="0" :max="100" :data="lightness" @update="onUpdate('lightness', parseInt($event))" />
+    </Field>
+    <Divider />
+    <Field label="Red" for="red">
+      <Slider id="red" :min="0" :max="255" :data="red" @update="onUpdate('red', parseInt($event))" />
+    </Field>
+    <Field label="Green" for="green">
+      <Slider id="green" :min="0" :max="255" :data="green" @update="onUpdate('green', parseInt($event))" />
+    </Field>
+    <Field label="Blue" for="blue">
+      <Slider id="blue" :min="0" :max="255" :data="blue" @update="onUpdate('blue', parseInt($event))" />
+    </Field>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import Color from '../color/Color'
+import Color from '@/color/Color'
+import Divider from '@components/Divider.vue'
+import Field from '@components/Field.vue'
+import Slider from '@components/Slider.vue'
 
 const props = defineProps({
   modelValue: {
@@ -62,7 +60,7 @@ function updateFromRGB(r, g, b) {
   lightness.value = Color.lightness(color)
 }
 
-function onInput(type, value) {
+function onUpdate(type, value) {
   switch (type) {
     case 'hue':
       hue.value = value;
@@ -92,3 +90,11 @@ function onInput(type, value) {
   emit('update:modelValue', `rgb(${red.value}, ${green.value}, ${blue.value})`)
 }
 </script>
+
+<style scoped>
+.ColorSliders {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spaceL);
+}
+</style>

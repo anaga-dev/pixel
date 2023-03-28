@@ -1,8 +1,13 @@
 <template>
-  <div class="tool color" :style="{ backgroundColor: color }"></div>
+  <button type="button" :style="`color: ${color}`" @click.prevent="$emit('click')">
+    <Icon i="color" />
+  </button>
 </template>
+
 <script setup>
-import { ref } from 'vue'
+import Icon from '@components/Icon.vue'
+
+const emit = defineEmits(['click'])
 
 const props = defineProps({
   color: {
@@ -10,19 +15,4 @@ const props = defineProps({
     required: true
   }
 })
-
-const active = ref(false)
-
-function onToggle() {
-  active.value = !active.value
-}
 </script>
-
-<style scoped>
-.tool {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 100px;
-  border: 1px solid #fff;
-}
-</style>

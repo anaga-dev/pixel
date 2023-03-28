@@ -16,8 +16,14 @@ export function useLayers({ layer = null, layers = [], Layer } = {}) {
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.id
     )
+    const newIndex = index + 1
+    console.log(index, newIndex)
     current.value = created
-    list.splice(index + 1, 0, created)
+    if (newIndex === list.length) {
+      list.push(created)
+    } else {
+      list.splice(newIndex, 0, created)
+    }
   }
 
   function remove(layer) {

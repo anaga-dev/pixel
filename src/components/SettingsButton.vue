@@ -1,5 +1,10 @@
 <template>
-  <button type="button">
-    <i class="bx bx-menu"></i>
-  </button>
+  <Button label="Settings menu" variant="ghost">
+    <Icon i="menu" />
+  </Button>
 </template>
+
+<script setup>
+import Icon from '@components/Icon.vue'
+import Button from '@components/Button.vue'
+</script>

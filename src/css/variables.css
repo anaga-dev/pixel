@@ -1,0 +1,45 @@
+:root {
+  --colorLayer0: hsl(0 0% 12%);
+  --colorLayer1: hsl(0 0% 16%);
+  --colorLayer2: hsl(0 0% 18%);
+  --colorText: hsl(0 0% 88%);
+  --colorTextAlt: hsl(0 0% 6%);
+  --colorSecondary: hsl(0 0% 64%);
+  --colorAccent: hsl(162 66% 52%);
+  --colorCritical: hsl(352 66% 52%);
+  --colorShade: hsl(0 0% 24%);
+  --colorHover: hsl(0 0% 30%);
+  --colorShadow: hsl(0 0% 0% / 12%);
+  --colorOverlay: hsl(0 0% 8% / 45%);
+
+  --spaceXXS: 0.125rem;
+  --spaceXS: 0.25rem;
+  --spaceS: 0.5rem;
+  --spaceM: 1rem;
+  --spaceL: 1.5rem;
+  --spaceXL: 2.5rem;
+  --spaceXXL: 3rem;
+
+  --widthToolbar: 4rem;
+  --widthPanels: 20rem;
+
+  --pixelCorners: polygon(
+    0% var(--spaceXS),
+    var(--spaceXS) var(--spaceXS),
+    var(--spaceXS) 0%,
+    calc(100% - var(--spaceXS)) 0%,
+    calc(100% - var(--spaceXS)) var(--spaceXS),
+    100% var(--spaceXS),
+    100% calc(100% - var(--spaceXS)),
+    calc(100% - var(--spaceXS)) calc(100% - var(--spaceXS)),
+    calc(100% - var(--spaceXS)) 100%,
+    var(--spaceXS) 100%,
+    var(--spaceXS) calc(100% - var(--spaceXS)),
+    0% calc(100% - var(--spaceXS)) 
+  );
+
+  --shadowLayer:
+    calc(var(--spaceXS) * -1) var(--spaceXS) 0 var(--colorShadow),
+    calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow);
+  --shadowInput: inset var(--spaceS) var(--spaceS) 0 var(--colorShadow);
+}

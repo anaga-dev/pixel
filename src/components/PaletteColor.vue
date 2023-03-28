@@ -1,5 +1,10 @@
 <template>
-  <div class="color" :class="{ active: active }" :style="{ backgroundColor: color }" @click="$emit('select', color)"></div>
+  <div
+    class="PaletteColor"
+    :class="{ active: active }"
+    :style="{ backgroundColor: color }"
+    @click="$emit('select', color)">
+  </div>
 </template>
 
 <script setup>
@@ -17,13 +22,11 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.color {
-  border: 1px solid #000;
-  width: 2rem;
-  height: 2rem;
+.PaletteColor {
+  aspect-ratio: 1;
 }
 
 .active {
-  border: 1px solid #fff;
+  border: 2px solid var(--colorAccent);
 }
 </style>

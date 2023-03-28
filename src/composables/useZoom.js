@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 
 export function useZoom({ initial = 1, max = 64, min = 1, defaultStep = 1 } = {}) {
   const current = ref(initial)
-  const percentage = computed(() => `${(current.value * 100).toFixed(2)}%`)
+  const percentage = computed(() => `${Math.round(current.value * 100)}%`)
   return {
     current,
     percentage,

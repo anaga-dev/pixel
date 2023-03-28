@@ -1,5 +1,5 @@
 <template>
-  <div class="tool-settings">
+  <div class="ToolSettings">
     <ToolSettingsPencil v-if="tool === Tool.PENCIL" />
     <ToolSettingsEraser v-else-if="tool === Tool.ERASER" />
     <ToolSettingsFill v-else-if="tool === Tool.FILL" />
@@ -25,3 +25,12 @@ const props = defineProps({
   }
 })
 </script>
+
+<style scoped>
+.ToolSettings {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--spaceM);
+}
+</style>

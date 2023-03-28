@@ -1,22 +1,24 @@
 <template>
-  <div class="zoom">
-    <button class="pill" type="button" @click="document.zoom.decrease()">
-      <i class="bx bx-zoom-out"></i>
-    </button>
+  <section class="Zoom">
+    <Button label="Zoom out" variant="ghost" @click="document.zoom.decrease()">
+      <Icon i="zoom-out" />
+    </Button>
     <div class="percentage" @click="onZoomShow">
       {{ document.zoom.percentage }}
     </div>
-    <button class="pill" type="button" @click="document.zoom.increase()">
-      <i class="bx bx-zoom-in"></i>
-    </button>
-    <button class="pill" type="button" @click="document.zoom.reset()">
-      <i class="bx bx-reset"></i>
-    </button>
-  </div>
+    <Button label="Zoom in" variant="ghost" @click="document.zoom.increase()">
+      <Icon i="zoom-in" />
+    </Button>
+    <Button label="Reset zoom" variant="ghost" @click="document.zoom.reset()">
+      <Icon i="zoom-reset" />
+    </Button>
+  </section>
 </template>
 
 <script setup>
 import { useDocumentStore } from '../stores/PixelDocument'
+import Button from '@components/Button.vue'
+import Icon from '@components/Icon.vue'
 
 const document = useDocumentStore()
 
@@ -27,13 +29,15 @@ function onZoomShow() {
 </script>
 
 <style scoped>
-.zoom {
-  display: flex;
-  justify-content: center;
+.Zoom {
+  display: grid;
+  grid-auto-flow: column;
   align-items: center;
+  gap: var(--spaceS);
 }
 
 .percentage {
-  margin-right: 0.5rem;
+  width: 7ch;
+  text-align: center;
 }
 </style>

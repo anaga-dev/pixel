@@ -1,6 +1,6 @@
 <template>
   <div
-    class="frame"
+    class="Frame"
     :class="{ active: props.active }"
     ref="preview">
     <!-- Inyectamos el fotograma -->
@@ -29,14 +29,15 @@ useElement(preview, props.frame.canvas)
 </script>
 
 <style scoped>
-.frame {
-  flex: 0 0 auto;
-  width: 4rem;
-  height: 4rem;
-  border: 1px solid #000;
+.Frame {
+  width: 5rem;
+  aspect-ratio: 1;
+  border: 2px solid var(--colorLayer0);
+  transition: all 100ms;
+  overflow: hidden;
 }
 
 .active {
-  border: 1px solid #0cf;
+  border: 2px solid var(--colorAccent);
 }
 </style>

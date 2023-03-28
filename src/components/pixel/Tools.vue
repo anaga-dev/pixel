@@ -1,53 +1,62 @@
 <template>
-  <Tools>
-    <ToolToggle id="pencil" :active="pixelDocument.tool === Tool.PENCIL" @click="pixelDocument.setTool(Tool.PENCIL)">
-      <i class="bx bx-pencil"></i>
-    </ToolToggle>
-    <ToolToggle id="eraser" :active="pixelDocument.tool === Tool.ERASER" @click="pixelDocument.setTool(Tool.ERASER)">
-      <i class="bx bx-eraser"></i>
-    </ToolToggle>
-    <ToolToggle id="fill" :active="pixelDocument.tool === Tool.FILL" @click="pixelDocument.setTool(Tool.FILL)">
-      <i class="bx bx-color-fill"></i>
-    </ToolToggle>
-    <ToolToggle id="shape" :active="pixelDocument.tool === Tool.SHAPE" @click="pixelDocument.setTool(Tool.SHAPE)">
-      <i class="bx bxs-shapes"></i>
-    </ToolToggle>
-    <ToolToggle id="transform" :active="pixelDocument.tool === Tool.TRANSFORM" @click="pixelDocument.setTool(Tool.TRANSFORM)">
-      <i class="bx bx-pointer"></i>
-    </ToolToggle>
-    <ToolToggle id="select" :active="pixelDocument.tool === Tool.SELECT" @click="pixelDocument.setTool(Tool.SELECT)">
-      <i class="bx bx-selection"></i>
-    </ToolToggle>
-    <ToolSymmetry @click="pixelDocument.toggleSymmetrySettings"></ToolSymmetry>
-    <SymmetrySettings v-if="pixelDocument.symmetrySettings" />
-    <ToolColor :color="pixelDocument.color" @click="pixelDocument.toggleColorPicker"></ToolColor>
-    <ColorPicker v-if="pixelDocument.colorPicker" />
-    <ToolToggle id="dropper" :active="pixelDocument.tool === Tool.DROPPER" @click="pixelDocument.setTool(Tool.DROPPER)">
-      <i class="bx bxs-eyedropper"></i>
-    </ToolToggle>
+  <Toolbar>
+    <template #top>
+      <ToolColor :color="pixelDocument.color" @click="pixelDocument.toggleColorPicker"></ToolColor>
+      <ColorPicker class="color-picker" v-if="pixelDocument.colorPicker" @close="pixelDocument.toggleColorPicker" />
+      <Divider />
+      <ToolButton label="Pencil" :active="pixelDocument.tool === Tool.PENCIL" @click="pixelDocument.setTool(Tool.PENCIL)">
+        <Icon i="pencil" />
+      </ToolButton>
+      <ToolButton label="Eraser" :active="pixelDocument.tool === Tool.ERASER" @click="pixelDocument.setTool(Tool.ERASER)">
+        <Icon i="eraser" />
+      </ToolButton>
+      <ToolButton label="Fill with color" :active="pixelDocument.tool === Tool.FILL" @click="pixelDocument.setTool(Tool.FILL)">
+        <Icon i="fill" />
+      </ToolButton>
+      <ToolButton label="Shapes" :active="pixelDocument.tool === Tool.SHAPE" @click="pixelDocument.setTool(Tool.SHAPE)">
+        <Icon i="shapes" />
+      </ToolButton>
+      <ToolButton label="Pointer" :active="pixelDocument.tool === Tool.TRANSFORM" @click="pixelDocument.setTool(Tool.TRANSFORM)">
+        <Icon i="pointer" />
+      </ToolButton>
+      <ToolButton label="Selection" :active="pixelDocument.tool === Tool.SELECT" @click="pixelDocument.setTool(Tool.SELECT)">
+        <Icon i="selection" />
+      </ToolButton>
+      <ToolButton label="Eyedropper" :active="pixelDocument.tool === Tool.DROPPER" @click="pixelDocument.setTool(Tool.DROPPER)">
+        <Icon i="eyedropper" />
+      </ToolButton>
+    </template>
     <!--
       FIXME: Aunque parezca que no, esto está siendo un agujero de rendimiento, supongo
       que porque `pixelDocument.history.canUndo` se recalcula cada vez que se pinta un pixel.
     -->
-    <ToolButton id="undo" :disabled="!pixelDocument.history.canUndo" @click="pixelDocument.undo()">
-      <i class="bx bx-undo"></i>
-    </ToolButton>
-    <ToolButton id="redo" :disabled="!pixelDocument.history.canRedo" @click="pixelDocument.redo()">
-      <i class="bx bx-redo"></i>
-    </ToolButton>
-  </Tools>
+    <template #bottom>
+      <ToolButton label="Undo" :disabled="!pixelDocument.history.canUndo" @click="pixelDocument.undo()">
+        <Icon i="undo" />
+      </ToolButton>
+      <ToolButton label="Redo" :disabled="!pixelDocument.history.canRedo" @click="pixelDocument.redo()">
+        <Icon i="redo" />
+      </ToolButton>
+    </template>
+  </Toolbar>
 </template>
 
 <script setup>
-import Tool from '../../enums/Tool'
-import Tools from '../Tools.vue'
-import ToolToggle from '../ToolToggle.vue'
-import ToolButton from '../ToolButton.vue'
-import ToolColor from '../ToolColor.vue'
-import ToolSymmetry from '../ToolSymmetry.vue'
-import ColorPicker from '../ColorPicker.vue'
-import SymmetrySettings from '../SymmetrySettings.vue'
-import { useDocumentStore } from '../../stores/PixelDocument'
+import Tool from '@/enums/Tool'
+import Toolbar from '@components/Toolbar.vue'
+import ToolButton from '@components/ToolButton.vue'
+import ToolColor from '@components/ToolColor.vue'
+import ColorPicker from '@components/ColorPicker.vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import Icon from '@components/Icon.vue'
+import Divider from '@components/Divider.vue'
 
 const pixelDocument = useDocumentStore()
 </script>
+
+<style scoped>
+.color-picker {
+  left: var(--widthToolbar);
+  top: 5rem;
+}
+</style>

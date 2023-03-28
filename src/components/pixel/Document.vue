@@ -1,5 +1,5 @@
 <template>
-  <div class="document" ref="doc" :style="{ width: width, height: height, transform: transform }">
+  <div class="Document" ref="doc" :style="{ width: width, height: height, transform: transform }">
     <!-- aquí inyectaremos el canvas -->
   </div>
 </template>
@@ -22,8 +22,8 @@ onMounted(() => document.redrawAll())
 </script>
 
 <style scoped>
-.document {
-  background: url('/transparent.png');
+.Document {
+  background-image: url('@/assets/checkers.svg');
   image-rendering: pixelated; /* WhAT? */
 }
 </style>

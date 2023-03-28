@@ -1,28 +1,38 @@
 <template>
-  <button type="button" class="tool" :class="{ disabled: disabled }" :disabled="disabled">
+  <Button variant="ghost" :label="label" :active="active" :disabled="disabled">
     <slot></slot>
-  </button>
+  </Button>
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/PixelDocument'
+import Button from '@components/Button.vue'
 
 const props = defineProps({
-  id: {
+  active: {
+    type: Boolean
+  },
+  label: {
     type: String,
     required: true
   },
   disabled: {
-    type: Boolean,
-    required: false,
-    default: false
+    type: Boolean
   }
 })
 </script>
 
 <style scoped>
-.tool {
-  width: 1rem;
-  height: 1rem;
+button {
+  display: grid;
+  place-content: center;
+  height: var(--spaceXL);
+  padding: 0 var(--spaceS);
+  background-color: transparent;
+  clip-path: var(--pixelCorners);
+  transition: all 240ms ease;
+}
+
+button:hover {
+  background-color: var(--colorShade);
 }
 </style>

@@ -57,8 +57,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     symmetrySettings: false,
     symmetry: {
-      enabled: true,
-      axis: SymmetryAxis.HORIZONTAL, // horizontal, vertical, both
+      axis: null, // horizontal, vertical, both, null
       position: Vec2.create(),
       lock: false
       // NOTA: Esto tiene una opción de recenter que mueve la simetria al centro.
@@ -220,12 +219,15 @@ export const useDocumentStore = defineStore('pixelDocument', {
     toggleShapeLockAspectRatio() {
       this.shape.lockAspectRatio = !this.shape.lockAspectRatio
     },
-    toggleSymmetry() {
-      this.symmetry.enabled = !this.symmetry.enabled
-    },
-    setSymmetrySettings(enabled, axis) {
-      this.symmetry.enabled = enabled
-      this.symmetry.axis = axis
+    setSymmetrySettings(axis) {
+      console.log('Axis', axis)
+      if (this.symmetry.axis === axis) {
+        console.log('Symmetry off!!!')
+        this.symmetry.axis = null
+      } else {
+        console.log('Symmetry set to:', axis)
+        this.symmetry.axis = axis
+      }
       this.symmetrySettings = false
     },
     setSymmetryAxis(axis) {
@@ -302,7 +304,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     doSymmetry2Operation(callback, imageData, x, y, color) {
       callback(imageData, x, y, color)
-      if (!this.symmetry.enabled) {
+      if (this.symmetry.axis === null) {
         return
       }
       if (this.symmetry.axis === SymmetryAxis.HORIZONTAL) {
@@ -317,7 +319,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     doSymmetry4Operation(callback, imageData, x1, y1, x2, y2, color) {
       callback(imageData, x1, y1, x2, y2, color)
-      if (!this.symmetry.enabled) {
+      if (this.symmetry.axis === null) {
         return
       }
       if (this.symmetry.axis === SymmetryAxis.HORIZONTAL) {
@@ -825,7 +827,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.layers.current = layer
     },
     setLayerBlendMode(layer, blendMode) {
-      debugger
+      console.log('blend mode', blendMode)
       layer.blendMode = blendMode
       this.redrawAll()
     },
@@ -833,9 +835,12 @@ export const useDocumentStore = defineStore('pixelDocument', {
       layer.opacity = opacity
       this.redrawAll()
     },
+    hideLayerSettings() {
+      this.layers.settings = null
+    },
     showLayerSettings(layer) {
       if (this.layers.settings === layer) {
-        this.layers.settings = null
+        this.hideLayerSettings()
         return
       }
       this.layers.settings = layer

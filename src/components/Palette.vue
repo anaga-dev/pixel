@@ -1,5 +1,5 @@
 <template>
-  <div class="palette">
+  <div class="Palette">
     <PaletteColor
       v-for="(color, index) in palette"
       :key="index"
@@ -26,8 +26,9 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.palette {
-  display: flex;
-  flex-wrap: wrap;
+.Palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--spaceL), 1fr));
+  gap: 2px;
 }
 </style>

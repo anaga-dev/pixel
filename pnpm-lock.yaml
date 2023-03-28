@@ -4,6 +4,7 @@ specifiers:
   '@vitejs/plugin-vue': ^3.1.0
   boxicons: ^2.1.2
   chai: ^4.3.6
+  click-outside-vue3: ^4.0.1
   jszip: ^3.10.1
   mocha: ^10.0.0
   pinia: ^2.0.22
@@ -15,6 +16,7 @@ specifiers:
 dependencies:
   boxicons: 2.1.2
   chai: 4.3.6
+  click-outside-vue3: 4.0.1
   jszip: 3.10.1
   mocha: 10.0.0
   pinia: 2.0.22_vue@3.2.39
@@ -283,6 +285,11 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: false
+
+  /click-outside-vue3/4.0.1:
+    resolution: {integrity: sha512-sbplNecrup5oGqA3o4bo8XmvHRT6q9fvw21Z67aDbTqB9M6LF7CuYLTlLvNtOgKU6W3zst5H5zJuEh4auqA34g==}
+    engines: {node: '>=6'}
     dev: false
 
   /cliui/7.0.4:

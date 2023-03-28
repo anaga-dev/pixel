@@ -1,85 +1,99 @@
 <template>
-  <div class="pixel-editor">
-    <div class="top">
-      <SettingsButton />
-      <ToolSettings :tool="pixelDocument.tool" />
-      <Zoom />
-      <PointerStatus />
-      <button @click="pixelDocument.exportAs">
-        <i class="bx bx-download"></i>
-      </button>
+  <div class="CONTAINER">
+    <div class="SETTINGS">
+      <Settings>
+        <template #left>
+          <SettingsButton />
+          <Divider vertical />
+          <ToolSettings :tool="pixelDocument.tool" />
+        </template>
+        <template #right>
+          <Button
+            label="Symmetry aid"
+            variant="ghost"
+            :active="pixelDocument.symmetry.axis !== null"
+            @click="pixelDocument.toggleSymmetrySettings">
+            <Icon i="symmetry-vertical" v-if="pixelDocument.symmetry.axis === 'vertical'" />
+            <Icon i="symmetry-two-axis" v-else-if="pixelDocument.symmetry.axis === 'both'" />
+            <Icon i="symmetry-horizontal" v-else />
+          </Button>
+          <SymmetrySettings v-if="pixelDocument.symmetrySettings" @close="pixelDocument.toggleSymmetrySettings" />
+          <!--<PointerStatus />-->
+          <Divider vertical />
+          <Zoom />
+          <Divider vertical />
+          <Button label="Export document" variant="primary" @click="pixelDocument.exportAs">
+            Export
+          </Button>
+        </template>
+      </Settings>
     </div>
-    <div class="left">
+    <div class="TOOLS">
       <Tools />
     </div>
-    <div class="center" ref="center">
+    <main class="BOARD" ref="center">
       <Document v-if="pixelDocument.canvas" />
-    </div>
-    <div class="right">
-      <Panels>
-        <Panel title="layers">
-          <template v-slot:actions>
-            <button type="button" @click="pixelDocument.addLayer">
-              <i class="bx bx-add-to-queue"></i>
-            </button>
-          </template>
-          <Layers :layers="pixelDocument.layers"></Layers>
-        </Panel>
-        <Panel title="palette">
-          <template v-slot:actions>
-            <button type="button" @click="pixelDocument.loadPalette">
-              <i class="bx bx-file"></i>
-            </button>
-            <button type="button" @click="pixelDocument.savePalette">
-              <i class="bx bx-file"></i>
-            </button>
-            <button type="button" @click="pixelDocument.addPaletteColor">
-              <i class="bx bx-add-to-queue"></i>
-            </button>
-          </template>
-          <Palette :palette="pixelDocument.palette" :selected-color="pixelDocument.color" @select="pixelDocument.setColor"></Palette>
-        </Panel>
-        <Panel title="preview" :scrollable="false" v-if="pixelDocument.canvas">
-          <Preview></Preview>
-        </Panel>
-      </Panels>
-    </div>
-    <div class="bottom">
+    </main>
+    <aside class="PANELS">
+      <Panel title="Layers">
+        <template #actions>
+          <Button label="Add layer" variant="ghost" @click="pixelDocument.addLayer">
+            <Icon i="add-item" />
+          </Button>
+        </template>
+        <Layers :layers="pixelDocument.layers"></Layers>
+      </Panel>
+      <Panel title="Palette">
+        <template #actions>
+          <Button label="Load palette" variant="ghost" @click="pixelDocument.loadPalette">
+            <Icon i="load" />
+          </Button>
+          <Button label="Save palette" variant="ghost" @click="pixelDocument.savePalette">
+            <Icon i="save" />
+          </Button>
+          <Button label="Create new palette" variant="ghost" @click="pixelDocument.addPaletteColor">
+            <Icon i="add-item" />
+          </Button>
+        </template>
+        <Palette :palette="pixelDocument.palette" :selected-color="pixelDocument.color" @select="pixelDocument.setColor"></Palette>
+      </Panel>
+      <Panel title="preview" :scrollable="false" v-if="pixelDocument.canvas">
+        <Preview></Preview>
+      </Panel>
+    </aside>
+    <div class="ANIMATION">
       <Animation />
     </div>
   </div>
   <LayerSettings v-if="pixelDocument.layers.settings" :layer="pixelDocument.layers.settings" />
-  <Overlay v-if="pixelDocument.modal || !pixelDocument.canvas">
-    <Modal v-if="!pixelDocument.canvas" title="Create document">
-      <DocumentCreate />
-    </Modal>
-  </Overlay>
+  <DocumentCreate v-if="!pixelDocument.canvas" />
 </template>
 
 <script setup>
 import { onBeforeMount, onMounted, onUnmounted, watch, ref } from 'vue'
-import { useDocumentStore } from '../stores/PixelDocument'
-import { useKeyShortcuts } from '../composables/useKeyShortcuts'
-import { useTouch } from '../composables/useTouch'
-import { useWheel } from '../composables/useWheel'
-import SettingsButton from '../components/SettingsButton.vue'
-import ToolSettings from '../components/ToolSettings.vue'
-import Tools from '../components/pixel/Tools.vue'
-import Panels from '../components/Panels.vue'
-import Animation from '../components/Animation.vue'
-import Zoom from '../components/Zoom.vue'
-import Overlay from '../components/Overlay.vue'
-import Modal from '../components/Modal.vue'
-import Panel from '../components/Panel.vue'
-import Palette from '../components/Palette.vue'
-import Preview from '../components/Preview.vue'
-import ColorPicker from '../components/ColorPicker.vue'
-import PointerStatus from '../components/PointerStatus.vue'
-import DownloadFile from '../components/DownloadFile.vue'
-import Layers from '../components/pixel/Layers.vue'
-import Document from '../components/pixel/Document.vue'
-import DocumentCreate from '../components/pixel/DocumentCreate.vue'
-import LayerSettings from '../components/pixel/LayerSettings.vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
+import { useTouch } from '@/composables/useTouch'
+import { useWheel } from '@/composables/useWheel'
+import SettingsButton from '@components/SettingsButton.vue'
+import ToolSettings from '@components/ToolSettings.vue'
+import Tools from '@components/pixel/Tools.vue'
+import Animation from '@components/Animation.vue'
+import Zoom from '@components/Zoom.vue'
+import Panel from '@components/Panel.vue'
+import Palette from '@components/Palette.vue'
+import Preview from '@components/Preview.vue'
+import ColorPicker from '@components/ColorPicker.vue'
+import PointerStatus from '@components/PointerStatus.vue'
+import Layers from '@components/pixel/Layers.vue'
+import Document from '@components/pixel/Document.vue'
+import DocumentCreate from '@components/pixel/DocumentCreate.vue'
+import LayerSettings from '@components/pixel/LayerSettings.vue'
+import Settings from '@components/Settings.vue'
+import Button from '@components/Button.vue'
+import Divider from '@components/Divider.vue'
+import SymmetrySettings from '@components/SymmetrySettings.vue'
+import Icon from '@components/Icon.vue'
 
 const center = ref()
 
@@ -115,60 +129,75 @@ useKeyShortcuts(new Map([
   [['arrowdown'], () => pixelDocument.moveLayerDown()],
   [['s'], () => pixelDocument.toggleSymmetry()],
   [[' '], () => pixelDocument.toggleAnimation()],
+  [['0', 'ctrl'], () => pixelDocument.zoom.reset()],
   [['+'], () => pixelDocument.zoom.increase()],
-  [['-'], () => pixelDocument.zoom.decrease()],
+  [['='], () => pixelDocument.zoom.increase()],
   [['z'], () => pixelDocument.zoom.increase()],
+  [['-'], () => pixelDocument.zoom.decrease()],
   [['x'], () => pixelDocument.zoom.decrease()],
 ]))
 
 </script>
 
 <style scoped>
-.pixel-editor {
+.CONTAINER {
   width: 100%;
   height: 100%;
   display: grid;
-  box-sizing: border-box;
-  grid-template-columns: 2rem 1fr 16rem;
-  grid-template-rows: 4rem 1fr 8rem;
-  grid-template-areas:
-    "top top top"
-    "left center right"
-    "bottom bottom bottom";
+  grid-template-columns: var(--widthToolbar) 1fr var(--widthPanels);
+  grid-template-rows: var(--widthToolbar) 1fr auto;
 }
 
-.top, .left, .right, .bottom {
-  box-sizing: border-box;
-  background: #2b2b2f;
+.SETTINGS, .TOOLS, .PANELS, .ANIMATION {
+  background-color: var(--colorLayer1);
+  background-color: transparent;
 }
 
-.top {
-  padding: 1rem 0.5rem;
-  display: flex;
+.SETTINGS {
+  grid-area: SETTINGS;
+  grid-column: 1 / span 3;
+  grid-row: 1;
+  background-color: var(--colorLayer1);
+  box-shadow: 0 var(--spaceXS) 0 var(--colorShadow);
+  z-index: 3;
+}
+.TOOLS {
+  display: grid;
   align-items: center;
-  justify-content: space-between;
-  grid-area: top;
-  border-bottom: 1px solid #111;
-}
-.left {
-  grid-area: left;
-  padding-top: 1rem;
+  grid-area: TOOLS;
+  grid-column: 1;
+  grid-row: 2;
+  z-index: 2;
+
 }
 
-.center {
-  grid-area: center;
+.BOARD {
+  grid-area: BOARD;
+  grid-column: 1 / span 3;
+  grid-row: 1 / span 3;
   display: grid;
   place-items: center;
   overflow: hidden;
+  background-color: var(--colorLayer0);
+  z-index: 1;
 }
 
-.right {
-  grid-area: right;
+.PANELS {
+  grid-area: PANELS;
+  grid-column: 3;
+  grid-row: 2;
+  z-index: 2;
+  background-color: var(--colorLayer1);
+  box-shadow:
+    inset 0 var(--spaceS) 0 var(--colorShadow),
+    inset 0 calc(0rem - var(--spaceXS)) 0 var(--colorShadow);
 }
 
-.bottom {
-  grid-area: bottom;
-  border-top: 1px solid #111;
-  height: 8rem;
+.ANIMATION {
+  grid-area: ANIMATION;
+  grid-column: 1 / span 3;
+  grid-row: 3;
+  z-index: 2;
+  background-color: var(--colorLayer1);
 }
 </style>

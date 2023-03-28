@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from './pages/Home.vue'
-import PixelEditor from './pages/PixelEditor.vue'
+import Home from '@/pages/Home.vue'
+import PixelEditor from '@/pages/PixelEditor.vue'
 
 export const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: PixelEditor },
   { path: '/pixel', component: PixelEditor }
 ]
 

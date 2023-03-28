@@ -1,5 +1,5 @@
 <template>
-  <div class="layers">
+  <div class="Layers">
     <Layer
       v-for="(layer, index) in layers.list"
       :key="layer.id"
@@ -7,15 +7,15 @@
       :layer="layer"
       :active="layers.current.id === layer.id"
       :settings="layers.settings?.id === layer.id"
-      @settings="document.showLayerSettings(layer)"
+      @settings="handleSettings(layer)"
       @visible="document.toggleLayer(layer)"
       @activate="document.setLayer(layer)" />
   </div>
 </template>
 
 <script setup>
-import { useDocumentStore } from '../../stores/PixelDocument'
-import Layer from './Layer.vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import Layer from '@components/pixel/Layer.vue'
 
 const document = useDocumentStore()
 
@@ -25,10 +25,15 @@ const props = defineProps({
     required: true,
   }
 })
+
+const handleSettings = (layer) => {
+  document
+  document.showLayerSettings(layer)
+}
 </script>
 
 <style scoped>
-.layers {
+.Layers {
   display: flex;
   flex-direction: column-reverse;
 }

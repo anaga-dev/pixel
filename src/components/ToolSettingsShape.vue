@@ -1,39 +1,41 @@
 <template>
-  <div class="tool-settings-shape">
-    <button class="pill" type="button" id="line" :class="{ active: document.shape.type === 'line' }" @click="document.setShapeType('line')">
-      <i class="bx bx-shape-square"></i>
-      Line
-    </button>
-    <button class="pill" type="button" id="rectangle" :class="{ active: document.shape.type === 'rectangle' }" @click="document.setShapeType('rectangle')">
-      <i class="bx bx-shape-square"></i>
-      Rectangle
-    </button>
-    <button class="pill" type="button" id="ellipse" :class="{ active: document.shape.type === 'ellipse' }" @click="document.setShapeType('ellipse')">
-      <i class="bx bx-shape-square"></i>
-      Ellipse
-    </button>
-    <button class="pill" type="button" id="fill" :class="{ active: document.shape.filled }" @click="document.toggleShapeFill()">
-      <i class="bx bxs-droplet"></i>
-      Fill shape
-    </button>
-    <button class="pill" type="button" id="lock-aspect-ratio" :class="{ active: document.shape.lockAspectRatio }" @click="document.toggleShapeLockAspectRatio()">
-      <i class="bx bxs-lock-alt"></i>
-      Lock aspect ratio
-    </button>
-  </div>
+  <ToolButton :class="{ active: document.shape.type === 'line' }" @click="document.setShapeType('line')">
+    <Icon i="line" />
+    Line
+  </ToolButton>
+  <ToolButton :class="{ active: document.shape.type === 'rectangle' }" @click="document.setShapeType('rectangle')">
+    <Icon i="square" />
+    Rectangle
+  </ToolButton>
+  <ToolButton :class="{ active: document.shape.type === 'ellipse' }" @click="document.setShapeType('ellipse')">
+    <Icon i="circle" />
+    Ellipse
+  </ToolButton>
+  <Divider vertical />
+  <ToolButton :class="{ active: document.shape.filled }" @click="document.toggleShapeFill()">
+    <Icon i="droplet" />
+    Fill shape
+  </ToolButton>
+  <ToolButton :class="{ active: document.shape.lockAspectRatio }" @click="document.toggleShapeLockAspectRatio()">
+    <Icon i="lock" />
+    Lock aspect ratio
+  </ToolButton>
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/PixelDocument'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import ToolButton from '@components/ToolButton.vue'
+import Divider from '@components/Divider.vue'
+import Icon from '@components/Icon.vue'
 
 const document = useDocumentStore()
 </script>
 
 <style scoped>
-button {
-  margin: 0;
-  padding: 0.25rem 1rem;
-  background: #000;
-  border-radius: 0.5rem;
+.ToolSettingsShape {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--spaceS);
 }
 </style>

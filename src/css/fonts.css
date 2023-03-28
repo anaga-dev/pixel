@@ -1,0 +1,15 @@
+@font-face {
+  font-display: swap; 
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  src: url('@/assets/exo-2-v20-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap; 
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 700;
+  src: url('@/assets/exo-2-v20-latin-700.woff2') format('woff2');
+}

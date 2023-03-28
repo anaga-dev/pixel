@@ -1,7 +1,7 @@
 <template>
-  <div class="preview" ref="preview">
+  <section class="Preview" ref="preview">
     <!-- inyectamos el canvas -->
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -14,3 +14,9 @@ const preview = ref()
 
 onMounted(() => preview.value.appendChild(document.previewCanvas))
 </script>
+
+<style scoped>
+.Preview {
+  padding: 0 var(--spaceM);
+}
+</style>

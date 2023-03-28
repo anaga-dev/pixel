@@ -1,55 +1,59 @@
 <template>
-  <div class="modal">
-    <div class="header">
-      <div class="title">{{ title }}</div>
-      <button type="button" class="close">
-        <i class="bx bxs-message-square-x"></i>
-      </button>
-    </div>
-    <div class="body">
-      <slot></slot>
-    </div>
-    <div class="footer">
-      <slot name="footer"></slot>
+  <Overlay />
+  <div class="wrapper">
+    <div class="Modal">
+      <header>
+        <h2>{{ title }}</h2>
+        <Button label="Close" v-if="!nondismissable" variant="ghost">
+          <Icon i="close" />
+        </Button>
+      </header>
+      <div class="body">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import Button from '@components/Button.vue'
+import Overlay from '@components/Overlay.vue'
+import Icon from '@components/Icon.vue';
+
 const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  nondismissable: {
+    type: Boolean
   }
 })
 </script>
 
 <style scoped>
-.modal {
-  min-width: 10vw;
-  min-height: 10vh;
-  background: #2b2b2f;
-  border-radius: 0.25rem;
-  box-shadow:
-    0 0 1px rgba(0, 0, 0, 0.1),
-    0 0 2px rgba(0, 0, 0, 0.1),
-    0 0 4px rgba(0, 0, 0, 0.1),
-    0 0 8px rgba(0, 0, 0, 0.1),
-    0 0 16px rgba(0, 0, 0, 0.1),
-    0 0 32px rgba(0, 0, 0, 0.1);
+.wrapper {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  z-index: 1000;
+}
+.Modal {
+  min-width: 24rem;
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: stretch;
+  gap: var(--spaceM);
+  padding: var(--spaceL) var(--spaceL);
+  background-color: var(--colorLayer2);
+  box-shadow: var(--shadowLayer);
+  z-index: 1001;
 }
 
-.header {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.title {
-  text-transform: uppercase;
-}
-
-.header, .body, .footer {
-  padding: 1rem;
 }
 </style>

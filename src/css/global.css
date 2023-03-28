@@ -1,0 +1,108 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--colorSecondary) transparent;
+  accent-color: var(--colorAccent);
+}
+
+html {
+  background-color: var(--colorLayer1);
+  color: var(--colorText);
+  font-size: 16px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  touch-action: none;
+}
+
+html,
+button,
+input,
+textarea,
+select,
+option {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+*::-webkit-scrollbar {
+  width: var(--spaceS);
+}
+
+h2 {
+  font-size: var(--textM);
+  text-transform: uppercase;
+}
+
+#app {
+  user-select: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.active {
+  color: var(--colorAccent);
+}
+
+:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+button {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--colorText);
+}
+
+input:is([type=text], [type=number], [type=date], [type=email], [type=password]),
+select {
+  font-weight: bold;
+  appearance: none;
+  border: none;
+  height: var(--spaceXL);
+  display: grid;
+  align-items: center;
+  padding: 0 var(--spaceS);
+  background-color: var(--colorLayer0);
+  color: var(--colorPrimary);
+}
+
+option {
+  font-weight: bold;
+  padding: var(--spaceXS) 0;
+}
+
+/**
+  TODO: Habría que hacer que esto no esté pixelado siempre, sólo aquellos <canvas>
+  que lo necesiten.
+*/
+canvas {
+  image-rendering: pixelated;
+}
+
+.preview-canvas {
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/checkers.svg');
+}
+
+.preview-canvas,
+.vector-canvas {
+  width: 100%;
+  height: 100%;
+}

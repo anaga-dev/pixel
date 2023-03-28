@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   id: {
     type: String,
@@ -19,10 +17,3 @@ const props = defineProps({
   }
 })
 </script>
-
-<style scoped>
-.tool {
-  width: 1rem;
-  height: 1rem;
-}
-</style>

@@ -1,25 +1,17 @@
 <template>
-  <div class="color-picker">
-    <div class="tabs">
-      <button class="tab" :class="{ active: mode === 'picker' }" @click="mode = 'picker'">
-        Picker
-      </button>
-      <button class="tab" :class="{ active: mode === 'sliders' }" @click="mode = 'sliders'">
-        Sliders
-      </button>
-      <button class="tab" :class="{ active: mode === 'hex-code' }" @click="mode = 'hex-code'">
-        Hex Code
-      </button>
-      <button class="tab" :class="{ active: mode === 'palette' }" @click="mode = 'palette'">
-        Palette
-      </button>
-    </div>
+  <Dropdown>
+    <TabMenu>
+      <Tab :active="mode === 'picker'" @click="mode = 'picker'">Picker</Tab>
+      <Tab :active="mode === 'sliders'" @click="mode = 'sliders'">Sliders</Tab>
+      <Tab :active="mode === 'hex-code'" @click="mode = 'hex-code'">Hex Code</Tab>
+      <Tab :active="mode === 'palette'" @click="mode = 'palette'">Palette</Tab>
+    </TabMenu>
     <div class="colors">
       <div class="color previous" :style="{ backgroundColor: previous }">
-        <div class="color-name" :style="{ color: previous }">previous</div>
+        <div class="color-name" :style="{ color: previous }">Previous</div>
       </div>
       <div class="color current" :style="{ backgroundColor: current }">
-        <div class="color-name" :style="{ color: current }">current</div>
+        <div class="color-name" :style="{ color: current }">Current</div>
       </div>
     </div>
     <div class="content">
@@ -34,27 +26,31 @@
         #<input type="text" pattern="[A-Fa-f0-9]{6}" minlength="6" maxlength="6" v-model="hexColor" />
         <!-- TODO: Esto debería ser sólo visible desde tablet -->
         <div class="key-buttons">
-          <button type="button" class="key-button" v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :key="key" @click="onKeyButton(key)">{{ key}}</button>
+          <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
         </div>
       </div>
       <div class="palette" v-else-if="mode === 'palette'">
         <Palette :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
       </div>
     </div>
-    <button type="button" class="pill" @click="onOk">
-      Ok
-    </button>
-  </div>
+    <Button label="Accept" @click="onOk">
+      Accept
+    </Button>
+  </Dropdown>
 </template>
 
 <script setup>
-import Color from '../color/Color'
+import Color from '@/color/Color'
 import { readonly, ref } from 'vue'
-import { useDocumentStore } from '../stores/PixelDocument'
-import HuePicker from './HuePicker.vue'
-import CombinedColorPicker from './CombinedColorPicker.vue'
-import ColorSliders from './ColorSliders.vue'
-import Palette from './Palette.vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import HuePicker from '@components/HuePicker.vue'
+import CombinedColorPicker from '@components/CombinedColorPicker.vue'
+import ColorSliders from '@components/ColorSliders.vue'
+import Palette from '@components/Palette.vue'
+import Button from '@components/Button.vue'
+import Dropdown from '@components/Dropdown.vue'
+import TabMenu from '@components/TabMenu.vue'
+import Tab from '@components/Tab.vue'
 
 const document = useDocumentStore()
 
@@ -87,45 +83,16 @@ function onOk() {
 </script>
 
 <style scoped>
-.color-picker {
-  position: fixed;
-  top: 8rem;
-  left: 4rem;
-  width: 24rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  background: #2b2b2f;
-  border-radius: 0.5rem;
-  box-shadow:
-    0 0 1px rgba(0, 0, 0, 0.1),
-    0 0 2px rgba(0, 0, 0, 0.1),
-    0 0 4px rgba(0, 0, 0, 0.1),
-    0 0 8px rgba(0, 0, 0, 0.1),
-    0 0 16px rgba(0, 0, 0, 0.1),
-    0 0 32px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.tabs {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .key-buttons {
-  margin-top: 1rem;
-  display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 1rem;
+  display: none;
 }
 
 .key-button {
   padding: 1rem;
   font-size: 2rem;
-  border-radius: 0.5rem;
   background: #4b4b4f;
 }
 
@@ -135,28 +102,27 @@ function onOk() {
 }
 
 .colors {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  clip-path: var(--pixelCorners);
+  overflow: hidden;
 }
 
 .color {
-  flex: 1 0 auto;
-  height: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: var(--spaceM);
+  display: grid;
+  place-content: center;
 }
 
 .color-name {
+  text-transform: uppercase;
+  font-weight: bold;
   filter: invert(100%);
-  text-shadow: 1px 1px rgba(0,0,0,0.5);
 }
 
-.color:first-of-type {
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-}
-.color:last-of-type {
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+@media (hover: none) {
+  .key-buttons {
+    display: grid;
+  }
 }
 </style>

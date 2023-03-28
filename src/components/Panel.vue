@@ -1,15 +1,15 @@
 <template>
-  <div class="panel">
-    <div class="header">
-      <div class="title">{{ title }}</div>
+  <section class="Panel">
+    <header>
+      <h2>{{ title }}</h2>
       <div class="actions">
         <slot name="actions"></slot>
       </div>
-    </div>
+    </header>
     <div class="content" :class="{ scrollable }">
       <slot></slot>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -27,22 +27,22 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.panel {
-  border-bottom: 1px solid #111;
-}
-
-.header {
+header {
   display: flex;
-  padding: 1rem;
-  border-bottom: 1px solid #111;
+  padding: var(--spaceXS) var(--spaceXS) var(--spaceXS) var(--spaceM);
   justify-content: space-between;
   align-items: center;
 }
 
-.title {
+h3 {
   text-transform: uppercase;
 }
 
+.actions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spaceS);
+}
 .content {
   overflow: hidden;
   max-height: 25vh;
@@ -51,5 +51,8 @@ const props = defineProps({
 .scrollable {
   overflow-x: hidden;
   overflow-y: auto;
+  box-shadow:
+    inset 0 var(--spaceXS) 0 var(--colorShadow),
+    inset 0 calc(var(--spaceXS) * -1) 0 var(--colorShadow);
 }
 </style>

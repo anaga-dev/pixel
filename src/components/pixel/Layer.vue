@@ -1,6 +1,6 @@
 <template>
   <div
-    class="layer"
+    class="Layer"
     draggable="true"
     :class="{ active: active }"
     :data-index="index"
@@ -11,16 +11,14 @@
     @dragenter="onDragEnter"
     @dragleave="onDragLeave"
     @dragend="onDragEnd"
-    @drop="onDrop">
+    @drop.capture="onDrop">
     <div class="actions">
-      <div class="settings" @click="$emit('settings', layer)">
-        <i v-if="settings" class="bx bx-chevron-right"></i>
-        <i v-else class="bx bx-chevron-left"></i>
-      </div>
-      <div class="visibility" @click="$emit('visible', layer)">
-        <i v-if="layer.visible" class="bx bx-show"></i>
-        <i v-else class="bx bx-hide"></i>
-      </div>
+      <Button class="action" label="Layer settings" :active="settings" variant="ghost" @click="$emit('settings', layer)" @drop="onDrop">
+        <Icon i="arrow-left" />
+      </Button>
+      <Button class="action" :label="layer.visible ? 'Hide label' : 'Show label'" variant="ghost" @click="$emit('visible', layer)">
+        <Icon :i="layer.visible ? 'visible' : 'hidden'" />
+      </Button>
     </div>
     <div class="name">
       {{ layer.name.value }}
@@ -30,7 +28,7 @@
       <i class="bx bx-chevron-down"></i>
     </div>
     -->
-    <div class="preview preview-canvas" ref="preview">
+    <div class="preview" ref="preview">
       <!-- Añadimos una vista del canvas -->
     </div>
   </div>
@@ -38,7 +36,9 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useDocumentStore } from '../../stores/PixelDocument'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import Button from '@components/Button.vue'
+import Icon from '@components/Icon.vue'
 
 const document = useDocumentStore()
 
@@ -108,48 +108,44 @@ function onDrop(e) {
   const destination = e.target
   const toIndex = parseInt(destination.dataset.index, 10)
   console.log('from', fromIndex, 'to', toIndex)
-  document.swapLayers(fromIndex, toIndex)
+  document.layers.swap(fromIndex, toIndex)
 }
 </script>
 
 <style scoped>
-.layer {
-  display: flex;
-  justify-content: space-between;
+.Layer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
 }
 
-.actions {
-  display: flex;
+.Layer.active {
+  background-color: var(--colorLayer2);
+  color: var(--colorText);
 }
 
-.active {
-  background: #3b3b3f;
+.actions {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
 }
 
 .name {
-  margin-left: 0.5rem;
+  font-weight: bold;
+  padding: var(--spaceS);
 }
 
 .preview {
   display: grid;
-  place-items: center;
+  place-items: stretch;
   width: 4rem;
-  height: 4rem;
+  aspect-ratio: 1;
   overflow: hidden;
-  padding: 0.125rem;
-}
-
-.background {
-  width: 4rem;
-  height: 4rem;
-  border: 1px solid #000;
+  background: url('@/assets/checkers.svg');
 }
 
 canvas {
   width: 100%;
   height: auto;
-  background: url('/transparent.png');
-  border: 1px solid #000;
 }
 </style>
