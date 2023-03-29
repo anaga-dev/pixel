@@ -1,5 +1,5 @@
 <template>
-  <div class="Layers">
+  <div class="layers">
     <Layer
       v-for="(layer, index) in layers.list"
       :key="layer.id"
@@ -15,7 +15,7 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/PixelDocument'
-import Layer from '@components/pixel/Layer.vue'
+import Layer from '@components/Layer.vue'
 
 const document = useDocumentStore()
 
@@ -33,7 +33,7 @@ const handleSettings = (layer) => {
 </script>
 
 <style scoped>
-.Layers {
+.layers {
   display: flex;
   flex-direction: column-reverse;
 }

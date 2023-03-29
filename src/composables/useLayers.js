@@ -1,6 +1,4 @@
-import { v4 as uuid } from 'uuid'
 import { ref, shallowReactive, reactive } from 'vue'
-import BlendMode from '../enums/BlendMode'
 
 export function useLayers({ layer = null, layers = [], Layer } = {}) {
   if (Layer === undefined && typeof Layer !== 'function') {

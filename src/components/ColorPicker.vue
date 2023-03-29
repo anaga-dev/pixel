@@ -23,11 +23,7 @@
         <ColorSliders v-model="current" />
       </div>
       <div class="hex-code" v-else-if="mode === 'hex-code'">
-        #<input type="text" pattern="[A-Fa-f0-9]{6}" minlength="6" maxlength="6" v-model="hexColor" />
-        <!-- TODO: Esto debería ser sólo visible desde tablet -->
-        <div class="key-buttons">
-          <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
-        </div>
+        <ColorHex v-model="hexColor" />
       </div>
       <div class="palette" v-else-if="mode === 'palette'">
         <Palette :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
@@ -45,6 +41,7 @@ import { readonly, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import HuePicker from '@components/HuePicker.vue'
 import CombinedColorPicker from '@components/CombinedColorPicker.vue'
+import ColorHex from '@components/ColorHex.vue'
 import ColorSliders from '@components/ColorSliders.vue'
 import Palette from '@components/Palette.vue'
 import Button from '@components/Button.vue'
@@ -58,23 +55,20 @@ const previous = readonly(document.color)
 const current = ref(document.color)
 
 const parsedColor = Color.parse(current.value)
+const [r, g, b] = parsedColor
 
 const mode = ref('picker')
 const hue = ref(Color.hue(parsedColor))
 const combinedHue = ref(hue)
-const saturation = ref(Color.saturation(parsedColor))
-const lightness = ref(Color.lightness(parsedColor))
-const red = ref(parsedColor[0] * 255)
-const green = ref(parsedColor[1] * 255)
-const blue = ref(parsedColor[2] * 255)
+const saturation = ref(Color.saturation(parsedColor) * 100)
+const lightness = ref(Color.lightness(parsedColor) * 100)
+const red = ref(r * 255)
+const green = ref(g * 255)
+const blue = ref(b * 255)
 const hexColor = ref(Color.stringify(parsedColor, 'hex').slice(1, 7))
 
 function onSelectColor(color) {
   current.value = color
-}
-
-function onKeyButton(key) {
-  console.log(key)
 }
 
 function onOk() {
@@ -83,23 +77,6 @@ function onOk() {
 </script>
 
 <style scoped>
-.key-buttons {
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 1rem;
-  display: none;
-}
-
-.key-button {
-  padding: 1rem;
-  font-size: 2rem;
-  background: #4b4b4f;
-}
-
-.form-input {
-  display: flex;
-  justify-content: space-between;
-}
 
 .colors {
   display: grid;

@@ -1,7 +1,7 @@
 <template>
-  <div class="ColorSliders">
+  <div class="color-sliders">
     <Field label="Hue" for="hue">
-      <Slider id="hue" :min="0" :max="100" :data="hue" @update="onUpdate('hue', parseInt($event))" />
+      <Slider id="hue" :min="0" :max="359" :data="hue" @update="onUpdate('hue', parseInt($event))" />
     </Field>
     <Field label="Saturation" for="saturation">
       <Slider id="saturation" :min="0" :max="100" :data="saturation" @update="onUpdate('saturation', parseInt($event))" />
@@ -39,25 +39,27 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const parsedColor = Color.parse(props.modelValue)
+const [r, g, b] = parsedColor
+
 const hue = ref(Color.hue(parsedColor))
-const saturation = ref(Color.saturation(parsedColor))
-const lightness = ref(Color.lightness(parsedColor))
-const red = ref(parsedColor[0] * 255)
-const green = ref(parsedColor[1] * 255)
-const blue = ref(parsedColor[2] * 255)
+const saturation = ref(Color.saturation(parsedColor) * 100)
+const lightness = ref(Color.lightness(parsedColor) * 100)
+const red = ref(r * 255)
+const green = ref(g * 255)
+const blue = ref(b * 255)
 
 function updateFromHSL(h, s, l) {
   const [r, g, b] = Color.fromHSLA(h, s, l)
-  red.value = r * 255
-  green.value = g * 255
-  blue.value = b * 255
+  red.value = Math.round(r * 255)
+  green.value = Math.round(g * 255)
+  blue.value = Math.round(b * 255)
 }
 
 function updateFromRGB(r, g, b) {
   const color = Color.fromRGBA(r, g, b)
-  hue.value = Color.hue(color)
-  saturation.value = Color.saturation(color)
-  lightness.value = Color.lightness(color)
+  hue.value = Math.round(Color.hue(color))
+  saturation.value = Math.round(Color.saturation(color) * 100)
+  lightness.value = Math.round(Color.lightness(color) * 100)
 }
 
 function onUpdate(type, value) {
@@ -92,7 +94,7 @@ function onUpdate(type, value) {
 </script>
 
 <style scoped>
-.ColorSliders {
+.color-sliders {
   display: grid;
   grid-auto-flow: row;
   gap: var(--spaceL);

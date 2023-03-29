@@ -23,8 +23,8 @@ import DitherAlignment from '../enums/DitherAlignment'
 import SelectType from '../enums/SelectType'
 import SelectMode from '../enums/SelectMode'
 import AnimationState from '../enums/AnimationState'
-import Layer from '../composables/layers/PixelLayer'
-import PixelLayer from '../composables/layers/PixelLayer'
+import Layer from '../composables/Layer'
+import PixelLayer from '../composables/Layer'
 import TransformMode from '../enums/TransformMode'
 import PaletteTypes from '../constants/PaletteTypes'
 import GIMP from '../formats/palettes/GIMP'
@@ -832,7 +832,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.redrawAll()
     },
     setLayerOpacity(layer, opacity) {
-      layer.opacity = opacity
+      layer.opacityPercentage.value = opacity
       this.redrawAll()
     },
     hideLayerSettings() {

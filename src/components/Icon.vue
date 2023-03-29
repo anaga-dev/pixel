@@ -1,5 +1,5 @@
 <template>
-  <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <use :xlink:href="`#${i}`" />
     <defs>
       <g id="add-item">

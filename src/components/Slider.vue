@@ -1,12 +1,27 @@
 <template>
   <div class="Slider" :style="percent">
-    <input :id="$attrs.id" type="range" :min="min" step="1" :max="max" :value="data" @input="updateValue" />
-    <input :id="`${$attrs.id}-number`" type="number" step="1" :min="min" :max="max" :value="data" @input="updateValue" />
+    <input
+      :id="$attrs.id"
+      type="range"
+      :min="min"
+      :step="step"
+      :max="max"
+      :value="data"
+      @input="updateValue" />
+    <input
+      :id="`${$attrs.id}-number`"
+      type="number"
+      :step="step"
+      :min="min"
+      :max="max"
+      :value="data"
+      @input="updateValue" />
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
+import Range from '~/math/Range'
 
 const props = defineProps({
   data: {
@@ -20,6 +35,10 @@ const props = defineProps({
   max: {
     type: Number,
     default: 100
+  },
+  step: {
+    type: Number,
+    default: 1
   }
 })
 
@@ -27,16 +46,16 @@ const emit = defineEmits(['update'])
 
 const sliderValue = ref(props.data)
 const percent = ref({
-  '--percent': `${props.data / props.max * 100}%`
+  '--percent': `${Range.from(props.data, props.min, props.max) * 100}%`
 })
 
-const updateValue = (e) => {
-  sliderValue.value = e.target.value
+function updateValue(e) {
+  sliderValue.value = e.currentTarget.value
   emit('update', sliderValue.value)
 }
 
 watch(() => props.data, (newValue) => {
-  percent.value['--percent'] = `${newValue / props.max * 100}%`
+  percent.value['--percent'] = `${Range.from(newValue, props.min, props.max) * 100}%`
 });
 </script>
 

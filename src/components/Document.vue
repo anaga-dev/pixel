@@ -1,16 +1,18 @@
 <template>
-  <div class="Document" ref="doc" :style="{ width: width, height: height, transform: transform }">
+  <div class="paint" ref="doc" :style="{ width, height, transform }">
     <!-- aquí inyectaremos el canvas -->
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref, computed, onUnmounted } from 'vue'
-import { useDocumentStore } from '../../stores/PixelDocument'
-import { useElement } from '../../composables/useElement'
+import { useDocumentStore } from '~/stores/PixelDocument'
+import { useElement } from '~/composables/useElement'
+import Tool from '~/enums/Tool'
 
 const document = useDocumentStore()
 const doc = ref()
+const selection = ref()
 
 const width = computed(() => `${document.width}px`)
 const height = computed(() => `${document.height}px`)
@@ -22,8 +24,9 @@ onMounted(() => document.redrawAll())
 </script>
 
 <style scoped>
-.Document {
+.paint {
   background-image: url('@/assets/checkers.svg');
   image-rendering: pixelated; /* WhAT? */
 }
+
 </style>

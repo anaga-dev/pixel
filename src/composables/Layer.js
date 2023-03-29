@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid'
-import { ref, shallowReactive } from 'vue'
-import BlendMode from '../../enums/BlendMode'
-import Canvas from '../../canvas/Canvas'
+import { ref, computed, shallowReactive } from 'vue'
+import BlendMode from '../enums/BlendMode'
+import Canvas from '../canvas/Canvas'
 
 export function create({
   name: initialName = 'Unnamed',
@@ -16,6 +16,14 @@ export function create({
   const visible = ref(initialVisible)
   const blendMode = ref(initialBlendMode)
   const opacity = ref(initialOpacity)
+  const opacityPercentage = computed({
+    get() {
+      return Math.round(opacity.value * 100)
+    },
+    set(newValue) {
+      opacity.value = newValue / 100
+    }
+  })
   const frames = shallowReactive([new ImageData(width, height)])
   const canvas = Canvas.create(width, height)
   const context = canvas.getContext('2d')
@@ -25,6 +33,7 @@ export function create({
     visible,
     blendMode,
     opacity,
+    opacityPercentage,
     frames,
     canvas,
     context
@@ -46,6 +55,14 @@ export function duplicate({
   const visible = ref(initialVisible)
   const blendMode = ref(initialBlendMode)
   const opacity = ref(initialOpacity)
+  const opacityPercentage = computed({
+    get() {
+      return opacity.value * 100
+    },
+    set(newValue) {
+      opacity.value = newValue / 100
+    }
+  })
   const frames = shallowReactive(
     initialFrames.map(
       (imageData) =>
@@ -58,6 +75,7 @@ export function duplicate({
     visible,
     blendMode,
     opacity,
+    opacityPercentage,
     frames,
     canvas,
     context

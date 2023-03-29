@@ -6,9 +6,8 @@
 </template>
 
 <script setup>
-import Canvas from '../canvas/Canvas'
-import Range from '../math/Range'
-import Color from '../color/Color'
+import Canvas from '~/canvas/Canvas'
+import Color from '~/color/Color'
 import { onMounted, watch, reactive, ref } from 'vue'
 
 function getOffsetCoordinates(event, element) {
@@ -17,6 +16,13 @@ function getOffsetCoordinates(event, element) {
   return {
     x: Math.max(0, Math.min(width - 3, event.clientX - left)),
     y: Math.max(0, Math.min(height - 3, event.clientY - top))
+  }
+}
+
+function getCircleCoordinates(saturation, value) {
+  return {
+    top: `calc(${ -(value * 100) + 100 }%)`,
+    left: `${ saturation * 100 }%`,
   }
 }
 
@@ -127,10 +133,11 @@ function getStyle() {
   const parsedColor = Color.parse(props.modelValue)
   const value = Color.max(parsedColor)
   const saturation = Color.saturationHSV(parsedColor)
-  return {
-    top: `calc(${ -(value * 100) + 100 }% - 8px)`,
-    left: `${ saturation * 100 }%`,
-  }
+  return getCircleCoordinates(saturation, value)
+  // return {
+  //   top: `calc(${ -(value * 100) + 100 }% - 8px)`,
+  //   left: `${ saturation * 100 }%`,
+  // }
 }
 
 // TODO: Ver cómo convertir esto en composables
@@ -191,7 +198,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.CombinedColorPicker {
+.combined-color-picker {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -205,6 +212,7 @@ canvas {
 
 .circle {
   position: absolute;
+  transform: translate(-50%, -50%);
   width: 8px;
   height: 8px;
   border-radius: 100%;

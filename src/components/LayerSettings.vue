@@ -1,5 +1,5 @@
 <template>
-  <Dropdown class="LayerSettings" @close="document.hideLayerSettings()">
+  <Dropdown class="layer-settings" @close="document.hideLayerSettings()">
     <header>
       <div v-if="!editLayerName" class="name" @click="onToggleLayerNameEdit">
         {{ layer.name.value }}
@@ -10,7 +10,13 @@
     <!-- TODO: Muchos de estos elementos necesitan una llamada a `redrawAll` -->
     <Field label="Opacity" for="opacity" class="opacity">
       <div class="layer-visibility">
-        <Slider id="opacity" :min="0" :max="100" :data="layer.opacity.value" @update="document.setLayerOpacity(layer, $event)" />
+        <Slider
+          id="opacity"
+          :min="0"
+          :max="100"
+          :step="1"
+          :data="layer.opacityPercentage.value"
+          @update="document.setLayerOpacity(layer, $event)" />
         <Button :label="layer.visible ? 'Hide layer' : 'Show layer'" variant="ghost" @click="document.toggleLayer(layer)">
           <Icon :i="layer.visible ? 'visible' : 'hidden'" />
         </Button>
@@ -102,7 +108,7 @@ function onDelete(layer) {
 </script>
 
 <style scoped>
-.LayerSettings {
+.layer-settings {
   top: calc(var(--widthToolbar) + var(--spaceS));
   right: calc(var(--widthPanels) + var(--spaceS));
   min-width: 20rem;
