@@ -68,7 +68,7 @@ export async function save(document) {
   zip.file('stack.xml', stack)
   zip.file('mergedimage.png', mergedImage)
   const dataFolder = zip.folder('data')
-  const layers = await Promise.all(document.layers.map((layer) => Canvas.createBlob(layer.canvas, 'image/png')))
+  const layers = await Promise.all(document.layers.list.map((layer) => Canvas.createBlob(layer.canvas, 'image/png')))
   layers.forEach((blob, index) => dataFolder.file(`layer${index}.png`, blob))
   zip.folder('Thumbnails').file('thumbnail.png', await createThumbnail(document.canvas))
   return zip.generateAsync({ type: 'blob' })
