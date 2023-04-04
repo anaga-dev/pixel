@@ -1,7 +1,7 @@
 <template>
-  <div class="color-hex">
-    <div class="form-input">
-      <label for="hex">#</label>
+  <div class="ColorHex">
+    <div class="hex-input">
+      <span>#</span>
       <input
         id="hex"
         ref="hex"
@@ -12,13 +12,14 @@
         v-model="modelValue" />
     </div>
     <div class="key-buttons">
-      <Button class="key-button" v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
+      <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import Button from '@components/Button.vue'
 // import Range from '~/math/Range.js'
 
 const emit = defineEmits(['update:modelValue'])
@@ -43,11 +44,22 @@ function onKeyButton(key) {
 </script>
 
 <style scoped>
+.hex-input {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  gap: var(--spaceS);
+}
+
+input {
+  text-transform: uppercase;
+}
 .key-buttons {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 1rem;
-  display: grid;
+  display: none;
 }
 
 .key-button {
@@ -60,5 +72,11 @@ function onKeyButton(key) {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+}
+
+@media (hover: none) {
+  .key-buttons {
+    display: grid;
+  }
 }
 </style>

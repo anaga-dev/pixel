@@ -70,29 +70,6 @@ function onOk() {
   grid-auto-flow: row;
   gap: var(--spaceM);
 }
-.hex {
-  display: grid;
-  grid-auto-flow: column;
-  justify-content: start;
-  align-items: center;
-  gap: var(--spaceS);
-}
-
-.hex-input {
-  text-transform: uppercase;
-}
-.key-buttons {
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 1rem;
-  display: none;
-}
-
-.key-button {
-  padding: 1rem;
-  font-size: 2rem;
-  background: #4b4b4f;
-}
 
 .form-input {
   display: flex;
@@ -116,11 +93,5 @@ function onOk() {
   text-transform: uppercase;
   font-weight: bold;
   filter: invert(100%);
-}
-
-@media (hover: none) {
-  .key-buttons {
-    display: grid;
-  }
 }
 </style>

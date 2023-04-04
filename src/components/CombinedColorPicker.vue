@@ -198,10 +198,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.combined-color-picker {
+.CombinedColorPicker {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   position: relative;
   overflow: hidden;
 }
