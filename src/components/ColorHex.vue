@@ -9,7 +9,7 @@
         pattern="[A-Fa-f0-9]{6}"
         minlength="6"
         maxlength="6"
-        v-model="modelValue" />
+        v-model="hexValue" />
     </div>
     <div class="key-buttons">
       <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
@@ -18,8 +18,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Button from '@components/Button.vue'
+import Color from '@/color/Color'
 // import Range from '~/math/Range.js'
 
 const emit = defineEmits(['update:modelValue'])
@@ -28,6 +29,15 @@ const props = defineProps({
   modelValue: {
     type: String,
     required: true
+  }
+})
+
+const hexValue = computed({
+  get() {
+    return Color.stringify(Color.parse(props.modelValue), 'hex').slice(1, 7)
+  },
+  set(value) {
+    emit('update:modelValue', Color.stringify(Color.parse(value), 'rgb'))
   }
 })
 

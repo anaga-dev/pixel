@@ -54,7 +54,6 @@ const parsedColor = ref(Color.parse(current.value))
 const mode = ref(ColorMode.HEX)
 const hue = ref(Color.hue(parsedColor.value))
 const combinedHue = ref(hue)
-const hexColor = ref(Color.stringify(parsedColor.value, 'hex').slice(1, 7))
 
 function onSelectColor(color) {
   current.value = color
