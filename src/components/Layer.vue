@@ -141,7 +141,7 @@ function onDrop(e) {
   width: 4rem;
   aspect-ratio: 1;
   overflow: hidden;
-  background: url('@/assets/checkers.svg');
+  background: url('@/assets/checkers.png');
 }
 
 canvas {

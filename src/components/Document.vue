@@ -8,7 +8,6 @@
 import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useDocumentStore } from '~/stores/PixelDocument'
 import { useElement } from '~/composables/useElement'
-import Tool from '~/enums/Tool'
 
 const document = useDocumentStore()
 const doc = ref()
@@ -25,7 +24,7 @@ onMounted(() => document.redrawAll())
 
 <style scoped>
 .paint {
-  background-image: url('@/assets/checkers.svg');
+  background-image: url('@/assets/checkers.png');
   image-rendering: pixelated; /* WhAT? */
 }
 
