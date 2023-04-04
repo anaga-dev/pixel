@@ -1,5 +1,5 @@
 <template>
-  <div class="combined-color-picker">
+  <div class="CombinedColorPicker">
     <canvas ref="canvas" @pointerdown="onDown"></canvas>
     <div class="circle" :style="getStyle()"></div>
   </div>
@@ -203,6 +203,7 @@ onMounted(() => {
   width: 100%;
   aspect-ratio: 4 / 3;
   position: relative;
+  overflow: hidden;
 }
 
 canvas {
@@ -212,10 +213,10 @@ canvas {
 
 .circle {
   position: absolute;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
+  width: var(--spaceM);
+  height: var(--spaceM);
   border-radius: 100%;
+  transform: translate(-50%, -50%);
   box-shadow:
     0 0 0 1px hsl(0, 0%, 100%),
     0 0 0 2px hsl(0, 0%, 0%);

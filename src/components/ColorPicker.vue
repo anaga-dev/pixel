@@ -1,11 +1,5 @@
 <template>
   <Dropdown>
-    <TabMenu>
-      <Tab :active="mode === 'picker'" @click="mode = 'picker'">Picker</Tab>
-      <Tab :active="mode === 'sliders'" @click="mode = 'sliders'">Sliders</Tab>
-      <Tab :active="mode === 'hex-code'" @click="mode = 'hex-code'">Hex Code</Tab>
-      <Tab :active="mode === 'palette'" @click="mode = 'palette'">Palette</Tab>
-    </TabMenu>
     <div class="colors">
       <div class="color previous" :style="{ backgroundColor: previous }">
         <div class="color-name" :style="{ color: previous }">Previous</div>
@@ -15,19 +9,18 @@
       </div>
     </div>
     <div class="content">
-      <div class="picker" v-if="mode === 'picker'">
-        <CombinedColorPicker :hue="combinedHue" v-model="current" />
-        <HuePicker v-model="combinedHue" />
-      </div>
-      <div class="sliders" v-else-if="mode === 'sliders'">
-        <ColorSliders v-model="current" />
-      </div>
-      <div class="hex-code" v-else-if="mode === 'hex-code'">
-        <ColorHex v-model="hexColor" />
-      </div>
-      <div class="palette" v-else-if="mode === 'palette'">
-        <Palette :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
-      </div>
+      <CombinedColorPicker :hue="combinedHue" v-model="current" />
+      <HuePicker v-model="combinedHue" />
+      <TabMenu>
+        <Tab :active="mode === 'hex'" @click="mode = 'hex'">Hex</Tab>
+        <Tab :active="mode === 'hsl'" @click="mode = 'hsl'">HSL</Tab>
+        <Tab :active="mode === 'rgb'" @click="mode = 'rgb'">RGB</Tab>
+        <Tab :active="mode === 'palette'" @click="mode = 'palette'">Palette</Tab>
+      </TabMenu>
+      <ColorHex v-if="mode === 'hex'" v-model="current" />
+      <ColorHSL v-else-if="mode === 'hsl'" v-model="current" />
+      <ColorRGB v-else-if="mode === 'rgb'" v-model="current" />
+      <Palette v-else-if="mode === 'palette'" :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
     </div>
     <Button label="Accept" @click="onOk">
       Accept
@@ -42,7 +35,8 @@ import { useDocumentStore } from '@/stores/PixelDocument'
 import HuePicker from '@components/HuePicker.vue'
 import CombinedColorPicker from '@components/CombinedColorPicker.vue'
 import ColorHex from '@components/ColorHex.vue'
-import ColorSliders from '@components/ColorSliders.vue'
+import ColorHSL from '@components/ColorHSL.vue'
+import ColorRGB from '@components/ColorRGB.vue'
 import Palette from '@components/Palette.vue'
 import Button from '@components/Button.vue'
 import Dropdown from '@components/Dropdown.vue'
@@ -54,18 +48,12 @@ const document = useDocumentStore()
 const previous = readonly(document.color)
 const current = ref(document.color)
 
-const parsedColor = Color.parse(current.value)
-const [r, g, b] = parsedColor
+const parsedColor = ref(Color.parse(current.value))
 
-const mode = ref('picker')
-const hue = ref(Color.hue(parsedColor))
+const mode = ref('hex')
+const hue = ref(Color.hue(parsedColor.value))
 const combinedHue = ref(hue)
-const saturation = ref(Color.saturation(parsedColor) * 100)
-const lightness = ref(Color.lightness(parsedColor) * 100)
-const red = ref(r * 255)
-const green = ref(g * 255)
-const blue = ref(b * 255)
-const hexColor = ref(Color.stringify(parsedColor, 'hex').slice(1, 7))
+const hexColor = ref(Color.stringify(parsedColor.value, 'hex').slice(1, 7))
 
 function onSelectColor(color) {
   current.value = color
@@ -77,6 +65,39 @@ function onOk() {
 </script>
 
 <style scoped>
+.content {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spaceM);
+}
+.hex {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  gap: var(--spaceS);
+}
+
+.hex-input {
+  text-transform: uppercase;
+}
+.key-buttons {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 1rem;
+  display: none;
+}
+
+.key-button {
+  padding: 1rem;
+  font-size: 2rem;
+  background: #4b4b4f;
+}
+
+.form-input {
+  display: flex;
+  justify-content: space-between;
+}
 
 .colors {
   display: grid;

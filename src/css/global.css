@@ -1,8 +1,6 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
-  scrollbar-width: thin;
   scrollbar-color: var(--colorSecondary) transparent;
   accent-color: var(--colorAccent);
 }
@@ -10,12 +8,6 @@
 html {
   background-color: var(--colorLayer1);
   color: var(--colorText);
-  font-size: 16px;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
 }
 
 body {

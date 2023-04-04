@@ -1,3 +1,4 @@
+import './css/reset.css'
 import './css/variables.css'
 import './css/fonts.css'
 import './css/global.css'
@@ -6,7 +7,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from './router'
 import App from './App.vue'
-import vClickOutside from 'click-outside-vue3'
+import clickOutsideDirective from './utils/click-outside.directive'
 
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
@@ -17,7 +18,7 @@ window.addEventListener('load', () => {
 const pinia = createPinia()
 const app = createApp(App)
 
-app.use(vClickOutside)
+app.directive('click-outside', clickOutsideDirective)
 app.use(pinia)
 app.use(router)
 app.mount('#app')

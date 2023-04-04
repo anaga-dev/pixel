@@ -1,8 +1,7 @@
 <template>
-  <div ref="container" class="hue-picker" @pointerdown="onDown">
+  <div ref="container" class="HuePicker" @pointerdown="onDown">
     <!-- Picker -->
     <div class="bar" :style="{ left: `${((props.modelValue / 360) * 100)}%` }">
-
     </div>
   </div>
 </template>
@@ -42,7 +41,7 @@ function onDown(e) {
 </script>
 
 <style scoped>
-.hue-picker {
+.HuePicker {
   background: linear-gradient(to right,
     hsl(0, 100%, 50%),
     hsl(30, 100%, 50%),
@@ -58,15 +57,15 @@ function onDown(e) {
     hsl(330, 100%, 50%),
     hsl(360, 100%, 50%)
   );
-  height: 2rem;
+  height: var(--spaceL);
   position: relative;
 }
 
 .bar {
   pointer-events: none;
   position: absolute;
-  width: 1px;
+  width: 2px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--colorLayer1);
 }
 </style>
