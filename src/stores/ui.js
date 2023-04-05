@@ -9,14 +9,24 @@ export const useUIStore = defineStore('ui', {
       height: 0
     },
     showLayerSettings: false,
-    showDropdown: false
+    showDropdown: false,
+    showGeneralSettings: false
   }),
   getters: {
     isShowingLayerSettings() {
       return this.showLayerSettings
     },
+    isShowingGeneralSettings() {
+      return this.showGeneralSettings
+    },
     isShowingDropdown() {
       return this.showLayerSettings
+    }
+  },
+  actions: {
+    toggleGeneralSettings() {
+      console.log('toggle!')
+      this.showGeneralSettings = !this.showGeneralSettings
     }
   }
 })

@@ -1,10 +1,7 @@
 <template>
-  <section class="Settings">
+  <section class="SettingsBar">
     <div class="left">
       <slot name="left" />
-    </div>
-    <div class="center">
-      <slot name="center" />
     </div>
     <div class="right">
       <slot name="right" />
@@ -13,7 +10,7 @@
 </template>
 
 <style scoped>
-.Settings {
+.SettingsBar {
   height: 100%;
   display: grid;
   grid-auto-flow: column;

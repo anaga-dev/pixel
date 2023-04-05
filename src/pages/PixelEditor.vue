@@ -1,7 +1,7 @@
 <template>
   <div class="CONTAINER">
     <div class="SETTINGS">
-      <Settings>
+      <SettingsBar>
         <template #left>
           <SettingsButton />
           <Divider vertical />
@@ -26,7 +26,7 @@
             Export
           </Button>
         </template>
-      </Settings>
+      </SettingsBar>
     </div>
     <div class="TOOLS">
       <Tools />
@@ -70,12 +70,11 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, onUnmounted, watch, ref } from 'vue'
+import { watch, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useTouch } from '@/composables/useTouch'
 import { useWheel } from '@/composables/useWheel'
-import Tool from '~/enums/Tool.js'
 import SettingsButton from '@components/SettingsButton.vue'
 import ToolSettings from '@components/ToolSettings.vue'
 import Tools from '@components/Tools.vue'
@@ -84,13 +83,11 @@ import Zoom from '@components/Zoom.vue'
 import Panel from '@components/Panel.vue'
 import Palette from '@components/Palette.vue'
 import Preview from '@components/Preview.vue'
-import ColorPicker from '@components/ColorPicker.vue'
-import PointerStatus from '@components/PointerStatus.vue'
 import Layers from '@components/Layers.vue'
 import Document from '@components/Document.vue'
 import DocumentCreate from '@components/DocumentCreate.vue'
 import LayerSettings from '@components/LayerSettings.vue'
-import Settings from '@components/Settings.vue'
+import SettingsBar from '@components/SettingsBar.vue'
 import Button from '@components/Button.vue'
 import Divider from '@components/Divider.vue'
 import SymmetrySettings from '@components/SymmetrySettings.vue'
