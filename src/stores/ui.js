@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 
 export const useUIStore = defineStore('ui', {
   state: () => ({
@@ -7,6 +7,11 @@ export const useUIStore = defineStore('ui', {
       y: 0,
       width: 0,
       height: 0
+    },
+    panels: {
+      layers: true,
+      palette: true,
+      preview: true
     },
     showLayerSettings: false,
     showDropdown: false,
@@ -27,6 +32,20 @@ export const useUIStore = defineStore('ui', {
     toggleGeneralSettings() {
       console.log('toggle!')
       this.showGeneralSettings = !this.showGeneralSettings
-    }
+    },
+    collapsePanelLayers(value) {
+      this.panels.layers = value
+    },
+    collapsePanelPreview(value) {
+      this.panels.preview = value
+    },
+    collapsePanelPalette(value) {
+      this.panels.palette = value
+    },
   }
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useUIStore, import.meta.hot))
+}
+

@@ -35,7 +35,7 @@
       <Document v-if="pixelDocument.canvas" />
     </main>
     <aside class="PANELS">
-      <Panel title="Layers">
+      <Panel title="Layers" @collapse="$event => ui.collapsePanelLayers($event)" :collapsed="ui.panels.layers">
         <template #actions>
           <Button label="Add layer" variant="ghost" @click="pixelDocument.addLayer">
             <Icon i="add-item" />
@@ -43,7 +43,7 @@
         </template>
         <Layers :layers="pixelDocument.layers"></Layers>
       </Panel>
-      <Panel title="Palette">
+      <Panel title="Palette" @collapse="$event => ui.collapsePanelPalette($event)" :collapsed="ui.panels.palette">
         <template #actions>
           <Button label="Load palette" variant="ghost" @click="pixelDocument.loadPalette">
             <Icon i="load" />
@@ -57,7 +57,7 @@
         </template>
         <Palette :palette="pixelDocument.palette" :selected-color="pixelDocument.color" @select="pixelDocument.setColor"></Palette>
       </Panel>
-      <Panel title="preview" :scrollable="false" v-if="pixelDocument.canvas">
+      <Panel title="preview"  @collapse="$event => ui.collapsePanelPreview($event)" :collapsed="ui.panels.preview" :scrollable="false" v-if="pixelDocument.canvas">
         <Preview></Preview>
       </Panel>
     </aside>
@@ -72,6 +72,7 @@
 <script setup>
 import { watch, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
+import { useUIStore } from '../stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useTouch } from '@/composables/useTouch'
 import { useWheel } from '@/composables/useWheel'
@@ -95,6 +96,7 @@ import Icon from '@components/Icon.vue'
 
 const center = ref()
 
+const ui = useUIStore()
 const pixelDocument = useDocumentStore()
 
 const touch = useTouch(document.body)

@@ -35,7 +35,7 @@
     calc(100% - var(--spaceXS)) 100%,
     var(--spaceXS) 100%,
     var(--spaceXS) calc(100% - var(--spaceXS)),
-    0% calc(100% - var(--spaceXS)) 
+    0% calc(100% - var(--spaceXS))
   );
 
   --shadowLayer:
