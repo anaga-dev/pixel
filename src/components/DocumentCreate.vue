@@ -73,11 +73,11 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
-import Modal from '@components/Modal.vue'
-import Button from '@components/Button.vue'
-import Field from '@components/Field.vue'
-import Icon from '@components/Icon.vue'
-import Select from '@components/Select.vue'
+import Modal from '@/components/Modal.vue'
+import Button from '@/components/Button.vue'
+import Field from '@/components/Field.vue'
+import Icon from '@/components/Icon.vue'
+import Select from '@/components/Select.vue'
 
 const document = useDocumentStore()
 

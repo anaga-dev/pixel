@@ -16,9 +16,9 @@
 </template>
 
 <script setup>
-import Button from '@components/Button.vue'
-import Dropdown from '@components/Dropdown.vue'
-import Icon from '@components/Icon.vue'
+import Button from '@/components/Button.vue'
+import Dropdown from '@/components/Dropdown.vue'
+import Icon from '@/components/Icon.vue'
 </script>
 
 <style scoped>

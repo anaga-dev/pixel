@@ -15,7 +15,7 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/PixelDocument'
-import Layer from '@components/Layer.vue'
+import Layer from '@/components/Layer.vue'
 
 const document = useDocumentStore()
 

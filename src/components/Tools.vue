@@ -43,13 +43,13 @@
 
 <script setup>
 import Tool from '@/enums/Tool'
-import Toolbar from '@components/Toolbar.vue'
-import ToolButton from '@components/ToolButton.vue'
-import ToolColor from '@components/ToolColor.vue'
-import ColorPicker from '@components/ColorPicker.vue'
+import Toolbar from '@/components/Toolbar.vue'
+import ToolButton from '@/components/ToolButton.vue'
+import ToolColor from '@/components/ToolColor.vue'
+import ColorPicker from '@/components/ColorPicker.vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
-import Icon from '@components/Icon.vue'
-import Divider from '@components/Divider.vue'
+import Icon from '@/components/Icon.vue'
+import Divider from '@/components/Divider.vue'
 
 const pixelDocument = useDocumentStore()
 </script>

@@ -16,9 +16,9 @@
 </template>
 
 <script setup>
-import Button from '@components/Button.vue'
-import Overlay from '@components/Overlay.vue'
-import Icon from '@components/Icon.vue';
+import Button from '@/components/Button.vue'
+import Overlay from '@/components/Overlay.vue'
+import Icon from '@/components/Icon.vue';
 
 const props = defineProps({
   title: {

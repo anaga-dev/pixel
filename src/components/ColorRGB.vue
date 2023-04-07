@@ -15,8 +15,8 @@
 <script setup>
 import { ref } from 'vue'
 import Color from '@/color/Color'
-import Field from '@components/Field.vue'
-import Slider from '@components/Slider.vue'
+import Field from '@/components/Field.vue'
+import Slider from '@/components/Slider.vue'
 
 const props = defineProps({
   modelValue: {

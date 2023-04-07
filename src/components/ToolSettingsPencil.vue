@@ -12,10 +12,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
-import BrushSelector from '@components/BrushSelector.vue'
-import BrushSize from '@components/BrushSize.vue'
-import Button from '@components/Button.vue'
-import Icon from '@components/Icon.vue'
+import BrushSelector from '@/components/BrushSelector.vue'
+import BrushSize from '@/components/BrushSize.vue'
+import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 
 const document = useDocumentStore()
 const showing = ref('')

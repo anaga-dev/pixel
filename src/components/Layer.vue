@@ -37,8 +37,8 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
-import Button from '@components/Button.vue'
-import Icon from '@components/Icon.vue'
+import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 
 const document = useDocumentStore()
 

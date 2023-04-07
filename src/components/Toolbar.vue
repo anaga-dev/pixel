@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import Divider from '@components/Divider.vue'
+import Divider from '@/components/Divider.vue'
 </script>
 
 <style scoped>

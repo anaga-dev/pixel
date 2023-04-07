@@ -24,9 +24,9 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/PixelDocument'
-import ToolButton from '@components/ToolButton.vue'
-import Divider from '@components/Divider.vue'
-import Icon from '@components/Icon.vue'
+import ToolButton from '@/components/ToolButton.vue'
+import Divider from '@/components/Divider.vue'
+import Icon from '@/components/Icon.vue'
 
 const document = useDocumentStore()
 </script>

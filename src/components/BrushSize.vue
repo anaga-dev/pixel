@@ -8,9 +8,9 @@
 
 <script setup>
 import { ref } from 'vue'
-import Dropdown from '@components/Dropdown.vue'
-import Field from '@components/Field.vue'
-import Slider from '@components/Slider.vue'
+import Dropdown from '@/components/Dropdown.vue'
+import Field from '@/components/Field.vue'
+import Slider from '@/components/Slider.vue'
 
 const props = defineProps({
   currentSize: {

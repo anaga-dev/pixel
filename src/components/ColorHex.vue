@@ -19,7 +19,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import Button from '@components/Button.vue'
+import Button from '@/components/Button.vue'
 import Color from '@/color/Color'
 // import Range from '~/math/Range.js'
 

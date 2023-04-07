@@ -39,9 +39,9 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/PixelDocument'
-import AnimationFrame from '@components/AnimationFrame.vue'
-import Button from '@components/Button.vue'
-import Icon from '@components/Icon.vue'
+import AnimationFrame from '@/components/AnimationFrame.vue'
+import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 
 const document = useDocumentStore()
 </script>
@@ -50,7 +50,7 @@ const document = useDocumentStore()
 .Animation {
   display: grid;
   padding-bottom: var(--spaceM);
-  grid-template-areas: 
+  grid-template-areas:
     "playback actions"
     "frames frames";
     justify-content: space-between;

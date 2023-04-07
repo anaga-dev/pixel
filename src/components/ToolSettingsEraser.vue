@@ -17,7 +17,7 @@
 
 <script setup>
 import { useDocumentStore } from '../stores/PixelDocument'
-import Button from '@components/Button.vue'
+import Button from '@/components/Button.vue'
 
 const document = useDocumentStore()
 </script>

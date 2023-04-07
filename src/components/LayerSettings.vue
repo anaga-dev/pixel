@@ -44,12 +44,12 @@
 <script setup>
 import { readonly, ref, unref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
-import Dropdown from '@components/Dropdown.vue'
-import Button from '@components/Button.vue'
-import Field from '@components/Field.vue'
-import Icon from '@components/Icon.vue'
-import Select from '@components/Select.vue'
-import Slider from '@components/Slider.vue'
+import Dropdown from '@/components/Dropdown.vue'
+import Button from '@/components/Button.vue'
+import Field from '@/components/Field.vue'
+import Icon from '@/components/Icon.vue'
+import Select from '@/components/Select.vue'
+import Slider from '@/components/Slider.vue'
 
 const document = useDocumentStore()
 
