@@ -68,7 +68,7 @@
 <script setup>
 import { watch, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
-import { useUIStore } from '../stores/ui'
+import { useUIStore } from '@/stores/UI'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useTouch } from '@/composables/useTouch'
 import { useWheel } from '@/composables/useWheel'
