@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 
-export const useUIStore = defineStore('ui', {
+export const useUIStore = defineStore('UI', {
   state: () => ({
     emitterBox: {
       x: 0,

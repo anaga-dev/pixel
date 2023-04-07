@@ -21,10 +21,6 @@
           <!--<PointerStatus />-->
           <Divider vertical />
           <Zoom />
-          <Divider vertical />
-          <Button label="Export document" variant="primary" @click="pixelDocument.exportAs">
-            Export
-          </Button>
         </template>
       </SettingsBar>
     </div>

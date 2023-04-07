@@ -5,17 +5,19 @@
   <Dropdown v-if="ui.isShowingGeneralSettings" class="menu" @close="ui.toggleGeneralSettings">
     <Button label="New file">New file</Button>
     <Button label="Open file">Open file</Button>
-    <Button label="Save file">Save file</Button>
+    <Button label="Save file" @click="pixelDocument.exportAs">Save file</Button>
   </Dropdown>
 </template>
 
 <script setup>
-import { useUIStore } from '@/stores/ui'
+import { useUIStore } from '@/stores/UI'
+import { useDocumentStore } from '@/stores/PixelDocument'
 import Icon from '@components/Icon.vue'
 import Button from '@components/Button.vue'
 import Dropdown from '@components/Dropdown.vue'
 
 const ui = useUIStore()
+const pixelDocument = useDocumentStore()
 
 </script>
 
