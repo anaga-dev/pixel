@@ -1,0 +1,15 @@
+{
+  "name": "Pixel Editor",
+  "short_name": "Pixel Editor",
+  "description": "Pixel Editor description",
+  "orientation": "landscape",
+  "background_color": "#292929",
+  "theme_color": "#34d5a5",
+  "icons": [
+    {
+      "src": "/icons/app.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}

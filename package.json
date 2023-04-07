@@ -1,7 +1,7 @@
 {
-  "name": "games-studio",
+  "name": "pixel-editor",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.1.0",
-    "vite": "^3.1.0"
+    "vite": "^3.1.0",
+    "vite-plugin-pwa": "^0.14.7"
   }
 }
