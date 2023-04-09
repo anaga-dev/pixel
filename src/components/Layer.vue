@@ -14,7 +14,7 @@
     @drop.capture="onDrop">
     <div class="actions">
       <Button class="action" label="Layer settings" :active="settings" variant="ghost" @click="$emit('settings', layer)" @drop="onDrop">
-        <Icon i="arrow-left" />
+        <Icon i="settings" />
       </Button>
       <Button class="action" :label="layer.visible ? 'Hide label' : 'Show label'" variant="ghost" @click="$emit('visible', layer)">
         <Icon :i="layer.visible ? 'visible' : 'hidden'" />

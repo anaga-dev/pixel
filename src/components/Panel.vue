@@ -1,10 +1,10 @@
 <template>
   <section class="Panel">
     <header>
-      <h2 @click="$event => emit('collapse', !collapsed)">
-        {{ collapsed ? '+' : '-' }}
-        {{ title }}
-      </h2>
+      <button class="button-title" type="button" @click="emit('collapse', !collapsed)">
+        <Icon :i="collapsed ? 'arrow-right' : 'arrow-down' " />
+        <h2>{{ title }}</h2>
+      </button>
       <div class="actions">
         <slot name="actions"></slot>
       </div>
@@ -16,6 +16,8 @@
 </template>
 
 <script setup>
+import Icon from '@/components/Icon.vue'
+
 const emit = defineEmits(['collapse'])
 
 const props = defineProps({
@@ -43,8 +45,11 @@ header {
   align-items: center;
 }
 
-h3 {
-  text-transform: uppercase;
+.button-title {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--spaceS);
 }
 
 .actions {
