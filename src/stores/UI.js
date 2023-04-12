@@ -13,6 +13,7 @@ export const useUIStore = defineStore('UI', {
       palette: true,
       preview: true
     },
+    showSplash: false,
     showLayerSettings: false,
     showDropdown: false,
     showGeneralSettings: false
@@ -26,6 +27,9 @@ export const useUIStore = defineStore('UI', {
     },
     isShowingDropdown() {
       return this.showLayerSettings
+    },
+    isShowingSplash() {
+      return this.showSplash
     }
   },
   actions: {

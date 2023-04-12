@@ -10,13 +10,13 @@
 </template>
 
 <script setup>
-import ToolSettingsPencil from './ToolSettingsPencil.vue'
-import ToolSettingsEraser from './ToolSettingsEraser.vue'
-import ToolSettingsFill from './ToolSettingsFill.vue'
-import ToolSettingsShape from './ToolSettingsShape.vue'
-import ToolSettingsTransform from './ToolSettingsTransform.vue'
-import ToolSettingsSelect from './ToolSettingsSelect.vue'
-import Tool from '../enums/Tool'
+import ToolSettingsPencil from '@/components/ToolSettingsPencil.vue'
+import ToolSettingsEraser from '@/components/ToolSettingsEraser.vue'
+import ToolSettingsFill from '@/components/ToolSettingsFill.vue'
+import ToolSettingsShape from '@/components/ToolSettingsShape.vue'
+import ToolSettingsTransform from '@/components/ToolSettingsTransform.vue'
+import ToolSettingsSelect from '@/components/ToolSettingsSelect.vue'
+import Tool from '@/enums/Tool'
 
 const props = defineProps({
   tool: {

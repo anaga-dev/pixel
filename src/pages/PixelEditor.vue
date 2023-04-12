@@ -63,6 +63,7 @@
   </div>
   <LayerSettings v-if="pixelDocument.layers.settings" :layer="pixelDocument.layers.settings" />
   <DocumentCreate v-if="!pixelDocument.canvas" />
+  <Splash v-if="ui.isShowingSplash" />
 </template>
 
 <script setup>
@@ -87,6 +88,7 @@ import LayerSettings from '@/components/LayerSettings.vue'
 import SettingsBar from '@/components/SettingsBar.vue'
 import Button from '@/components/Button.vue'
 import Divider from '@/components/Divider.vue'
+import Splash from '@/components/Splash.vue'
 import SymmetrySettings from '@/components/SymmetrySettings.vue'
 import Icon from '@/components/Icon.vue'
 
