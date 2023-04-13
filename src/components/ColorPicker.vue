@@ -4,22 +4,22 @@
       <div class="color previous" :style="{ backgroundColor: previous }">
         <div class="color-name" :style="{ color: previous }">Previous</div>
       </div>
-      <div class="color current" :style="{ backgroundColor: current }">
-        <div class="color-name" :style="{ color: current }">Current</div>
+      <div class="color current" :style="{ backgroundColor: current.style.value }">
+        <div class="color-name" :style="{ color: current.style.value }">Current</div>
       </div>
     </div>
     <div class="content">
-      <CombinedColorPicker :hue="combinedHue" v-model="current" />
-      <HuePicker v-model="combinedHue" />
+      <CombinedColorPicker :color="current" />
+      <HuePicker :color="current" />
       <TabMenu>
         <Tab :active="mode === ColorMode.HEX" @click="mode = ColorMode.HEX">Hex</Tab>
         <Tab :active="mode === ColorMode.HSL" @click="mode = ColorMode.HSL">HSL</Tab>
         <Tab :active="mode === ColorMode.RGB" @click="mode = ColorMode.RGB">RGB</Tab>
         <Tab :active="mode === ColorMode.PALETTE" @click="mode = ColorMode.PALETTE">Palette</Tab>
       </TabMenu>
-      <ColorHex v-if="mode === ColorMode.HEX" v-model="current" />
-      <ColorHSL v-else-if="mode === ColorMode.HSL" v-model="current" />
-      <ColorRGB v-else-if="mode === ColorMode.RGB" v-model="current" />
+      <ColorHex v-if="mode === ColorMode.HEX" :color="current" />
+      <ColorHSL v-else-if="mode === ColorMode.HSL" :color="current" />
+      <ColorRGB v-else-if="mode === ColorMode.RGB" :color="current" />
       <Palette v-else-if="mode === ColorMode.PALETTE" :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
     </div>
     <Button label="Accept" @click="onOk">
@@ -29,9 +29,9 @@
 </template>
 
 <script setup>
-import Color from '@/color/Color'
 import { readonly, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
+import { useColor } from '@/composables/useColor'
 import HuePicker from '@/components/HuePicker.vue'
 import CombinedColorPicker from '@/components/CombinedColorPicker.vue'
 import ColorHex from '@/components/ColorHex.vue'
@@ -47,20 +47,16 @@ import Tab from '@/components/Tab.vue'
 const document = useDocumentStore()
 
 const previous = readonly(document.color)
-const current = ref(document.color)
-
-const parsedColor = ref(Color.parse(current.value))
+const current = useColor(document.color)
 
 const mode = ref(ColorMode.HEX)
-const hue = ref(Color.hue(parsedColor.value))
-const combinedHue = ref(hue)
 
-function onSelectColor(color) {
-  current.value = color
+function onSelectColor(newStyle) {
+  current.style.value = newStyle
 }
 
 function onOk() {
-  document.setColor(current.value)
+  document.setColor(current.style.value)
 }
 </script>
 

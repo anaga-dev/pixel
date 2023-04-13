@@ -4,12 +4,11 @@
       <span>#</span>
       <input
         id="hex"
-        ref="hex"
         type="text"
         pattern="[A-Fa-f0-9]{6}"
         minlength="6"
         maxlength="6"
-        v-model="hexValue" />
+        v-model="hex" />
     </div>
     <div class="key-buttons">
       <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :label="`Key ${key}`" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
@@ -18,38 +17,20 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { ref } from 'vue'
 import Button from '@/components/Button.vue'
-import Color from '@/color/Color'
-// import Range from '~/math/Range.js'
-
-const emit = defineEmits(['update:modelValue'])
 
 const props = defineProps({
-  modelValue: {
-    type: String,
+  color: {
+    type: Object,
     required: true
   }
 })
 
-const hexValue = computed({
-  get() {
-    return Color.stringify(Color.parse(props.modelValue), 'hex').slice(1, 7)
-  },
-  set(value) {
-    emit('update:modelValue', Color.stringify(Color.parse(value), 'rgb'))
-  }
-})
-
-const hex = ref()
+const hex = ref('000000')
 
 function onKeyButton(key) {
-  // TODO: Necesitamos controlar los valores
-  // de hex.value.selectionStart y hex.value.selectionEnd
-  // para poder insertar el valor en la posición correcta
-  const newValue = props.modelValue + key
-  emit('update:modelValue', newValue.slice(0, 6).toUpperCase())
-  hex.value.focus()
+  // TODO:
 }
 </script>
 

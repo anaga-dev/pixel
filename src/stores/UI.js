@@ -52,4 +52,3 @@ export const useUIStore = defineStore('UI', {
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useUIStore, import.meta.hot))
 }
-

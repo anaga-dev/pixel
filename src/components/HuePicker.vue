@@ -1,40 +1,41 @@
 <template>
   <div ref="container" class="HuePicker" @pointerdown="onDown">
     <!-- Picker -->
-    <div class="bar" :style="{ left: `${((props.modelValue / 360) * 100)}%` }">
+    <div class="bar" :style="{ left: `${((hue / 360) * 100)}%` }">
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useColor } from '@/composables/useColor'
 
 const props = defineProps({
-  modelValue: {
-    type: Number,
+  color: {
+    type: Object,
     required: true
   }
 })
 
-const container = ref()
+const { hue } = props.color
 
-const emit = defineEmits(['update:modelValue'])
+const container = ref()
 
 function onMove(e) {
   const { width } = container.value.getBoundingClientRect()
-  emit('update:modelValue', Math.floor(e.offsetX / width * 360))
+  hue.value = Math.floor(e.offsetX / width * 360)
 }
 
 function onUp(e) {
   const { width } = container.value.getBoundingClientRect()
-  emit('update:modelValue', Math.floor(e.offsetX / width * 360))
+  hue.value = Math.floor(e.offsetX / width * 360)
   container.value.removeEventListener('pointermove', onMove)
   container.value.removeEventListener('pointerup', onUp)
 }
 
 function onDown(e) {
   const { width } = container.value.getBoundingClientRect()
-  emit('update:modelValue', Math.floor(e.offsetX / width * 360))
+  hue.value = Math.floor(e.offsetX / width * 360)
   container.value.addEventListener('pointermove', onMove)
   container.value.addEventListener('pointerup', onUp)
 }

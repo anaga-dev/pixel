@@ -1,14 +1,14 @@
 <template>
   <div class="CombinedColorPicker">
-    <canvas ref="canvas" @pointerdown="onDown"></canvas>
-    <div class="circle" :style="getStyle()"></div>
+    <canvas ref="canvas" @pointerdown="onPointer"></canvas>
+    <div class="circle" :style="style"></div>
   </div>
 </template>
 
 <script setup>
 import Canvas from '~/canvas/Canvas'
 import Color from '~/color/Color'
-import { onMounted, watch, reactive, ref } from 'vue'
+import { onMounted, reactive, computed, ref, watch } from 'vue'
 
 function getOffsetCoordinates(event, element) {
   const source = element ?? event.currentTarget
@@ -27,26 +27,26 @@ function getCircleCoordinates(saturation, value) {
 }
 
 const props = defineProps({
-  hue: {
-    type: Number,
-    required: true
-  },
-  modelValue: {
-    type: String,
+  color: {
+    type: Object,
     required: true
   }
 })
 
-// TODO: Hacer un `useColor` que lo que retorne sean unos refs
-// que al cambiar el ref principal varíe los valores de red, green, blue
-// lightness, saturation o hue.
-
 const emit = defineEmits(['update:modelValue'])
+
+const { hue, valueSaturation, value, red, green, blue } = props.color
 
 const lastCoords = reactive({ x: 0, y: 0 })
 const canvas = ref()
 const offscreenCanvas = new OffscreenCanvas(512, 512)
 
+/**
+ * TODO: Reescribir esto para que no haya que recrear
+ *       absolutamente todos los recursos del canvas.
+ *
+ * @param {*} param0
+ */
 function drawOffscreenCanvas([r, g, b]) {
   /**
    * @type {WebGLRenderingContext}
@@ -129,71 +129,46 @@ function drawOffscreenCanvas([r, g, b]) {
   top: `${ -(this.props.hsv.v * 100) + 100 }%`,
   left: `${ this.props.hsv.s * 100 }%`,
 */
-function getStyle() {
-  const parsedColor = Color.parse(props.modelValue)
-  const value = Color.max(parsedColor)
-  const saturation = Color.saturationHSV(parsedColor)
-  return getCircleCoordinates(saturation, value)
-  // return {
-  //   top: `calc(${ -(value * 100) + 100 }% - 8px)`,
-  //   left: `${ saturation * 100 }%`,
-  // }
-}
-
-// TODO: Ver cómo convertir esto en composables
+const style = computed(() => getCircleCoordinates(valueSaturation.value, value.value))
 
 function updateCanvas(color) {
   drawOffscreenCanvas(color)
-  const context = canvas.value.getContext('2d')
+  const context = canvas.value.getContext('2d', {
+    willReadFrequently: true
+  })
   context.drawImage(offscreenCanvas, 0, 0, context.canvas.width, context.canvas.height)
 }
 
-function onMove(e) {
+function updateFromPixel(x, y) {
+  const context = canvas.value.getContext('2d', {
+    willReadFrequently: true
+  })
+  const imageData = context.getImageData(x, y, 1, 1)
+  const [r, g, b] = imageData.data
+  red.value = r
+  green.value = g
+  blue.value = b
+}
+
+function onPointer(e) {
+  if (e.type === 'pointerdown') {
+    window.addEventListener('pointermove', onPointer)
+    window.addEventListener('pointerup', onPointer)
+  } else if (e.type === 'pointerup') {
+    window.removeEventListener('pointermove', onPointer)
+    window.removeEventListener('pointerup', onPointer)
+  }
   const { x, y } = getOffsetCoordinates(e, canvas.value)
   lastCoords.x = x
   lastCoords.y = y
-  const context = canvas.value.getContext('2d')
-  const imageData = context.getImageData(x, y, 1, 1)
-  const [r, g, b] = imageData.data
-  emit('update:modelValue', `rgb(${r}, ${g}, ${b})`)
+  updateFromPixel(x, y)
 }
 
-function onUp(e) {
-  const { x, y } = getOffsetCoordinates(e, canvas.value)
-  lastCoords.x = x
-  lastCoords.y = y
-  const context = canvas.value.getContext('2d')
-  const imageData = context.getImageData(x, y, 1, 1)
-  const [r, g, b] = imageData.data
-  emit('update:modelValue', `rgb(${r}, ${g}, ${b})`)
-  window.removeEventListener('pointermove', onMove)
-  window.removeEventListener('pointerup', onUp)
-}
-
-function onDown(e) {
-  const { x, y } = getOffsetCoordinates(e)
-  lastCoords.x = x
-  lastCoords.y = y
-  const context = canvas.value.getContext('2d')
-  const imageData = context.getImageData(x, y, 1, 1)
-  const [r, g, b] = imageData.data
-  emit('update:modelValue', `rgb(${r}, ${g}, ${b})`)
-  window.addEventListener('pointermove', onMove)
-  window.addEventListener('pointerup', onUp)
-}
-
-watch(() => props.hue, (hue) => {
-  updateCanvas(Color.fromHSLA(hue, 100, 50, 1))
-  const { x, y } = lastCoords
-  const context = canvas.value.getContext('2d')
-  const imageData = context.getImageData(x, y, 1, 1)
-  const [r, g, b] = imageData.data
-  emit('update:modelValue', `rgb(${r}, ${g}, ${b})`)
-})
+watch(() => hue.value, () => updateCanvas(Color.fromHSLA(hue.value, 100, 50, 1)))
 
 onMounted(() => {
   Canvas.resize(canvas.value)
-  updateCanvas(Color.fromHSLA(props.hue, 100, 50, 1))
+  updateCanvas(Color.fromHSLA(hue.value, 100, 50, 1))
 })
 </script>
 
