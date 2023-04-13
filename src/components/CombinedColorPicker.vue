@@ -10,22 +10,6 @@ import Canvas from '~/canvas/Canvas'
 import Color from '~/color/Color'
 import { onMounted, reactive, computed, ref, watch } from 'vue'
 
-function getOffsetCoordinates(event, element) {
-  const source = element ?? event.currentTarget
-  const { left, top, width, height } = source.getBoundingClientRect()
-  return {
-    x: Math.max(0, Math.min(width - 3, event.clientX - left)),
-    y: Math.max(0, Math.min(height - 3, event.clientY - top))
-  }
-}
-
-function getCircleCoordinates(saturation, value) {
-  return {
-    top: `calc(${ -(value * 100) + 100 }%)`,
-    left: `${ saturation * 100 }%`,
-  }
-}
-
 const props = defineProps({
   color: {
     type: Object,
@@ -134,7 +118,10 @@ function drawOffscreenCanvas([r, g, b]) {
   top: `${ -(this.props.hsv.v * 100) + 100 }%`,
   left: `${ this.props.hsv.s * 100 }%`,
 */
-const style = computed(() => getCircleCoordinates(valueSaturation.value, value.value))
+const style = computed(() => ({
+  top: `calc(${ -(value.value * 100) + 100 }%)`,
+  left: `${ valueSaturation.value * 100 }%`,
+}))
 
 function updateCanvas(color) {
   drawOffscreenCanvas(color)
@@ -153,6 +140,15 @@ function updateFromPixel(x, y) {
   const extractedColor = Color.fromRGBA(r, g, b)
   saturation.value = Color.saturation(extractedColor) * 100
   lightness.value = Color.lightness(extractedColor) * 100
+}
+
+function getOffsetCoordinates(event, element) {
+  const source = element ?? event.currentTarget
+  const { left, top, width, height } = source.getBoundingClientRect()
+  return {
+    x: Math.max(0, Math.min(width - 3, event.clientX - left)),
+    y: Math.max(0, Math.min(height - 3, event.clientY - top))
+  }
 }
 
 function onPointer(e) {
