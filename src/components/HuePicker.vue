@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="HuePicker" @pointerdown="onDown">
+  <div ref="container" class="HuePicker" @pointerdown="onPointer">
     <!-- Picker -->
     <div class="bar" :style="{ left: `${((hue / 360) * 100)}%` }">
     </div>
@@ -21,23 +21,16 @@ const { hue } = props.color
 
 const container = ref()
 
-function onMove(e) {
+function onPointer(e) {
+  if (e.type === 'pointerdown') {
+    window.addEventListener('pointermove', onPointer)
+    window.addEventListener('pointerup', onPointer)
+  } else if (e.type === 'pointerup') {
+    window.removeEventListener('pointermove', onPointer)
+    window.removeEventListener('pointerup', onPointer)
+  }
   const { width } = container.value.getBoundingClientRect()
   hue.value = Math.floor(e.offsetX / width * 360)
-}
-
-function onUp(e) {
-  const { width } = container.value.getBoundingClientRect()
-  hue.value = Math.floor(e.offsetX / width * 360)
-  container.value.removeEventListener('pointermove', onMove)
-  container.value.removeEventListener('pointerup', onUp)
-}
-
-function onDown(e) {
-  const { width } = container.value.getBoundingClientRect()
-  hue.value = Math.floor(e.offsetX / width * 360)
-  container.value.addEventListener('pointermove', onMove)
-  container.value.addEventListener('pointerup', onUp)
 }
 </script>
 

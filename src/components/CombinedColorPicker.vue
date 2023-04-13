@@ -35,7 +35,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const { hue, valueSaturation, value, red, green, blue } = props.color
+const { hue, valueSaturation, value, saturation, lightness } = props.color
 
 const lastCoords = reactive({ x: 0, y: 0 })
 const canvas = ref()
@@ -123,6 +123,11 @@ function drawOffscreenCanvas([r, g, b]) {
   gl.vertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, 0, 0)
 
   gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
+
+  gl.deleteBuffer(buffer)
+  gl.deleteProgram(program)
+  gl.deleteShader(fragmentShader)
+  gl.deleteShader(vertexShader)
 }
 
 /*
@@ -145,9 +150,9 @@ function updateFromPixel(x, y) {
   })
   const imageData = context.getImageData(x, y, 1, 1)
   const [r, g, b] = imageData.data
-  red.value = r
-  green.value = g
-  blue.value = b
+  const extractedColor = Color.fromRGBA(r, g, b)
+  saturation.value = Color.saturation(extractedColor) * 100
+  lightness.value = Color.lightness(extractedColor) * 100
 }
 
 function onPointer(e) {
