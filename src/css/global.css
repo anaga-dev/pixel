@@ -3,15 +3,13 @@
 *::after {
   scrollbar-color: var(--colorSecondary) transparent;
   accent-color: var(--colorAccent);
+  touch-action: manipulation;
+  user-select: none;
 }
 
 html {
   background-color: var(--colorLayer1);
   color: var(--colorText);
-}
-
-body {
-  touch-action: none;
 }
 
 html,
@@ -35,7 +33,6 @@ h2 {
 }
 
 #app {
-  user-select: none;
   position: fixed;
   left: 0;
   top: 0;
