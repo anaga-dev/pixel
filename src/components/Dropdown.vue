@@ -1,19 +1,26 @@
 <template>
-  <div class="Dropdown" v-click-outside="handleClickOutside">
-    <slot />
+  <div class="Dropdown" v-outside="onClick">
+    <slot></slot>
   </div>
 </template>
 
 <script setup>
 const emit = defineEmits(['close'])
 
-const handleClickOutside = () => {
-  console.log('close!!!')
+function onClick(e) {
   emit('close')
 }
 </script>
 
 <style scoped>
+.Outside {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .Dropdown {
   min-width: 16rem;
   display: grid;
