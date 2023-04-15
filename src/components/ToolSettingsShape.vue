@@ -1,22 +1,22 @@
 <template>
-  <ToolButton :class="{ active: document.shape.type === 'line' }" @click="document.setShapeType('line')">
+  <ToolButton :active="document.shape.type === 'line'" @click="document.setShapeType('line')">
     <Icon i="line" />
     Line
   </ToolButton>
-  <ToolButton :class="{ active: document.shape.type === 'rectangle' }" @click="document.setShapeType('rectangle')">
+  <ToolButton :active="document.shape.type === 'rectangle'" @click="document.setShapeType('rectangle')">
     <Icon i="square" />
     Rectangle
   </ToolButton>
-  <ToolButton :class="{ active: document.shape.type === 'ellipse' }" @click="document.setShapeType('ellipse')">
+  <ToolButton :active="document.shape.type === 'ellipse'" @click="document.setShapeType('ellipse')">
     <Icon i="circle" />
     Ellipse
   </ToolButton>
   <Divider vertical />
-  <ToolButton :class="{ active: document.shape.filled }" @click="document.toggleShapeFill()">
+  <ToolButton :active="document.shape.filled" @click="document.toggleShapeFill()">
     <Icon i="droplet" />
     Fill shape
   </ToolButton>
-  <ToolButton :class="{ active: document.shape.lockAspectRatio }" @click="document.toggleShapeLockAspectRatio()">
+  <ToolButton :active="document.shape.lockAspectRatio" @click="document.toggleShapeLockAspectRatio()">
     <Icon i="lock" />
     Lock aspect ratio
   </ToolButton>
