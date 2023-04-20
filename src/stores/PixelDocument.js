@@ -896,7 +896,6 @@ export const useDocumentStore = defineStore('pixelDocument', {
         payload: { color: color, previousColor: this.color }
       })
       this.color = color
-      this.colorPicker = false
     },
     async loadPalette() {
       const [fileHandle] = await window.showOpenFilePicker({

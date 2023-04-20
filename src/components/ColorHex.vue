@@ -8,7 +8,8 @@
         pattern="[A-Fa-f0-9]{6}"
         minlength="6"
         maxlength="6"
-        v-model="hex" />
+        :value="hexColor"
+        @input="onInput" />
     </div>
     <div class="key-buttons">
       <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :label="`Key ${key}`" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
@@ -17,8 +18,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import Button from '@/components/Button.vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import { rgbToHex, hexToRgb } from '@/color/ColorConverter'
 
 const props = defineProps({
   color: {
@@ -27,7 +30,20 @@ const props = defineProps({
   }
 })
 
-const hex = ref('000000')
+const emit = defineEmits([
+  'update'
+])
+
+const { red, green, blue } = props.color
+
+const hexColor = computed(() => rgbToHex(red.value, green.value, blue.value))
+
+function onInput(e) {
+  const hexRegex = /^#?([0-9A-Fa-f]{6})$/
+  if (hexRegex.test(e.target.value)) {
+    emit('update', hexToRgb(e.target.value))
+  }
+}
 
 function onKeyButton(key) {
   // TODO:

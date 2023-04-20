@@ -17,7 +17,7 @@
         <Tab :active="mode === ColorMode.RGB" @click="mode = ColorMode.RGB">RGB</Tab>
         <Tab :active="mode === ColorMode.PALETTE" @click="mode = ColorMode.PALETTE">Palette</Tab>
       </TabMenu>
-      <ColorHex v-if="mode === ColorMode.HEX" :color="current" />
+      <ColorHex v-if="mode === ColorMode.HEX" :color="current" @update="onUpdateHex" />
       <ColorHSL v-else-if="mode === ColorMode.HSL" :color="current" />
       <ColorRGB v-else-if="mode === ColorMode.RGB" :color="current" />
       <Palette v-else-if="mode === ColorMode.PALETTE" :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
@@ -44,19 +44,25 @@ import Dropdown from '@/components/Dropdown.vue'
 import TabMenu from '@/components/TabMenu.vue'
 import Tab from '@/components/Tab.vue'
 
-const document = useDocumentStore()
+const pixelDocument = useDocumentStore()
 
-const previous = readonly(document.color)
-const current = useColor(document.color)
+const previous = readonly(pixelDocument.color)
+const current = useColor(pixelDocument.color)
 
 const mode = ref(ColorMode.HEX)
+
+function onUpdateHex(color) {
+  current.red.value = color.red
+  current.green.value = color.green
+  current.blue.value = color.blue
+}
 
 function onSelectColor(newStyle) {
   current.style.value = newStyle
 }
 
 function onOk() {
-  document.setColor(current.style.value)
+  pixelDocument.setColor(current.style.value)
 }
 </script>
 
