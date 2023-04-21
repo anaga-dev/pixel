@@ -1,23 +1,40 @@
 <template>
-  <Button label="Brush shape" id="shape">
-    <svg v-if="document.eraser.shape === 'round'" width="8" height="8" viewBox="0 0 16 16">
-      <circle cx="8" cy="8" r="8" fill="#fff"></circle>
-    </svg>
-    <svg v-else-if="document.eraser.shape === 'square'" width="8" height="8" viewBox="0 0 16 16">
-      <rect x="0" cy="0" width="16" height="16" fill="#fff"></rect>
-    </svg>
-    <svg v-else-if="document.eraser.shape === 'dither'" width="8" height="8" viewBox="0 0 16 16">
-      <circle cx="8" cy="8" r="8" stroke="#fff"></circle>
-    </svg>
+  <Button label="Eraser shape" @click.stop="onShowing('shape')">
+    <Icon :i="`brush-${pixelDocument.eraser.shape}`" />
   </Button>
-  <Button label="Brush size" id="size">
-    {{ document.eraser.size }}px
+  <Button label="Eraser size" @click.stop="onShowing('size')">
+    {{ pixelDocument.eraser.size }}px
   </Button>
+  <BrushSelector v-if="showing === 'shape'" :shape="pixelDocument.eraser.shape" @update="onEraserShape" @close="showing = ''" />
+  <BrushSize v-else-if="showing === 'size'" :size="pixelDocument.eraser.size" @update="onEraserSize" @close="showing = ''" />
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/PixelDocument'
+import { ref } from 'vue'
+import { useDocumentStore } from '@/stores/PixelDocument'
+import BrushSelector from '@/components/BrushSelector.vue'
+import BrushSize from '@/components/BrushSize.vue'
 import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 
-const document = useDocumentStore()
+const pixelDocument = useDocumentStore()
+const showing = ref('')
+
+function onEraserShape(shape) {
+  pixelDocument.setEraserShape(shape)
+  showing.value = ''
+}
+
+function onEraserSize(size) {
+  pixelDocument.setEraserSize(size)
+  showing.value = ''
+}
+
+function onShowing(tool) {
+  if (showing.value === tool) {
+    showing.value = ''
+  } else {
+    showing.value = tool
+  }
+}
 </script>

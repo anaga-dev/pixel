@@ -1,7 +1,7 @@
 <template>
   <Dropdown class="BrushSize">
     <Field label="Brush size" for="brush-size">
-      <Slider id="brush-size" :min="1" :max="32" v-model="currentSize" />
+      <Slider id="brush-size" :min="1" :max="32" v-model="size" />
     </Field>
   </Dropdown>
 </template>
@@ -12,7 +12,7 @@ import Field from '@/components/Field.vue'
 import Slider from '@/components/Slider.vue'
 
 const props = defineProps({
-  currentSize: {
+  size: {
     type: Number,
     required: true
   }

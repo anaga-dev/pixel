@@ -1,12 +1,12 @@
 <template>
-  <Button label="Brush shape" @click="showing = 'brush-type'">
+  <Button label="Brush shape" @click.stop="onShowing('shape')">
     <Icon :i="`brush-${document.pencil.shape}`" />
   </Button>
-  <Button label="Brush size" @click="showing = 'brush-size'">
+  <Button label="Brush size" @click.stop="onShowing('size')">
     {{ document.pencil.size }}px
   </Button>
-  <BrushSelector v-if="showing === 'brush-type'" @select="onBrushShape" @close="onClose" />
-  <BrushSize v-else-if="showing === 'brush-size'" :current-size="document.pencil.size" @select="onBrushSize" @close="onClose" />
+  <BrushSelector v-if="showing === 'shape'" @select="onBrushShape" @close="showing = ''" />
+  <BrushSize v-else-if="showing === 'size'" :current-size="document.pencil.size" @select="onBrushSize" @close="showing = ''" />
 </template>
 
 <script setup>
@@ -30,7 +30,11 @@ function onBrushSize(size) {
   showing.value = ''
 }
 
-function onClose() {
-  showing.value = ''
+function onShowing(tool) {
+  if (showing.value === tool) {
+    showing.value = ''
+  } else {
+    showing.value = tool
+  }
 }
 </script>

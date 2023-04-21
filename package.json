@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/components": "^10.0.2",
+    "@vueuse/core": "^10.0.2",
     "boxicons": "^2.1.2",
     "chai": "^4.3.6",
     "jszip": "^3.10.1",

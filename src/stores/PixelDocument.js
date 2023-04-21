@@ -195,6 +195,12 @@ export const useDocumentStore = defineStore('pixelDocument', {
     setPencilSize(size) {
       this.pencil.size = size
     },
+    setEraserShape(shape) {
+      this.eraser.shape = shape
+    },
+    setEraserSize(size) {
+      this.eraser.size = size
+    },
     setSelectType(type) {
       this.select.type = type
     },

@@ -1,10 +1,11 @@
 <template>
-  <div class="Dropdown" v-outside="onClick">
+  <div class="Dropdown" v-on-click-outside.bubble="onClick">
     <slot></slot>
   </div>
 </template>
 
 <script setup>
+import { vOnClickOutside } from '@vueuse/components'
 const emit = defineEmits(['close'])
 
 function onClick(e) {
