@@ -22,9 +22,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const emit = defineEmits(['update:modelValue'])
-
 const { hue, saturation, lightness } = props.color
 </script>
 

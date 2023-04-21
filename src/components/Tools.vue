@@ -56,7 +56,7 @@ const pixelDocument = useDocumentStore()
 
 <style scoped>
 .color-picker {
-  left: var(--widthToolbar);
-  top: 5rem;
+  left: calc(var(--widthToolbar) + var(--spaceS));
+  top: calc(var(--widthToolbar) + var(--spaceS));
 }
 </style>

@@ -20,7 +20,7 @@
       <ColorHex v-if="mode === ColorMode.HEX" :color="current" @update="onUpdateHex" />
       <ColorHSL v-else-if="mode === ColorMode.HSL" :color="current" />
       <ColorRGB v-else-if="mode === ColorMode.RGB" :color="current" />
-      <Palette v-else-if="mode === ColorMode.PALETTE" :selected-color="previous" :palette="document.palette" @select="onSelectColor" />
+      <Palette v-else-if="mode === ColorMode.PALETTE" :selected-color="previous" :palette="pixelDocument.palette" @select="onSelectColor" />
     </div>
     <Button label="Accept" @click="onOk">
       Accept
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { readonly, ref } from 'vue'
+import { onMounted, readonly, ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useColor } from '@/composables/useColor'
 import HuePicker from '@/components/HuePicker.vue'
@@ -63,7 +63,12 @@ function onSelectColor(newStyle) {
 
 function onOk() {
   pixelDocument.setColor(current.style.value)
+  pixelDocument.colorPicker = false
 }
+
+onMounted(() => {
+  console.log(current.value)
+})
 </script>
 
 <style scoped>
