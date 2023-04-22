@@ -1,7 +1,12 @@
 <template>
   <Dropdown class="BrushSize">
     <Field label="Brush size" for="brush-size">
-      <Slider id="brush-size" :min="1" :max="32" v-model="size" />
+      <Slider
+        id="brush-size"
+        :min="1"
+        :max="32"
+        :modelValue="size"
+        @update:modelValue="onUpdated" />
     </Field>
   </Dropdown>
 </template>
@@ -17,6 +22,15 @@ const props = defineProps({
     required: true
   }
 })
+
+const emit = defineEmits([
+  'update'
+])
+
+function onUpdated(payload) {
+  console.log('updated!!!', payload)
+  emit('update', payload)
+}
 </script>
 
 <style scoped>

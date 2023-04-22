@@ -5,7 +5,7 @@
   <Button label="Eraser size" @click.stop="onShowing('size')">
     {{ pixelDocument.eraser.size }}px
   </Button>
-  <BrushSelector v-if="showing === 'shape'" :shape="pixelDocument.eraser.shape" @update="onEraserShape" @close="showing = ''" />
+  <BrushSelector v-if="showing === 'shape'" :shape="pixelDocument.eraser.shape" @select="onEraserShape" @close="showing = ''" />
   <BrushSize v-else-if="showing === 'size'" :size="pixelDocument.eraser.size" @update="onEraserSize" @close="showing = ''" />
 </template>
 

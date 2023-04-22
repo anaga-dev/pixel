@@ -55,10 +55,6 @@ button {
   transition: background-color 240ms ease, transform 60ms ease;
 }
 
-button:not(.ghost) {
-  box-shadow: inset 0 calc(var(--spaceXS) * -1) 0 var(--colorShadow);
-}
-
 button:hover {
   background-color: var(--colorHover);
 }

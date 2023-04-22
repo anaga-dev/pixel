@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="content">
-      <CombinedColorPicker :color="current" />
+      <CombinedColorPicker />
       <HuePicker :color="current" />
       <TabMenu>
         <Tab :active="mode === ColorMode.HEX" @click="mode = ColorMode.HEX">Hex</Tab>

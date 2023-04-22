@@ -1,12 +1,12 @@
 <template>
   <Button label="Brush shape" @click.stop="onShowing('shape')">
-    <Icon :i="`brush-${document.pencil.shape}`" />
+    <Icon :i="`brush-${pixelDocument.pencil.shape}`" />
   </Button>
   <Button label="Brush size" @click.stop="onShowing('size')">
-    {{ document.pencil.size }}px
+    {{ pixelDocument.pencil.size }}px
   </Button>
   <BrushSelector v-if="showing === 'shape'" @select="onBrushShape" @close="showing = ''" />
-  <BrushSize v-else-if="showing === 'size'" :current-size="document.pencil.size" @select="onBrushSize" @close="showing = ''" />
+  <BrushSize v-else-if="showing === 'size'" :size="pixelDocument.pencil.size" @update="onBrushSize" @close="showing = ''" />
 </template>
 
 <script setup>
@@ -17,17 +17,17 @@ import BrushSize from '@/components/BrushSize.vue'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 
-const document = useDocumentStore()
+const pixelDocument = useDocumentStore()
 const showing = ref('')
 
 function onBrushShape(shape) {
-  document.setPencilShape(shape)
+  pixelDocument.setPencilShape(shape)
   showing.value = ''
 }
 
 function onBrushSize(size) {
-  document.setPencilSize(size)
-  showing.value = ''
+  console.log('on brush size', size)
+  pixelDocument.setPencilSize(size)
 }
 
 function onShowing(tool) {

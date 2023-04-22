@@ -6,20 +6,16 @@
 </template>
 
 <script setup>
+import { useDocumentStore } from '@/stores/PixelDocument'
 import Canvas from '~/canvas/Canvas'
 import Color from '~/color/Color'
 import { onMounted, reactive, computed, ref, watch } from 'vue'
 
-const props = defineProps({
-  color: {
-    type: Object,
-    required: true
-  }
-})
+const pixelDocument = useDocumentStore()
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update'])
 
-const { hue, valueSaturation, value, saturation, lightness } = props.color
+const { hue, valueSaturation, value, saturation, lightness } = pixelDocument.color
 
 const lastCoords = reactive({ x: 0, y: 0 })
 const canvas = ref()

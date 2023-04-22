@@ -72,7 +72,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     animation: null,
     pencil: {
       shape: PencilShape.ROUND, // round, square, matrix-dither
-      size: 1, // min: 1, max: 20px
+      size: 1, // min: 1, max: 32px
       pixelPerfect: false
     },
     eraser: {
@@ -838,6 +838,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.redrawAll()
     },
     setLayerOpacity(layer, opacity) {
+      console.log('opacity changed to', opacity)
       layer.opacityPercentage.value = opacity
       this.redrawAll()
     },

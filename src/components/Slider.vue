@@ -7,7 +7,7 @@
       :step="step"
       :max="max"
       :value="modelValue"
-      @input="$event => updateValue($event)" />
+      @input="updateValue" />
     <input
       :id="`${$attrs.id}-number`"
       type="number"
@@ -15,7 +15,7 @@
       :min="min"
       :max="max"
       :value="modelValue"
-      @input="$event => updateValue($event)" />
+      @input="updateValue" />
   </div>
 </template>
 
@@ -49,7 +49,7 @@ const style = computed(() => ({
 }))
 
 function updateValue(e) {
-  emit('update:modelValue', e.currentTarget.valueAsNumber)
+  emit('update:modelValue', parseInt(e.target.value))
 }
 
 watch(() => props.data, (newValue) => {

@@ -15,8 +15,8 @@
           :min="0"
           :max="100"
           :step="1"
-          :data="layer.opacityPercentage.value"
-          @update="document.setLayerOpacity(layer, $event)" />
+          :modelValue="layer.opacityPercentage.value"
+          @update:modelValue="document.setLayerOpacity(layer, $event)" />
         <Button :label="layer.visible ? 'Hide layer' : 'Show layer'" variant="ghost" @click="document.toggleLayer(layer)">
           <Icon :i="layer.visible ? 'visible' : 'hidden'" />
         </Button>
