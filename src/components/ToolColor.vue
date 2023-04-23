@@ -1,5 +1,5 @@
 <template>
-  <button type="button" :style="`color: ${color}`" @click.prevent="$emit('click')">
+  <button type="button" :style="`color: ${color}`" @click.stop="$emit('click')">
     <Icon i="color" />
   </button>
 </template>

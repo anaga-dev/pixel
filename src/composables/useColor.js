@@ -154,9 +154,9 @@ export function useColor(string) {
     red,
     green,
     blue,
-    hue,
     value,
     valueSaturation,
+    hue,
     saturation,
     lightness
   }

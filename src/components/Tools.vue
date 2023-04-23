@@ -1,7 +1,7 @@
 <template>
   <Toolbar>
     <template #top>
-      <ToolColor :color="pixelDocument.color" @click.stop="pixelDocument.toggleColorPicker"></ToolColor>
+      <ToolColor :color="pixelDocument.color" @click="pixelDocument.toggleColorPicker"></ToolColor>
       <ColorPicker class="color-picker" v-if="pixelDocument.colorPicker" @close="pixelDocument.toggleColorPicker" />
       <Divider />
       <ToolButton label="Pencil" :active="pixelDocument.tool === Tool.PENCIL" @click="pixelDocument.setTool(Tool.PENCIL)">
