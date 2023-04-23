@@ -1,6 +1,8 @@
 <template>
   <Toolbar>
     <template #top>
+      <SettingsButton />
+      <Divider />
       <ToolColor :color="pixelDocument.color" @click="pixelDocument.toggleColorPicker"></ToolColor>
       <ColorPicker class="color-picker" v-if="pixelDocument.colorPicker" @close="pixelDocument.toggleColorPicker" />
       <Divider />
@@ -47,6 +49,7 @@ import Toolbar from '@/components/Toolbar.vue'
 import ToolButton from '@/components/ToolButton.vue'
 import ToolColor from '@/components/ToolColor.vue'
 import ColorPicker from '@/components/ColorPicker.vue'
+import SettingsButton from '@/components/SettingsButton.vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import Icon from '@/components/Icon.vue'
 import Divider from '@/components/Divider.vue'

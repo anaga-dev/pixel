@@ -1,5 +1,5 @@
 <template>
-  <Button label="Settings menu" :active="ui.isShowingGeneralSettings" variant="ghost" @click="ui.toggleGeneralSettings">
+  <Button label="Settings menu" :active="ui.isShowingGeneralSettings" variant="ghost" @click.stop="ui.toggleGeneralSettings">
     <Icon i="menu" />
   </Button>
   <Dropdown v-if="ui.isShowingGeneralSettings" class="menu" @close="ui.toggleGeneralSettings">

@@ -2,7 +2,8 @@
   --colorLayer0: hsl(0 0% 12%);
   --colorLayer1: hsl(0 0% 16%);
   --colorLayer2: hsl(0 0% 18%);
-  --colorText: hsl(0 0% 88%);
+  --colorText: hsl(0 0% 72%);
+  --colorTextPrimary: hsl(0 0% 96%);
   --colorTextAlt: hsl(0 0% 6%);
   --colorSecondary: hsl(0 0% 64%);
   --colorAccent: hsl(162 66% 52%);

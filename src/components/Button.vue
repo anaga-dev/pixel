@@ -55,10 +55,6 @@ button {
   transition: background-color 240ms ease, transform 60ms ease;
 }
 
-button:hover {
-  background-color: var(--colorHover);
-}
-
 button.ghost {
   padding: var(--spaceS);
   background-color: transparent;
@@ -70,7 +66,16 @@ button.primary {
 }
 
 button.critical {
+  color: var(--colorTextPrimary);
   background-color: var(--colorCritical);
+}
+
+button:is(:not(.ghost, .primary, .critical)):hover {
+  background-color: var(--colorHover);
+}
+
+button:hover {
+  color: var(--colorTextPrimary);
 }
 
 button:active {

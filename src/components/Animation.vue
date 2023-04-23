@@ -1,38 +1,38 @@
 <template>
   <section class="Animation">
     <div class="playback">
-      <Button label="Skip to first frame" variant="ghost" :disabled="!document.canGoToFirstFrame" @click="document.goToFirstFrame()">
+      <Button label="Skip to first frame" variant="ghost" :disabled="!pixelDocument.canGoToFirstFrame" @click="pixelDocument.goToFirstFrame()">
         <Icon i="skip-first" />
       </Button>
-      <Button label="Skip to previous frame" variant="ghost" :disabled="!document.canGoToPreviousFrame" @click="document.goToPreviousFrame()">
+      <Button label="Skip to previous frame" variant="ghost" :disabled="!pixelDocument.canGoToPreviousFrame" @click="pixelDocument.goToPreviousFrame()">
         <Icon i="skip-previous" />
       </Button>
-      <Button :label="document.isPlaying ? 'Pause' : 'Play'" variant="ghost" :disabled="!document.canPlayAnimation" @click="document.toggleAnimation()">
-        <Icon i="pause" v-if="document.isPlaying" />
+      <Button :label="pixelDocument.isPlaying ? 'Pause' : 'Play'" variant="ghost" :disabled="!pixelDocument.canPlayAnimation" @click="pixelDocument.toggleAnimation()">
+        <Icon i="pause" v-if="pixelDocument.isPlaying" />
         <Icon i="play" v-else />
       </Button>
-      <Button label="Skip to next frame" variant="ghost" :disabled="!document.canGoToNextFrame" @click="document.goToNextFrame()">
+      <Button label="Skip to next frame" variant="ghost" :disabled="!pixelDocument.canGoToNextFrame" @click="pixelDocument.goToNextFrame()">
         <Icon i="skip-next" />
       </Button>
-      <Button label="Skip to last frame" variant="ghost" :disabled="!document.canGoToLastFrame" @click="document.goToLastFrame()">
+      <Button label="Skip to last frame" variant="ghost" :disabled="!pixelDocument.canGoToLastFrame" @click="pixelDocument.goToLastFrame()">
         <Icon i="skip-last" />
       </Button>
     </div>
     <div class="actions">
-      <Button label="Duplicate active frame" variant="ghost" @click="document.duplicateFrame()">
+      <Button label="Duplicate active frame" variant="ghost" @click="pixelDocument.duplicateFrame()">
         <Icon i="duplicate-frame" />
       </Button>
-      <Button label="Add new empty frame" variant="ghost" @click="document.addFrame()">
+      <Button label="Add new empty frame" variant="ghost" @click="pixelDocument.addFrame()">
         <Icon i="add-item" />
       </Button>
     </div>
     <div class="frames">
       <AnimationFrame
-        v-for="(frame, index) in document.frames"
+        v-for="(frame, index) in pixelDocument.frames"
         :key="index"
         :frame="frame"
-        :active="index === document.animation.current"
-        @click="document.setCurrentFrame(index)"></AnimationFrame>
+        :active="index === pixelDocument.animation.current"
+        @click="pixelDocument.setCurrentFrame(index)"></AnimationFrame>
     </div>
   </section>
 </template>
@@ -43,7 +43,9 @@ import AnimationFrame from '@/components/AnimationFrame.vue'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 
-const document = useDocumentStore()
+const pixelDocument = useDocumentStore()
+
+
 </script>
 
 <style scoped>

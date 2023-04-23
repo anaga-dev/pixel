@@ -3,8 +3,6 @@
     <div class="SETTINGS">
       <SettingsBar>
         <template #left>
-          <SettingsButton />
-          <Divider vertical />
           <ToolSettings :tool="pixelDocument.tool" />
         </template>
         <template #right>
@@ -12,7 +10,7 @@
             label="Symmetry aid"
             variant="ghost"
             :active="pixelDocument.symmetry.axis !== null"
-            @click="pixelDocument.toggleSymmetrySettings">
+            @click.stop="pixelDocument.toggleSymmetrySettings">
             <Icon i="symmetry-vertical" v-if="pixelDocument.symmetry.axis === 'vertical'" />
             <Icon i="symmetry-two-axis" v-else-if="pixelDocument.symmetry.axis === 'both'" />
             <Icon i="symmetry-horizontal" v-else />
@@ -58,7 +56,15 @@
       </Panel>
     </aside>
     <div class="ANIMATION">
-      <Animation />
+      <button
+        class="button-show"
+        :class="{ expanded: showingAnimation }"
+        type="button"
+        :aria-label="showingAnimation ? 'Hide animation panel' : 'Show animation panel'"
+        @click="toggleShowAnimation">
+        <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
+      </button>
+      <Animation v-if="showingAnimation" />
     </div>
   </div>
   <LayerSettings v-if="pixelDocument.layers.settings" :layer="pixelDocument.layers.settings" />
@@ -93,6 +99,7 @@ import SymmetrySettings from '@/components/SymmetrySettings.vue'
 import Icon from '@/components/Icon.vue'
 
 const center = ref()
+const showingAnimation = ref(false)
 
 const ui = useUIStore()
 const pixelDocument = useDocumentStore()
@@ -101,6 +108,10 @@ const touch = useTouch(document.body)
 if (touch.supported) {
   watch(touch.distance, (value) => pixelDocument.zoom.relative(value))
   watch(touch.movement, (value) => pixelDocument.moveBy(value[0], value[1]))
+}
+
+function toggleShowAnimation() {
+  showingAnimation.value = !showingAnimation.value
 }
 
 useWheel((e) => {
@@ -205,5 +216,22 @@ useKeyShortcuts(new Map([
   grid-row: 3;
   z-index: 2;
   background-color: var(--colorLayer1);
+  position: relative;
+}
+
+.button-show {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: var(--spaceXL);
+  padding: 0 var(--spaceL);
+  background-color: var(--colorLayer1);
+  box-shadow: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow);
+  transform: translate(-50%, calc(var(--spaceXL) * -1));
+}
+
+.button-show.expanded {
+  box-shadow: none;
+  transform: translate(-50%, calc(var(--spaceM) * -1));
 }
 </style>
