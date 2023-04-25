@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { watch, ref } from 'vue'
+import { watch, ref, computed } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useUIStore } from '@/stores/UI'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
@@ -122,6 +122,8 @@ useWheel((e) => {
     pixelDocument.zoom.decrease()
   }
 }, center)
+
+const cursor = computed(() => 'crosshair')
 
 // TODO: Esto no tiene sentido que esté aquí
 useKeyShortcuts(new Map([
@@ -197,6 +199,7 @@ useKeyShortcuts(new Map([
   overflow: hidden;
   background-color: var(--colorLayer0);
   z-index: 1;
+  cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
 }
 
 .PANELS {
