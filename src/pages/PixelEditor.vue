@@ -126,7 +126,7 @@ useWheel((e) => {
 }, center)
 
 function pinchHandler({ offset: [d, a], pinching }) {
-  pixelDocument.zoom.set(d)
+  pixelDocument.zoom.setZoom(d)
 }
 
 // TODO: Esto no tiene sentido que esté aquí

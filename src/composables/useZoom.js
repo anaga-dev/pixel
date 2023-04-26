@@ -28,10 +28,8 @@ export function useZoom({ initial = 1, max = 64, min = 1, defaultStep = 1 } = {}
     relative(value) {
       current.value = current.value * value
     },
-    set(value) {
-      if (value > 1) {
-        current.value = value * 0.1
-      }
+    setZoom(zoom) {
+      current.value = zoom >= 1 ? zoom * 0.1 : 1
     }
   }
 }
