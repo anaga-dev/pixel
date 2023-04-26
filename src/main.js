@@ -7,12 +7,12 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from './router'
 import App from './App.vue'
-import outsideDirective from './directives/outside'
+import { GesturePlugin } from '@vueuse/gesture'
 
 const pinia = createPinia()
 const app = createApp(App)
 
-app.directive('outside', outsideDirective)
+app.use(GesturePlugin)
 app.use(pinia)
 app.use(router)
 app.mount('#app')

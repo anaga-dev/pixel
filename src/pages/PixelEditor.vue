@@ -1,5 +1,5 @@
 <template>
-  <div class="CONTAINER">
+  <div class="CONTAINER" v-pinch="pinchHandler">
     <div class="SETTINGS">
       <SettingsBar>
         <template #left>
@@ -104,11 +104,13 @@ const showingAnimation = ref(false)
 const ui = useUIStore()
 const pixelDocument = useDocumentStore()
 
-const touch = useTouch(document.body)
+/*
+const touch = useTouch(center)
 if (touch.supported) {
   watch(touch.distance, (value) => pixelDocument.zoom.relative(value))
   watch(touch.movement, (value) => pixelDocument.moveBy(value[0], value[1]))
 }
+*/
 
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
@@ -123,7 +125,9 @@ useWheel((e) => {
   }
 }, center)
 
-const cursor = computed(() => 'crosshair')
+function pinchHandler({ offset: [d, a], pinching }) {
+  pixelDocument.zoom.set(d)
+}
 
 // TODO: Esto no tiene sentido que esté aquí
 useKeyShortcuts(new Map([
