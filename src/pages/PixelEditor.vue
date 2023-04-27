@@ -17,8 +17,7 @@
       <Tools />
     </div>
     <main class="BOARD" ref="board">
-      <div>{{ dat }}</div>
-      <Document v-if="pixelDocument.canvas" />
+            <Document v-if="pixelDocument.canvas" />
     </main>
     <aside class="PANELS">
       <Panel title="Layers" @collapse="$event => ui.collapsePanelLayers($event)" :collapsed="ui.panels.layers">
@@ -116,7 +115,7 @@ function pinchHandler({ offset: [d, a], origin: [x, y] }) {
   const xt = x - board.value.offsetWidth / 2
   const yt = y - board.value.offsetHeight / 2
 
-  dat.value = `${xt} ${yt}`
+  dat.value = `${xt}, ${yt}, alto del board: ${board.value.offsetHeight}`
   
   pixelDocument.zoom.setZoom(d)
   pixelDocument.moveTo(xt, yt)
