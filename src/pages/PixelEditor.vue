@@ -1,31 +1,23 @@
 <template>
-  <div class="CONTAINER" v-pinch="pinchHandler">
+  <div class="CONTAINER">
     <div class="SETTINGS">
       <SettingsBar>
         <template #left>
           <ToolSettings :tool="pixelDocument.tool" />
         </template>
         <template #right>
-          <Button
-            label="Symmetry aid"
-            variant="ghost"
-            :active="pixelDocument.symmetry.axis !== null"
-            @click.stop="pixelDocument.toggleSymmetrySettings">
-            <Icon i="symmetry-vertical" v-if="pixelDocument.symmetry.axis === 'vertical'" />
-            <Icon i="symmetry-two-axis" v-else-if="pixelDocument.symmetry.axis === 'both'" />
-            <Icon i="symmetry-horizontal" v-else />
-          </Button>
-          <SymmetrySettings v-if="pixelDocument.symmetrySettings" @close="pixelDocument.toggleSymmetrySettings" />
-          <!--<PointerStatus />-->
           <Divider vertical />
           <Zoom />
+          <Divider vertical />
+          <SettingsButton />
         </template>
       </SettingsBar>
     </div>
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="center">
+    <main class="BOARD" ref="board">
+      <div>{{ dat }}</div>
       <Document v-if="pixelDocument.canvas" />
     </main>
     <aside class="PANELS">
@@ -67,6 +59,7 @@
       <Animation v-if="showingAnimation" />
     </div>
   </div>
+  <SymmetrySettings v-if="pixelDocument.symmetrySettings" @close="pixelDocument.toggleSymmetrySettings" />
   <LayerSettings v-if="pixelDocument.layers.settings" :layer="pixelDocument.layers.settings" />
   <DocumentCreate v-if="!pixelDocument.canvas" />
   <Splash v-if="ui.isShowingSplash" />
@@ -77,9 +70,8 @@ import { watch, ref, computed } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useUIStore } from '@/stores/UI'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
-import { useTouch } from '@/composables/useTouch'
 import { useWheel } from '@/composables/useWheel'
-import SettingsButton from '@/components/SettingsButton.vue'
+import { usePinch } from '@vueuse/gesture'
 import ToolSettings from '@/components/ToolSettings.vue'
 import Tools from '@/components/Tools.vue'
 import Animation from '@/components/Animation.vue'
@@ -95,22 +87,17 @@ import SettingsBar from '@/components/SettingsBar.vue'
 import Button from '@/components/Button.vue'
 import Divider from '@/components/Divider.vue'
 import Splash from '@/components/Splash.vue'
+import SettingsButton from '@/components/SettingsButton.vue'
 import SymmetrySettings from '@/components/SymmetrySettings.vue'
 import Icon from '@/components/Icon.vue'
 
-const center = ref()
+const board = ref(null)
 const showingAnimation = ref(false)
 
 const ui = useUIStore()
 const pixelDocument = useDocumentStore()
 
-/*
-const touch = useTouch(center)
-if (touch.supported) {
-  watch(touch.distance, (value) => pixelDocument.zoom.relative(value))
-  watch(touch.movement, (value) => pixelDocument.moveBy(value[0], value[1]))
-}
-*/
+const dat = ref(null)
 
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
@@ -123,11 +110,24 @@ useWheel((e) => {
   } else {
     pixelDocument.zoom.decrease()
   }
-}, center)
+}, board)
 
-function pinchHandler({ offset: [d, a], pinching }) {
+function pinchHandler({ offset: [d, a], origin: [x, y] }) {
+  const xt = x - board.value.offsetWidth / 2
+  const yt = y - board.value.offsetHeight / 2
+
+  dat.value = `${xt} ${yt}`
+  
   pixelDocument.zoom.setZoom(d)
+  pixelDocument.moveTo(xt, yt)
 }
+
+usePinch(pinchHandler, {
+  domTarget: board,
+  eventOptions: {
+    passive: true,
+  }
+})
 
 // TODO: Esto no tiene sentido que esté aquí
 useKeyShortcuts(new Map([
@@ -196,7 +196,7 @@ useKeyShortcuts(new Map([
 
 .BOARD {
   grid-area: BOARD;
-  grid-column: 1 / span 3;
+  grid-column: 1 / span 2;
   grid-row: 1 / span 3;
   display: grid;
   place-items: center;

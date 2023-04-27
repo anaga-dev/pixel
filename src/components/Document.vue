@@ -9,17 +9,17 @@ import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useElement } from '@/composables/useElement'
 
-const document = useDocumentStore()
+const pixelDocument = useDocumentStore()
 const doc = ref()
 const selection = ref()
 
-const width = computed(() => `${document.width}px`)
-const height = computed(() => `${document.height}px`)
-const transform = computed(() => `scale(${document.zoom.current}) translate(${~~document.position[0]}px, ${~~document.position[1]}px)`)
+const width = computed(() => `${pixelDocument.width}px`)
+const height = computed(() => `${pixelDocument.height}px`)
+const transform = computed(() => `scale(${pixelDocument.zoom.current}) translate(${~~pixelDocument.position[0]}px, ${~~pixelDocument.position[1]}px)`)
 
-useElement(doc, document.canvas)
+useElement(doc, pixelDocument.canvas)
 
-onMounted(() => document.redrawAll())
+onMounted(() => pixelDocument.redrawAll())
 </script>
 
 <style scoped>

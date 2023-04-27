@@ -1,8 +1,6 @@
 <template>
   <Toolbar>
     <template #top>
-      <SettingsButton />
-      <Divider />
       <ToolColor :color="pixelDocument.color" @click="pixelDocument.toggleColorPicker"></ToolColor>
       <ColorPicker class="color-picker" v-if="pixelDocument.colorPicker" @close="pixelDocument.toggleColorPicker" />
       <Divider />
@@ -27,6 +25,16 @@
       <ToolButton label="Eyedropper" :active="pixelDocument.tool === Tool.DROPPER" @click="pixelDocument.setTool(Tool.DROPPER)">
         <Icon i="eyedropper" />
       </ToolButton>
+      <Divider />
+      <Button
+        label="Symmetry aid"
+        variant="ghost"
+        :active="pixelDocument.symmetry.axis !== null"
+        @click.stop="pixelDocument.toggleSymmetrySettings">
+        <Icon i="symmetry-vertical" v-if="pixelDocument.symmetry.axis === 'vertical'" />
+        <Icon i="symmetry-two-axis" v-else-if="pixelDocument.symmetry.axis === 'both'" />
+        <Icon i="symmetry-horizontal" v-else />
+      </Button>
     </template>
     <!--
       FIXME: Aunque parezca que no, esto está siendo un agujero de rendimiento, supongo
@@ -49,7 +57,7 @@ import Toolbar from '@/components/Toolbar.vue'
 import ToolButton from '@/components/ToolButton.vue'
 import ToolColor from '@/components/ToolColor.vue'
 import ColorPicker from '@/components/ColorPicker.vue'
-import SettingsButton from '@/components/SettingsButton.vue'
+import Button from '@/components/Button.vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import Icon from '@/components/Icon.vue'
 import Divider from '@/components/Divider.vue'
