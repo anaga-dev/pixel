@@ -1,33 +1,33 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { v4 as uuid } from 'uuid'
-import { usePointer } from '../composables/usePointer'
-import { useZoom } from '../composables/useZoom'
-import { useHistory } from '../composables/useHistory'
-import { useLayers } from '../composables/useLayers'
-import { useAnimation } from '../composables/useAnimation'
-import Vec2 from '../math/Vec2'
-import Color from '../color/Color'
-import Canvas from '../canvas/Canvas'
-import CanvasContext2D from '../canvas/CanvasContext2D'
-import ImageDataUtils from '../canvas/ImageDataUtils'
-import OpenRaster from '../formats/OpenRaster'
-import Zoom from '../constants/Zoom'
-import SymmetryAxis from '../enums/SymmetryAxis'
-import BlendMode from '../enums/BlendMode'
-import Tool from '../enums/Tool'
-import PencilShape from '../enums/PencilShape'
-import EraserShape from '../enums/EraserShape'
-import ShapeType from '../enums/ShapeType'
-import FillType from '../enums/FillType'
-import DitherAlignment from '../enums/DitherAlignment'
-import SelectType from '../enums/SelectType'
-import SelectMode from '../enums/SelectMode'
-import AnimationState from '../enums/AnimationState'
-import Layer from '../composables/Layer'
-import PixelLayer from '../composables/Layer'
-import TransformMode from '../enums/TransformMode'
-import PaletteTypes from '../constants/PaletteTypes'
-import GIMP from '../formats/palettes/GIMP'
+import { usePointer } from '@/composables/usePointer'
+import { useZoom } from '@/composables/useZoom'
+import { useHistory } from '@/composables/useHistory'
+import { useLayers } from '@/composables/useLayers'
+import { useAnimation } from '@/composables/useAnimation'
+import Vec2 from '@/math/Vec2'
+import Color from '@/color/Color'
+import ColorMode from '@/enums/ColorMode'
+import Canvas from '@/canvas/Canvas'
+import CanvasContext2D from '@/canvas/CanvasContext2D'
+import ImageDataUtils from '@/canvas/ImageDataUtils'
+import OpenRaster from '@/formats/OpenRaster'
+import Zoom from '@/constants/Zoom'
+import SymmetryAxis from '@/enums/SymmetryAxis'
+import BlendMode from '@/enums/BlendMode'
+import Tool from '@/enums/Tool'
+import PencilShape from '@/enums/PencilShape'
+import EraserShape from '@/enums/EraserShape'
+import ShapeType from '@/enums/ShapeType'
+import FillType from '@/enums/FillType'
+import DitherAlignment from '@/enums/DitherAlignment'
+import SelectType from '@/enums/SelectType'
+import SelectMode from '@/enums/SelectMode'
+import AnimationState from '@/enums/AnimationState'
+import Layer from '@/composables/Layer'
+import TransformMode from '@/enums/TransformMode'
+import PaletteTypes from '@/constants/PaletteTypes'
+import GIMP from '@/formats/palettes/GIMP'
 
 // TODO: Creo que una buena cantidad de este código se podrían convertir
 // en composables que más tarde utilicemos en las stores.
@@ -49,6 +49,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     copyCanvas: null,
     previewCanvas: null,
     color: '#000000',
+    colorMode: ColorMode.HEX,
     colorPicker: false,
     grid: {
       enabled: false,
@@ -908,6 +909,12 @@ export const useDocumentStore = defineStore('pixelDocument', {
         payload: { color: color, previousColor: this.color }
       })
       this.color = color
+      if (this.colorPicker) {
+        this.colorPicker = false
+      }
+    },
+    setColorMode(colorMode) {
+      this.colorMode = colorMode
     },
     async loadPalette() {
       const [fileHandle] = await window.showOpenFilePicker({

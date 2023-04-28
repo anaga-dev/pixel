@@ -12,15 +12,15 @@
       <CombinedColorPicker :color="current" />
       <HuePicker :color="current" />
       <TabMenu>
-        <Tab :active="mode === ColorMode.HEX" @click="mode = ColorMode.HEX">Hex</Tab>
-        <Tab :active="mode === ColorMode.HSL" @click="mode = ColorMode.HSL">HSL</Tab>
-        <Tab :active="mode === ColorMode.RGB" @click="mode = ColorMode.RGB">RGB</Tab>
-        <Tab :active="mode === ColorMode.PALETTE" @click="mode = ColorMode.PALETTE">Palette</Tab>
+        <Tab :active="documentStore.colorMode === ColorMode.HEX" @click="documentStore.setColorMode(ColorMode.HEX)">Hex</Tab>
+        <Tab :active="documentStore.colorMode === ColorMode.HSL" @click="documentStore.setColorMode(ColorMode.HSL)">HSL</Tab>
+        <Tab :active="documentStore.colorMode === ColorMode.RGB" @click="documentStore.setColorMode(ColorMode.RGB)">RGB</Tab>
+        <Tab :active="documentStore.colorMode === ColorMode.PALETTE" @click="documentStore.setColorMode(ColorMode.PALETTE)">Palette</Tab>
       </TabMenu>
-      <ColorHex v-if="mode === ColorMode.HEX" :color="current" @update="onUpdateHex" />
-      <ColorHSL v-else-if="mode === ColorMode.HSL" :color="current" />
-      <ColorRGB v-else-if="mode === ColorMode.RGB" :color="current" />
-      <Palette v-else-if="mode === ColorMode.PALETTE" :selected-color="previous" :palette="pixelDocument.palette" @select="onSelectColor" />
+      <ColorHex v-if="documentStore.colorMode === ColorMode.HEX" :color="current" @update="onUpdateHex" />
+      <ColorHSL v-else-if="documentStore.colorMode === ColorMode.HSL" :color="current" />
+      <ColorRGB v-else-if="documentStore.colorMode === ColorMode.RGB" :color="current" />
+      <Palette v-else-if="documentStore.colorMode === ColorMode.PALETTE" :selected-color="previous" :palette="documentStore.palette" @select="onSelectColor" />
     </div>
     <Button label="Accept" @click="onOk">
       Accept
@@ -44,12 +44,10 @@ import Dropdown from '@/components/Dropdown.vue'
 import TabMenu from '@/components/TabMenu.vue'
 import Tab from '@/components/Tab.vue'
 
-const pixelDocument = useDocumentStore()
+const documentStore = useDocumentStore()
 
-const previous = readonly(pixelDocument.color)
-const current = useColor(pixelDocument.color)
-
-const mode = ref(ColorMode.HEX)
+const previous = readonly(documentStore.color)
+const current = useColor(documentStore.color)
 
 function onUpdateHex(color) {
   current.red.value = color.red
@@ -62,8 +60,8 @@ function onSelectColor(newStyle) {
 }
 
 function onOk() {
-  pixelDocument.setColor(current.style.value)
-  pixelDocument.colorPicker = false
+  documentStore.setColor(current.style.value)
+  documentStore.colorPicker = false
 }
 
 onMounted(() => {
