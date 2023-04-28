@@ -26,7 +26,13 @@ export function useZoom({ initial = 1, max = 64, min = 1, defaultStep = 1 } = {}
       }
     },
     relative(value) {
-      current.value = current.value * value
+      if (current.value * value < max && current.value * value > min) {
+        current.value *= value
+      } else if (current.value * value >= max) {
+        current.value = max
+      } else if (current.value * value <= min) {
+        current.value = min
+      }
     },
     setZoom(zoom) {
       current.value = zoom >= 1 ? zoom * 0.1 : 1

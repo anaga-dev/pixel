@@ -888,6 +888,11 @@ export const useDocumentStore = defineStore('pixelDocument', {
     center() {
       Vec2.set(this.position, 0, 0)
     },
+    moveAndZoom(x, y, z) {
+      console.log(x, y, z)
+      this.moveBy(x, y)
+      this.zoom.relative(z)
+    },
     moveTo(x, y) {
       Vec2.set(this.position, x, y)
     },

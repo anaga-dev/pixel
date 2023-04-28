@@ -1,20 +1,8 @@
-import { isRef, onMounted, onBeforeUnmount } from 'vue'
+import { useEventListener } from '@/composables/useEventListener'
 
-export function useWheel(callback, target = window) {
-  onMounted(() => {
-    if (isRef(target)) {
-      target.value.addEventListener('wheel', (e) => callback(e))
-    } else {
-      target.addEventListener('wheel', (e) => callback(e))
-    }
-  })
-  onBeforeUnmount(() => {
-    if (isRef(target)) {
-      target.value.removeEventListener('wheel', (e) => callback(e))
-    } else {
-      target.removeEventListener('wheel', (e) => callback(e))
-    }
-  })
+export function useWheel(callback, { target = window } = {}) {
+  console.log(target)
+  useEventListener(target, 'wheel', (e) => callback(e))
 }
 
 export default useWheel

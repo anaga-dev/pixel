@@ -17,7 +17,7 @@
       <Tools />
     </div>
     <main class="BOARD" ref="board">
-            <Document v-if="pixelDocument.canvas" />
+      <Document v-if="pixelDocument.canvas" />
     </main>
     <aside class="PANELS">
       <Panel title="Layers" @collapse="$event => ui.collapsePanelLayers($event)" :collapsed="ui.panels.layers">
@@ -70,7 +70,7 @@ import { useDocumentStore } from '@/stores/PixelDocument'
 import { useUIStore } from '@/stores/UI'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
-import { usePinch } from '@vueuse/gesture'
+import { useTouch } from '@/composables/useTouch'
 import ToolSettings from '@/components/ToolSettings.vue'
 import Tools from '@/components/Tools.vue'
 import Animation from '@/components/Animation.vue'
@@ -93,10 +93,10 @@ import Icon from '@/components/Icon.vue'
 const board = ref(null)
 const showingAnimation = ref(false)
 
+const MIN_TOUCHES = 2
+
 const ui = useUIStore()
 const pixelDocument = useDocumentStore()
-
-const dat = ref(null)
 
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
@@ -109,24 +109,16 @@ useWheel((e) => {
   } else {
     pixelDocument.zoom.decrease()
   }
-}, board)
+}, { target: board })
 
-function pinchHandler({ offset: [d, a], origin: [x, y] }) {
-  const xt = x - board.value.offsetWidth / 2
-  const yt = y - board.value.offsetHeight / 2
-
-  dat.value = `${xt}, ${yt}, alto del board: ${board.value.offsetHeight}`
-  
-  pixelDocument.zoom.setZoom(d)
-  pixelDocument.moveTo(xt, yt)
-}
-
-usePinch(pinchHandler, {
-  domTarget: board,
-  eventOptions: {
-    passive: true,
+useTouch((e) => {
+  if (e.touches < MIN_TOUCHES) {
+    return
   }
-})
+  const [x, y] = e.movement
+  const z = e.distance
+  pixelDocument.moveAndZoom(x, y, z)
+}, { target: board, passive: true })
 
 // TODO: Esto no tiene sentido que esté aquí
 useKeyShortcuts(new Map([
