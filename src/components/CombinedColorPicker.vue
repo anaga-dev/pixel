@@ -23,7 +23,7 @@ const { value, valueSaturation, hue, saturation, lightness } = props.color
 
 const lastCoords = reactive({ x: 0, y: 0 })
 const canvas = ref()
-const offscreenCanvas = new OffscreenCanvas(512, 512)
+const offscreenCanvas = Canvas.createOffscreen(512, 512)
 
 /**
  * TODO: Reescribir esto para que no haya que recrear

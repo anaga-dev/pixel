@@ -152,7 +152,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
           this.height,
           'preview-canvas'
         )
-        const frameContext = frameCanvas.getContext('2d')
+        const frameContext = CanvasContext2D.get(frameCanvas)
         for (const layer of this.layers.list) {
           if (!layer.visible) continue
           frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
@@ -251,7 +251,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.tool = tool
     },
     eyeDropper(x, y) {
-      const context = this.layer.canvas.getContext('2d')
+      const context = CanvasContext2D.get(this.layer.canvas)
       const previousColor = this.color
       const nextColor = CanvasContext2D.getColor(context, x, y)
       this.history.add({
@@ -698,7 +698,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
      * a un <canvas> secundario utilizado como "copia".
      */
     saveCopyBuffer() {
-      Canvas.swap(this.copyCanvas, this.canvas)
+      Canvas.copy(this.copyCanvas, this.canvas)
       ImageDataUtils.copyFromCanvas(this.copyImageData, this.canvas)
     },
     /**
@@ -706,7 +706,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
      * el <canvas> principal.
      */
     restoreCopyBuffer() {
-      Canvas.swap(this.canvas, this.copyCanvas)
+      Canvas.copy(this.canvas, this.copyCanvas)
       ImageDataUtils.copyToCanvas(this.copyImageData, this.canvas)
     },
     /**
@@ -717,14 +717,14 @@ export const useDocumentStore = defineStore('pixelDocument', {
       requestAnimationFrame(() => {
         this.restoreCopyBuffer()
         const { canvas, drawingCanvas, drawingImageData } = this
-        const context = canvas.getContext('2d')
-        const drawingContext = drawingCanvas.getContext('2d')
+        const context = CanvasContext2D.get(canvas)
+        const drawingContext = CanvasContext2D.get(drawingCanvas)
         drawingContext.putImageData(drawingImageData, 0, 0)
         context.drawImage(drawingCanvas, 0, 0)
       })
     },
     redraw() {
-      const context = this.canvas.getContext('2d')
+      const context = CanvasContext2D.get(this.canvas)
       context.clearRect(0, 0, context.canvas.width, context.canvas.height)
       for (const layer of this.layers.list) {
         if (!layer.visible) continue
@@ -741,7 +741,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
       }
     },
     redrawPreview() {
-      const context = this.previewCanvas.getContext('2d')
+      const context = CanvasContext2D.get(this.previewCanvas)
       context.clearRect(0, 0, context.canvas.width, context.canvas.height)
       context.drawImage(this.canvas, 0, 0)
     },
@@ -752,7 +752,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     redrawFrames() {
       for (const frame of this.frames) {
-        const context = frame.canvas.getContext('2d')
+        const context = CanvasContext2D.get(frame.canvas)
         for (const layer of this.layers.list) {
           if (!layer.visible) continue
           context.clearRect(0, 0, layer.canvas.width, layer.canvas.height)

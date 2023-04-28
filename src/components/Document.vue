@@ -25,7 +25,8 @@ onMounted(() => pixelDocument.redrawAll())
 <style scoped>
 .paint {
   background-image: url('@/assets/checkers.png');
-  image-rendering: pixelated; /* WhAT? */
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 </style>

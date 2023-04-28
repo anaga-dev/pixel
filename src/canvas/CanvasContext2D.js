@@ -13,15 +13,52 @@ import Color from '../color/Color'
  */
 
 /**
- * Crea un nuevo contexto y lo retorna.
+ * Sets the canvas image smoothing
+ *
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} width
+ * @param {number} height
+ * @returns {CanvasRenderingContext2D}
+ */
+export function setImageSmoothing(context, enabled, quality) {
+  context.imageSmoothingEnabled = enabled
+  if (enabled) {
+    context.imageSmoothingQuality = quality
+  }
+  return context
+}
+
+/**
+ * Creates a new <canvas> element with the specified width,
  *
  * @param {number} width
  * @param {number} height
- * @param {CanvasRenderingContext2DSettings} contextAttributes
+ * @param {CanvasRenderingContext2DSettings} [contextAttributes]
+ * @param {boolean} [imageSmoothingEnabled=false]
+ * @param {'low'|'medium'|'high'} [imageSmoothingQuality='low']
  * @returns {CanvasRenderingContext2D}
  */
-export function create(width, height, contextAttributes) {
-  return CanvasContext.create(width, height, '2d', contextAttributes)
+export function create(width, height, contextAttributes, imageSmoothingEnabled = false, imageSmoothingQuality = 'low') {
+  const context = CanvasContext.create(width, height, '2d', contextAttributes)
+  return setImageSmoothing(context, imageSmoothingEnabled, imageSmoothingQuality)
+}
+
+/**
+ * Returns a canvas context.
+ *
+ * @param {HTMLCanvasElement|OffscreenCanvas} canvas
+ * @param {CanvasRenderingContext2DSettings} [contextAttributes]
+ * @param {boolean} [imageSmoothingEnabled=false]
+ * @param {'low'|'medium'|'high'} [imageSmoothingQuality='low']
+ * @returns {CanvasRenderingContext2D}
+ */
+export function get(canvas, contextAttributes, imageSmoothingEnabled = false, imageSmoothingQuality = 'low') {
+  const context = CanvasContext.get(canvas, '2d', contextAttributes)
+  return setImageSmoothing(
+    context,
+    imageSmoothingEnabled,
+    imageSmoothingQuality
+  )
 }
 
 export function replaceImageData(context, callback) {
@@ -31,7 +68,7 @@ export function replaceImageData(context, callback) {
   return context
 }
 
-export function swapImageData(targetContext, sourceContext) {
+export function copyImageData(targetContext, sourceContext) {
   const imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height)
   targetContext.putImageData(imageData, 0, 0)
 }
@@ -89,8 +126,9 @@ export function translate(context, x, y, mode) {
 
 export default {
   create,
+  get,
   replaceImageData,
-  swapImageData,
+  copyImageData,
   putImage,
   getColor,
   putColor,
