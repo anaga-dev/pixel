@@ -3,13 +3,17 @@
     <div class="hex-input">
       <span>#</span>
       <input
-        id="hex"
+        v-if="!isTouch"
+        class="hex"
         type="text"
         pattern="[A-Fa-f0-9]{6}"
         minlength="6"
         maxlength="6"
         :value="hexColor"
         @input="onInput" />
+      <div class="hex" v-else>
+        {{ hexColor }}
+      </div>
     </div>
     <div class="key-buttons">
       <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :label="`Key ${key}`" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
@@ -18,7 +22,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import Button from '@/components/Button.vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { rgbToHex, hexToRgb } from '@/color/ColorConverter'
@@ -34,9 +38,15 @@ const emit = defineEmits([
   'update'
 ])
 
+const hexColor = computed(() => rgbToHex(red.value, green.value, blue.value))
+const isTouch = computed(() => navigator.maxTouchPoints > 0)
 const { red, green, blue } = props.color
 
-const hexColor = computed(() => rgbToHex(red.value, green.value, blue.value))
+onMounted(() => {
+  if (!isTouch) {
+    hex.value.focus()
+  }
+})
 
 function onInput(e) {
   const hexRegex = /^#?([0-9A-Fa-f]{6})$/
@@ -45,8 +55,15 @@ function onInput(e) {
   }
 }
 
+let index = 0
 function onKeyButton(key) {
-  // TODO:
+  const hex = hexColor.value
+  const newHex = hex.slice(0, index) + key + hex.slice(index + 1)
+  index++
+  if (index > 5) {
+    index = 0
+  }
+  emit('update', hexToRgb(newHex))
 }
 </script>
 
@@ -59,9 +76,19 @@ function onKeyButton(key) {
   gap: var(--spaceS);
 }
 
-input {
+.hex {
   text-transform: uppercase;
+  font-weight: bold;
+  appearance: none;
+  border: none;
+  height: var(--spaceXL);
+  display: grid;
+  align-items: center;
+  padding: 0 var(--spaceS);
+  background-color: var(--colorLayer0);
+  color: var(--colorPrimary);
 }
+
 .key-buttons {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);

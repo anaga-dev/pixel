@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { onMounted, readonly, ref } from 'vue'
+import { onMounted, readonly } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useColor } from '@/composables/useColor'
 import HuePicker from '@/components/HuePicker.vue'
@@ -61,7 +61,6 @@ function onSelectColor(newStyle) {
 
 function onOk() {
   documentStore.setColor(current.style.value)
-  documentStore.colorPicker = false
 }
 
 onMounted(() => {
