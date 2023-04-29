@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from 'vue'
+import { isRef, ref, reactive, computed } from 'vue'
 import addEventListeners from './addEventListeners'
 import removeEventListeners from './removeEventListeners'
 import useEventListeners from './useEventListeners'
@@ -20,6 +20,7 @@ export function usePointer(element, callback, mode = 'down') {
   const movement = reactive({ x: 0, y: 0 })
   const absolute = reactive({ x: 0, y: 0 })
   const relative = reactive({ x: 0, y: 0 })
+  const rel = reactive({ x: 0, y: 0 })
   const twist = ref(0)
   const id = ref('')
   const type = ref('')
@@ -60,6 +61,16 @@ export function usePointer(element, callback, mode = 'down') {
     movement.y = e.movementY
     offset.x = e.offsetX
     offset.y = e.offsetY
+
+    /*
+    {
+      const domTarget = isRef(element) ? element.value : element
+      const { left, top, width, height } = domTarget.getBoundingClientRect()
+      rel.x = e.clientX - left
+      rel.y = e.clientY - top
+      console.log(rel.x, rel.y)
+    }
+    */
     if (e.type === 'pointermove' || e.type === 'pointerup') {
       previous.x = current.x
       previous.y = current.y
@@ -70,6 +81,8 @@ export function usePointer(element, callback, mode = 'down') {
       if (e.type === 'pointerup') {
         end.x = current.x
         end.y = current.y
+        const domTarget = isRef(element) ? element.value : element
+        domTarget.releasePointerCapture(e.pointerId)
       }
     } else if (e.type === 'pointerdown') {
       start.x = Math.floor(offset.x)
@@ -78,6 +91,8 @@ export function usePointer(element, callback, mode = 'down') {
       previous.y = current.y = Math.floor(offset.y)
       relative.x = 0
       relative.y = 0
+      const domTarget = isRef(element) ? element.value : element
+      domTarget.setPointerCapture(e.pointerId)
     }
     target.value = e.target
     currentTarget.value = e.currentTarget

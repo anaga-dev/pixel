@@ -65,6 +65,14 @@ export function clear(imageData) {
   imageData.data.fill(0)
 }
 
+/**
+ *
+ * @param {*} target
+ * @param {*} source
+ * @param {*} x
+ * @param {*} y
+ * @param {*} callback
+ */
 export function paint(target, source, x, y, callback) {
   for (let sy = 0; sy < source.height; sy++) {
     const ty = sy + y
@@ -83,6 +91,16 @@ export function paint(target, source, x, y, callback) {
   }
 }
 
+/**
+ * Flood fill algorithm.
+ *
+ * @param {ImageData} imageData
+ * @param {number} x
+ * @param {number} y
+ * @param {Color} color
+ * @param {Array<Vec2>} directions
+ * @returns
+ */
 export function fill(imageData, x, y, color, directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
   const [r, g, b, a] = color
   const [sr, sg, sb, sa] = getColor(imageData, x, y)
