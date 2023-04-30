@@ -30,8 +30,8 @@ function onClick(axis) {
 
 <style scoped>
 .SymmetrySettings {
-  top: var(--widthToolbar);
-  right: var(--widthPanels);
+  top: calc(var(--widthToolbar) + var(--spaceS));
+  right: calc(var(--widthPanels) + var(--spaceS));
 }
 
 .enabled {
