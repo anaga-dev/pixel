@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid'
 import { ref, computed, shallowReactive } from 'vue'
-import BlendMode from '../enums/BlendMode'
-import Canvas from '../canvas/Canvas'
+import BlendMode from '@/enums/BlendMode'
+import Canvas from '@/canvas/Canvas'
 
 export function create({
   name: initialName = 'Unnamed',

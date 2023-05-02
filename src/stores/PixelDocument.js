@@ -41,6 +41,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     zoom: useZoom({ initial: Zoom.DEFAULT, min: Zoom.MIN, max: Zoom.MAX }),
     zoomPreview: false,
     canvas: null,
+    canvasRect: null,
     tool: Tool.PENCIL,
     drawing: false,
     copyImageData: null,
@@ -100,7 +101,10 @@ export const useDocumentStore = defineStore('pixelDocument', {
       contiguous: true // sólo válido en el modo de color
     },
     selectionCanvas: null,
+    selectionMaskCanvas: null,
     selectionMaskImageData: null,
+    patternCanvas: null,
+    pattern: null,
     dropper: {
       includeReferenceLayers: true
     },
@@ -184,6 +188,11 @@ export const useDocumentStore = defineStore('pixelDocument', {
     }
   },
   actions: {
+    updateCanvasRect() {
+      // Necesitamos obtener el client rect para poder calcular
+      // donde irá el canvas de selección.
+      this.canvasRect = this.canvas.getBoundingClientRect()
+    },
     toggleSymmetrySettings() {
       this.symmetrySettings = !this.symmetrySettings
     },
@@ -249,6 +258,17 @@ export const useDocumentStore = defineStore('pixelDocument', {
           previousTool: this.tool
         }
       })
+      /*
+      TODO: Debería ver esto con Omar
+      if (this.tool === Tool.SELECT && tool !== this.tool) {
+        this.selectionMaskContext.clearRect(
+          0,
+          0,
+          this.selectionMaskCanvas.width,
+          this.selectionMaskCanvas.height
+        )
+      }
+      */
       this.tool = tool
     },
     eyeDropper(x, y) {
@@ -804,11 +824,214 @@ export const useDocumentStore = defineStore('pixelDocument', {
         this.height,
         'pixel-canvas'
       )
+      this.canvasRect = null
+      if (!this.selectionCanvas) {
+        this.selectionPolygon = []
+        this.selectionCanvas = Canvas.create(this.width, this.height)
+        this.selectionContext = CanvasContext2D.get(this.selectionCanvas)
+
+        const onPointer = (e) => {
+          const { top, left, width, height } = this.canvasRect
+          const x = (e.clientX - left) / width
+          const y = (e.clientY - top) / height
+
+          if (e.type === 'pointerdown') {
+            this.selectionPolygon.length = 0
+            if (this.select.type === SelectType.RECTANGULAR) {
+              this.selectionPolygon.push(
+                [ x, y ],
+                [ x, y ],
+                [ x, y ],
+                [ x, y ]
+              )
+            } else if (this.select.type === SelectType.COLOR) {
+              // TODO: Esto debería hacerse en el setter de selectionMaskImageData
+              const selectionMaskContext = CanvasContext2D.get(
+                this.selectionMaskCanvas,
+                {
+                  willReadFrequently: true
+                }
+              )
+
+              // Si ya existía un MaskImageData lo utilizamos
+              // si no, creamos uno nuevo utilizando el contexto
+              // del canvas de selección.
+              const selectionMaskImageData = !this.selectionMaskImageData
+                ? selectionMaskContext.createImageData(this.width, this.height)
+                : this.selectionMaskImageData
+
+              // Dependiendo de si estamos añadiendo o sustrayendo
+              // usamos una máscara u otra.
+              const maskColor =
+                this.select.mode === SelectMode.ADD
+                  ? [0xff, 0, 0, 0xff]
+                  : [0, 0, 0, 0]
+
+              if (!this.select.contiguous) {
+                ImageDataUtils.copySelectedAt(
+                  selectionMaskImageData,
+                  this.imageData,
+                  Math.floor(x * this.width),
+                  Math.floor(y * this.height),
+                  maskColor
+                )
+              } else {
+                ImageDataUtils.copyContiguousSelectedAt(
+                  selectionMaskImageData,
+                  this.imageData,
+                  Math.floor(x * this.width),
+                  Math.floor(y * this.height),
+                  maskColor
+                )
+              }
+              this.selectionMaskImageData = selectionMaskImageData
+              selectionMaskContext.putImageData(
+                this.selectionMaskImageData,
+                0,
+                0
+              )
+            }
+
+            // TODO: Si el modo de selección de polígonos no es Freehand
+            // y es "rectangular", entonces lo que hacemos es dibujar un polígono
+            // rectangular que se redimensiona según el movimiento del ratón.
+
+            if (this.select.type !== SelectType.COLOR) {
+              window.addEventListener('pointermove', onPointer)
+              window.addEventListener('pointerup', onPointer)
+            } else {
+              return
+            }
+          } else if (e.type === 'pointerup') {
+            window.removeEventListener('pointermove', onPointer)
+            window.removeEventListener('pointerup', onPointer)
+          }
+
+          if (e.type !== 'pointerup') {
+            if (this.select.type === SelectType.FREEHAND) {
+              this.selectionPolygon.push([ x, y ])
+            } else if (this.select.type === SelectType.RECTANGULAR) {
+              this.selectionPolygon[1][0] = x
+              this.selectionPolygon[2][0] = x
+              this.selectionPolygon[2][1] = y
+              this.selectionPolygon[3][1] = y
+            }
+          } else {
+            // Aquí convertimos el área del polígono en la máscara de selección
+            // es decir, rasterizamos el path en píxeles.
+            const path = new Path2D()
+            for (let index = 0; index < this.selectionPolygon.length; index++) {
+              const [x, y] = this.selectionPolygon[index]
+              const tx = x * this.canvas.width
+              const ty = y * this.canvas.height
+              if (index === 0) {
+                path.moveTo(tx, ty)
+              } else {
+                path.lineTo(tx, ty)
+              }
+            }
+            path.closePath()
+
+            // TODO: Aquí habría que hacer un fill de la máscara de selección
+            //       y obtener esa máscara en un ImageData donde cualquier pixel
+            //       con alpha > 0 es parte de la máscara.
+            const selectionMaskContext = CanvasContext2D.get(this.selectionMaskCanvas, {
+              willReadFrequently: true
+            })
+            // selectionMaskContext.clearRect(0,0,this.selectionMaskCanvas.width,this.selectionMaskCanvas.height)
+            if (this.select.mode === 'add') {
+              selectionMaskContext.globalCompositeOperation = 'source-over'
+            } else if (this.select.mode === 'subtract') {
+              selectionMaskContext.globalCompositeOperation = 'destination-out'
+            }
+            selectionMaskContext.fillStyle = '#f00'
+            selectionMaskContext.fill(path)
+
+            // Obtenemos el ImageData.
+            const selectionMaskImageData = selectionMaskContext.getImageData(0, 0, this.selectionMaskCanvas.width, this.selectionMaskCanvas.height)
+            for (let index = 0; index < selectionMaskImageData.data.length; index += 4) {
+              const alpha = selectionMaskImageData.data[index + 3]
+              if (alpha > 0) {
+                selectionMaskImageData.data[index + 3] = 255
+              }
+            }
+            selectionMaskContext.putImageData(selectionMaskImageData, 0, 0)
+            this.selectionMaskImageData = selectionMaskImageData
+            this.selectionPolygon.length = 0
+
+            // TODO: Continuar aquí
+            /*
+            const points = []
+            for (let index = 0; index < this.selectionMaskImageData.data.length - 4; index += 4) {
+              const mask = this.selectionMaskImageData.data[index]
+              const nextMask = this.selectionMaskImageData.data[index + 4]
+              const x = (index / 4) % this.selectionMaskImageData.width
+              const y = Math.floor((index / 4) / this.selectionMaskImageData.width)
+              if (mask != nextMask) {
+                points.push([
+                  x / this.selectionMaskImageData.width,
+                  y / this.selectionMaskImageData.height
+                ])
+              }
+            }
+            */
+
+            // NO SIRVE
+            /*
+            const recreate = [points[0], points[1]]
+            let index = 3;
+            for (index = 3; index < points.length / 2; index += 2) {
+              recreate.push(points[index])
+            }
+            for (++index; index > 0; index -= 2) {
+              recreate.push(points[index])
+            }
+            */
+            // this.selectionPolygon = points
+            console.log(this.selectionPolygon)
+            console.log(this.selectionMaskImageData)
+          }
+        }
+
+        this.selectionCanvas.addEventListener('pointerdown', onPointer)
+      }
+
+      this.selectionMaskCanvas = Canvas.create(this.width, this.height)
+      this.selectionMaskImageData = null
+
+      // TODO: Creo que esto habría que cambiarlo
+      // por algo mejor. No me termina de gustar la
+      // forma en la que está implementado.
       this.pointer = usePointer(this.canvas, this.useTool)
       this.pointer.startListening()
+
       this.animation = useAnimation({
         callback: () => this.redrawAll()
       })
+
+      function createMatrix() {
+        return new DOMMatrix()
+      }
+
+      // TODO: Esto quizá se podría mover a una función
+      //       de inicialización que no implique la de creación
+      //       del documento.
+      if (!this.patternCanvas) {
+        const SIZE = 8
+        const SIZE_HALF = SIZE >> 1
+
+        const patternCanvas = Canvas.createOffscreen(SIZE, SIZE)
+        const patternCx = CanvasContext2D.get(patternCanvas)
+        patternCx.fillStyle = '#fff'
+        patternCx.fillRect(0, 0, SIZE, SIZE)
+        patternCx.fillStyle = '#000'
+        patternCx.fillRect(0, 0, SIZE_HALF, SIZE_HALF)
+        patternCx.fillRect(SIZE_HALF, SIZE_HALF, SIZE_HALF, SIZE_HALF)
+        this.patternCanvas = patternCanvas
+        this.patternMatrix = createMatrix()
+        this.pattern = this.selectionContext.createPattern(patternCanvas, 'repeat')
+      }
+
       this.tool = Tool.PENCIL
     },
     mergeDown() {

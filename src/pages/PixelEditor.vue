@@ -3,7 +3,7 @@
     <div class="SETTINGS">
       <SettingsBar>
         <template #left>
-          <ToolSettings :tool="pixelDocument.tool" />
+          <ToolSettings :tool="documentStore.tool" />
         </template>
         <template #right>
           <Button
@@ -26,32 +26,33 @@
       <Tools />
     </div>
     <main class="BOARD" ref="board">
-      <Document v-if="pixelDocument.canvas" />
+      <Document v-if="documentStore.canvas" />
+      <Selection v-if="documentStore.canvas && documentStore.tool === Tool.SELECT" />
     </main>
     <aside class="PANELS">
       <Panel title="Layers" @collapse="$event => ui.collapsePanelLayers($event)" :collapsed="ui.panels.layers">
         <template #actions>
-          <Button label="Add layer" variant="ghost" @click="pixelDocument.addLayer">
+          <Button label="Add layer" variant="ghost" @click="documentStore.addLayer">
             <Icon i="add-item" />
           </Button>
         </template>
-        <Layers :layers="pixelDocument.layers"></Layers>
+        <Layers :layers="documentStore.layers"></Layers>
       </Panel>
       <Panel title="Palette" @collapse="$event => ui.collapsePanelPalette($event)" :collapsed="ui.panels.palette">
         <template #actions>
-          <Button label="Load palette" variant="ghost" @click="pixelDocument.loadPalette">
+          <Button label="Load palette" variant="ghost" @click="documentStore.loadPalette">
             <Icon i="load" />
           </Button>
-          <Button label="Save palette" variant="ghost" @click="pixelDocument.savePalette">
+          <Button label="Save palette" variant="ghost" @click="documentStore.savePalette">
             <Icon i="save" />
           </Button>
-          <Button label="Create new palette" variant="ghost" @click="pixelDocument.addPaletteColor">
+          <Button label="Create new palette" variant="ghost" @click="documentStore.addPaletteColor">
             <Icon i="add-item" />
           </Button>
         </template>
-        <Palette :palette="pixelDocument.palette" :selected-color="pixelDocument.color" @select="pixelDocument.setColor"></Palette>
+        <Palette :palette="documentStore.palette" :selected-color="documentStore.color" @select="documentStore.setColor"></Palette>
       </Panel>
-      <Panel title="preview"  @collapse="$event => ui.collapsePanelPreview($event)" :collapsed="ui.panels.preview" :scrollable="false" v-if="pixelDocument.canvas">
+      <Panel title="preview"  @collapse="$event => ui.collapsePanelPreview($event)" :collapsed="ui.panels.preview" :scrollable="false" v-if="documentStore.canvas">
         <Preview></Preview>
       </Panel>
     </aside>
@@ -67,19 +68,21 @@
       <Animation v-if="showingAnimation" />
     </div>
   </div>
-  <SymmetrySettings v-if="pixelDocument.symmetrySettings" @close="pixelDocument.toggleSymmetrySettings" />
-  <LayerSettings v-if="pixelDocument.layers.settings" :layer="pixelDocument.layers.settings" />
-  <DocumentCreate v-if="!pixelDocument.canvas" />
+  <SymmetrySettings v-if="documentStore.symmetrySettings" />
+  <LayerSettings v-if="documentStore.layers.settings" :layer="documentStore.layers.settings" />
+  <DocumentCreate v-if="!documentStore.canvas" />
   <Splash v-if="ui.isShowingSplash" />
 </template>
 
 <script setup>
-import { watch, ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useDocumentStore } from '@/stores/PixelDocument'
 import { useUIStore } from '@/stores/UI'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useTouch } from '@/composables/useTouch'
+import SettingsButton from '@/components/SettingsButton.vue'
+import Tool from '@/enums/Tool'
 import ToolSettings from '@/components/ToolSettings.vue'
 import Tools from '@/components/Tools.vue'
 import Animation from '@/components/Animation.vue'
@@ -88,6 +91,7 @@ import Panel from '@/components/Panel.vue'
 import Palette from '@/components/Palette.vue'
 import Preview from '@/components/Preview.vue'
 import Layers from '@/components/Layers.vue'
+import Selection from '@/components/Selection.vue'
 import Document from '@/components/Document.vue'
 import DocumentCreate from '@/components/DocumentCreate.vue'
 import LayerSettings from '@/components/LayerSettings.vue'
@@ -95,9 +99,8 @@ import SettingsBar from '@/components/SettingsBar.vue'
 import Button from '@/components/Button.vue'
 import Divider from '@/components/Divider.vue'
 import Splash from '@/components/Splash.vue'
-import SettingsButton from '@/components/SettingsButton.vue'
-import SymmetrySettings from '@/components/SymmetrySettings.vue'
 import Icon from '@/components/Icon.vue'
+import SymmetrySettings from '../components/SymmetrySettings.vue'
 
 const board = ref(null)
 const showingAnimation = ref(false)
@@ -105,7 +108,7 @@ const showingAnimation = ref(false)
 const MIN_TOUCHES = 2
 
 const ui = useUIStore()
-const pixelDocument = useDocumentStore()
+const documentStore = useDocumentStore()
 
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
@@ -114,9 +117,9 @@ function toggleShowAnimation() {
 useWheel((e) => {
   console.log(e.deltaX, e.deltaY, e.deltaZ, e.deltaMode)
   if (e.deltaY < 0) {
-    pixelDocument.zoom.increase()
+    documentStore.zoom.increase()
   } else {
-    pixelDocument.zoom.decrease()
+    documentStore.zoom.decrease()
   }
 }, { target: board })
 
@@ -126,38 +129,38 @@ useTouch((e) => {
   }
   const [x, y] = e.movement
   const z = e.distance
-  pixelDocument.moveAndZoom(x, y, z)
+  documentStore.moveAndZoom(x, y, z)
 }, { target: board, passive: true })
 
 // TODO: Esto no tiene sentido que esté aquí
 useKeyShortcuts(new Map([
-  [['1'], () => pixelDocument.setTool('pencil')],
-  [['p'], () => pixelDocument.setTool('pencil')],
-  [['2'], () => pixelDocument.setTool('eraser')],
-  [['e'], () => pixelDocument.setTool('eraser')],
-  [['3'], () => pixelDocument.setTool('fill')],
-  [['f'], () => pixelDocument.setTool('fill')],
-  [['4'], () => pixelDocument.setTool('shape')],
-  [['r'], () => pixelDocument.setTool('shape')],
-  [['5'], () => pixelDocument.setTool('transform')],
-  [['h'], () => pixelDocument.setTool('transform')],
-  [['6'], () => pixelDocument.setTool('select')],
-  [['s'], () => pixelDocument.setTool('select')],
-  [['7'], () => pixelDocument.toggleColorPicker()],
-  [['c'], () => pixelDocument.toggleColorPicker()],
-  [['z', 'ctrl'], () => pixelDocument.undo()],
-  [['y', 'ctrl'], () => pixelDocument.redo()],
-  [['arrowup'], () => pixelDocument.moveLayerUp()],
-  [['arrowdown'], () => pixelDocument.moveLayerDown()],
-  [['y'], () => pixelDocument.toggleSymmetry()],
-  [[' '], () => pixelDocument.toggleAnimation()],
-  [['0', 'ctrl'], () => pixelDocument.zoom.reset()],
-  [['0'], () => pixelDocument.zoom.reset()],
-  [['+'], () => pixelDocument.zoom.increase()],
-  [['='], () => pixelDocument.zoom.increase()],
-  [['z'], () => pixelDocument.zoom.increase()],
-  [['-'], () => pixelDocument.zoom.decrease()],
-  [['x'], () => pixelDocument.zoom.decrease()],
+  [['1'], () => documentStore.setTool('pencil')],
+  [['p'], () => documentStore.setTool('pencil')],
+  [['2'], () => documentStore.setTool('eraser')],
+  [['e'], () => documentStore.setTool('eraser')],
+  [['3'], () => documentStore.setTool('fill')],
+  [['f'], () => documentStore.setTool('fill')],
+  [['4'], () => documentStore.setTool('shape')],
+  [['r'], () => documentStore.setTool('shape')],
+  [['5'], () => documentStore.setTool('transform')],
+  [['h'], () => documentStore.setTool('transform')],
+  [['6'], () => documentStore.setTool('select')],
+  [['s'], () => documentStore.setTool('select')],
+  [['7'], () => documentStore.toggleColorPicker()],
+  [['c'], () => documentStore.toggleColorPicker()],
+  [['z', 'ctrl'], () => documentStore.undo()],
+  [['y', 'ctrl'], () => documentStore.redo()],
+  [['arrowup'], () => documentStore.moveLayerUp()],
+  [['arrowdown'], () => documentStore.moveLayerDown()],
+  [['y'], () => documentStore.toggleSymmetry()],
+  [[' '], () => documentStore.toggleAnimation()],
+  [['0', 'ctrl'], () => documentStore.zoom.reset()],
+  [['0'], () => documentStore.zoom.reset()],
+  [['+'], () => documentStore.zoom.increase()],
+  [['='], () => documentStore.zoom.increase()],
+  [['z'], () => documentStore.zoom.increase()],
+  [['-'], () => documentStore.zoom.decrease()],
+  [['x'], () => documentStore.zoom.decrease()],
 ]))
 
 </script>
