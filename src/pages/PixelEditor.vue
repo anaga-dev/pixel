@@ -9,10 +9,10 @@
           <Button
             label="Symmetry aid"
             variant="ghost"
-            :active="pixelDocument.symmetry.axis !== null"
-            @click.stop="pixelDocument.toggleSymmetrySettings">
-            <Icon i="symmetry-vertical" v-if="pixelDocument.symmetry.axis === 'vertical'" />
-            <Icon i="symmetry-two-axis" v-else-if="pixelDocument.symmetry.axis === 'both'" />
+            :active="documentStore.symmetry.axis !== null"
+            @click.stop="documentStore.toggleSymmetrySettings">
+            <Icon i="symmetry-vertical" v-if="documentStore.symmetry.axis === 'vertical'" />
+            <Icon i="symmetry-two-axis" v-else-if="documentStore.symmetry.axis === 'both'" />
             <Icon i="symmetry-horizontal" v-else />
           </Button>
           <Divider vertical />
