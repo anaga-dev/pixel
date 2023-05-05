@@ -17,12 +17,12 @@ export function useZoom({ initial = 1, max = 64, min = 1, defaultStep = 1 } = {}
     },
     increase(step = defaultStep) {
       if (current.value < max) {
-        current.value += step
+        current.value *= 2
       }
     },
     decrease(step = defaultStep) {
       if (current.value > min) {
-        current.value -= step
+        current.value *= 0.5
       }
     },
     relative(value) {
