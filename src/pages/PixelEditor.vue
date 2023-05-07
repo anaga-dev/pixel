@@ -148,6 +148,8 @@ useKeyShortcuts(new Map([
   [['s'], () => documentStore.setTool('select')],
   [['7'], () => documentStore.toggleColorPicker()],
   [['c'], () => documentStore.toggleColorPicker()],
+  [['q'], () => documentStore.flipHorizontally()],
+  [['w'], () => documentStore.flipVertically()],
   [['z', 'ctrl'], () => documentStore.undo()],
   [['y', 'ctrl'], () => documentStore.redo()],
   [['arrowup'], () => documentStore.moveLayerUp()],

@@ -2,6 +2,14 @@ import IndexedImageData from './IndexedImageData'
 import CanvasContext2D from './CanvasContext2D'
 import FillStack from './FillStack'
 
+/**
+ * Clamps a number
+ *
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
 function clamp(value, min, max) {
   if (value < min) return min
   if (value > max) return max
@@ -642,6 +650,7 @@ export function copyToCanvas(targetImageData, canvas) {
 }
 
 /**
+ * Translates an ImageData by tx and ty
  *
  * @param {ImageData} imageData
  * @param {number} tx
@@ -678,6 +687,62 @@ export function translate(imageData, tx, ty, mode) {
   source.set(target, 0)
 }
 
+function flipGetSourceImageData(targetImageData, sourceImageData) {
+  if (!sourceImageData) {
+    return clone(targetImageData)
+  }
+  if (targetImageData === sourceImageData) {
+    return clone(sourceImageData)
+  }
+  return sourceImageData
+}
+
+/**
+ * Flips an ImageData horizontally
+ *
+ * @param {ImageData} targetImageData
+ * @param {ImageData} sourceImageData
+ * @returns {ImageData}
+ */
+export function flipHorizontally(targetImageData, sourceImageData) {
+  const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
+  const halfWidth = imageData.width / 2
+  for (let x = 0; x < halfWidth; x++) {
+    const fx = imageData.width - x - 1
+    for (let y = 0; y < imageData.height; y++) {
+      const leftColor = getColor(imageData, x, y)
+      const rightColor = getColor(imageData, fx, y)
+      putColor(targetImageData, x, y, rightColor)
+      putColor(targetImageData, fx, y, leftColor)
+    }
+  }
+
+  return targetImageData
+}
+
+/**
+ * Flips vertically an ImageData
+ *
+ * @param {ImageData} targetImageData
+ * @param {ImageData} sourceImageData
+ * @returns {ImageData}
+ */
+export function flipVertically(targetImageData, sourceImageData) {
+  const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
+  const halfHeight = imageData.height / 2
+  for (let y = 0; y < halfHeight; y++) {
+    const fy = imageData.width - y - 1
+    for (let x = 0; x < imageData.width; x++) {
+      const topColor = getColor(imageData, x, y)
+      const bottomColor = getColor(imageData, x, fy)
+      putColor(targetImageData, x, y, bottomColor)
+      putColor(targetImageData, x, fy, topColor)
+    }
+  }
+
+  return targetImageData
+}
+
 export default {
   getOffset,
   putColor,
@@ -702,5 +767,7 @@ export default {
   copySelectedAt,
   copyContiguousSelectedAt,
   clone,
-  translate
+  translate,
+  flipHorizontally,
+  flipVertically
 }

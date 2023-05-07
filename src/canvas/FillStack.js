@@ -1,9 +1,18 @@
+/**
+ * FillStack
+ */
 export default class FillStack {
   #data = null
   #width = 0
   #height = 0
   #index = 0
 
+  /**
+   * Constructor
+   *
+   * @param {number} width
+   * @param {number} height
+   */
   constructor(width, height) {
     this.#data = new Uint32Array(width * height * 4)
     this.#width = width
@@ -11,14 +20,29 @@ export default class FillStack {
     this.#index = 0
   }
 
+  /**
+   * @readonly
+   * @type {boolean}
+   */
   get isEmpty() {
     return this.#index === 0
   }
 
+  /**
+   * @readonly
+   * @type {boolean}
+   */
   get isFull() {
     return this.#index === this.#data.length / 4
   }
 
+  /**
+   * Pushes the given coordinates to the stack.
+   *
+   * @param {number} x
+   * @param {number} y
+   * @returns {number}
+   */
   push(x, y) {
     if (x < 0 || y < 0 || x >= this.#width || y >= this.#height) {
       throw new Error('Invalid coordinates')
@@ -32,6 +56,11 @@ export default class FillStack {
     return this.#index
   }
 
+  /**
+   * Retrieves the last pushed coordinates (and the calculated offset)
+   *
+   * @returns {[number, number, number]}
+   */
   pop() {
     if (this.#index < 0) {
       throw new Error('FillStack is empty')

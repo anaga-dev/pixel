@@ -308,7 +308,8 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.redrawAll()
     },
     fillColor(color, x, y) {
-      // FIXME: Esto tiene mala pinta, aquí hay algo que falla bastante.
+      // FIXME: Cuando el color es el inicial #000 por algún motivo
+      // no pinta bien el alpha.
       if (!this.fill.contiguous) {
         this.doLayerPaintOperation((imageData) =>
           ImageDataUtils.replaceColorAt(imageData, x, y, Color.toUint8(color))
@@ -570,6 +571,16 @@ export const useDocumentStore = defineStore('pixelDocument', {
         ImageDataUtils.translate(imageData, x, y, this.transform.mode)
       })
     },
+    flipHorizontally() {
+      this.doLayerPaintOperation((imageData) => {
+        ImageDataUtils.flipHorizontally(imageData)
+      })
+    },
+    flipVertically() {
+      this.doLayerPaintOperation((imageData) => {
+        ImageDataUtils.flipVertically(imageData)
+      })
+    },
     useTool(e) {
       // TODO: Todo este comportamiento es MUY mejorable, tengo que ver cómo
       // implementar todo esto de otra forma.
@@ -752,11 +763,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
         context.save()
         context.globalAlpha = layer.opacity
         context.globalCompositeOperation = layer.blendMode
-        layer.context.putImageData(
-          layer.frames[this.animation.current],
-          0,
-          0
-        )
+        layer.context.putImageData(layer.frames[this.animation.current], 0, 0)
         context.drawImage(layer.canvas, 0, 0)
         context.restore()
       }
@@ -780,11 +787,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
           context.save()
           context.globalAlpha = layer.opacity
           context.globalCompositeOperation = layer.blendMode
-          layer.context.putImageData(
-            layer.frames[frame.frame],
-            0,
-            0
-          )
+          layer.context.putImageData(layer.frames[frame.frame], 0, 0)
           context.drawImage(layer.canvas, 0, 0)
           context.restore()
         }
@@ -838,12 +841,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
           if (e.type === 'pointerdown') {
             this.selectionPolygon.length = 0
             if (this.select.type === SelectType.RECTANGULAR) {
-              this.selectionPolygon.push(
-                [ x, y ],
-                [ x, y ],
-                [ x, y ],
-                [ x, y ]
-              )
+              this.selectionPolygon.push([x, y], [x, y], [x, y], [x, y])
             } else if (this.select.type === SelectType.COLOR) {
               // TODO: Esto debería hacerse en el setter de selectionMaskImageData
               const selectionMaskContext = CanvasContext2D.get(
@@ -909,7 +907,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
 
           if (e.type !== 'pointerup') {
             if (this.select.type === SelectType.FREEHAND) {
-              this.selectionPolygon.push([ x, y ])
+              this.selectionPolygon.push([x, y])
             } else if (this.select.type === SelectType.RECTANGULAR) {
               this.selectionPolygon[1][0] = x
               this.selectionPolygon[2][0] = x
@@ -935,9 +933,12 @@ export const useDocumentStore = defineStore('pixelDocument', {
             // TODO: Aquí habría que hacer un fill de la máscara de selección
             //       y obtener esa máscara en un ImageData donde cualquier pixel
             //       con alpha > 0 es parte de la máscara.
-            const selectionMaskContext = CanvasContext2D.get(this.selectionMaskCanvas, {
-              willReadFrequently: true
-            })
+            const selectionMaskContext = CanvasContext2D.get(
+              this.selectionMaskCanvas,
+              {
+                willReadFrequently: true
+              }
+            )
             // selectionMaskContext.clearRect(0,0,this.selectionMaskCanvas.width,this.selectionMaskCanvas.height)
             if (this.select.mode === 'add') {
               selectionMaskContext.globalCompositeOperation = 'source-over'
@@ -948,8 +949,17 @@ export const useDocumentStore = defineStore('pixelDocument', {
             selectionMaskContext.fill(path)
 
             // Obtenemos el ImageData.
-            const selectionMaskImageData = selectionMaskContext.getImageData(0, 0, this.selectionMaskCanvas.width, this.selectionMaskCanvas.height)
-            for (let index = 0; index < selectionMaskImageData.data.length; index += 4) {
+            const selectionMaskImageData = selectionMaskContext.getImageData(
+              0,
+              0,
+              this.selectionMaskCanvas.width,
+              this.selectionMaskCanvas.height
+            )
+            for (
+              let index = 0;
+              index < selectionMaskImageData.data.length;
+              index += 4
+            ) {
               const alpha = selectionMaskImageData.data[index + 3]
               if (alpha > 0) {
                 selectionMaskImageData.data[index + 3] = 255
@@ -1029,11 +1039,17 @@ export const useDocumentStore = defineStore('pixelDocument', {
         patternCx.fillRect(SIZE_HALF, SIZE_HALF, SIZE_HALF, SIZE_HALF)
         this.patternCanvas = patternCanvas
         this.patternMatrix = createMatrix()
-        this.pattern = this.selectionContext.createPattern(patternCanvas, 'repeat')
+        this.pattern = this.selectionContext.createPattern(
+          patternCanvas,
+          'repeat'
+        )
       }
 
       this.tool = Tool.PENCIL
     },
+    /***************************************************************************
+     * Layers
+     ***************************************************************************/
     mergeDown() {
       // TODO: Cogemos todas las capaz "inferiores" a la capa seleccionada y las mezclamos en una
       // única capa.
@@ -1109,6 +1125,9 @@ export const useDocumentStore = defineStore('pixelDocument', {
     changeLayerName(layer, name) {
       layer.name.value = name
     },
+    /***************************************************************************
+     * Movement and zoom
+     ***************************************************************************/
     center() {
       Vec2.set(this.position, 0, 0)
     },
@@ -1126,6 +1145,9 @@ export const useDocumentStore = defineStore('pixelDocument', {
         y / this.zoom.current
       ])
     },
+    /***************************************************************************
+     * Color
+     ***************************************************************************/
     setColor(color) {
       this.history.add({
         type: 'setColor',
@@ -1139,17 +1161,18 @@ export const useDocumentStore = defineStore('pixelDocument', {
     setColorMode(colorMode) {
       this.colorMode = colorMode
     },
+    /***************************************************************************
+     * Palette
+     ***************************************************************************/
     async loadPalette() {
       const [fileHandle] = await window.showOpenFilePicker({
         types: PaletteTypes,
         excludeAcceptAllOption: true,
         multiple: false
       })
-      if (fileHandle.kind === 'file')
-      {
+      if (fileHandle.kind === 'file') {
         const file = await fileHandle.getFile()
-        if (/(.*)\.gpl$/i.test(file.name))
-        {
+        if (/(.*)\.gpl$/i.test(file.name)) {
           const palette = await GIMP.load(file)
           this.palette.splice(0, this.palette.length, ...palette)
         }
@@ -1179,6 +1202,9 @@ export const useDocumentStore = defineStore('pixelDocument', {
       const [removedColor] = this.palette.splice(index, 1)
       console.log(removedColor)
     },
+    /***************************************************************************
+     * Frames
+     ***************************************************************************/
     addFrame() {
       if (!this.animation) return
       for (const layer of this.layers.list) {
@@ -1207,10 +1233,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
       if (!this.animation) return
       for (const layer of this.layers) {
         if (!layer.isStatic) {
-          const [removedFrame] = layer.frames.splice(
-            this.animation.current,
-            1
-          )
+          const [removedFrame] = layer.frames.splice(this.animation.current, 1)
           console.log('Frame', removedFrame, 'removed')
         }
       }
