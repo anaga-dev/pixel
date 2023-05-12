@@ -599,13 +599,15 @@ export const useDocumentStore = defineStore('pixelDocument', {
             )
           } else {
             const sizeHalf = size / 2
+            const subSizeHalf = size % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+            const addSizeHalf = size % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
             if (shape === PencilShape.ROUND) {
               this.ellipse(
                 color,
-                pointer.current.x - sizeHalf,
-                pointer.current.y - sizeHalf,
-                pointer.current.x + sizeHalf,
-                pointer.current.y + sizeHalf,
+                pointer.current.x - subSizeHalf,
+                pointer.current.y - subSizeHalf,
+                pointer.current.x + addSizeHalf,
+                pointer.current.y + addSizeHalf,
                 false,
                 true,
                 false
@@ -613,10 +615,10 @@ export const useDocumentStore = defineStore('pixelDocument', {
             } else if (shape === PencilShape.SQUARE) {
               this.rectangle(
                 color,
-                pointer.current.x - sizeHalf,
-                pointer.current.y - sizeHalf,
-                pointer.current.x + sizeHalf,
-                pointer.current.y + sizeHalf,
+                pointer.current.x - subSizeHalf,
+                pointer.current.y - subSizeHalf,
+                pointer.current.x + addSizeHalf,
+                pointer.current.y + addSizeHalf,
                 false,
                 true,
                 false
@@ -641,6 +643,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
               pointer.current.x - pointer.previous.x,
               pointer.current.y - pointer.previous.y
             )
+
             for (let step = 0; step < steps; step++) {
               const p = step / steps
               const x = Interpolation.linear(p, pointer.previous.x, pointer.current.x)
