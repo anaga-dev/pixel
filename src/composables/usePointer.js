@@ -1,3 +1,4 @@
+import { isRef } from 'vue'
 import addEventListeners from './addEventListeners'
 import removeEventListeners from './removeEventListeners'
 import useEventListeners from './useEventListeners'
@@ -68,6 +69,7 @@ export function usePointer(element, callback, mode = 'down') {
       console.log(rel.x, rel.y)
     }
     */
+
     if (e.type === 'pointermove' || e.type === 'pointerup') {
       previous.x = current.x
       previous.y = current.y

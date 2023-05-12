@@ -586,7 +586,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
           ? this.pencil.size
           : this.eraser.size
 
-        const shape = this.tool === Tool.SHAPE
+        const shape = this.tool === Tool.PENCIL
           ? this.pencil.shape
           : this.eraser.shape
 
