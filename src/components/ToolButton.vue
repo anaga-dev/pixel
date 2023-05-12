@@ -9,14 +9,16 @@ import Button from '@/components/Button.vue'
 
 const props = defineProps({
   active: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   label: {
     type: String,
-    required: true
+    required: false
   },
   disabled: {
-    type: Boolean
+    type: Boolean,
+    default: false
   }
 })
 </script>

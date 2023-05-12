@@ -393,7 +393,7 @@ export function fillEllipse(imageData, px1, py1, px2, py2, color) {
 }
 
 /**
- * Strokes a ellipse
+ * Strokes a ellipse.
  *
  * @see https://github.com/aseprite/aseprite/blob/25fbe786f8353a2ddb57de3bcc5db00066cc9ca6/src/doc/algo.cpp
  * @see http://members.chello.at/easyfilter/bresenham.html
@@ -451,7 +451,7 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color) {
 }
 
 /**
- * Draws a ellipse
+ * Draws a ellipse.
  *
  * @param {ImageData} imageData
  * @param {number} px1
@@ -470,6 +470,7 @@ export function ellipse(imageData, px1, py1, px2, py2, color, filled = false) {
 }
 
 /**
+ * Compares two ImageData and returns true if the are equals.
  *
  * @param {ImageData} a
  * @param {ImageData} b
@@ -488,7 +489,7 @@ export function equals(a, b) {
 }
 
 /**
- * Clone an ImageData
+ * Clone an ImageData.
  *
  * @param {ImageData} imageData
  * @returns {ImageData}
@@ -498,7 +499,7 @@ export function clone(imageData) {
 }
 
 /**
- * Copy sourceImageData to targetImageData
+ * Copy sourceImageData to targetImageData.
  *
  * @param {ImageData} targetImageData
  * @param {ImageData} sourceImageData
@@ -739,7 +740,6 @@ export function flipVertically(targetImageData, sourceImageData) {
       putColor(targetImageData, x, fy, topColor)
     }
   }
-
   return targetImageData
 }
 

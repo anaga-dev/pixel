@@ -28,6 +28,7 @@ import Layer from '@/composables/Layer'
 import TransformMode from '@/enums/TransformMode'
 import PaletteTypes from '@/constants/PaletteTypes'
 import GIMP from '@/formats/palettes/GIMP'
+import Interpolation from '../math/Interpolation'
 
 // TODO: Creo que una buena cantidad de este código se podrían convertir
 // en composables que más tarde utilicemos en las stores.
@@ -74,12 +75,15 @@ export const useDocumentStore = defineStore('pixelDocument', {
     animation: null,
     pencil: {
       shape: PencilShape.ROUND, // round, square, matrix-dither
-      size: 1, // min: 1, max: 32px
+      size: 1, // min: 1, max: 32px,
+      sizeHalf: 0,
+      dither: 7,
       pixelPerfect: false
     },
     eraser: {
       shape: EraserShape.ROUND, // round, square, matrix-dither
       size: 1,
+      sizeHalf: 0,
       dither: 7,
       alignment: DitherAlignment.CANVAS
     },
@@ -204,6 +208,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     setPencilSize(size) {
       this.pencil.size = size
+      this.pencil.sizeHalf = size / 2
     },
     setEraserShape(shape) {
       this.eraser.shape = shape
@@ -250,7 +255,6 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.symmetry.axis = axis
     },
     setTool(tool) {
-      // NOTA: no tengo muy claro si esto debería ser una acción de Ctrl+z
       this.history.add({
         type: 'setTool',
         payload: {
@@ -258,17 +262,6 @@ export const useDocumentStore = defineStore('pixelDocument', {
           previousTool: this.tool
         }
       })
-      /*
-      TODO: Debería ver esto con Omar
-      if (this.tool === Tool.SELECT && tool !== this.tool) {
-        this.selectionMaskContext.clearRect(
-          0,
-          0,
-          this.selectionMaskCanvas.width,
-          this.selectionMaskCanvas.height
-        )
-      }
-      */
       this.tool = tool
     },
     eyeDropper(x, y) {
@@ -311,19 +304,13 @@ export const useDocumentStore = defineStore('pixelDocument', {
       // FIXME: Cuando el color es el inicial #000 por algún motivo
       // no pinta bien el alpha.
       if (!this.fill.contiguous) {
+        console.log('Filling all!!!')
         this.doLayerPaintOperation((imageData) =>
           ImageDataUtils.replaceColorAt(imageData, x, y, Color.toUint8(color))
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
-          this.doSymmetry2Operation(
-            (imageData, x, y, color) =>
-              ImageDataUtils.fill(imageData, x, y, Color.toUint8(color)),
-            imageData,
-            x,
-            y,
-            color
-          )
+          ImageDataUtils.fill(imageData, x, y, Color.toUint8(color))
         )
       }
     },
@@ -450,8 +437,8 @@ export const useDocumentStore = defineStore('pixelDocument', {
         )
       }
     },
-    rectangle(color, x1, y1, x2, y2, isTemp) {
-      if (this.shape.lockAspectRatio) {
+    rectangle(color, x1, y1, x2, y2, isTemp = false, isFilled = this.shape.filled, lockAspectRatio = this.shape.lockAspectRatio) {
+      if (lockAspectRatio) {
         // FIXME: En los bordes esto se comporta de forma bastante rara
         // y puede crear formas que no son "1:1".
         const width = x2 - x1
@@ -475,7 +462,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
                 x2,
                 y2,
                 Color.toUint8(color),
-                this.shape.filled
+                isFilled
               ),
             imageData,
             x1,
@@ -496,7 +483,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
                 x2,
                 y2,
                 Color.toUint8(color),
-                this.shape.filled
+                isFilled
               ),
             imageData,
             x1,
@@ -508,8 +495,8 @@ export const useDocumentStore = defineStore('pixelDocument', {
         )
       }
     },
-    ellipse(color, x1, y1, x2, y2, isTemp) {
-      if (this.shape.lockAspectRatio) {
+    ellipse(color, x1, y1, x2, y2, isTemp = false, isFilled = this.shape.filled, lockAspectRatio = this.shape.lockAspectRatio) {
+      if (lockAspectRatio) {
         // FIXME: En los bordes esto se comporta de forma bastante rara
         // y puede crear formas que no son "1:1".
         const width = x2 - x1
@@ -533,7 +520,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
                 x2,
                 y2,
                 Color.toUint8(color),
-                this.shape.filled
+                isFilled
               ),
             imageData,
             x1,
@@ -554,7 +541,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
                 x2,
                 y2,
                 Color.toUint8(color),
-                this.shape.filled
+                isFilled
               ),
             imageData,
             x1,
@@ -590,37 +577,101 @@ export const useDocumentStore = defineStore('pixelDocument', {
         }
         return
       }
-      if (this.tool === Tool.PENCIL && this.pointer.pressure > 0) {
+      if ((this.tool === Tool.PENCIL || this.tool === Tool.ERASER) && this.pointer.pressure > 0) {
+        const color = this.tool === Tool.PENCIL
+          ? this.color
+          : 'rgba(0,0,0,0)'
+
+        const size = this.tool === Tool.PENCIL
+          ? this.pencil.size
+          : this.eraser.size
+
+        const shape = this.tool === Tool.SHAPE
+          ? this.pencil.shape
+          : this.eraser.shape
+
         if (e.type === 'pointerdown') {
-          this.putColor(
-            this.color,
-            this.pointer.current.x,
-            this.pointer.current.y
-          )
+          if (this.pencil.size === 1) {
+            this.putColor(
+              color,
+              this.pointer.current.x,
+              this.pointer.current.y
+            )
+          } else {
+            const sizeHalf = size / 2
+            if (shape === PencilShape.ROUND) {
+              this.ellipse(
+                color,
+                this.pointer.current.x - sizeHalf,
+                this.pointer.current.y - sizeHalf,
+                this.pointer.current.x + sizeHalf,
+                this.pointer.current.y + sizeHalf,
+                false,
+                true,
+                false
+              )
+            } else if (shape === PencilShape.SQUARE) {
+              this.rectangle(
+                color,
+                this.pointer.current.x - sizeHalf,
+                this.pointer.current.y - sizeHalf,
+                this.pointer.current.x + sizeHalf,
+                this.pointer.current.y + sizeHalf,
+                false,
+                true,
+                false
+              )
+            } else if (shape === PencilShape.DITHER) {
+              // TODO:
+            }
+          }
         } else if (e.type === 'pointermove') {
-          this.line(
-            this.color,
-            this.pointer.current.x,
-            this.pointer.current.y,
-            this.pointer.previous.x,
-            this.pointer.previous.y
-          )
-        }
-      } else if (this.tool === Tool.ERASER && this.pointer.pressure > 0) {
-        if (e.type === 'pointerdown') {
-          this.putColor(
-            'rgba(0,0,0,0)',
-            this.pointer.current.x,
-            this.pointer.current.y
-          )
-        } else if (e.type === 'pointermove') {
-          this.line(
-            'rgba(0,0,0,0)',
-            this.pointer.current.x,
-            this.pointer.current.y,
-            this.pointer.previous.x,
-            this.pointer.previous.y
-          )
+          if (size === 1) {
+            this.line(
+              color,
+              this.pointer.current.x,
+              this.pointer.current.y,
+              this.pointer.previous.x,
+              this.pointer.previous.y
+            )
+          } else {
+            const sizeHalf = size / 2
+
+            const steps = Math.hypot(
+              this.pointer.current.x - this.pointer.previous.x,
+              this.pointer.current.y - this.pointer.previous.y
+            )
+            for (let step = 0; step < steps; step++) {
+              const p = step / steps
+              const x = Interpolation.linear(p, this.pointer.previous.x, this.pointer.current.x)
+              const y = Interpolation.linear(p, this.pointer.previous.y, this.pointer.current.y)
+              if (shape === PencilShape.ROUND) {
+                this.ellipse(
+                  color,
+                  x - sizeHalf,
+                  y - sizeHalf,
+                  x + sizeHalf,
+                  y + sizeHalf,
+                  false,
+                  true,
+                  false
+                )
+              } else if (shape === PencilShape.SQUARE) {
+                this.rectangle(
+                  color,
+                  x - sizeHalf,
+                  y - sizeHalf,
+                  x + sizeHalf,
+                  y + sizeHalf,
+                  false,
+                  true,
+                  false
+                )
+              } else if (shape === PencilShape.DITHER) {
+                // TODO:
+              }
+            }
+          }
         }
       } else if (this.tool === Tool.FILL && this.pointer.pressure > 0) {
         if (this.fill.type === FillType.ERASE) {

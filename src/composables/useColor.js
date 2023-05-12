@@ -1,6 +1,11 @@
 import { reactive, computed } from 'vue'
 import Color from '@/color/Color'
 
+/**
+ *
+ * @param {string} string
+ * @returns {Color}
+ */
 export function useColor(string) {
   const max = (r, g, b) => Math.max(r, g, b)
   const min = (r, g, b) => Math.min(r, g, b)
