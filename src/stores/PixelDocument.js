@@ -568,16 +568,16 @@ export const useDocumentStore = defineStore('pixelDocument', {
         ImageDataUtils.flipVertically(imageData)
       })
     },
-    useTool(e) {
+    useTool(e, pointer) {
       // TODO: Todo este comportamiento es MUY mejorable, tengo que ver cómo
       // implementar todo esto de otra forma.
       if (e.ctrlKey || e.buttons === 4) {
-        if (this.pointer.pressure > 0) {
+        if (pointer.pressure > 0) {
           this.moveBy(e.movementX, e.movementY)
         }
         return
       }
-      if ((this.tool === Tool.PENCIL || this.tool === Tool.ERASER) && this.pointer.pressure > 0) {
+      if ((this.tool === Tool.PENCIL || this.tool === Tool.ERASER) && pointer.pressure > 0) {
         const color = this.tool === Tool.PENCIL
           ? this.color
           : 'rgba(0,0,0,0)'
@@ -594,18 +594,18 @@ export const useDocumentStore = defineStore('pixelDocument', {
           if (this.pencil.size === 1) {
             this.putColor(
               color,
-              this.pointer.current.x,
-              this.pointer.current.y
+              pointer.current.x,
+              pointer.current.y
             )
           } else {
             const sizeHalf = size / 2
             if (shape === PencilShape.ROUND) {
               this.ellipse(
                 color,
-                this.pointer.current.x - sizeHalf,
-                this.pointer.current.y - sizeHalf,
-                this.pointer.current.x + sizeHalf,
-                this.pointer.current.y + sizeHalf,
+                pointer.current.x - sizeHalf,
+                pointer.current.y - sizeHalf,
+                pointer.current.x + sizeHalf,
+                pointer.current.y + sizeHalf,
                 false,
                 true,
                 false
@@ -613,10 +613,10 @@ export const useDocumentStore = defineStore('pixelDocument', {
             } else if (shape === PencilShape.SQUARE) {
               this.rectangle(
                 color,
-                this.pointer.current.x - sizeHalf,
-                this.pointer.current.y - sizeHalf,
-                this.pointer.current.x + sizeHalf,
-                this.pointer.current.y + sizeHalf,
+                pointer.current.x - sizeHalf,
+                pointer.current.y - sizeHalf,
+                pointer.current.x + sizeHalf,
+                pointer.current.y + sizeHalf,
                 false,
                 true,
                 false
@@ -629,22 +629,22 @@ export const useDocumentStore = defineStore('pixelDocument', {
           if (size === 1) {
             this.line(
               color,
-              this.pointer.current.x,
-              this.pointer.current.y,
-              this.pointer.previous.x,
-              this.pointer.previous.y
+              pointer.current.x,
+              pointer.current.y,
+              pointer.previous.x,
+              pointer.previous.y
             )
           } else {
             const sizeHalf = size / 2
 
             const steps = Math.hypot(
-              this.pointer.current.x - this.pointer.previous.x,
-              this.pointer.current.y - this.pointer.previous.y
+              pointer.current.x - pointer.previous.x,
+              pointer.current.y - pointer.previous.y
             )
             for (let step = 0; step < steps; step++) {
               const p = step / steps
-              const x = Interpolation.linear(p, this.pointer.previous.x, this.pointer.current.x)
-              const y = Interpolation.linear(p, this.pointer.previous.y, this.pointer.current.y)
+              const x = Interpolation.linear(p, pointer.previous.x, pointer.current.x)
+              const y = Interpolation.linear(p, pointer.previous.y, pointer.current.y)
               if (shape === PencilShape.ROUND) {
                 this.ellipse(
                   color,
@@ -673,18 +673,18 @@ export const useDocumentStore = defineStore('pixelDocument', {
             }
           }
         }
-      } else if (this.tool === Tool.FILL && this.pointer.pressure > 0) {
+      } else if (this.tool === Tool.FILL && pointer.pressure > 0) {
         if (this.fill.type === FillType.ERASE) {
           this.fillColor(
             'rgba(0,0,0,0)',
-            this.pointer.current.x,
-            this.pointer.current.y
+            pointer.current.x,
+            pointer.current.y
           )
         } else if (this.fill.type === FillType.FILL) {
           this.fillColor(
             this.color,
-            this.pointer.current.x,
-            this.pointer.current.y
+            pointer.current.x,
+            pointer.current.y
           )
         }
       } else if (this.tool === Tool.SHAPE) {
@@ -694,80 +694,80 @@ export const useDocumentStore = defineStore('pixelDocument', {
         if (this.shape.type === ShapeType.LINE) {
           if (
             e.type === 'pointerdown' ||
-            (e.type === 'pointermove' && this.pointer.pressure > 0)
+            (e.type === 'pointermove' && pointer.pressure > 0)
           ) {
             this.line(
               this.color,
-              this.pointer.start.x,
-              this.pointer.start.y,
-              this.pointer.current.x,
-              this.pointer.current.y,
+              pointer.start.x,
+              pointer.start.y,
+              pointer.current.x,
+              pointer.current.y,
               'temp'
             )
           } else if (e.type === 'pointerup') {
             this.line(
               this.color,
-              this.pointer.start.x,
-              this.pointer.start.y,
-              this.pointer.end.x,
-              this.pointer.end.y
+              pointer.start.x,
+              pointer.start.y,
+              pointer.end.x,
+              pointer.end.y
             )
           }
         } else if (this.shape.type === ShapeType.RECTANGLE) {
           if (
             e.type === 'pointerdown' ||
-            (e.type === 'pointermove' && this.pointer.pressure > 0)
+            (e.type === 'pointermove' && pointer.pressure > 0)
           ) {
             this.rectangle(
               this.color,
-              this.pointer.start.x,
-              this.pointer.start.y,
-              this.pointer.current.x,
-              this.pointer.current.y,
+              pointer.start.x,
+              pointer.start.y,
+              pointer.current.x,
+              pointer.current.y,
               'temp'
             )
           } else if (e.type === 'pointerup') {
             this.rectangle(
               this.color,
-              this.pointer.start.x,
-              this.pointer.start.y,
-              this.pointer.end.x,
-              this.pointer.end.y
+              pointer.start.x,
+              pointer.start.y,
+              pointer.end.x,
+              pointer.end.y
             )
           }
         } else if (this.shape.type === ShapeType.ELLIPSE) {
           if (
             e.type === 'pointerdown' ||
-            (e.type === 'pointermove' && this.pointer.pressure > 0)
+            (e.type === 'pointermove' && pointer.pressure > 0)
           ) {
             this.ellipse(
               this.color,
-              this.pointer.start.x,
-              this.pointer.start.y,
-              this.pointer.current.x,
-              this.pointer.current.y,
+              pointer.start.x,
+              pointer.start.y,
+              pointer.current.x,
+              pointer.current.y,
               'temp'
             )
           } else if (e.type === 'pointerup') {
             this.ellipse(
               this.color,
-              this.pointer.start.x,
-              this.pointer.start.y,
-              this.pointer.end.x,
-              this.pointer.end.y
+              pointer.start.x,
+              pointer.start.y,
+              pointer.end.x,
+              pointer.end.y
             )
           }
         }
-      } else if (this.tool === Tool.DROPPER && this.pointer.pressure > 0) {
-        this.eyeDropper(this.pointer.current.x, this.pointer.current.y)
-      } else if (this.tool === Tool.TRANSFORM && this.pointer.pressure > 0) {
+      } else if (this.tool === Tool.DROPPER && pointer.pressure > 0) {
+        this.eyeDropper(pointer.current.x, pointer.current.y)
+      } else if (this.tool === Tool.TRANSFORM && pointer.pressure > 0) {
         // TODO: Esto es MUY mejorable.
-        const x = this.pointer.relative.x
-        const y = this.pointer.relative.y
+        const x = pointer.relative.x
+        const y = pointer.relative.y
         this.transformation(x, y)
-      } else if (this.tool === Tool.SELECT && this.pointer.pressure > 0) {
-        const x = this.pointer.current.x
-        const y = this.pointer.current.y
+      } else if (this.tool === Tool.SELECT && pointer.pressure > 0) {
+        const x = pointer.current.x
+        const y = pointer.current.y
         ImageDataUtils.putColor(
           this.selectionMaskImageData,
           x,
@@ -1059,12 +1059,6 @@ export const useDocumentStore = defineStore('pixelDocument', {
 
       this.selectionMaskCanvas = Canvas.create(this.width, this.height)
       this.selectionMaskImageData = null
-
-      // TODO: Creo que esto habría que cambiarlo
-      // por algo mejor. No me termina de gustar la
-      // forma en la que está implementado.
-      this.pointer = usePointer(this.canvas, this.useTool)
-      this.pointer.startListening()
 
       this.animation = useAnimation({
         callback: () => this.redrawAll()

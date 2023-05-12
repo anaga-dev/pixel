@@ -1,4 +1,3 @@
-import { isRef, ref, reactive, computed } from 'vue'
 import addEventListeners from './addEventListeners'
 import removeEventListeners from './removeEventListeners'
 import useEventListeners from './useEventListeners'
@@ -8,39 +7,37 @@ import useEventListeners from './useEventListeners'
  * @param {Element|Ref<Element>} element
  */
 export function usePointer(element, callback, mode = 'down') {
-  const page = reactive({ x: 0, y: 0 })
-  const client = reactive({ x: 0, y: 0 })
-  const offset = reactive({ x: 0, y: 0 })
-  const previous = reactive({ x: 0, y: 0 })
-  const current = reactive({ x: 0, y: 0 })
-  const start = reactive({ x: 0, y: 0 })
-  const end = reactive({ x: 0, y: 0 })
-  const screen = reactive({ x: 0, y: 0 })
-  const tilt = reactive({ x: 0, y: 0 })
-  const movement = reactive({ x: 0, y: 0 })
-  const absolute = reactive({ x: 0, y: 0 })
-  const relative = reactive({ x: 0, y: 0 })
-  const rel = reactive({ x: 0, y: 0 })
-  const twist = ref(0)
-  const id = ref('')
-  const type = ref('')
-  const pressure = ref(0)
-  const tangentialPressure = ref(0)
-  const width = ref(0)
-  const height = ref(0)
-  const isPrimary = ref(0)
-  const target = ref()
-  const currentTarget = ref()
-  const isMouse = computed(() => type.value === 'mouse')
-  const isPen = computed(() => type.value === 'pen')
-  const isTouch = computed(() => type.value === 'touch')
-  const isMultiTouch = computed(() => navigator.maxTouchPoints > 1)
+  const page = { x: 0, y: 0 }
+  const client = { x: 0, y: 0 }
+  const offset = { x: 0, y: 0 }
+  const previous = { x: 0, y: 0 }
+  const current = { x: 0, y: 0 }
+  const start = { x: 0, y: 0 }
+  const end = { x: 0, y: 0 }
+  const screen = { x: 0, y: 0 }
+  const tilt = { x: 0, y: 0 }
+  const movement = { x: 0, y: 0 }
+  const absolute = { x: 0, y: 0 }
+  const relative = { x: 0, y: 0 }
 
   /**
    *
    * @param {PointerEvent} e
    */
   const onPointer = (e) => {
+    const twist = e.twist
+    const id = e.pointerId
+    const type = e.pointerType
+    const pressure = e.pressure
+    const tangentialPressure = e.tangentialPressure
+    const width = e.width
+    const height = e.height
+    const isPrimary = e.isPrimary
+    const isMouse = (() => type.value === 'mouse')()
+    const isPen = (() => type.value === 'pen')()
+    const isTouch = (() => type.value === 'touch')()
+    const isMultiTouch = (() => navigator.maxTouchPoints > 1)()
+
     if (mode === 'down') {
       if (e.type === 'pointerdown') {
         addEventListeners(window, ['pointermove', 'pointerup'], onPointer)
@@ -94,66 +91,45 @@ export function usePointer(element, callback, mode = 'down') {
       const domTarget = isRef(element) ? element.value : element
       domTarget.setPointerCapture(e.pointerId)
     }
-    target.value = e.target
-    currentTarget.value = e.currentTarget
-    id.value = e.pointerId
-    type.value = e.pointerType
-    isPrimary.value = e.isPrimary
-    pressure.value = e.pressure
-    tangentialPressure.value = e.tangentialPressure
-    width.value = e.width
-    height.value = e.height
-    twist.value = e.twist
-    callback(e)
+    callback(e, {
+      page,
+      client,
+      offset,
+      start,
+      end,
+      current,
+      previous,
+      relative,
+      absolute,
+      screen,
+      movement,
+      tilt,
+      twist,
+      id,
+      type,
+      pressure,
+      tangentialPressure,
+      width,
+      height,
+      isPrimary,
+      isMouse,
+      isPen,
+      isTouch,
+      isMultiTouch
+    })
   }
 
-  function startListening() {
-    if (mode === 'down') {
-      addEventListeners(element, ['pointerdown'], onPointer)
-    } else {
-      addEventListeners(element, ['pointerdown', 'pointerup', 'pointermove'], onPointer)
-    }
+  if (mode === 'down') {
+    useEventListeners(element, ['pointerdown'], onPointer)
+  } else {
+    useEventListeners(
+      element,
+      ['pointerdown', 'pointerup', 'pointermove'],
+      onPointer
+    )
   }
 
-  function stopListening() {
-    if (mode === 'down') {
-      removeEventListeners(element, ['pointerdown'], onPointer)
-      removeEventListeners(window, ['pointermove', 'pointerup'], onPointer)
-    } else {
-      removeEventListeners(element, ['pointerdown', 'pointerup', 'pointermove'], onPointer)
-    }
-  }
-
-  return {
-    startListening,
-    stopListening,
-    target,
-    currentTarget,
-    page,
-    client,
-    offset,
-    start,
-    end,
-    current,
-    previous,
-    relative,
-    absolute,
-    screen,
-    movement,
-    tilt,
-    twist,
-    id,
-    type,
-    pressure,
-    tangentialPressure,
-    width,
-    height,
-    isPrimary,
-    isMouse,
-    isPen,
-    isTouch,
-    isMultiTouch
-  }
+  return {}
 }
 
 export default usePointer
