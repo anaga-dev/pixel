@@ -3,15 +3,15 @@
     <Icon i="menu" />
   </Button>
   <Dropdown v-if="ui.isShowingGeneralSettings" class="menu" @close="ui.toggleGeneralSettings">
-    <Button label="New file">New file</Button>
-    <Button label="Open file">Open file</Button>
-    <Button label="Save file" @click="pixelDocument.exportAs">Save file</Button>
+    <Button label="New file" @click="pixelDocument.newFile">New file</Button>
+    <Button label="Open file" @click="pixelDocument.loadFile">Open file</Button>
+    <Button label="Save file" @click="pixelDocument.saveFileAs">Save file</Button>
   </Dropdown>
 </template>
 
 <script setup>
 import { useUIStore } from '@/stores/UI'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import Icon from '@/components/Icon.vue'
 import Button from '@/components/Button.vue'
 import Dropdown from '@/components/Dropdown.vue'

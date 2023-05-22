@@ -17,8 +17,8 @@
           :step="1"
           :modelValue="layer.opacityPercentage.value"
           @update:modelValue="document.setLayerOpacity(layer, $event)" />
-        <Button :label="layer.visible ? 'Hide layer' : 'Show layer'" variant="ghost" @click="document.toggleLayer(layer)">
-          <Icon :i="layer.visible ? 'visible' : 'hidden'" />
+        <Button :label="layer.visible.value ? 'Hide layer' : 'Show layer'" variant="ghost" @click="document.toggleLayer(layer)">
+          <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
         </Button>
       </div>
     </Field>
@@ -43,7 +43,7 @@
 
 <script setup>
 import { readonly, ref, unref } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import Dropdown from '@/components/Dropdown.vue'
 import Button from '@/components/Button.vue'
 import Field from '@/components/Field.vue'

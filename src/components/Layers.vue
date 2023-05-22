@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import Layer from '@/components/Layer.vue'
 
 const document = useDocumentStore()

@@ -76,7 +76,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import { useUIStore } from '@/stores/UI'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'

@@ -27,6 +27,14 @@ export function create(width, height) {
   return canvas
 }
 
+export function createOrGet(canvas, width, height) {
+  if (!canvas)
+    return create(width, height)
+
+  resizeTo(canvas, width, height)
+  return canvas
+}
+
 /**
  * Tries to create a OffscreenCanvas if supported by the browser.
  * Otherwise, it creates a regular canvas.
@@ -53,6 +61,15 @@ export function createOffscreen(width, height) {
  */
 export function createWithClasses(width, height, ...classNames) {
   const canvas = create(width, height)
+  classNames.forEach((className) => canvas.classList.add(className))
+  return canvas
+}
+
+export function createOrGetWithClasses(canvas, width, height, ...classNames) {
+  if (!canvas)
+    return createWithClasses(width, height, ...classNames)
+
+  resizeTo(canvas, width, height)
   classNames.forEach((className) => canvas.classList.add(className))
   return canvas
 }
@@ -141,8 +158,10 @@ export function createBlob(canvas, type, quality) {
 
 export default {
   create,
+  createOrGet,
   createOffscreen,
   createWithClasses,
+  createOrGetWithClasses,
   resize,
   resizeTo,
   duplicate,

@@ -29,8 +29,8 @@
 </template>
 
 <script setup>
-import { onMounted, readonly } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { onMounted, ref, readonly } from 'vue'
+import { useDocumentStore } from '@/stores/Document'
 import { useColor } from '@/composables/useColor'
 import HuePicker from '@/components/HuePicker.vue'
 import CombinedColorPicker from '@/components/CombinedColorPicker.vue'
@@ -46,7 +46,7 @@ import Tab from '@/components/Tab.vue'
 
 const documentStore = useDocumentStore()
 
-const previous = readonly(documentStore.color)
+const previous = readonly(ref(documentStore.color))
 const current = useColor(documentStore.color)
 
 function onUpdateHex(color) {

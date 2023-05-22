@@ -27,6 +27,7 @@ import AnimationState from '@/enums/AnimationState'
 import Layer from '@/composables/Layer'
 import TransformMode from '@/enums/TransformMode'
 import PaletteTypes from '@/constants/PaletteTypes'
+import ImageTypes from '@/constants/ImageTypes'
 import GIMP from '@/formats/palettes/GIMP'
 import Interpolation from '../math/Interpolation'
 
@@ -34,7 +35,7 @@ import Interpolation from '../math/Interpolation'
 // TODO: Creo que una buena cantidad de este código se podrían convertir
 // en composables que más tarde utilicemos en las stores.
 
-export const useDocumentStore = defineStore('pixelDocument', {
+export const useDocumentStore = defineStore('documentStore', {
   state: () => ({
     modal: '',
     width: 0,
@@ -163,11 +164,13 @@ export const useDocumentStore = defineStore('pixelDocument', {
         )
         const frameContext = CanvasContext2D.get(frameCanvas)
         for (const layer of this.layers.list) {
-          if (!layer.visible) continue
+          if (!layer.visible.value) {
+            continue
+          }
           frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
           frameContext.save()
-          frameContext.globalAlpha = layer.opacity
-          frameContext.globalCompositeOperation = layer.blendMode
+          frameContext.globalAlpha = layer.opacity.value
+          frameContext.globalCompositeOperation = layer.blendMode.value
           layer.context.putImageData(layer.frames[frame], 0, 0)
           frameContext.drawImage(layer.canvas, 0, 0)
           frameContext.restore()
@@ -188,7 +191,8 @@ export const useDocumentStore = defineStore('pixelDocument', {
       if (!this.layer) {
         return null
       }
-      return this.layer.frames[this.animation.current]
+      const frame = this.animation.current
+      return this.layer.frames[frame]
     }
   },
   actions: {
@@ -892,13 +896,18 @@ export const useDocumentStore = defineStore('pixelDocument', {
     redraw() {
       const context = CanvasContext2D.get(this.canvas)
       context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+      const frame = this.animation.current
       for (const layer of this.layers.list) {
-        if (!layer.visible) continue
+        if (!layer.visible.value) {
+          console.log('layer not visible', layer)
+          continue
+        }
         context.save()
-        context.globalAlpha = layer.opacity
-        context.globalCompositeOperation = layer.blendMode
-        layer.context.putImageData(layer.frames[this.animation.current], 0, 0)
+        context.globalAlpha = layer.opacity.value
+        context.globalCompositeOperation = layer.blendMode.value
+        layer.context.putImageData(layer.frames[frame], 0, 0)
         context.drawImage(layer.canvas, 0, 0)
+        console.log('layer drawing', layer)
         context.restore()
       }
     },
@@ -916,18 +925,245 @@ export const useDocumentStore = defineStore('pixelDocument', {
       for (const frame of this.frames) {
         const context = CanvasContext2D.get(frame.canvas)
         for (const layer of this.layers.list) {
-          if (!layer.visible) continue
+          if (!layer.visible.value) continue
           context.clearRect(0, 0, layer.canvas.width, layer.canvas.height)
           context.save()
-          context.globalAlpha = layer.opacity
-          context.globalCompositeOperation = layer.blendMode
+          context.globalAlpha = layer.opacity.value
+          context.globalCompositeOperation = layer.blendMode.value
           layer.context.putImageData(layer.frames[frame.frame], 0, 0)
           context.drawImage(layer.canvas, 0, 0)
           context.restore()
         }
       }
     },
-    create(width, height, palette) {
+    initDrawing() {
+      this.drawing = false
+      // TODO: Esto habría que rehacerlo todo para que no utilice drawImage
+      // si no putImageData.
+      this.drawingCanvas = Canvas.createOrGet(this.drawingCanvas, this.width, this.height)
+      this.drawingImageData = new ImageData(this.width, this.height)
+      this.copyCanvas = Canvas.createOrGet(this.copyCanvas, this.width, this.height)
+      this.copyImageData = new ImageData(this.width, this.height)
+      this.previewCanvas = Canvas.createOrGetWithClasses(
+        this.previewCanvas,
+        this.width,
+        this.height,
+        'preview-canvas'
+      )
+      this.canvas = Canvas.createOrGetWithClasses(this.canvas, this.width, this.height, 'pixel-canvas')
+      this.canvasRect = null
+    },
+    initSelection() {
+      this.selectionPolygon = []
+      this.selectionCanvas = Canvas.createOrGet(this.selectionCanvas, this.width, this.height)
+      this.selectionContext = CanvasContext2D.get(this.selectionCanvas)
+
+      const onPointer = (e) => {
+        const { top, left, width, height } = this.canvasRect
+        const x = (e.clientX - left) / width
+        const y = (e.clientY - top) / height
+
+        if (e.type === 'pointerdown') {
+          this.selectionPolygon.length = 0
+          if (this.select.type === SelectType.RECTANGULAR) {
+            this.selectionPolygon.push([x, y], [x, y], [x, y], [x, y])
+          } else if (this.select.type === SelectType.COLOR) {
+            // TODO: Esto debería hacerse en el setter de selectionMaskImageData
+            const selectionMaskContext = CanvasContext2D.get(
+              this.selectionMaskCanvas,
+              {
+                willReadFrequently: true
+              }
+            )
+
+            // Si ya existía un MaskImageData lo utilizamos
+            // si no, creamos uno nuevo utilizando el contexto
+            // del canvas de selección.
+            const selectionMaskImageData = !this.selectionMaskImageData
+              ? selectionMaskContext.createImageData(this.width, this.height)
+              : this.selectionMaskImageData
+
+            // Dependiendo de si estamos añadiendo o sustrayendo
+            // usamos una máscara u otra.
+            const maskColor =
+              this.select.mode === SelectMode.ADD ? [0xff, 0, 0, 0xff] : [0, 0, 0, 0]
+
+            if (!this.select.contiguous) {
+              ImageDataUtils.copySelectedAt(
+                selectionMaskImageData,
+                this.imageData,
+                Math.floor(x * this.width),
+                Math.floor(y * this.height),
+                maskColor
+              )
+            } else {
+              ImageDataUtils.copyContiguousSelectedAt(
+                selectionMaskImageData,
+                this.imageData,
+                Math.floor(x * this.width),
+                Math.floor(y * this.height),
+                maskColor
+              )
+            }
+            this.selectionMaskImageData = selectionMaskImageData
+            selectionMaskContext.putImageData(this.selectionMaskImageData, 0, 0)
+          }
+
+          // TODO: Si el modo de selección de polígonos no es Freehand
+          // y es "rectangular", entonces lo que hacemos es dibujar un polígono
+          // rectangular que se redimensiona según el movimiento del ratón.
+
+          if (this.select.type !== SelectType.COLOR) {
+            window.addEventListener('pointermove', onPointer)
+            window.addEventListener('pointerup', onPointer)
+          } else {
+            return
+          }
+        } else if (e.type === 'pointerup') {
+          window.removeEventListener('pointermove', onPointer)
+          window.removeEventListener('pointerup', onPointer)
+        }
+
+        if (e.type !== 'pointerup') {
+          if (this.select.type === SelectType.FREEHAND) {
+            this.selectionPolygon.push([x, y])
+          } else if (this.select.type === SelectType.RECTANGULAR) {
+            this.selectionPolygon[1][0] = x
+            this.selectionPolygon[2][0] = x
+            this.selectionPolygon[2][1] = y
+            this.selectionPolygon[3][1] = y
+          }
+        } else {
+          // Aquí convertimos el área del polígono en la máscara de selección
+          // es decir, rasterizamos el path en píxeles.
+          const path = new Path2D()
+          for (let index = 0; index < this.selectionPolygon.length; index++) {
+            const [x, y] = this.selectionPolygon[index]
+            const tx = x * this.canvas.width
+            const ty = y * this.canvas.height
+            if (index === 0) {
+              path.moveTo(tx, ty)
+            } else {
+              path.lineTo(tx, ty)
+            }
+          }
+          path.closePath()
+
+          // TODO: Aquí habría que hacer un fill de la máscara de selección
+          //       y obtener esa máscara en un ImageData donde cualquier pixel
+          //       con alpha > 0 es parte de la máscara.
+          const selectionMaskContext = CanvasContext2D.get(this.selectionMaskCanvas, {
+            willReadFrequently: true
+          })
+          // selectionMaskContext.clearRect(0,0,this.selectionMaskCanvas.width,this.selectionMaskCanvas.height)
+          if (this.select.mode === 'add') {
+            selectionMaskContext.globalCompositeOperation = 'source-over'
+          } else if (this.select.mode === 'subtract') {
+            selectionMaskContext.globalCompositeOperation = 'destination-out'
+          }
+          selectionMaskContext.fillStyle = '#f00'
+          selectionMaskContext.fill(path)
+
+          // Obtenemos el ImageData.
+          const selectionMaskImageData = selectionMaskContext.getImageData(
+            0,
+            0,
+            this.selectionMaskCanvas.width,
+            this.selectionMaskCanvas.height
+          )
+          for (
+            let index = 0;
+            index < selectionMaskImageData.data.length;
+            index += 4
+          ) {
+            const alpha = selectionMaskImageData.data[index + 3]
+            if (alpha > 0) {
+              selectionMaskImageData.data[index + 3] = 255
+            }
+          }
+          selectionMaskContext.putImageData(selectionMaskImageData, 0, 0)
+          this.selectionMaskImageData = selectionMaskImageData
+          this.selectionPolygon.length = 0
+
+          // TODO: Continuar aquí
+          /*
+                  const points = []
+                  for (let index = 0; index < this.selectionMaskImageData.data.length - 4; index += 4) {
+                    const mask = this.selectionMaskImageData.data[index]
+                    const nextMask = this.selectionMaskImageData.data[index + 4]
+                    const x = (index / 4) % this.selectionMaskImageData.width
+                    const y = Math.floor((index / 4) / this.selectionMaskImageData.width)
+                    if (mask != nextMask) {
+                      points.push([
+                        x / this.selectionMaskImageData.width,
+                        y / this.selectionMaskImageData.height
+                      ])
+                    }
+                  }
+                  */
+
+          // NO SIRVE
+          /*
+                  const recreate = [points[0], points[1]]
+                  let index = 3;
+                  for (index = 3; index < points.length / 2; index += 2) {
+                    recreate.push(points[index])
+                  }
+                  for (++index; index > 0; index -= 2) {
+                    recreate.push(points[index])
+                  }
+                  */
+          // this.selectionPolygon = points
+          console.log(this.selectionPolygon)
+          console.log(this.selectionMaskImageData)
+        }
+      }
+
+      this.selectionCanvas.addEventListener('pointerdown', onPointer)
+
+      this.selectionMaskCanvas = Canvas.createOrGet(this.selectionMaskCanvas, this.width, this.height)
+      this.selectionMaskImageData = null
+    },
+    initPattern() {
+      function createMatrix() {
+        return new DOMMatrix()
+      }
+
+      const SIZE = 8
+      const SIZE_HALF = SIZE >> 1
+
+      const patternCanvas = Canvas.createOffscreen(SIZE, SIZE)
+      const patternCx = CanvasContext2D.get(patternCanvas)
+      patternCx.fillStyle = '#fff'
+      patternCx.fillRect(0, 0, SIZE, SIZE)
+      patternCx.fillStyle = '#000'
+      patternCx.fillRect(0, 0, SIZE_HALF, SIZE_HALF)
+      patternCx.fillRect(SIZE_HALF, SIZE_HALF, SIZE_HALF, SIZE_HALF)
+      this.patternCanvas = patternCanvas
+      this.patternMatrix = createMatrix()
+      this.pattern = this.selectionContext.createPattern(patternCanvas, 'repeat')
+    },
+    initAnimation() {
+      this.animation = useAnimation({
+        callback: () => this.redrawAll()
+      })
+    },
+    init() {
+      this.initDrawing()
+      this.initSelection()
+      this.initPattern()
+      this.initAnimation()
+    },
+    createFromDocument(document) {
+      this.create(
+        document.width,
+        document.height,
+        document.palette,
+        document.layers
+      )
+      this.redrawAll()
+    },
+    create(width, height, palette = [], layers = [{ name: 'Background', width, height }]) {
       if (!Number.isInteger(width) && width < 0) {
         throw new Error('Invalid width value')
       }
@@ -939,241 +1175,10 @@ export const useDocumentStore = defineStore('pixelDocument', {
       this.height = height
       this.palette = palette
       Vec2.set(this.symmetry.position, this.width >> 1, this.height >> 1)
-      this.layers.add({
-        name: 'Background',
-        width,
-        height
-      })
-      this.drawing = false
-      // TODO: Esto habría que rehacerlo todo para que no utilice drawImage
-      // si no putImageData.
-      this.drawingCanvas = Canvas.create(this.width, this.height)
-      this.drawingImageData = new ImageData(this.width, this.height)
-      this.copyCanvas = Canvas.create(this.width, this.height)
-      this.copyImageData = new ImageData(this.width, this.height)
-      this.previewCanvas = Canvas.createWithClasses(
-        this.width,
-        this.height,
-        'preview-canvas'
-      )
-      this.canvas = Canvas.createWithClasses(
-        this.width,
-        this.height,
-        'pixel-canvas'
-      )
-      this.canvasRect = null
-      if (!this.selectionCanvas) {
-        this.selectionPolygon = []
-        this.selectionCanvas = Canvas.create(this.width, this.height)
-        this.selectionContext = CanvasContext2D.get(this.selectionCanvas)
-
-        const onPointer = (e) => {
-          const { top, left, width, height } = this.canvasRect
-          const x = (e.clientX - left) / width
-          const y = (e.clientY - top) / height
-
-          if (e.type === 'pointerdown') {
-            this.selectionPolygon.length = 0
-            if (this.select.type === SelectType.RECTANGULAR) {
-              this.selectionPolygon.push([x, y], [x, y], [x, y], [x, y])
-            } else if (this.select.type === SelectType.COLOR) {
-              // TODO: Esto debería hacerse en el setter de selectionMaskImageData
-              const selectionMaskContext = CanvasContext2D.get(
-                this.selectionMaskCanvas,
-                {
-                  willReadFrequently: true
-                }
-              )
-
-              // Si ya existía un MaskImageData lo utilizamos
-              // si no, creamos uno nuevo utilizando el contexto
-              // del canvas de selección.
-              const selectionMaskImageData = !this.selectionMaskImageData
-                ? selectionMaskContext.createImageData(this.width, this.height)
-                : this.selectionMaskImageData
-
-              // Dependiendo de si estamos añadiendo o sustrayendo
-              // usamos una máscara u otra.
-              const maskColor =
-                this.select.mode === SelectMode.ADD
-                  ? [0xff, 0, 0, 0xff]
-                  : [0, 0, 0, 0]
-
-              if (!this.select.contiguous) {
-                ImageDataUtils.copySelectedAt(
-                  selectionMaskImageData,
-                  this.imageData,
-                  Math.floor(x * this.width),
-                  Math.floor(y * this.height),
-                  maskColor
-                )
-              } else {
-                ImageDataUtils.copyContiguousSelectedAt(
-                  selectionMaskImageData,
-                  this.imageData,
-                  Math.floor(x * this.width),
-                  Math.floor(y * this.height),
-                  maskColor
-                )
-              }
-              this.selectionMaskImageData = selectionMaskImageData
-              selectionMaskContext.putImageData(
-                this.selectionMaskImageData,
-                0,
-                0
-              )
-            }
-
-            // TODO: Si el modo de selección de polígonos no es Freehand
-            // y es "rectangular", entonces lo que hacemos es dibujar un polígono
-            // rectangular que se redimensiona según el movimiento del ratón.
-
-            if (this.select.type !== SelectType.COLOR) {
-              window.addEventListener('pointermove', onPointer)
-              window.addEventListener('pointerup', onPointer)
-            } else {
-              return
-            }
-          } else if (e.type === 'pointerup') {
-            window.removeEventListener('pointermove', onPointer)
-            window.removeEventListener('pointerup', onPointer)
-          }
-
-          if (e.type !== 'pointerup') {
-            if (this.select.type === SelectType.FREEHAND) {
-              this.selectionPolygon.push([x, y])
-            } else if (this.select.type === SelectType.RECTANGULAR) {
-              this.selectionPolygon[1][0] = x
-              this.selectionPolygon[2][0] = x
-              this.selectionPolygon[2][1] = y
-              this.selectionPolygon[3][1] = y
-            }
-          } else {
-            // Aquí convertimos el área del polígono en la máscara de selección
-            // es decir, rasterizamos el path en píxeles.
-            const path = new Path2D()
-            for (let index = 0; index < this.selectionPolygon.length; index++) {
-              const [x, y] = this.selectionPolygon[index]
-              const tx = x * this.canvas.width
-              const ty = y * this.canvas.height
-              if (index === 0) {
-                path.moveTo(tx, ty)
-              } else {
-                path.lineTo(tx, ty)
-              }
-            }
-            path.closePath()
-
-            // TODO: Aquí habría que hacer un fill de la máscara de selección
-            //       y obtener esa máscara en un ImageData donde cualquier pixel
-            //       con alpha > 0 es parte de la máscara.
-            const selectionMaskContext = CanvasContext2D.get(
-              this.selectionMaskCanvas,
-              {
-                willReadFrequently: true
-              }
-            )
-            // selectionMaskContext.clearRect(0,0,this.selectionMaskCanvas.width,this.selectionMaskCanvas.height)
-            if (this.select.mode === 'add') {
-              selectionMaskContext.globalCompositeOperation = 'source-over'
-            } else if (this.select.mode === 'subtract') {
-              selectionMaskContext.globalCompositeOperation = 'destination-out'
-            }
-            selectionMaskContext.fillStyle = '#f00'
-            selectionMaskContext.fill(path)
-
-            // Obtenemos el ImageData.
-            const selectionMaskImageData = selectionMaskContext.getImageData(
-              0,
-              0,
-              this.selectionMaskCanvas.width,
-              this.selectionMaskCanvas.height
-            )
-            for (
-              let index = 0;
-              index < selectionMaskImageData.data.length;
-              index += 4
-            ) {
-              const alpha = selectionMaskImageData.data[index + 3]
-              if (alpha > 0) {
-                selectionMaskImageData.data[index + 3] = 255
-              }
-            }
-            selectionMaskContext.putImageData(selectionMaskImageData, 0, 0)
-            this.selectionMaskImageData = selectionMaskImageData
-            this.selectionPolygon.length = 0
-
-            // TODO: Continuar aquí
-            /*
-            const points = []
-            for (let index = 0; index < this.selectionMaskImageData.data.length - 4; index += 4) {
-              const mask = this.selectionMaskImageData.data[index]
-              const nextMask = this.selectionMaskImageData.data[index + 4]
-              const x = (index / 4) % this.selectionMaskImageData.width
-              const y = Math.floor((index / 4) / this.selectionMaskImageData.width)
-              if (mask != nextMask) {
-                points.push([
-                  x / this.selectionMaskImageData.width,
-                  y / this.selectionMaskImageData.height
-                ])
-              }
-            }
-            */
-
-            // NO SIRVE
-            /*
-            const recreate = [points[0], points[1]]
-            let index = 3;
-            for (index = 3; index < points.length / 2; index += 2) {
-              recreate.push(points[index])
-            }
-            for (++index; index > 0; index -= 2) {
-              recreate.push(points[index])
-            }
-            */
-            // this.selectionPolygon = points
-            console.log(this.selectionPolygon)
-            console.log(this.selectionMaskImageData)
-          }
-        }
-
-        this.selectionCanvas.addEventListener('pointerdown', onPointer)
-      }
-
-      this.selectionMaskCanvas = Canvas.create(this.width, this.height)
-      this.selectionMaskImageData = null
-
-      this.animation = useAnimation({
-        callback: () => this.redrawAll()
-      })
-
-      function createMatrix() {
-        return new DOMMatrix()
-      }
-
-      // TODO: Esto quizá se podría mover a una función
-      //       de inicialización que no implique la de creación
-      //       del documento.
-      if (!this.patternCanvas) {
-        const SIZE = 8
-        const SIZE_HALF = SIZE >> 1
-
-        const patternCanvas = Canvas.createOffscreen(SIZE, SIZE)
-        const patternCx = CanvasContext2D.get(patternCanvas)
-        patternCx.fillStyle = '#fff'
-        patternCx.fillRect(0, 0, SIZE, SIZE)
-        patternCx.fillStyle = '#000'
-        patternCx.fillRect(0, 0, SIZE_HALF, SIZE_HALF)
-        patternCx.fillRect(SIZE_HALF, SIZE_HALF, SIZE_HALF, SIZE_HALF)
-        this.patternCanvas = patternCanvas
-        this.patternMatrix = createMatrix()
-        this.pattern = this.selectionContext.createPattern(
-          patternCanvas,
-          'repeat'
-        )
-      }
-
+      this.layers.list.length = 0
+      layers.forEach((layer) => this.layers.add(layer))
       this.tool = Tool.PENCIL
+      this.init()
     },
     /***************************************************************************
      * Layers
@@ -1202,7 +1207,7 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     setLayerBlendMode(layer, blendMode) {
       console.log('blend mode', blendMode)
-      layer.blendMode = blendMode
+      layer.blendMode.value = blendMode
       this.redrawAll()
     },
     setLayerOpacity(layer, opacity) {
@@ -1292,7 +1297,11 @@ export const useDocumentStore = defineStore('pixelDocument', {
     /***************************************************************************
      * Palette
      ***************************************************************************/
+    /**
+     * Load palette
+     */
     async loadPalette() {
+      // FIXME: Ni firefox, ni Safari lo soportan
       const [fileHandle] = await window.showOpenFilePicker({
         types: PaletteTypes,
         excludeAcceptAllOption: true,
@@ -1307,7 +1316,11 @@ export const useDocumentStore = defineStore('pixelDocument', {
       }
       console.log(fileHandle)
     },
+    /**
+     * Save palette
+     */
     async savePalette() {
+      // FIXME: Ni firefox, ni Safari lo soportan
       const fileHandle = await window.showSaveFilePicker({
         types: PaletteTypes,
         excludeAcceptAllOption: true,
@@ -1319,6 +1332,9 @@ export const useDocumentStore = defineStore('pixelDocument', {
       await writable.write(await GIMP.save(this.palette))
       await writable.close()
     },
+    /**
+     * Add color to palette
+     */
     addPaletteColor() {
       this.history.add({
         type: 'addPaletteColor',
@@ -1326,6 +1342,11 @@ export const useDocumentStore = defineStore('pixelDocument', {
       })
       this.palette.push(this.color)
     },
+    /**
+     * Remove color from palette
+     *
+     * @param {number} index
+     */
     removePaletteColor(index) {
       const [removedColor] = this.palette.splice(index, 1)
       console.log(removedColor)
@@ -1344,9 +1365,10 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     duplicateFrame() {
       if (!this.animation) return
+      const frame = this.animation.current
       for (const layer of this.layers.list) {
         if (!layer.isStatic) {
-          const currentImageData = layer.frames[this.animation.current]
+          const currentImageData = layer.frames[frame]
           const duplicatedImageData = new ImageData(
             currentImageData.data.slice(),
             currentImageData.width,
@@ -1359,9 +1381,10 @@ export const useDocumentStore = defineStore('pixelDocument', {
     },
     removeFrame() {
       if (!this.animation) return
+      const frame = this.animation.current
       for (const layer of this.layers) {
         if (!layer.isStatic) {
-          const [removedFrame] = layer.frames.splice(this.animation.current, 1)
+          const [removedFrame] = layer.frames.splice(frame, 1)
           console.log('Frame', removedFrame, 'removed')
         }
       }
@@ -1415,13 +1438,57 @@ export const useDocumentStore = defineStore('pixelDocument', {
         this.redrawAll()
       }
     },
-    async exportAs() {
-      const zip = await OpenRaster.save(this)
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(zip)
-      a.download = 'test.ora'
-      a.click()
+    newFile() {
+      console.info('TO BE IMPLEMENTED!')
     },
+    async loadFile() {
+      if ('showOpenFilePicker' in window) {
+        const [fileHandle] = await window.showOpenFilePicker({
+          types: ImageTypes,
+          excludeAcceptAllOption: true,
+          multiple: false
+        })
+        if (fileHandle.kind === 'file') {
+          const file = await fileHandle.getFile()
+          console.log(file)
+          let document
+          if (/(.*)\.ora$/i.test(file.name)) {
+            document = await OpenRaster.load(file)
+            console.log(document)
+          }
+          if (!document) {
+
+          }
+          this.createFromDocument(document)
+        }
+        console.log(fileHandle)
+      } else {
+        // TODO: Ver cómo implementar esto
+        // los navegadores que no lo soportan.
+        // Safari y Firefox
+      }
+    },
+    async saveFileAs() {
+      if ('showSaveFilePicker' in window) {
+        const fileHandle = await window.showSaveFilePicker({
+          types: ImageTypes,
+          excludeAcceptAllOption: true,
+          multiple: false
+        })
+        const writable = await fileHandle.createWritable()
+        await writable.write(await OpenRaster.save(this))
+        await writable.close()
+      } else {
+        const zip = await OpenRaster.save(this)
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(zip)
+        a.download = 'test.ora'
+        a.click()
+      }
+    },
+    /**
+     * History
+     */
     undo() {
       const actionToUndo = this.history.undo()
       if (!actionToUndo) {

@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useDocumentStore } from '../stores/PixelDocument'
+import { useDocumentStore } from '../stores/Document'
 
 const document = useDocumentStore()
 

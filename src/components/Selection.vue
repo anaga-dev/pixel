@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import { useElement } from '@/composables/useElement'
 import { useRequestAnimationFrame } from '@/composables/useRequestAnimationFrame'
 

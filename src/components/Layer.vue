@@ -16,8 +16,8 @@
       <Button class="action" label="Layer settings" :active="settings" variant="ghost" @click.stop="$emit('settings', layer)" @drop="onDrop">
         <Icon i="settings" />
       </Button>
-      <Button class="action" :label="layer.visible ? 'Hide label' : 'Show label'" variant="ghost" @click="$emit('visible', layer)">
-        <Icon :i="layer.visible ? 'visible' : 'hidden'" />
+      <Button class="action" :label="layer.visible.value ? 'Hide label' : 'Show label'" variant="ghost" @click="$emit('visible', layer)">
+        <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
       </Button>
     </div>
     <div class="name">
@@ -36,7 +36,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 

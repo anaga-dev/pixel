@@ -6,7 +6,7 @@
 
 <script setup>
 import { onMounted, ref, computed, onUpdated } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import { useElement } from '@/composables/useElement'
 import { usePointer } from '@/composables/usePointer'
 

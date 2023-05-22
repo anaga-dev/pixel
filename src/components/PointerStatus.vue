@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/PixelDocument'
+import { useDocumentStore } from '../stores/Document'
 
 const document = useDocumentStore()
 </script>

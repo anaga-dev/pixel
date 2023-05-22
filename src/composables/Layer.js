@@ -8,6 +8,9 @@ export function create({
   visible: initialVisible = true,
   blendMode: initialBlendMode = BlendMode.NORMAL,
   opacity: initialOpacity = 1.0,
+  canvas: initialCanvas = null,
+  context: initialContext = null,
+  frames: initialFrames = null,
   width,
   height
 } = {}) {
@@ -24,9 +27,10 @@ export function create({
       opacity.value = newValue / 100
     }
   })
-  const frames = shallowReactive([new ImageData(width, height)])
-  const canvas = Canvas.create(width, height)
-  const context = canvas.getContext('2d')
+  const frames = shallowReactive(initialFrames ?? [new ImageData(width, height)])
+  const canvas = initialCanvas ?? Canvas.create(width, height)
+  const context = initialContext ?? canvas.getContext('2d')
+  console.log(frames,canvas,context)
   return {
     id,
     name,

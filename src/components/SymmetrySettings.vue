@@ -14,7 +14,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useDocumentStore } from '../stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import Button from '@/components/Button.vue'
 import Dropdown from '@/components/Dropdown.vue'
 import Icon from '@/components/Icon.vue'

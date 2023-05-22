@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useDocumentStore } from '@/stores/PixelDocument'
+import { useDocumentStore } from '@/stores/Document'
 import BrushSelector from '@/components/BrushSelector.vue'
 import BrushSize from '@/components/BrushSize.vue'
 import BrushDither from '@/components/BrushDither.vue'

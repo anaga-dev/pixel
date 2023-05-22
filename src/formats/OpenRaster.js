@@ -28,24 +28,71 @@ function getCompositeOperation(operation) {
   switch (operation) {
     case 'source-over':
       return 'svg:src-over'
+    case 'source-atop':
+      return 'svg:src-atop'
+    case 'source-in':
+      return 'svg:src-in'
+    case 'source-out':
+      return 'svg:src-out'
+    case 'destination-over':
+      return 'svg:dst-over'
+    case 'destination-atop':
+      return 'svg:dst-atop'
+    case 'destination-in':
+      return 'svg:dst-in'
+    case 'destination-out':
+      return 'svg:dst-out'
     default:
       return `svg:${operation}`
   }
 }
 
 /**
+ * Traduce las operaciones de composición de OpenRaster a
+ * Canvas.
+ *
+ * @param {string} operation
+ * @returns {string}
+ */
+function getBlendMode(operation) {
+  if (!operation.startsWith('svg:')) {
+    throw new Error('Invalid blend mode')
+  }
+  switch (operation) {
+    case 'svg:src-over':
+      return 'source-over'
+    case 'svg:src-atop':
+      return 'source-atop'
+    case 'svg:src-in':
+      return 'source-in'
+    case 'svg:src-out':
+      return 'source-out'
+    case 'svg:dst-over':
+      return 'destination-over'
+    case 'svg:dst-atop':
+      return 'destination-atop'
+    case 'svg:dst-in':
+      return 'destination-in'
+    case 'svg:dst-out':
+      return 'destination-out'
+    default:
+      return operation.slice(4)
+  }
+}
+
+/**
  * Devuelve el XML de las capas
  *
- * @param {PixelDocumentStore} document
+ * @param {DocumentStore} document
  * @returns {string}
  */
 function createStack(document) {
   let xml = '<?xml version="1.0" encoding="UTF-8" ?>'
   xml += `<image version="0.0.3" w="${document.width}" h="${document.height}" xres="${document.width}" yres="${document.height}">`
   xml += '<stack>'
-  for (let index = 0; index < document.layers.length; index++) {
-    const layer = document.layers[index]
-    xml += `<layer name="${layer.name}" src="data/layer${index}.png" opacity="${layer.opacity}" visibility="${layer.visible ? 'visible': 'hidden'}" composite-op="${getCompositeOperation(layer.blendMode)}" x="0" y="0" />`
+  for (let index = 0; index < document.layers.list.length; index++) {
+    const layer = document.layers.list[index]
+    xml += `<layer name="${layer.name.value}" src="data/layer${index}.png" opacity="${layer.opacity.value}" visibility="${layer.visible.value ? 'visible': 'hidden'}" composite-op="${getCompositeOperation(layer.blendMode.value)}" x="0" y="0" />`
   }
   xml += '</stack>'
   xml += '</image>'
@@ -55,7 +102,7 @@ function createStack(document) {
 /**
  * Guardamos un archivo .ora (Open Raster)
  *
- * @param {PixelDocumentStore} document
+ * @param {DocumentStore} document
  * @returns {Promise<Blob>}
  */
 export async function save(document) {
@@ -93,17 +140,49 @@ export async function load(blob) {
   if (mimetype !== 'image/openraster') {
     throw new Error('Invalid OpenRaster mimetype')
   }
-  const stack = await zip.file('stack.xml').async('string')
-  const parser = new DOMParser()
-  const xmlDoc = parser.parseFromString(stack, 'text/xml')
-  const image = xmlDoc.querySelector('image')
-  const width = image.getAttribute('w')
-  const height = image.getAttribute('h')
-  const layers = xmlDoc.querySelectorAll('layer')
-  const blobs = await Promise.all(layers.map((layer) => {
-    return zip.file(layer).async('blob')
-  }))
-  console.log(blobs)
+  try {
+    const stack = await zip.file('stack.xml').async('string')
+    const parser = new DOMParser()
+    const xmlDoc = parser.parseFromString(stack, 'text/xml')
+    const image = xmlDoc.querySelector('image')
+    const width = parseInt(image.getAttribute('w'), 10)
+    const height = parseInt(image.getAttribute('h'), 10)
+    const layerElements = Array.from(xmlDoc.querySelectorAll('layer'))
+    const blobs = await Promise.all(layerElements.map((layer) => {
+      const src = layer.getAttribute('src')
+      return zip.file(src).async('blob')
+    }))
+    const layers = await Promise.all(layerElements.map(async (layerElement, index) => {
+      const blob = blobs[index]
+      const imageBitmap = await createImageBitmap(blob)
+      console.log(imageBitmap)
+      const canvas = Canvas.create(width, height)
+      const context = canvas.getContext('2d', {
+        willReadFrequently: true
+      })
+      context.drawImage(imageBitmap, 0, 0)
+      const { data } = context.getImageData(0, 0, width, height)
+      const frame = new ImageData(data, width, height) //
+      console.log(frame)
+      return {
+        name: layerElement.getAttribute('name'),
+        opacity: parseFloat(layerElement.getAttribute('opacity')),
+        visible: layerElement.getAttribute('visibility') === 'visible',
+        blendMode: getBlendMode(layerElement.getAttribute('composite-op')),
+        canvas,
+        context,
+        frames: [frame]
+      }
+    }))
+    return {
+      width,
+      height,
+      layers
+    }
+  } catch (error) {
+    console.log(error)
+    throw new Error('Invalid OpenRaster stack.xml')
+  }
   // TODO: Terminar esta función para poder cargar archivos de tipo OpenRaster.
 }
 

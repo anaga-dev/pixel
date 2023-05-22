@@ -55,7 +55,7 @@ export function useLayers({ layer = null, layers = [], Layer } = {}) {
   }
 
   function toggle(layer) {
-    layer.visible = !layer.visible
+    layer.visible.value = !layer.visible.value
   }
 
   function moveUp() {
