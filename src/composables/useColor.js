@@ -81,6 +81,7 @@ export function useColor(string) {
   }
 
   updateFromRGB(...Color.parse(string))
+  updateFromHSL(hsl.h, hsl.s, hsl.l)
 
   const red = computed({
     set(value) {
@@ -148,6 +149,7 @@ export function useColor(string) {
       rgb.g = g
       rgb.b = b
       updateFromRGB(rgb.r, rgb.g, rgb.b)
+      updateFromHSL(hsl.h, hsl.s, hsl.l)
     },
     get() {
       return `rgb(${red.value}, ${green.value}, ${blue.value})`

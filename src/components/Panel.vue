@@ -59,7 +59,6 @@ header {
 }
 .content {
   overflow: hidden;
-  max-height: 25vh;
 }
 
 .scrollable {
