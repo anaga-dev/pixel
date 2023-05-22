@@ -28,7 +28,6 @@ const emit = defineEmits([
 ])
 
 function onUpdated(payload) {
-  console.log('updated!!!', payload)
   emit('update', payload)
 }
 </script>

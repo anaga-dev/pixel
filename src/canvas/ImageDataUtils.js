@@ -60,13 +60,19 @@ export function getOffset(imageData, x, y) {
  * @param {number} x
  * @param {number} y
  * @param {Color} color
+ * @param {Dither} [dither]
  * @returns {ImageData}
  */
-export function putColor(imageData, x, y, [r, g, b, a]) {
+export function putColor(imageData, x, y, [r, g, b, a], dither = null) {
   if (isOutside(imageData, x, y)) {
     return imageData
   }
   const offset = getOffset(imageData, x, y)
+  if (dither && dither.level > 0) {
+    if (!dither.shouldPaint(x, y)) {
+      return imageData
+    }
+  }
   imageData.data[offset + 0] = r
   imageData.data[offset + 1] = g
   imageData.data[offset + 2] = b
@@ -140,6 +146,12 @@ export function clear(imageData) {
 }
 
 /**
+ * Realiza cualquier operación de pintado desde el origen al destino.
+ * El callback debe recibir los siguientes parámetros:
+ * - targetData: Uint8ClampedArray
+ * - sourceData: Uint8ClampedArray
+ * - targetOffset: number
+ * - sourceOffset: number
  *
  * @param {ImageData} target
  * @param {ImageData} source
@@ -174,10 +186,11 @@ export function paint(target, source, x, y, callback) {
  * @param {number} x
  * @param {number} y
  * @param {Color} color
- * @param {Array<Vec2>} directions
+ * @param {Dither} [dither]
+ * @param {Array<Vec2>} [directions]
  * @returns
  */
-export function fill(imageData, x, y, color, directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
   const [r, g, b, a] = color
   const [sr, sg, sb, sa] = getColor(imageData, x, y)
   // si estamos pintando sobre el mismo color que tenemos
@@ -198,7 +211,7 @@ export function fill(imageData, x, y, color, directions = [[-1, 0], [1, 0], [0, 
       continue
     }
 
-    putColor(imageData, x, y, color)
+    putColor(imageData, x, y, color, dither)
     for (const [dx, dy] of directions) {
       const nx = x + dx
       const ny = y + dy
@@ -219,16 +232,17 @@ export function fill(imageData, x, y, color, directions = [[-1, 0], [1, 0], [0, 
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @returns {ImageData}
  */
-export function line(imageData, px1, py1, px2, py2, color) {
+export function line(imageData, px1, py1, px2, py2, color, dither) {
   let x1 = px1,
     y1 = py1,
     x2 = px2,
     y2 = py2
 
   if (x1 === x2 && y1 === y2) {
-    return putColor(imageData, x1, y1, color)
+    return putColor(imageData, x1, y1, color, dither)
   }
 
   let yAxis = false
@@ -257,8 +271,8 @@ export function line(imageData, px1, py1, px2, py2, color) {
   x2 += dx
 
   for (let x = x1; x !== x2; x += dx) {
-    if (yAxis) putColor(imageData, y, x, color)
-    else putColor(imageData, x, y, color)
+    if (yAxis) putColor(imageData, y, x, color, dither)
+    else putColor(imageData, x, y, color, dither)
 
     // El error avanza "h/w" por cada paso "x". Como estamos usando un
     // valor entero para "e", utilizamos "w" como unidad.
@@ -279,16 +293,17 @@ export function line(imageData, px1, py1, px2, py2, color) {
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @returns {ImageData}
  */
-export function fillRect(imageData, px1, py1, px2, py2, color) {
+export function fillRect(imageData, px1, py1, px2, py2, color, dither) {
   const sx = Math.min(px1, px2)
   const ex = Math.max(px1, px2)
   const sy = Math.min(py1, py2)
   const ey = Math.max(py1, py2)
   for (let y = sy; y <= ey; y++) {
     for (let x = sx; x <= ex; x++) {
-      putColor(imageData, x, y, color)
+      putColor(imageData, x, y, color, dither)
     }
   }
   return imageData
@@ -303,13 +318,14 @@ export function fillRect(imageData, px1, py1, px2, py2, color) {
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @returns {ImageData}
  */
-export function strokeRect(imageData, px1, py1, px2, py2, color) {
-  line(imageData, px1, py1, px2, py1, color)
-  line(imageData, px2, py1, px2, py2, color)
-  line(imageData, px2, py2, px1, py2, color)
-  line(imageData, px1, py2, px1, py1, color)
+export function strokeRect(imageData, px1, py1, px2, py2, color, dither) {
+  line(imageData, px1, py1, px2, py1, color, dither)
+  line(imageData, px2, py1, px2, py2, color, dither)
+  line(imageData, px2, py2, px1, py2, color, dither)
+  line(imageData, px1, py2, px1, py1, color, dither)
   return imageData
 }
 
@@ -322,14 +338,15 @@ export function strokeRect(imageData, px1, py1, px2, py2, color) {
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @param {boolean} [filled=false]
  * @returns {ImageData}
  */
-export function rect(imageData, px1, py1, px2, py2, color, filled = false) {
+export function rect(imageData, px1, py1, px2, py2, color, dither, filled = false) {
   if (filled) {
-    return fillRect(imageData, px1, py1, px2, py2, color)
+    return fillRect(imageData, px1, py1, px2, py2, color, dither)
   }
-  return strokeRect(imageData, px1, py1, px2, py2, color)
+  return strokeRect(imageData, px1, py1, px2, py2, color, dither)
 }
 
 /**
@@ -341,9 +358,10 @@ export function rect(imageData, px1, py1, px2, py2, color, filled = false) {
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @returns {ImageData}
  */
-export function fillEllipse(imageData, px1, py1, px2, py2, color) {
+export function fillEllipse(imageData, px1, py1, px2, py2, color, dither) {
   let a = Math.abs(px2 - px1),
     b = Math.abs(py2 - py1),
     b1 = b & 1 /* values of diameter */
@@ -366,8 +384,8 @@ export function fillEllipse(imageData, px1, py1, px2, py2, color) {
 
   do {
     for (let x = px1; x < px2; x++) {
-      putColor(imageData, x, py1, color) /*   I. Quadrant */
-      putColor(imageData, x, py2, color) /*   I. Quadrant */
+      putColor(imageData, x, py1, color, dither)
+      putColor(imageData, x, py2, color, dither)
     }
     e2 = 2 * err
     if (e2 <= dy) {
@@ -383,11 +401,10 @@ export function fillEllipse(imageData, px1, py1, px2, py2, color) {
   } while (px1 <= px2)
 
   while (py1 - py2 < b) {
-    /* too early stop of flat ellipses a=1 */
-    putColor(imageData, px1 - 1, py1, color) /* -> finish tip of ellipse */
-    putColor(imageData, px2 + 1, py1++, color)
-    putColor(imageData, px1 - 1, py2, color)
-    putColor(imageData, px2 + 1, py2--, color)
+    putColor(imageData, px1 - 1, py1, color, dither)
+    putColor(imageData, px2 + 1, py1++, color, dither)
+    putColor(imageData, px1 - 1, py2, color, dither)
+    putColor(imageData, px2 + 1, py2--, color, dither)
   }
   return imageData
 }
@@ -403,9 +420,10 @@ export function fillEllipse(imageData, px1, py1, px2, py2, color) {
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @returns {ImageData}
  */
-export function strokeEllipse(imageData, px1, py1, px2, py2, color) {
+export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither) {
   let a = Math.abs(px2-px1), b = Math.abs(py2-py1), b1 = b&1 /* values of diameter */
   let dx = 4*(1-a)*b*b, dy = 4*(b1+1)*a*a /* error increment */
   let err = dx+dy+b1*a*a
@@ -424,10 +442,10 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color) {
   b1 = 8*b*b
 
   do {
-    putColor(imageData, px2, py1, color) /*   I. Quadrant */
-    putColor(imageData, px1, py1, color) /*  II. Quadrant */
-    putColor(imageData, px1, py2, color) /* III. Quadrant */
-    putColor(imageData, px2, py2, color) /*  IV. Quadrant */
+    putColor(imageData, px2, py1, color, dither) /*   I. Quadrant */
+    putColor(imageData, px1, py1, color, dither) /*  II. Quadrant */
+    putColor(imageData, px1, py2, color, dither) /* III. Quadrant */
+    putColor(imageData, px2, py2, color, dither) /*  IV. Quadrant */
     e2 = 2*err
     if (e2 <= dy) {
       py1++
@@ -442,10 +460,10 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color) {
   } while (px1 <= px2)
 
   while (py1-py2 < b) {  /* too early stop of flat ellipses a=1 */
-    putColor(imageData, px1-1, py1, color) /* -> finish tip of ellipse */
-    putColor(imageData, px2+1, py1++, color)
-    putColor(imageData, px1-1, py2, color)
-    putColor(imageData, px2+1, py2--, color)
+    putColor(imageData, px1-1, py1, color, dither) /* -> finish tip of ellipse */
+    putColor(imageData, px2+1, py1++, color, dither)
+    putColor(imageData, px1-1, py2, color, dither)
+    putColor(imageData, px2+1, py2--, color, dither)
   }
   return imageData
 }
@@ -459,14 +477,15 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color) {
  * @param {number} px2
  * @param {number} py2
  * @param {Color} color
+ * @param {Dither} [dither]
  * @param {boolean} [filled=false]
  * @returns {ImageData}
  */
-export function ellipse(imageData, px1, py1, px2, py2, color, filled = false) {
+export function ellipse(imageData, px1, py1, px2, py2, color, dither, filled = false) {
   if (filled) {
-    return fillEllipse(imageData, px1, py1, px2, py2, color)
+    return fillEllipse(imageData, px1, py1, px2, py2, color, dither)
   }
-  return strokeEllipse(imageData, px1, py1, px2, py2, color)
+  return strokeEllipse(imageData, px1, py1, px2, py2, color, dither)
 }
 
 /**
@@ -688,6 +707,12 @@ export function translate(imageData, tx, ty, mode) {
   source.set(target, 0)
 }
 
+/**
+ *
+ * @param {ImageData} targetImageData
+ * @param {ImageData} sourceImageData
+ * @returns {ImageData}
+ */
 function flipGetSourceImageData(targetImageData, sourceImageData) {
   if (!sourceImageData) {
     return clone(targetImageData)

@@ -32,6 +32,54 @@
       <g id="brush-dither">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M20 8H24V12H20V8ZM20 16V12H16V16H12V20H8V24H12V28H8V32H12V36H16V40H20V36H24V40H28V36H32V32H36V28H40V24H36V20H40V16H36V12H32V8H28V12H24V16H20ZM20 20V16H16V20H12V24H16V28H12V32H16V36H20V32H24V36H28V32H32V28H36V24H32V20H36V16H32V12H28V16H24V20H20ZM20 24H16V20H20V24ZM24 24V20H28V24H24ZM24 28V24H20V28H16V32H20V28H24ZM28 28V32H24V28H28ZM28 28V24H32V28H28ZM28 20V16H32V20H28Z" />
       </g>
+      <g id="dither-0">
+        <DitherPattern level="0" />
+      </g>
+      <g id="dither-1">
+        <DitherPattern level="1" />
+      </g>
+      <g id="dither-2">
+        <DitherPattern level="2" />
+      </g>
+      <g id="dither-3">
+        <DitherPattern level="3" />
+      </g>
+      <g id="dither-4">
+        <DitherPattern level="4" />
+      </g>
+      <g id="dither-5">
+        <DitherPattern level="5" />
+      </g>
+      <g id="dither-6">
+        <DitherPattern level="6" />
+      </g>
+      <g id="dither-7">
+        <DitherPattern level="7" />
+      </g>
+      <g id="dither-8">
+        <DitherPattern level="8" />
+      </g>
+      <g id="dither-9">
+        <DitherPattern level="9" />
+      </g>
+      <g id="dither-10">
+        <DitherPattern level="10" />
+      </g>
+      <g id="dither-11">
+        <DitherPattern level="11" />
+      </g>
+      <g id="dither-12">
+        <DitherPattern level="12" />
+      </g>
+      <g id="dither-13">
+        <DitherPattern level="13" />
+      </g>
+      <g id="dither-14">
+        <DitherPattern level="14" />
+      </g>
+      <g id="dither-15">
+        <DitherPattern level="15" />
+      </g>
       <g id="circle">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M16 4H20H24H28H32V8H28H24H20H16V4ZM12 12V8H16V12H12ZM8 16V12H12V16H8ZM8 32V28V24V20V16H4V20V24V28V32H8ZM12 36H8V32H12V36ZM16 40H12V36H16V40ZM32 40V44H28H24H20H16V40H20H24H28H32ZM36 36V40H32V36H36ZM40 32V36H36V32H40ZM40 16H44V20V24V28V32H40V28V24V20V16ZM36 12H40V16H36V12ZM36 12V8H32V12H36Z" />
       </g>
@@ -166,6 +214,8 @@
 </template>
 
 <script setup>
+import DitherPattern from './DitherPattern.vue'
+
 const props = defineProps({
   i: {
     type: String,
