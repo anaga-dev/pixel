@@ -155,6 +155,7 @@ export const useDocumentStore = defineStore('documentStore', {
       return this.animation.total
     },
     frames() {
+      // FIXME: Esto no es NADA óptimo.
       const frames = []
       for (let frame = 0; frame < this.totalFrames; frame++) {
         const frameCanvas = Canvas.createWithClasses(
@@ -163,15 +164,15 @@ export const useDocumentStore = defineStore('documentStore', {
           'preview-canvas'
         )
         const frameContext = CanvasContext2D.get(frameCanvas)
+        frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
         for (const layer of this.layers.list) {
           if (!layer.visible.value) {
             continue
           }
-          frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
           frameContext.save()
           frameContext.globalAlpha = layer.opacity.value
           frameContext.globalCompositeOperation = layer.blendMode.value
-          layer.context.putImageData(layer.frames[frame], 0, 0)
+          // layer.context.putImageData(layer.frames[frame], 0, 0)
           frameContext.drawImage(layer.canvas, 0, 0)
           frameContext.restore()
         }
@@ -928,13 +929,13 @@ export const useDocumentStore = defineStore('documentStore', {
     redrawFrames() {
       for (const frame of this.frames) {
         const context = CanvasContext2D.get(frame.canvas)
+        context.clearRect(0, 0, frame.canvas.width, frame.canvas.height)
         for (const layer of this.layers.list) {
           if (!layer.visible.value) continue
-          context.clearRect(0, 0, layer.canvas.width, layer.canvas.height)
           context.save()
           context.globalAlpha = layer.opacity.value
           context.globalCompositeOperation = layer.blendMode.value
-          layer.context.putImageData(layer.frames[frame.frame], 0, 0)
+          // layer.context.putImageData(layer.frames[frame.frame], 0, 0)
           context.drawImage(layer.canvas, 0, 0)
           context.restore()
         }
