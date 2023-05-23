@@ -320,7 +320,13 @@ export const useDocumentStore = defineStore('documentStore', {
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
-          ImageDataUtils.fill(imageData, x, y, Color.toUint8(color))
+          this.doSymmetry2Operation(
+            () => ImageDataUtils.fill(imageData, x, y, Color.toUint8(color)),
+            imageData,
+            x,
+            y,
+            color,
+          )
         )
       }
     },
@@ -899,7 +905,6 @@ export const useDocumentStore = defineStore('documentStore', {
       const frame = this.animation.current
       for (const layer of this.layers.list) {
         if (!layer.visible.value) {
-          console.log('layer not visible', layer)
           continue
         }
         context.save()
@@ -907,7 +912,6 @@ export const useDocumentStore = defineStore('documentStore', {
         context.globalCompositeOperation = layer.blendMode.value
         layer.context.putImageData(layer.frames[frame], 0, 0)
         context.drawImage(layer.canvas, 0, 0)
-        console.log('layer drawing', layer)
         context.restore()
       }
     },

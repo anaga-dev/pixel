@@ -12,7 +12,7 @@ export function useLayers({ layer = null, layers = [], Layer } = {}) {
   function add(options) {
     const created = shallowReactive(Layer.create(options))
     const index = list.findIndex(
-      (currentLayer) => currentLayer.id === current.id
+      (currentLayer) => currentLayer.id === current.value.id
     )
     const newIndex = index + 1
     console.log(index, newIndex)

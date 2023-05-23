@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid'
-import { ref, computed, shallowReactive } from 'vue'
+import { ref, readonly, computed, shallowReactive } from 'vue'
 import BlendMode from '@/enums/BlendMode'
 import Canvas from '@/canvas/Canvas'
 
@@ -14,7 +14,7 @@ export function create({
   width,
   height
 } = {}) {
-  const id = ref(uuid())
+  const id = uuid()
   const name = ref(initialName)
   const visible = ref(initialVisible)
   const blendMode = ref(initialBlendMode)
@@ -54,7 +54,7 @@ export function duplicate({
 }) {
   const canvas = Canvas.duplicate(initialCanvas)
   const context = canvas.getContext('2d')
-  const id = ref(uuid())
+  const id = uuid()
   const name = ref(initialName)
   const visible = ref(initialVisible)
   const blendMode = ref(initialBlendMode)
