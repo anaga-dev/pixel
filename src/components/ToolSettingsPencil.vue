@@ -5,6 +5,7 @@
   <Button label="Brush size" @click.stop="onShowing('size')">
     {{ pixelDocument.pencil.size }}px
   </Button>
+  <Divider vertical v-if="pixelDocument.pencil.shape === 'dither'" />
   <Button v-if="pixelDocument.pencil.shape === 'dither'" label="Brush dither" @click.stop="onShowing('dither')">
     <Icon :i="`dither-${pixelDocument.pencil.dither.level}`" />
   </Button>
@@ -20,6 +21,7 @@ import BrushSelector from '@/components/BrushSelector.vue'
 import BrushSize from '@/components/BrushSize.vue'
 import BrushDither from '@/components/BrushDither.vue'
 import Button from '@/components/Button.vue'
+import Divider from '@/components/Divider.vue'
 import Icon from '@/components/Icon.vue'
 
 const pixelDocument = useDocumentStore()
