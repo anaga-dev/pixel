@@ -2,7 +2,7 @@
   <div
     class="Layer"
     draggable="true"
-    :class="{ active: active }"
+    :class="{ active: active, invisible: !layer.visible.value }"
     :data-index="index"
     @click="$emit('activate', layer)"
     @drag="onDrag"
@@ -36,7 +36,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 
@@ -120,8 +120,12 @@ function onDrop(e) {
 }
 
 .Layer.active {
-  background-color: var(--colorLayer2);
-  color: var(--colorText);
+  background-color: var(--colorAccent);
+  color: var(--colorTextAlt);
+}
+
+.Layer.invisible {
+  opacity: 0.5;
 }
 
 .actions {

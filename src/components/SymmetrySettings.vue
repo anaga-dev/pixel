@@ -1,5 +1,5 @@
 <template>
-  <Dropdown class="SymmetrySettings" @close="document.toggleSymmetrySettings">
+  <Dropdown class="SymmetrySettings" @close="uiStore.toggleOverlay('symmetry-settings')">
     <Button label="Horizontal symmetry" :active="axis === 'horizontal'" @click="onClick('horizontal')">
       <Icon i="symmetry-horizontal" /> Horizontal
     </Button>
@@ -14,24 +14,27 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
+import { useUIStore } from '@/stores/UIStore'
 import Button from '@/components/Button.vue'
 import Dropdown from '@/components/Dropdown.vue'
 import Icon from '@/components/Icon.vue'
 
-const document = useDocumentStore()
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
 
-const axis = ref(document.symmetry.axis)
+const axis = ref(documentStore.symmetry.axis)
 
 function onClick(axis) {
-  document.setSymmetrySettings(axis)
+  documentStore.setSymmetrySettings(axis)
+  uiStore.toggleOverlay('symmetry-settings')
 }
 </script>
 
 <style scoped>
 .SymmetrySettings {
   top: calc(var(--widthToolbar) + var(--spaceS));
-  right: calc(var(--widthPanels) + var(--spaceS));
+  right: 9rem;
 }
 
 .enabled {

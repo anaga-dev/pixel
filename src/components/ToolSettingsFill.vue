@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 import ToolButton from '@/components/ToolButton.vue'
 import Divider from '@/components/Divider.vue'
 import Icon from '@/components/Icon.vue'

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 
 const document = useDocumentStore()
 </script>

@@ -24,7 +24,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import Button from '@/components/Button.vue'
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 import { rgbToHex, hexToRgb } from '@/color/ColorConverter'
 
 const props = defineProps({

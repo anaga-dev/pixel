@@ -1,22 +1,29 @@
 <template>
-  <Button label="Brush shape" @click.stop="onShowing('shape')">
-    <Icon :i="`brush-${pixelDocument.pencil.shape}`" />
+  <Button variant="dropdown" label="Brush shape" @click.stop="uiStore.toggleOverlay('brush-shape')">
+    <Icon :i="`brush-${documentStore.pencil.shape}`" />
   </Button>
-  <Button label="Brush size" @click.stop="onShowing('size')">
-    {{ pixelDocument.pencil.size }}px
+  <Button variant="dropdown" label="Brush size" @click.stop="uiStore.toggleOverlay('brush-size')">
+    {{ documentStore.pencil.size }}px
   </Button>
-  <Divider vertical v-if="pixelDocument.pencil.shape === 'dither'" />
-  <Button v-if="pixelDocument.pencil.shape === 'dither'" label="Brush dither" @click.stop="onShowing('dither')">
-    <Icon :i="`dither-${pixelDocument.pencil.dither.level}`" />
+  <Divider vertical v-if="documentStore.pencil.shape === 'dither'" />
+  <Button variant="dropdown" v-if="documentStore.pencil.shape === 'dither'" label="Brush dither" @click.stop="uiStore.toggleOverlay('brush-dither')">
+    <Icon :i="`dither-${documentStore.pencil.dither.level}`" />
   </Button>
-  <BrushSelector v-if="showing === 'shape'" @select="onBrushShape" @close="showing = ''" />
-  <BrushSize v-else-if="showing === 'size'" :size="pixelDocument.pencil.size" @update="onBrushSize" @close="showing = ''" />
-  <BrushDither v-else-if="showing === 'dither'" @select="onBrushDither" @close="showing = ''" />
+  <BrushSelector
+    v-if="uiStore.showOverlay === 'brush-shape'"
+    @select="onBrushShape"
+    @close="uiStore.toggleOverlay('brush-shape')" />
+  <BrushSize
+    v-else-if="uiStore.showOverlay === 'brush-size'"
+    :size="documentStore.pencil.size"
+    @update="onBrushSize"
+    @close="uiStore.toggleOverlay('brush-size')" />
+  <BrushDither v-else-if="uiStore.showOverlay === 'brush-dither'" @select="onBrushDither" @close="uiStore.toggleOverlay('brush-dither')" />
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
+import { useUIStore } from '@/stores/UIStore'
 import BrushSelector from '@/components/BrushSelector.vue'
 import BrushSize from '@/components/BrushSize.vue'
 import BrushDither from '@/components/BrushDither.vue'
@@ -24,28 +31,21 @@ import Button from '@/components/Button.vue'
 import Divider from '@/components/Divider.vue'
 import Icon from '@/components/Icon.vue'
 
-const pixelDocument = useDocumentStore()
-const showing = ref('')
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
 
 function onBrushShape(shape) {
-  pixelDocument.setPencilShape(shape)
-  showing.value = ''
+  documentStore.setPencilShape(shape)
+  uiStore.toggleOverlay('brush-shape')
 }
 
 function onBrushSize(size) {
-  pixelDocument.setPencilSize(size)
+  console.log('on brush size', size)
+  documentStore.setPencilSize(size)
 }
 
 function onBrushDither(dither) {
-  pixelDocument.setPencilDitherLevel(dither)
-  showing.value = ''
-}
-
-function onShowing(tool) {
-  if (showing.value === tool) {
-    showing.value = ''
-  } else {
-    showing.value = tool
-  }
+  documentStore.setPencilDitherLevel(dither)
+  uiStore.toggleOverlay('brush-dither')
 }
 </script>

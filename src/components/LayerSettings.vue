@@ -43,7 +43,7 @@
 
 <script setup>
 import { readonly, ref, unref } from 'vue'
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 import Dropdown from '@/components/Dropdown.vue'
 import Button from '@/components/Button.vue'
 import Field from '@/components/Field.vue'
@@ -110,7 +110,7 @@ function onDelete(layer) {
 <style scoped>
 .layer-settings {
   top: calc(var(--widthToolbar) + var(--spaceS));
-  right: calc(var(--widthPanels) + var(--spaceS));
+  right: var(--widthSidebar);
   min-width: 20rem;
 }
 

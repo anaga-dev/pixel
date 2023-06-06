@@ -1,26 +1,7 @@
 <template>
-  <div class="CONTAINER">
+  <div class="CONTAINER" :class="{ expanded: uiStore.expandedSidebar }">
     <div class="SETTINGS">
-      <SettingsBar>
-        <template #left>
-          <ToolSettings :tool="documentStore.tool" />
-        </template>
-        <template #right>
-          <Button
-            label="Symmetry aid"
-            variant="ghost"
-            :active="documentStore.symmetry.axis !== null"
-            @click.stop="documentStore.toggleSymmetrySettings">
-            <Icon i="symmetry-vertical" v-if="documentStore.symmetry.axis === 'vertical'" />
-            <Icon i="symmetry-two-axis" v-else-if="documentStore.symmetry.axis === 'both'" />
-            <Icon i="symmetry-horizontal" v-else />
-          </Button>
-          <Divider vertical />
-          <Zoom />
-          <Divider vertical />
-          <SettingsButton />
-        </template>
-      </SettingsBar>
+      <Settings />
     </div>
     <div class="TOOLS">
       <Tools />
@@ -29,8 +10,24 @@
       <Document v-if="documentStore.canvas" />
       <Selection v-if="documentStore.canvas && documentStore.tool === Tool.SELECT" />
     </main>
+    <!--
+    <div class="ANIMATION">
+      <button
+        class="button-show"
+        :class="{ expanded: showingAnimation }"
+        type="button"
+        :aria-label="showingAnimation ? 'Hide animation panel' : 'Show animation panel'"
+        @click="toggleShowAnimation">
+        <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
+      </button>
+      <Animation v-if="showingAnimation" />
+    </div>
+    -->
     <aside class="PANELS">
-      <Panel title="Layers" @collapse="$event => ui.collapsePanelLayers($event)" :collapsed="ui.panels.layers">
+      <Panel v-if="uiStore.showPanel === 'color-picker'" @close="uiStore.toggleColorPicker">
+        <ColorPicker />
+      </Panel>
+      <Panel scrollable v-if="uiStore.showPanel === 'layers'" title="Layers">
         <template #actions>
           <Button label="Add layer" variant="ghost" @click="documentStore.addLayer">
             <Icon i="add-item" />
@@ -38,7 +35,8 @@
         </template>
         <Layers :layers="documentStore.layers"></Layers>
       </Panel>
-      <Panel title="Palette" @collapse="$event => ui.collapsePanelPalette($event)" :collapsed="ui.panels.palette">
+      <!--
+      <Panel v-if="uiStore.isShowingPalettePanel" title="Palette">
         <template #actions>
           <Button label="Load palette" variant="ghost" @click="documentStore.loadPalette">
             <Icon i="load" />
@@ -52,62 +50,49 @@
         </template>
         <Palette :palette="documentStore.palette" :selected-color="documentStore.color" @select="documentStore.setColor"></Palette>
       </Panel>
-      <Panel title="preview"  @collapse="$event => ui.collapsePanelPreview($event)" :collapsed="ui.panels.preview" :scrollable="false" v-if="documentStore.canvas">
+      <Panel v-if="uiStore.isShowingPreviewPanel" title="preview" :scrollable="false">
         <Preview></Preview>
-      </Panel>
+      </Panel> -->
     </aside>
-    <div class="ANIMATION">
-      <button
-        class="button-show"
-        :class="{ expanded: showingAnimation }"
-        type="button"
-        :aria-label="showingAnimation ? 'Hide animation panel' : 'Show animation panel'"
-        @click="toggleShowAnimation">
-        <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
-      </button>
-      <Animation v-if="showingAnimation" />
-    </div>
   </div>
-  <SymmetrySettings v-if="documentStore.symmetrySettings" />
   <LayerSettings v-if="documentStore.layers.settings" :layer="documentStore.layers.settings" />
+  <SymmetrySettings v-if="uiStore.showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
-  <Splash v-if="ui.isShowingSplash" />
+  <Splash v-if="uiStore.isShowingSplash" />
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { useDocumentStore } from '@/stores/Document'
-import { useUIStore } from '@/stores/UI'
+import { useDocumentStore } from '@/stores/DocumentStore'
+import { useUIStore } from '@/stores/UIStore'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useTouch } from '@/composables/useTouch'
-import SettingsButton from '@/components/SettingsButton.vue'
 import Tool from '@/enums/Tool'
-import ToolSettings from '@/components/ToolSettings.vue'
 import Tools from '@/components/Tools.vue'
 import Animation from '@/components/Animation.vue'
-import Zoom from '@/components/Zoom.vue'
-import Panel from '@/components/Panel.vue'
-import Palette from '@/components/Palette.vue'
-import Preview from '@/components/Preview.vue'
-import Layers from '@/components/Layers.vue'
-import Selection from '@/components/Selection.vue'
 import Document from '@/components/Document.vue'
 import DocumentCreate from '@/components/DocumentCreate.vue'
-import LayerSettings from '@/components/LayerSettings.vue'
-import SettingsBar from '@/components/SettingsBar.vue'
+import Selection from '@/components/Selection.vue'
 import Button from '@/components/Button.vue'
-import Divider from '@/components/Divider.vue'
+import Dropdown from '@/components/Dropdown.vue'
+import Panel from '@/components/Panel.vue'
+import Preview from '@/components/Preview.vue'
+import ColorPicker from '@/components/ColorPicker.vue'
+import Layers from '@/components/Layers.vue'
+import LayerSettings from '@/components/LayerSettings.vue'
+import Palette from '@/components/Palette.vue'
 import Splash from '@/components/Splash.vue'
+import SymmetrySettings from '@/components/SymmetrySettings.vue'
+import Settings from '@/components/Settings.vue'
 import Icon from '@/components/Icon.vue'
-import SymmetrySettings from '../components/SymmetrySettings.vue'
 
 const board = ref(null)
 const showingAnimation = ref(false)
 
 const MIN_TOUCHES = 2
 
-const ui = useUIStore()
+const uiStore = useUIStore()
 const documentStore = useDocumentStore()
 
 function toggleShowAnimation() {
@@ -172,65 +157,55 @@ useKeyShortcuts(new Map([
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: var(--widthToolbar) 1fr var(--widthPanels);
+  grid-template-columns: var(--widthToolbar) 1fr var(--widthSidebar);
   grid-template-rows: var(--widthToolbar) 1fr auto;
 }
 
-.SETTINGS, .TOOLS, .PANELS, .ANIMATION {
+.SETTINGS, .TOOLS, .ANIMATION {
   background-color: var(--colorLayer1);
-  background-color: transparent;
 }
 
 .SETTINGS {
-  grid-area: SETTINGS;
   grid-column: 1 / span 3;
   grid-row: 1;
-  background-color: var(--colorLayer1);
-  box-shadow: 0 var(--spaceXS) 0 var(--colorShadow);
   z-index: 3;
+  box-shadow: calc(var(--spaceXS) * -1) var(--spaceXS) 0 var(--colorShadow);
 }
 .TOOLS {
   display: grid;
-  align-items: center;
-  grid-area: TOOLS;
+  align-items: stretch;
   grid-column: 1;
   grid-row: 2;
   z-index: 2;
-
 }
 
 .BOARD {
-  grid-area: BOARD;
-  grid-column: 1 / span 2;
+  grid-column: 1 / span 3;
   grid-row: 1 / span 3;
   display: grid;
   place-items: center;
   overflow: hidden;
   background-color: var(--colorLayer0);
-  z-index: 1;
+  z-index: 0;
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
 }
 
-.PANELS {
-  grid-area: PANELS;
-  grid-column: 3;
-  grid-row: 2;
-  z-index: 2;
-  background-color: var(--colorLayer1);
-  box-shadow:
-    inset 0 var(--spaceS) 0 var(--colorShadow),
-    inset 0 calc(0rem - var(--spaceXS)) 0 var(--colorShadow);
-}
-
 .ANIMATION {
-  grid-area: ANIMATION;
   grid-column: 1 / span 3;
   grid-row: 3;
   z-index: 2;
-  background-color: var(--colorLayer1);
   position: relative;
 }
 
+.PANELS {
+  grid-column: 3;
+  grid-row: 2;
+  z-index: 1;
+  position: relative;
+  pointer-events: none;
+  overflow: hidden;
+  padding: var(--spaceS);
+}
 .button-show {
   position: absolute;
   top: 0;
@@ -241,7 +216,6 @@ useKeyShortcuts(new Map([
   box-shadow: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow);
   transform: translate(-50%, calc(var(--spaceXL) * -1));
 }
-
 .button-show.expanded {
   box-shadow: none;
   transform: translate(-50%, calc(var(--spaceM) * -1));

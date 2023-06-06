@@ -72,7 +72,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 import Modal from '@/components/Modal.vue'
 import Button from '@/components/Button.vue'
 import Field from '@/components/Field.vue'

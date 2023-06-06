@@ -83,7 +83,7 @@ function getBlendMode(operation) {
 /**
  * Devuelve el XML de las capas
  *
- * @param {DocumentStore} document
+ * @param {documentStoreStore} document
  * @returns {string}
  */
 function createStack(document) {
@@ -102,7 +102,7 @@ function createStack(document) {
 /**
  * Guardamos un archivo .ora (Open Raster)
  *
- * @param {DocumentStore} document
+ * @param {documentStoreStore} document
  * @returns {Promise<Blob>}
  */
 export async function save(document) {

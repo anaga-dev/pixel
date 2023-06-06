@@ -53,14 +53,13 @@ export const useDocumentStore = defineStore('documentStore', {
     copyCanvas: null,
     previewCanvas: null,
     color: '#000000',
-    colorMode: ColorMode.HEX,
+    colorMode: ColorMode.PALETTE,
     colorPicker: false,
     grid: {
       enabled: false,
       size: 32,
       color: '#00ffff'
     },
-    symmetrySettings: false,
     symmetry: {
       axis: null, // horizontal, vertical, both, null
       position: Vec2.create(),
@@ -202,9 +201,6 @@ export const useDocumentStore = defineStore('documentStore', {
       // donde irá el canvas de selección.
       this.canvasRect = this.canvas.getBoundingClientRect()
     },
-    toggleSymmetrySettings() {
-      this.symmetrySettings = !this.symmetrySettings
-    },
     toggleColorPicker() {
       this.colorPicker = !this.colorPicker
     },
@@ -260,7 +256,6 @@ export const useDocumentStore = defineStore('documentStore', {
         console.log('Symmetry set to:', axis)
         this.symmetry.axis = axis
       }
-      this.symmetrySettings = false
     },
     setSymmetryAxis(axis) {
       this.symmetry.axis = axis

@@ -5,7 +5,7 @@ export const ONE = 0xFFFFFFFF
  * Patrones de dithering
  */
 export const patterns = [
-  //  0
+  // 0
   new Uint32Array([
     ZERO, ZERO, ZERO, ZERO,
     ZERO, ZERO, ZERO, ZERO,
@@ -109,13 +109,6 @@ export const patterns = [
      ONE,  ONE,  ONE,  ONE,
      ONE,  ONE,  ONE,  ONE,
      ONE,  ONE,  ONE,  ONE
-  ]),
-  // 14
-  new Uint32Array([
-     ONE,  ONE,  ONE,  ONE,
-     ONE,  ONE,  ONE,  ONE,
-     ONE,  ONE,  ONE,  ONE,
-     ONE,  ONE,  ONE,  ONE
   ])
 ]
 
@@ -124,7 +117,7 @@ export class Dither {
     if (!Number.isInteger(dx) || !Number.isInteger(dy)) {
       throw new Error('Invalid dither offset')
     }
-    if (!Number.isInteger(level) || level < 0 || level > 15) {
+    if (!Number.isInteger(level) || level < 0 || level > 13) {
       throw new Error('Invalid dither level')
     }
     this.level = level

@@ -2,7 +2,7 @@ import BinaryReader from '../io/BinaryReader.js'
 
 /**
  *
- * @param {PixelDocument} document
+ * @param {documentStore} document
  * @returns {Promise<Blob>}
  */
 export async function save(document) {
@@ -12,7 +12,7 @@ export async function save(document) {
 /**
  * Carga un archivo .PCX a partir de un Blob
  * @param {Blob} blob
- * @returns {Promise<PixelDocument>}
+ * @returns {Promise<documentStore>}
  */
 export async function load(blob) {
   const reader = BinaryReader.fromBlob(blob)

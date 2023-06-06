@@ -1,5 +1,5 @@
 <template>
-  <div class="button-wrap">
+  <div :class="{ 'button-wrap': variant !== 'ghost' }">
     <button
       :type="type"
       :aria-label="label"
@@ -7,11 +7,14 @@
       :class="[variant, {active: active }]"
       :title="variant === 'ghost' ? label : ''">
       <slot></slot>
+      <IconDropdown v-if="variant === 'dropdown'" />
     </button>
   </div>
 </template>
 
 <script setup>
+import IconDropdown from '@/components/IconDropdown.vue';
+
 const props = defineProps({
   type: {
     type: String,
@@ -55,9 +58,14 @@ button {
   transition: background-color 240ms ease, transform 60ms ease;
 }
 
-button.ghost {
+button:is(.ghost, .dropdown) {
   padding: var(--spaceS);
   background-color: transparent;
+  color: inherit;
+}
+
+button:is(.ghost, .dropdown).active {
+  color: var(--colorAccent);
 }
 
 button.primary {
@@ -70,12 +78,12 @@ button.critical {
   background-color: var(--colorCritical);
 }
 
-button:is(:not(.ghost, .primary, .critical)):hover {
+button:is(:not(.ghost, .dropdown, .primary, .critical)):hover {
   background-color: var(--colorHover);
 }
 
-button:hover {
-  color: var(--colorTextPrimary);
+button:is(.ghost, .dropdown):hover {
+  background-color: var(--colorShade);
 }
 
 button:active {

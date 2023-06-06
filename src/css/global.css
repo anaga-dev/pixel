@@ -88,7 +88,8 @@ canvas {
   image-rendering: pixelated;
 }
 
-.preview-canvas {
+.preview-canvas,
+.preview canvas {
   width: 100%;
   height: 100%;
   background-image: url('@/assets/checkers.png');
@@ -100,8 +101,20 @@ canvas {
   height: 100%;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   html {
     font-size: 12px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --widthSidebar: 16rem;
   }
 }

@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { useDocumentStore } from '@/stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 import Layer from '@/components/Layer.vue'
 
 const document = useDocumentStore()
@@ -36,5 +36,6 @@ const handleSettings = (layer) => {
 .layers {
   display: flex;
   flex-direction: column-reverse;
+  gap: var(--spaceS);
 }
 </style>

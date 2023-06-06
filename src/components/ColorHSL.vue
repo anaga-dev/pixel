@@ -22,6 +22,7 @@ const props = defineProps({
     required: true
   }
 })
+
 const { hue, saturation, lightness } = props.color
 </script>
 

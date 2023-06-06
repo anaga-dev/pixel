@@ -1,26 +1,34 @@
 <template>
   <section class="Zoom">
-    <Button label="Zoom out" variant="ghost" @click="document.zoom.decrease()">
-      <Icon i="zoom-out" />
-    </Button>
-    <div class="percentage" @click="onZoomShow">
-      {{ document.zoom.percentage }}
-    </div>
-    <Button label="Zoom in" variant="ghost" @click="document.zoom.increase()">
+    <Button label="Zoom in" variant="dropdown" @click.stop="uiStore.toggleOverlay('zoom-settings')">
       <Icon i="zoom-in" />
     </Button>
-    <Button label="Reset zoom" variant="ghost" @click="document.zoom.reset()">
-      <Icon i="zoom-reset" />
-    </Button>
   </section>
+  <Dropdown v-if="uiStore.showOverlay === 'zoom-settings'" class="ZoomMenu" @close="uiStore.toggleOverlay('zoom-settings')">
+    <Button label="Zoom in" @click="documentStore.zoom.increase()">
+      <Icon i="zoom-in" />
+      Zoom in
+    </Button>
+    <Button label="Zoom out" @click="documentStore.zoom.decrease()">
+      <Icon i="zoom-out" />
+      Zoom Out
+    </Button>
+    <Button label="Reset zoom" @click="documentStore.zoom.reset()">
+      <Icon i="zoom-reset" />
+      Reset zoom
+    </Button>
+  </Dropdown>
 </template>
 
 <script setup>
-import { useDocumentStore } from '../stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
+import { useUIStore } from '@/stores/UIStore'
 import Button from '@/components/Button.vue'
+import Dropdown from '@/components/Dropdown.vue'
 import Icon from '@/components/Icon.vue'
 
-const document = useDocumentStore()
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
 
 function onZoomShow() {
   // TODO:
@@ -39,5 +47,9 @@ function onZoomShow() {
 .percentage {
   width: 7ch;
   text-align: center;
+}
+
+.ZoomMenu {
+  top: calc(var(--spaceS) + var(--widthToolbar));
 }
 </style>

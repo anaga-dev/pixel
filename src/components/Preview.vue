@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useDocumentStore } from '../stores/Document'
+import { useDocumentStore } from '@/stores/DocumentStore'
 
 const document = useDocumentStore()
 
@@ -14,9 +14,3 @@ const preview = ref()
 
 onMounted(() => preview.value.appendChild(document.previewCanvas))
 </script>
-
-<style scoped>
-.Preview {
-  padding: 0 var(--spaceM);
-}
-</style>

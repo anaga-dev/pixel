@@ -8,7 +8,7 @@
   --colorSecondary: hsl(0 0% 64%);
   --colorAccent: hsl(162 66% 52%);
   --colorCritical: hsl(352 66% 52%);
-  --colorShade: hsl(0 0% 24%);
+  --colorShade: hsl(0 0% 96% / 12%);
   --colorHover: hsl(0 0% 30%);
   --colorShadow: hsl(0 0% 0% / 12%);
   --colorOverlay: hsl(0 0% 8% / 45%);
@@ -22,7 +22,7 @@
   --spaceXXL: 3rem;
 
   --widthToolbar: 4rem;
-  --widthPanels: 20rem;
+  --widthSidebar: 20rem;
 
   --pixelCorners: polygon(
     0% var(--spaceXS),
