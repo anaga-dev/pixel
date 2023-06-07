@@ -1,6 +1,5 @@
 <template>
   <h1>Home</h1>
-  <a :href="router.push('/app')">Abrir app</a>
 </template>
 
 <script setup>

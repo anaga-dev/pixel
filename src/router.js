@@ -4,7 +4,7 @@ import PixelEditor from '@/pages/PixelEditor.vue'
 
 export const routes = [
   { path: '/', component: Home },
-  { path: '/pixel', component: PixelEditor }
+  { path: '/studio', component: PixelEditor }
 ]
 
 export const router = createRouter({
