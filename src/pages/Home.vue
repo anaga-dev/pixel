@@ -1,10 +1,14 @@
 <template>
   <h1>Home</h1>
+  <a :href="router.push('/app')">Abrir app</a>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 /*
-import { watch } from 'vue'
 import { useTouch } from '../composables/useTouch'
 
 const touch = useTouch(document.body)

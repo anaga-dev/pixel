@@ -3,7 +3,7 @@ import Home from '@/pages/Home.vue'
 import PixelEditor from '@/pages/PixelEditor.vue'
 
 export const routes = [
-  { path: '/', component: PixelEditor },
+  { path: '/', component: Home },
   { path: '/pixel', component: PixelEditor }
 ]
 
