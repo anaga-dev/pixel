@@ -154,8 +154,9 @@ useKeyShortcuts(new Map([
 
 <style scoped>
 .CONTAINER {
-  width: 100%;
-  height: 100%;
+  width: 100svw;
+  height: 100svh;
+  overflow: hidden;
   display: grid;
   grid-template-columns: var(--widthToolbar) 1fr var(--widthSidebar);
   grid-template-rows: var(--widthToolbar) 1fr auto;

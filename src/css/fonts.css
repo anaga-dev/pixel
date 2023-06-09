@@ -13,3 +13,11 @@
   font-weight: 700;
   src: url('@/assets/exo-2-v20-latin-700.woff2') format('woff2');
 }
+
+@font-face {
+  font-display: swap; 
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  src: url('@/assets/merriweather-v30-latin-regular.woff2') format('woff2');
+}

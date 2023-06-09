@@ -4,10 +4,11 @@
   scrollbar-color: var(--colorSecondary) transparent;
   accent-color: var(--colorAccent);
   user-select: none;
+  scroll-behavior: smooth;
 }
 
 html {
-  background-color: var(--colorLayer1);
+  background-color: var(--colorLayer0);
   color: var(--colorText);
 }
 
@@ -34,14 +35,6 @@ option {
 h2 {
   font-size: var(--textM);
   text-transform: uppercase;
-}
-
-#app {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
 }
 
 .active {

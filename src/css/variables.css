@@ -7,6 +7,8 @@
   --colorTextAlt: hsl(0 0% 6%);
   --colorSecondary: hsl(0 0% 64%);
   --colorAccent: hsl(162 66% 52%);
+  --colorBgHome: hsl(162 0% 6%);
+  --colorBgHomeAlt: hsl(162 20% 24%);
   --colorCritical: hsl(352 66% 52%);
   --colorShade: hsl(0 0% 96% / 12%);
   --colorHover: hsl(0 0% 30%);
@@ -20,6 +22,9 @@
   --spaceL: 1.5rem;
   --spaceXL: 2.5rem;
   --spaceXXL: 3rem;
+
+  --fontSizeL: 1.25rem;
+  --fontSizeXL: 5rem;
 
   --widthToolbar: 4rem;
   --widthSidebar: 20rem;
