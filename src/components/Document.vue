@@ -16,7 +16,7 @@ const container = ref()
 
 const width = computed(() => `${documentStore.width}px`)
 const height = computed(() => `${documentStore.height}px`)
-const transform = computed(() => `scale(${documentStore.zoom.current}) translate(${~~documentStore.position[0]}px, ${~~documentStore.position[1]}px)`)
+const transform = computed(() => `scale(${documentStore.zoom.current}) translate(${documentStore.position[0]}px, ${documentStore.position[1]}px)`)
 
 useElement(container, documentStore.canvas)
 usePointer(documentStore.canvas, documentStore.useTool)
