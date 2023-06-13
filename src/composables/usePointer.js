@@ -7,7 +7,7 @@ import useEventListeners from './useEventListeners'
  *
  * @param {Element|Ref<Element>} element
  */
-export function usePointer(element, callback, mode = 'down') {
+export function usePointer(element, callback, { receiver = null, mode = 'down' } = { }) {
   const page = { x: 0, y: 0 }
   const client = { x: 0, y: 0 }
   const offset = { x: 0, y: 0 }
@@ -20,6 +20,14 @@ export function usePointer(element, callback, mode = 'down') {
   const movement = { x: 0, y: 0 }
   const absolute = { x: 0, y: 0 }
   const relative = { x: 0, y: 0 }
+
+  function getReceiver() {
+    if (receiver === null) {
+      return element
+    } else {
+      return receiver
+    }
+  }
 
   /**
    *
@@ -122,10 +130,10 @@ export function usePointer(element, callback, mode = 'down') {
   }
 
   if (mode === 'down') {
-    useEventListeners(element, ['pointerdown'], onPointer)
+    useEventListeners(getReceiver(), ['pointerdown'], onPointer)
   } else {
     useEventListeners(
-      element,
+      getReceiver(),
       ['pointerdown', 'pointerup', 'pointermove'],
       onPointer
     )
