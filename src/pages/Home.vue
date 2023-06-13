@@ -2,25 +2,45 @@
   <div class="PAGE">
     <Background class="background" />
     <main>
-      <div class="hero">
+      <section class="hero">
         <h1>Create pixel art on any device</h1>
         <p>Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries.</p>
         <div class="links">
-          <RouterLink class="button-app" to="/studio">Start for free!</RouterLink>
+          <a class="button-app" @click="handleClick">Start for free!</a>
           <a class="button-repo" href="">Github</a>
         </div>
-      </div>
-       <img src="@/assets/pixel.png">
+      </section>
+      <img src="@/assets/pixel.png">
+      <section class="features">
+
+      </section>
     </main>
-    <footer></footer>
+    <footer>
+      <p>Made with ♥ in Madrid</p>
+      <p>© 2023 rojo2</p>
+    </footer>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
+import { onMounted } from 'vue'
 
 const router = useRouter()
+
+onMounted(() => {
+  if (localStorage.getItem('visited')) {
+    router.push('/studio')
+  }
+})
+
+const handleClick = () => {
+  if (!localStorage.getItem('visited')) {
+    localStorage.setItem('visited', 'true')    
+  }
+  router.push('/studio')
+}
 
 /*
 import { useTouch } from '../composables/useTouch'
@@ -121,5 +141,9 @@ img {
   font-weight: bold;
   font-size: var(--fontSizeL);
   padding: var(--spaceL) var(--spaceXL);
+}
+
+footer {
+  padding: var(--spaceXXL) var(--spaceXL);
 }
 </style>
