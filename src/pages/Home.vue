@@ -6,7 +6,7 @@
         <h1>Create pixel art on any device</h1>
         <p>Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries.</p>
         <div class="links">
-          <a class="button-app" @click="handleClick">Start for free!</a>
+          <RouterLink class="button-app" to="/studio">Start for free!</RouterLink>
           <a class="button-repo" href="">Github</a>
         </div>
       </section>
@@ -17,30 +17,16 @@
     </main>
     <footer>
       <p>Made with ♥ in Madrid</p>
-      <p>© 2023 rojo2</p>
+      <p>© 2023 <a href="mailto:hola@rojo2.com">rojo2</a></p>
     </footer>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
-import { onMounted } from 'vue'
 
 const router = useRouter()
-
-onMounted(() => {
-  if (localStorage.getItem('visited')) {
-    router.push('/studio')
-  }
-})
-
-const handleClick = () => {
-  if (!localStorage.getItem('visited')) {
-    localStorage.setItem('visited', 'true')    
-  }
-  router.push('/studio')
-}
 
 /*
 import { useTouch } from '../composables/useTouch'

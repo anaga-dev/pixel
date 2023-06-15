@@ -138,7 +138,6 @@ export function usePointer(element, callback, { receiver = null, mode = 'down' }
       onPointer
     )
   }
-
   return {}
 }
 

@@ -28,6 +28,16 @@ option {
   line-height: 1;
 }
 
+a:not([class]) {
+  color: var(--colorText);
+  text-decoration: none;
+}
+
+a:not([class]):hover {
+  color: var(--colorTextPrimary);
+  text-decoration: underline;
+}
+
 *::-webkit-scrollbar {
   width: var(--spaceS);
 }
