@@ -8,6 +8,14 @@
 import { onMounted, ref, computed, onUpdated } from 'vue'
 import { useDocumentStore } from '@/stores/DocumentStore'
 import { useElement } from '@/composables/useElement'
+import { usePointer } from '@/composables/usePointer'
+
+const props = defineProps({
+  board: {
+    type: Object,
+    required: true
+  }
+})
 
 const documentStore = useDocumentStore()
 
@@ -18,6 +26,9 @@ const height = computed(() => `${documentStore.height}px`)
 const transform = computed(() => `scale(${documentStore.zoom.current}) translate(${documentStore.position[0]}px, ${documentStore.position[1]}px)`)
 
 useElement(container, documentStore.canvas)
+usePointer(documentStore.canvas, documentStore.useTool, {
+  receiver: props.board
+})
 
 onMounted(() => {
   documentStore.redrawAll()

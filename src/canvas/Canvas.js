@@ -27,6 +27,13 @@ export function create(width, height) {
   return canvas
 }
 
+/**
+ *
+ * @param {*} canvas
+ * @param {*} width
+ * @param {*} height
+ * @returns
+ */
 export function createOrGet(canvas, width, height) {
   if (!canvas)
     return create(width, height)

@@ -7,7 +7,7 @@
       <Tools />
     </div>
     <main class="BOARD" ref="board">
-      <Document v-if="documentStore.canvas" />
+      <Document v-if="documentStore.canvas" :board="board" />
       <Selection v-if="documentStore.canvas && documentStore.tool === Tool.SELECT" />
     </main>
     <!--
@@ -68,7 +68,6 @@ import { useUIStore } from '@/stores/UIStore'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useTouch } from '@/composables/useTouch'
-import { usePointer } from '@/composables/usePointer'
 import Tool from '@/enums/Tool'
 import Tools from '@/components/Tools.vue'
 import Animation from '@/components/Animation.vue'
@@ -95,9 +94,6 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
-usePointer(documentStore.canvas, documentStore.useTool, {
-  receiver: board
-})
 
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value

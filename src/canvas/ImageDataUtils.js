@@ -3,20 +3,6 @@ import CanvasContext2D from './CanvasContext2D'
 import FillStack from './FillStack'
 
 /**
- * Clamps a number
- *
- * @param {number} value
- * @param {number} min
- * @param {number} max
- * @returns {number}
- */
-function clamp(value, min, max) {
-  if (value < min) return min
-  if (value > max) return max
-  return value
-}
-
-/**
  * Returns true if the given coordinates are inside the image data.
  *
  * @param {ImageData} imageData
@@ -50,7 +36,10 @@ export function isOutside(imageData, x, y) {
  * @returns {boolean}
  */
 export function getOffset(imageData, x, y) {
-  return (Math.floor(clamp(y, 0, imageData.height - 1)) * imageData.width + Math.floor(clamp(x, 0, imageData.width - 1))) * 4
+  if (x < 0 || x >= imageData.width || y < 0 || y >= imageData.height) {
+    return null
+  }
+  return (Math.floor(y) * imageData.width + Math.floor(x)) * 4
 }
 
 /**
@@ -68,6 +57,9 @@ export function putColor(imageData, x, y, [r, g, b, a], dither = null) {
     return imageData
   }
   const offset = getOffset(imageData, x, y)
+  if (offset === null) {
+    return
+  }
   if (dither && dither.level > 0) {
     if (!dither.shouldPaint(x, y)) {
       return imageData
@@ -90,6 +82,9 @@ export function putColor(imageData, x, y, [r, g, b, a], dither = null) {
  */
 export function getColor(imageData, x, y) {
   const offset = getOffset(imageData, x, y)
+  if (offset === null) {
+    return [0, 0, 0, 1]
+  }
   const r = imageData.data[offset + 0]
   const g = imageData.data[offset + 1]
   const b = imageData.data[offset + 2]
@@ -424,8 +419,11 @@ export function fillEllipse(imageData, px1, py1, px2, py2, color, dither) {
  * @returns {ImageData}
  */
 export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither) {
-  let a = Math.abs(px2-px1), b = Math.abs(py2-py1), b1 = b&1 /* values of diameter */
-  let dx = 4*(1-a)*b*b, dy = 4*(b1+1)*a*a /* error increment */
+  let a = Math.abs(px2-px1),
+      b = Math.abs(py2-py1),
+      b1 = b&1 /* values of diameter */
+  let dx = 4*(1-a)*b*b,
+      dy = 4*(b1+1)*a*a /* error increment */
   let err = dx+dy+b1*a*a
   let e2; /* error of 1.step */
 
