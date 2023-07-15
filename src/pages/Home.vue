@@ -33,15 +33,13 @@ const router = useRouter()
 let installPrompt = null
 let installable = ref(false)
 
-function handleInstallClick() {
+async function handleInstallClick() {
   if (!installPrompt) return
 
-  const result = installPrompt.prompt()
+  const result = await installPrompt.prompt()
   console.log(`Install prompt result: ${result.outcome}`)
   if (result.outcome === 'accepted') {
-    window.addEventListener('appinstalled', () => {
-      console.log('App installed')
-    }, { once: true })
+    router.replace('/studio')
   }
 
   // TODO: Disable install prompt
@@ -50,11 +48,20 @@ function handleInstallClick() {
 }
 
 onMounted(() => {
+  // Nos aseguramos de que no estamos en modo standalone (si lo estamos,
+  // redirigimos al estudio)
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    installable.value = false
+    router.replace('/studio')
+  }
+
+  // Si el navegador soporta el evento beforeinstallprompt, lo escuchamos
+  // para mostrar el botón de instalación
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault()
     installPrompt = event
     installable.value = true
-  })
+  }, { once: true })
 })
 
 /*

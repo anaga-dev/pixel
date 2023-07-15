@@ -14,3 +14,8 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.mount('#app')
+
+window.addEventListener('appinstalled', () => {
+  console.log('App installed!')
+  router.replace('/studio')
+}, { once: true })

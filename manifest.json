@@ -6,7 +6,10 @@
   "background_color": "#292929",
   "theme_color": "#34d5a5",
   "homepage_url": "https://pixel.anaga.dev/",
+  "id": "/studio",
   "start_url": "/studio",
+  "scope": "/studio",
+  "display": "standalone",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
