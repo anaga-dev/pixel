@@ -7,6 +7,7 @@ import Color from '@/color/Color'
  * @returns {Color}
  */
 export function useColor(string) {
+  const PERCENTAGE = 101
   const max = (r, g, b) => Math.max(r, g, b)
   const min = (r, g, b) => Math.min(r, g, b)
   const range = (r, g, b) => max(r, g, b) - min(r, g, b)
@@ -41,6 +42,13 @@ export function useColor(string) {
     s: 0,
     l: 0
   })
+
+  function setFromRGB(r, g, b) {
+    rgb.r = r
+    rgb.g = g
+    rgb.b = b
+    updateFromRGB(r, g, b)
+  }
 
   function updateFromRGB(r, g, b) {
     hsl.h = h(r, g, b)
@@ -80,8 +88,7 @@ export function useColor(string) {
     rgb.b = b + m
   }
 
-  updateFromRGB(...Color.parse(string))
-  updateFromHSL(hsl.h, hsl.s, hsl.l)
+  setFromRGB(...Color.parse(string))
 
   const red = computed({
     set(value) {
@@ -121,20 +128,20 @@ export function useColor(string) {
   })
   const saturation = computed({
     set(value) {
-      hsl.s = value / 100
+      hsl.s = value / PERCENTAGE
       updateFromHSL(hsl.h, hsl.s, hsl.l)
     },
     get() {
-      return ~~(hsl.s * 100)
+      return ~~(hsl.s * PERCENTAGE)
     }
   })
   const lightness = computed({
     set(value) {
-      hsl.l = value / 100
+      hsl.l = value / PERCENTAGE
       updateFromHSL(hsl.h, hsl.s, hsl.l)
     },
     get() {
-      return ~~(hsl.l * 100)
+      return ~~(hsl.l * PERCENTAGE)
     }
   })
 
@@ -143,13 +150,7 @@ export function useColor(string) {
 
   const style = computed({
     set(value) {
-      const [r, g, b] = Color.parse(value)
-      console.log(r, g, b)
-      rgb.r = r
-      rgb.g = g
-      rgb.b = b
-      updateFromRGB(rgb.r, rgb.g, rgb.b)
-      updateFromHSL(hsl.h, hsl.s, hsl.l)
+      setFromRGB(...Color.parse(value))
     },
     get() {
       return `rgb(${red.value}, ${green.value}, ${blue.value})`

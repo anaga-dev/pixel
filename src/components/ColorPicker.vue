@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { onMounted, readonly, ref, watch } from 'vue'
+import { readonly, ref, watch } from 'vue'
 import { useDocumentStore } from '@/stores/DocumentStore'
 import { useColor } from '@/composables/useColor'
 import HuePicker from '@/components/HuePicker.vue'
@@ -53,17 +53,8 @@ function onSelectColor(newStyle) {
   current.style.value = newStyle
 }
 
-function onUpdate() {
-  documentStore.setColor(current.style.value)
-}
-
-watch(() => current.style.value, (oldValue, newValue) => {
-  console.log('new value', newValue)
-  documentStore.setColor(current.style.value)
-})
-
-onMounted(() => {
-  console.log('current color', current.style.value)
+watch(() => current.style.value, (newValue) => {
+  documentStore.setColor(newValue)
 })
 </script>
 

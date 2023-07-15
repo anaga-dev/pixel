@@ -25,8 +25,8 @@
 
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import Background from '@/components/Background.vue'
-import { ref, onMounted } from 'vue';
 
 const router = useRouter()
 

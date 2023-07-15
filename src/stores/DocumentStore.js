@@ -161,7 +161,9 @@ export const useDocumentStore = defineStore('documentStore', {
       return this.animation.canGoLast
     },
     lastHistoryAction() {
-      if (this.history.index >= 0) return this.history.list[this.history.index]
+      if (this.history.index >= 0) {
+        return this.history.list[this.history.index]
+      }
       return undefined
     },
     totalFrames() {
