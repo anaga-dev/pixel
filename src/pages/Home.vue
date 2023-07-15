@@ -6,7 +6,8 @@
         <h1>Create pixel art on any device</h1>
         <p>Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries.</p>
         <div class="links">
-          <RouterLink class="button-app" to="/studio">Start for free!</RouterLink>
+          <button id="install" class="button-app" v-if="installable" @click="handleInstallClick">Install</button>
+          <RouterLink class="button-app" to="/studio">Try it for free!</RouterLink>
           <a class="button-repo" href="">Github</a>
         </div>
       </section>
@@ -25,8 +26,36 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
+import { ref, onMounted } from 'vue';
 
 const router = useRouter()
+
+let installPrompt = null
+let installable = ref(false)
+
+function handleInstallClick() {
+  if (!installPrompt) return
+
+  const result = installPrompt.prompt()
+  console.log(`Install prompt result: ${result.outcome}`)
+  if (result.outcome === 'accepted') {
+    window.addEventListener('appinstalled', () => {
+      console.log('App installed')
+    }, { once: true })
+  }
+
+  // TODO: Disable install prompt
+  installable = false
+  installPrompt = null
+}
+
+onMounted(() => {
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault()
+    installPrompt = event
+    installable.value = true
+  })
+})
 
 /*
 import { useTouch } from '../composables/useTouch'
