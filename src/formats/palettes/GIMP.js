@@ -32,6 +32,12 @@ export async function load(blob)
   return palette
 }
 
+/**
+ * Saves a GIMP palette file
+ *
+ * @param {Palette} palette
+ * @returns {Promise<string>}
+ */
 export async function save(palette)
 {
   let text = 'GIMP Palette\n'

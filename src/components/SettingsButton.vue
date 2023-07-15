@@ -3,9 +3,9 @@
     <Icon i="menu" />
   </Button>
   <Dropdown v-if="uiStore.showOverlay === overlay" class="menu" @close="uiStore.toggleOverlay(overlay)">
-    <Button label="New file">New file</Button>
-    <Button label="Open file">Open file</Button>
-    <Button label="Save file" @click="documentStore.exportAs">Save file</Button>
+    <Button label="New file" @click="newFile">New file</Button>
+    <Button label="Open file" @click="openFile">Open file</Button>
+    <Button label="Save file" @click="saveFile">Save file</Button>
   </Dropdown>
 </template>
 
@@ -20,6 +20,21 @@ const overlay = 'general-settings'
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
+
+function newFile(params) {
+  documentStore.newFile()
+  uiStore.showOverlay = null
+}
+
+function openFile() {
+  documentStore.openFile()
+  uiStore.showOverlay = null
+}
+
+function saveFile() {
+  documentStore.saveFileAs()
+  uiStore.showOverlay = null
+}
 
 </script>
 

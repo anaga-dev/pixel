@@ -186,7 +186,6 @@ export function paint(target, source, x, y, callback) {
  * @returns
  */
 export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
-  debugger
   const VISITED_COLOR = 0xFF
   const [r, g, b, a] = color
   const [sr, sg, sb, sa] = getColor(imageData, x, y)
@@ -202,12 +201,9 @@ export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 
     const [x, y] = fillStack.pop()
     visited.putColor(x, y, VISITED_COLOR)
     const [cr, cg, cb, ca] = getColor(imageData, x, y)
-    // Si el color actual no coincide, entonces
-    // continuamos.
     if (cr != sr || cg != sg || cb != sb || ca != sa) {
       continue
     }
-
     putColor(imageData, x, y, color, dither)
     for (const [dx, dy] of directions) {
       const nx = x + dx
@@ -218,6 +214,7 @@ export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 
       fillStack.push(nx, ny)
     }
   }
+  return imageData
 }
 
 /**

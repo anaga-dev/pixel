@@ -1,5 +1,5 @@
 import JSZip from 'jszip'
-import Canvas from '../canvas/Canvas'
+import Canvas from '@/canvas/Canvas'
 
 // @see https://www.openraster.org/baseline/layer-stack-spec.html
 
@@ -102,12 +102,12 @@ function createStack(document) {
 /**
  * Guardamos un archivo .ora (Open Raster)
  *
- * @param {documentStoreStore} document
+ * @param {documentStoreStore} doc
  * @returns {Promise<Blob>}
  */
-export async function save(document) {
-  const stack = createStack(document)
-  const mergedImage = await Canvas.createBlob(document.canvas, 'image/png')
+export async function save(doc) {
+  const stack = createStack(doc)
+  const mergedImage = await Canvas.createBlob(doc.canvas, 'image/png')
   const zip = new JSZip()
   zip.file('mimetype', 'image/openraster', {
     compression: 'STORE'
@@ -115,9 +115,9 @@ export async function save(document) {
   zip.file('stack.xml', stack)
   zip.file('mergedimage.png', mergedImage)
   const dataFolder = zip.folder('data')
-  const layers = await Promise.all(document.layers.list.map((layer) => Canvas.createBlob(layer.canvas, 'image/png')))
+  const layers = await Promise.all(doc.layers.list.map((layer) => Canvas.createBlob(layer.canvas, 'image/png')))
   layers.forEach((blob, index) => dataFolder.file(`layer${index}.png`, blob))
-  zip.folder('Thumbnails').file('thumbnail.png', await createThumbnail(document.canvas))
+  zip.folder('Thumbnails').file('thumbnail.png', await createThumbnail(doc.canvas))
   return zip.generateAsync({ type: 'blob' })
 }
 

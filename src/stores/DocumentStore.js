@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { v4 as uuid } from 'uuid'
-import { useDither } from '../composables/useDither'
+import { useDither } from '@/composables/useDither'
 import { useZoom } from '@/composables/useZoom'
 import { useHistory } from '@/composables/useHistory'
 import { useLayers } from '@/composables/useLayers'
@@ -11,7 +11,6 @@ import ColorMode from '@/enums/ColorMode'
 import Canvas from '@/canvas/Canvas'
 import CanvasContext2D from '@/canvas/CanvasContext2D'
 import ImageDataUtils from '@/canvas/ImageDataUtils'
-import OpenRaster from '@/formats/OpenRaster'
 import Zoom from '@/constants/Zoom'
 import SymmetryAxis from '@/enums/SymmetryAxis'
 import BlendMode from '@/enums/BlendMode'
@@ -28,9 +27,25 @@ import Layer from '@/composables/Layer'
 import TransformMode from '@/enums/TransformMode'
 import PaletteTypes from '@/constants/PaletteTypes'
 import ImageTypes from '@/constants/ImageTypes'
-import GIMP from '@/formats/palettes/GIMP'
-import Interpolation from '../math/Interpolation'
+import Interpolation from '@/math/Interpolation'
 
+import GIMP from '@/formats/palettes/GIMP'
+import ACT from '@/formats/palettes/ACT'
+import PAL from '@/formats/palettes/PAL'
+
+import OpenRaster from '@/formats/images/OpenRaster'
+import PNG from '@/formats/images/PNG'
+
+
+/**
+ * Este es el tipo Document que se utiliza a la hora
+ * de cargar y guardar un documento.
+ *
+ * @typedef {Object} Document
+ * @property {number} width
+ * @property {number} height
+ * @property {number} layers
+ */
 
 // TODO: Creo que una buena cantidad de este código se podrían convertir
 // en composables que más tarde utilicemos en las stores.
@@ -1028,6 +1043,9 @@ export const useDocumentStore = defineStore('documentStore', {
         }
 
         if (e.type !== 'pointerup') {
+          // TODO: Esto debería ir a una especie de
+          // composable que podría ser algo como
+          // this.selection.closePolygon()
           if (this.select.type === SelectType.FREEHAND) {
             this.selectionPolygon.push([x, y])
           } else if (this.select.type === SelectType.RECTANGULAR) {
@@ -1326,13 +1344,22 @@ export const useDocumentStore = defineStore('documentStore', {
       // FIXME: Ni firefox, ni Safari lo soportan
       const fileHandle = await window.showSaveFilePicker({
         types: PaletteTypes,
-        excludeAcceptAllOption: true,
-        multiple: false
+        excludeAcceptAllOption: true
       })
+      // TODO: ¿Deberíamos lanzar una excepción?
+      if (fileHandle.kind !== 'file') return
+
       console.log(fileHandle)
       const writable = await fileHandle.createWritable()
       console.log(writable)
-      await writable.write(await GIMP.save(this.palette))
+      const extension = fileHandle.name.slice(fileHandle.name.lastIndexOf('.'))
+      if (extension === '.gpl') {
+        await writable.write(await GIMP.save(this.palette))
+      } else if (extension === '.pal') {
+        await writable.write(await PAL.save(this.palette))
+      } else if (extension === '.act') {
+        await writable.write(await ACT.save(this.palette))
+      }
       await writable.close()
     },
     /**
@@ -1444,7 +1471,10 @@ export const useDocumentStore = defineStore('documentStore', {
     newFile() {
       console.info('TO BE IMPLEMENTED!')
     },
-    async loadFile() {
+    /**
+     * Open file
+     */
+    async openFile() {
       if ('showOpenFilePicker' in window) {
         const [fileHandle] = await window.showOpenFilePicker({
           types: ImageTypes,
@@ -1457,6 +1487,9 @@ export const useDocumentStore = defineStore('documentStore', {
           let document
           if (/(.*)\.ora$/i.test(file.name)) {
             document = await OpenRaster.load(file)
+            console.log(document)
+          } else if (/(.*)\.png$/i.test(file.name)) {
+            document = await PNG.load(file)
             console.log(document)
           }
           if (!document) {
@@ -1471,6 +1504,9 @@ export const useDocumentStore = defineStore('documentStore', {
         // Safari y Firefox
       }
     },
+    /**
+     * Save file
+     */
     async saveFileAs() {
       if ('showSaveFilePicker' in window) {
         const fileHandle = await window.showSaveFilePicker({

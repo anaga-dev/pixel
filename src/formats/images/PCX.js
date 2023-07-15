@@ -1,6 +1,9 @@
 import BinaryReader from '../io/BinaryReader.js'
 
+const PCX_SIGNATURE = 0x0A
+
 /**
+ * Saves a PCX file from a document.
  *
  * @param {documentStore} document
  * @returns {Promise<Blob>}
@@ -10,14 +13,15 @@ export async function save(document) {
 }
 
 /**
- * Carga un archivo .PCX a partir de un Blob
+ * Loads a PCX file.
+ *
  * @param {Blob} blob
  * @returns {Promise<documentStore>}
  */
 export async function load(blob) {
   const reader = BinaryReader.fromBlob(blob)
   const signature = reader.read('u1')
-  if (signature != 0x0a) {
+  if (signature != PCX_SIGNATURE) {
     throw new Error('Invalid PCX signature')
   }
   /**

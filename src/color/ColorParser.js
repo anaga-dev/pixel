@@ -213,10 +213,11 @@ export function parseHSLA(color) {
 }
 
 /**
+ * Parses a color.
  *
  * @param {string} color
- * @param {*} namedColors
- * @returns
+ * @param {NamedColors} namedColors
+ * @returns {Color}
  */
 export function parse(color, namedColors = NamedColors) {
   if (isCurrentColor(color)) {
