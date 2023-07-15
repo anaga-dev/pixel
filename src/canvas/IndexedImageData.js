@@ -1,8 +1,17 @@
+/**
+ *
+ */
 export default class IndexedImageData {
   #width = 0
   #height = 0
   #data = null
 
+  /**
+   * Create IndexedImageData from ImageData
+   *
+   * @param {ImageData} imageData
+   * @returns {IndexedImageData}
+   */
   static fromImageData(imageData) {
     return new IndexedImageData(imageData.width, imageData.height)
   }

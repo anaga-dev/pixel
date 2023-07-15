@@ -958,6 +958,8 @@ export const useDocumentStore = defineStore('documentStore', {
       this.selectionCanvas = Canvas.createOrGet(this.selectionCanvas, this.width, this.height)
       this.selectionContext = CanvasContext2D.get(this.selectionCanvas)
 
+      // FIXME: Esto debería hacerse en alguna otra parte, no me gusta
+      // que se haga aquí, hace el código más farragoso y difícil de leer.
       const onPointer = (e) => {
         const { top, left, width, height } = this.canvasRect
         const x = (e.clientX - left) / width
@@ -968,7 +970,8 @@ export const useDocumentStore = defineStore('documentStore', {
           if (this.select.type === SelectType.RECTANGULAR) {
             this.selectionPolygon.push([x, y], [x, y], [x, y], [x, y])
           } else if (this.select.type === SelectType.COLOR) {
-            // TODO: Esto debería hacerse en el setter de selectionMaskImageData
+            // TODO: Esto debería hacerse en el setter de
+            // selectionMaskImageData
             const selectionMaskContext = CanvasContext2D.get(
               this.selectionMaskCanvas,
               {

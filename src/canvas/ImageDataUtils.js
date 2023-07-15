@@ -58,7 +58,7 @@ export function putColor(imageData, x, y, [r, g, b, a], dither = null) {
   }
   const offset = getOffset(imageData, x, y)
   if (offset === null) {
-    return
+    return imageData
   }
   if (dither && dither.level > 0) {
     if (!dither.shouldPaint(x, y)) {
@@ -186,6 +186,8 @@ export function paint(target, source, x, y, callback) {
  * @returns
  */
 export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+  debugger
+  const VISITED_COLOR = 0xFF
   const [r, g, b, a] = color
   const [sr, sg, sb, sa] = getColor(imageData, x, y)
   // si estamos pintando sobre el mismo color que tenemos
@@ -198,11 +200,11 @@ export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 
   fillStack.push(x, y)
   while (!fillStack.isEmpty) {
     const [x, y] = fillStack.pop()
-    visited.putColor(x, y, 0xFF)
-    const [cr, cg, cb] = getColor(imageData, x, y)
+    visited.putColor(x, y, VISITED_COLOR)
+    const [cr, cg, cb, ca] = getColor(imageData, x, y)
     // Si el color actual no coincide, entonces
     // continuamos.
-    if (cr != sr || cg != sg || cb != sb) {
+    if (cr != sr || cg != sg || cb != sb || ca != sa) {
       continue
     }
 
@@ -210,9 +212,10 @@ export function fill(imageData, x, y, color, dither, directions = [[-1, 0], [1, 
     for (const [dx, dy] of directions) {
       const nx = x + dx
       const ny = y + dy
-      if (visited.isInside(nx, ny) && visited.getColor(nx, ny) !== 0xFF) {
-        fillStack.push(nx, ny)
+      if (!visited.isInside(nx, ny) || visited.getColor(nx, ny) === VISITED_COLOR) {
+        continue
       }
+      fillStack.push(nx, ny)
     }
   }
 }
