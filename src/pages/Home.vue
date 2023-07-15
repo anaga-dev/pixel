@@ -33,16 +33,17 @@ const router = useRouter()
 let installPrompt = null
 let installable = ref(false)
 
+/**
+ * Handle install button click.
+ */
 async function handleInstallClick() {
   if (!installPrompt) return
 
   const result = await installPrompt.prompt()
-  console.log(`Install prompt result: ${result.outcome}`)
   if (result.outcome === 'accepted') {
     router.replace('/studio')
   }
 
-  // TODO: Disable install prompt
   installable = false
   installPrompt = null
 }
@@ -52,6 +53,7 @@ onMounted(() => {
   // redirigimos al estudio)
   if (window.matchMedia('(display-mode: standalone)').matches) {
     installable.value = false
+    installPrompt = null
     router.replace('/studio')
   }
 
