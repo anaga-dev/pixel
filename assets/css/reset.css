@@ -1,0 +1,11 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}

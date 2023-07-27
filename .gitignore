@@ -158,6 +158,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
+.output
 dist
 
 # Gatsby files
@@ -336,3 +337,5 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/linux,osx,windows,vim,emacs,sublimetext,visualstudiocode,node
 
 dev-dist
+
+sw.*
