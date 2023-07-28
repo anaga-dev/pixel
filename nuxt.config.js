@@ -99,8 +99,13 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: '/studio',
+      cleanupOutdatedCaches: false,
+      // navigateFallback: '/studio',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
     }
   }
 })

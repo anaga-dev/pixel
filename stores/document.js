@@ -310,18 +310,18 @@ export const useDocumentStore = defineStore('document', {
       // FIXME: Cuando el color es el inicial #000 por algún motivo
       // no pinta bien el alpha.
       if (!this.fill.contiguous) {
-        console.log('Filling all!!!')
         this.doLayerPaintOperation((imageData) =>
           ImageDataUtils.replaceColorAt(imageData, x, y, Color.toUint8(color))
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
           this.doSymmetry2Operation(
-            () => ImageDataUtils.fill(imageData, x, y, Color.toUint8(color)),
+            (imageData, x, y, color, dither) =>
+              ImageDataUtils.fill(imageData, x, y, Color.toUint8(color)),
             imageData,
             x,
             y,
-            color,
+            color
           )
         )
       }
@@ -1172,8 +1172,7 @@ export const useDocumentStore = defineStore('document', {
       this.height = height
       this.palette = palette
       this.symmetry.position.set(this.width / 2, this.height / 2)
-      this.layers.list.length = 0
-      layers.forEach((layer) => this.layers.add(layer))
+      this.layers.set(layers)
       this.tool = Tool.PENCIL
       this.init()
     },

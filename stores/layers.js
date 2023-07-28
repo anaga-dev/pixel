@@ -157,10 +157,16 @@ export const useLayersStore = defineStore('layers', () => {
     list.splice(index - 1, 0, removed)
   }
 
+  function set(layers) {
+    list.length = 0
+    layers.forEach((layer) => { add(layer) })
+  }
+
   return {
     current,
     list,
     settings,
+    set,
     add,
     remove,
     duplicate,

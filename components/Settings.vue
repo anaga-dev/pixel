@@ -10,7 +10,7 @@
       label="Symmetry aid"
       variant="dropdown"
       :active="documentStore.symmetry.axis !== null"
-      @click.stop="uiStore.toggleOverlay('symmetry-settings')">
+      @click="uiStore.toggleOverlay('symmetry-settings')">
         <Icon i="symmetry-vertical" v-if="documentStore.symmetry.axis === 'vertical'" />
         <Icon i="symmetry-two-axis" v-else-if="documentStore.symmetry.axis === 'both'" />
         <Icon i="symmetry-horizontal" v-else />
@@ -21,7 +21,7 @@
       <Button
         variant="ghost"
         :active="uiStore.isShowingLayersPanel"
-        @click.stop="uiStore.togglePanel('layers')">
+        @click="uiStore.togglePanel('layers')">
         <Icon i="layers" />
       </Button>
     </div>
@@ -42,7 +42,6 @@ import Zoom from '@/components/Zoom.vue'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
-
 </script>
 
 <style scoped>

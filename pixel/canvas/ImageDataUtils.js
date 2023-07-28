@@ -100,12 +100,13 @@ export function getColor(imageData, x, y) {
  * @param {Color} colorUsed
  * @returns {ImageData}
  */
-export function replaceColor(imageData, [sr, sg, sb], [tr, tg, tb, ta]) {
+export function replaceColor(imageData, [sr, sg, sb, sa], [tr, tg, tb, ta]) {
   for (let offset = 0; offset < imageData.data.length; offset += 4) {
     const cr = imageData.data[offset + 0]
     const cg = imageData.data[offset + 1]
     const cb = imageData.data[offset + 2]
-    if (sr === cr && sg === cg && sb === cb) {
+    const ca = imageData.data[offset + 3]
+    if (sr === cr && sg === cg && sb === cb && sa === ca) {
       imageData.data[offset + 0] = tr
       imageData.data[offset + 1] = tg
       imageData.data[offset + 2] = tb
@@ -125,8 +126,8 @@ export function replaceColor(imageData, [sr, sg, sb], [tr, tg, tb, ta]) {
  * @returns {ImageData}
  */
 export function replaceColorAt(imageData, x, y, [r, g, b, a]) {
-  const [sr, sg, sb] = getColor(imageData, x, y)
-  replaceColor(imageData, [sr, sg, sb], [r, g, b, a])
+  const [sr, sg, sb, sa] = getColor(imageData, x, y)
+  replaceColor(imageData, [sr, sg, sb, sa], [r, g, b, a])
 }
 
 /**
@@ -578,7 +579,8 @@ export function copySelectedAt(targetImageData, sourceImageData, x, y, maskColor
 }
 
 /**
- * Copy sourceImageData to targetImageData but only in contiguous pixels.
+ * Copy sourceImageData to targetImageData but only
+ * in contiguous pixels.
  *
  * @param {ImageData} targetImageData
  * @param {ImageData} sourceImageData

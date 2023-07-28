@@ -1,16 +1,15 @@
 <template>
-  <div class="Panels" v-on-click-outside.bubble="onClick">
+  <div class="Panels" ref="target">
     <slot></slot>
   </div>
 </template>
 
 <script setup>
-import { vOnClickOutside } from '@vueuse/components'
+const target = ref(null)
+
 const emit = defineEmits(['close'])
 
-function onClick(e) {
-  emit('close')
-}
+onClickOutside(target, () => emit('close'))
 </script>
 
 <style scoped>
@@ -20,4 +19,4 @@ function onClick(e) {
   display: grid;
   grid-auto-flow: row;
 }
-</style>  
+</style>
