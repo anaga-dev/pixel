@@ -26,6 +26,7 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useColor } from '@/composables/useColor'
+import ColorMode from '@/pixel/enums/ColorMode'
 
 const documentStore = useDocumentStore()
 

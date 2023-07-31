@@ -22,6 +22,7 @@
 </template>
 
 <script setup>
+import { useDocumentStore } from '@/stores/document'
 import { rgbToHex, hexToRgb } from '@/pixel/color/ColorConverter'
 
 const props = defineProps({
