@@ -6,7 +6,6 @@ export const useUIStore = defineStore('ui', {
       width: 0,
       height: 0
     },
-    expandedSidebar: false,
     showOverlay: null,
     showPanel: null,
     showSplash: false,
