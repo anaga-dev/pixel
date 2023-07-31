@@ -25,8 +25,6 @@
 </template>
 
 <script setup>
-import Background from '@/components/Background.vue'
-
 const router = useRouter()
 
 // Promise que se resuelve cuando el usuario hace clic

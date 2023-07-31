@@ -36,8 +36,6 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import Button from '@/components/Button.vue'
-import Icon from '@/components/Icon.vue'
 
 const document = useDocumentStore()
 

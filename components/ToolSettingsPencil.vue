@@ -24,12 +24,6 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
-import BrushSelector from '@/components/BrushSelector.vue'
-import BrushSize from '@/components/BrushSize.vue'
-import BrushDither from '@/components/BrushDither.vue'
-import Button from '@/components/Button.vue'
-import Divider from '@/components/Divider.vue'
-import Icon from '@/components/Icon.vue'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()

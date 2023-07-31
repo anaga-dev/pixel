@@ -39,9 +39,6 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import AnimationFrame from '@/components/AnimationFrame.vue'
-import Button from '@/components/Button.vue'
-import Icon from '@/components/Icon.vue'
 
 const documentStore = useDocumentStore()
 

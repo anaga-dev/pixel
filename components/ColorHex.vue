@@ -22,8 +22,6 @@
 </template>
 
 <script setup>
-import Button from '@/components/Button.vue'
-import { useDocumentStore } from '@/stores/document'
 import { rgbToHex, hexToRgb } from '@/pixel/color/ColorConverter'
 
 const props = defineProps({

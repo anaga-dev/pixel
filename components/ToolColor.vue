@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-import Icon from '@/components/Icon.vue'
-
 const emit = defineEmits(['click'])
 
 const props = defineProps({

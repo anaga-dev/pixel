@@ -15,9 +15,6 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
-import Button from '@/components/Button.vue'
-import Dropdown from '@/components/Dropdown.vue'
-import Icon from '@/components/Icon.vue'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()

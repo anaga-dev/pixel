@@ -12,9 +12,6 @@
 <script setup>
 import { useUIStore } from '@/stores/ui'
 import { useDocumentStore } from '@/stores/document'
-import Icon from '@/components/Icon.vue'
-import Button from '@/components/Button.vue'
-import Dropdown from '@/components/Dropdown.vue'
 
 const overlay = 'general-settings'
 

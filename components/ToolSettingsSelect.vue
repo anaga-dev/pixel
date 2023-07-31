@@ -54,10 +54,6 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import ToolButton from '@/components/ToolButton.vue'
-import Button from '@/components/Button.vue'
-import Divider from '@/components/Divider.vue'
-import Icon from '@/components/Icon.vue'
 
 const documentStore = useDocumentStore()
 </script>

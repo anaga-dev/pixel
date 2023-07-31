@@ -13,9 +13,6 @@
 </template>
 
 <script setup>
-import Field from '@/components/Field.vue'
-import Slider from '@/components/Slider.vue'
-
 const props = defineProps({
   color: {
     type: Object,

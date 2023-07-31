@@ -10,12 +10,6 @@
 </template>
 
 <script setup>
-import ToolSettingsPencil from '@/components/ToolSettingsPencil.vue'
-import ToolSettingsEraser from '@/components/ToolSettingsEraser.vue'
-import ToolSettingsFill from '@/components/ToolSettingsFill.vue'
-import ToolSettingsShape from '@/components/ToolSettingsShape.vue'
-import ToolSettingsTransform from '@/components/ToolSettingsTransform.vue'
-import ToolSettingsSelect from '@/components/ToolSettingsSelect.vue'
 import Tool from '@/pixel/enums/Tool'
 
 const props = defineProps({

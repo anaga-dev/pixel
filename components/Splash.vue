@@ -7,10 +7,6 @@
   </div>
 </template>
 
-<script setup>
-import Overlay from '@/components/Overlay.vue'
-</script>
-
 <style scoped>
 .wrapper {
   position: fixed;

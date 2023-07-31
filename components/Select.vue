@@ -12,8 +12,6 @@
 </template>
 
 <script setup>
-import Icon from '@/components/Icon.vue'
-
 const props = defineProps(['modelValue'])
 defineEmits(['update:modelValue'])
 </script>

@@ -26,16 +26,6 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useColor } from '@/composables/useColor'
-import HuePicker from '@/components/HuePicker.vue'
-import CombinedColorPicker from '@/components/CombinedColorPicker.vue'
-import ColorHex from '@/components/ColorHex.vue'
-import ColorHSL from '@/components/ColorHSL.vue'
-import ColorRGB from '@/components/ColorRGB.vue'
-import ColorMode from '@/pixel/enums/ColorMode'
-import Palette from '@/components/Palette.vue'
-import Button from '@/components/Button.vue'
-import TabMenu from '@/components/TabMenu.vue'
-import Tab from '@/components/Tab.vue'
 
 const documentStore = useDocumentStore()
 

@@ -43,12 +43,6 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import Dropdown from '@/components/Dropdown.vue'
-import Button from '@/components/Button.vue'
-import Field from '@/components/Field.vue'
-import Icon from '@/components/Icon.vue'
-import Select from '@/components/Select.vue'
-import Slider from '@/components/Slider.vue'
 
 const document = useDocumentStore()
 

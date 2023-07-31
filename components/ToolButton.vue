@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-import Button from '@/components/Button.vue'
-
 const props = defineProps({
   active: {
     type: Boolean,

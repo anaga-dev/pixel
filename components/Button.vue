@@ -13,8 +13,6 @@
 </template>
 
 <script setup>
-import IconDropdown from '@/components/IconDropdown.vue';
-
 const props = defineProps({
   type: {
     type: String,

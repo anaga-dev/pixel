@@ -12,10 +12,6 @@
 </template>
 
 <script setup>
-import Dropdown from '@/components/Dropdown.vue'
-import Field from '@/components/Field.vue'
-import Slider from '@/components/Slider.vue'
-
 const props = defineProps({
   size: {
     type: Number,

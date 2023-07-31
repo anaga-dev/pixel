@@ -40,13 +40,7 @@
 
 <script setup>
 import Tool from '@/pixel/enums/Tool'
-import Toolbar from '@/components/Toolbar.vue'
-import ToolButton from '@/components/ToolButton.vue'
-import ToolColor from '@/components/ToolColor.vue'
-import ColorPicker from '@/components/ColorPicker.vue'
 import { useDocumentStore } from '@/stores/document'
-import Icon from '@/components/Icon.vue'
-import Divider from '@/components/Divider.vue'
 
 const documentStore = useDocumentStore()
 </script>

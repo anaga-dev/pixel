@@ -15,7 +15,6 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import Layer from '@/components/Layer.vue'
 
 const document = useDocumentStore()
 
