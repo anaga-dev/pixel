@@ -10,9 +10,6 @@ import Tool from '@/pixel/enums/Tool'
 import PencilShape from '@/pixel/enums/PencilShape'
 import ShapeType from '@/pixel/enums/ShapeType'
 import FillType from '@/pixel/enums/FillType'
-import SelectType from '@/pixel/enums/SelectType'
-import SelectMode from '@/pixel/enums/SelectMode'
-import TransformMode from '@/pixel/enums/TransformMode'
 import PaletteTypes from '@/pixel/constants/PaletteTypes'
 import ImageTypes from '@/pixel/constants/ImageTypes'
 import Interpolation from '@/pixel/math/Interpolation'
@@ -32,27 +29,30 @@ import { usePencilStore } from './pencil'
 import { useZoomStore } from './zoom'
 import { useFillStore } from './fill'
 import { usePaletteStore } from './palette'
+import { useGridStore } from './grid'
+import { useSymmetryStore } from './symmetry'
+import { useOnionSkin } from './onionSkin'
+import { useShapeStore } from './shape'
+import { useTransformStore } from './transform'
+import { useSelectionStore } from './selection'
 
 /**
- * Este es el tipo Document que se utiliza a la hora
- * de cargar y guardar un documento.
+ * This is the Document type that is used when
+ * loading and saving a document.
  *
  * @typedef {Object} Document
  * @property {number} width
  * @property {number} height
- * @property {number} layers
+ * @property {Array<Layer>} layers
  */
-
-// TODO: Creo que una buena cantidad de este código se podrían convertir
-// en composables que más tarde utilicemos en las stores.
 
 export const useDocumentStore = defineStore('document', {
   state: () => ({
     modal: '',
-    width: 0,
-    height: 0,
-    position: usePoint(),
-    zoom: useZoomStore(),
+    width: 0, // document width
+    height: 0, // document height
+    position: usePoint(), // current position
+    zoom: useZoomStore(), // current zoom
     zoomPreview: false,
     canvas: null,
     canvasRect: null,
@@ -66,46 +66,16 @@ export const useDocumentStore = defineStore('document', {
     color: '#000000',
     colorMode: ColorMode.PALETTE,
     colorPicker: false,
-    grid: {
-      enabled: false,
-      size: 32,
-      color: '#00ffff'
-    },
-    symmetry: {
-      axis: null, // horizontal, vertical, both, null
-      position: usePoint(),
-      lock: false
-      // NOTA: Esto tiene una opción de recenter que mueve la simetria al centro.
-    },
-    onionSkin: {
-      opacity: 0.5,
-      color: 'original', // original, tint, silhouette
-      loop: true,
-      keyFramesBefore: 2,
-      keyFramesAfter: 2
-    },
+    grid: useGridStore(),
+    symmetry: useSymmetryStore(),
+    onionSkin: useOnionSkin(),
     animation: null,
     pencil: usePencilStore(),
     eraser: useEraserStore(),
     fill: useFillStore(),
-    shape: {
-      type: ShapeType.LINE, // line, rectangle, ellipse
-      filled: false,
-      lockAspectRatio: false
-    },
-    transform: {
-      mode: TransformMode.REPEAT // repeat, clamp, edge
-    },
-    select: {
-      type: SelectType.FREEHAND, // freehand, rectangular, color
-      mode: SelectMode.ADD, // add, subtract, transform
-      contiguous: true // sólo válido en el modo de color
-    },
-    selectionCanvas: null,
-    selectionMaskCanvas: null,
-    selectionMaskImageData: null,
-    patternCanvas: null,
-    pattern: null,
+    shape: useShapeStore(),
+    transform: useTransformStore(),
+    selection: useSelectionStore(),
     dropper: {
       includeReferenceLayers: true
     },
@@ -224,13 +194,13 @@ export const useDocumentStore = defineStore('document', {
       this.eraser.dither.level = level
     },
     setSelectType(type) {
-      this.select.type = type
+      this.selection.type = type
     },
     setSelectMode(mode) {
-      this.select.mode = mode
+      this.selection.mode = mode
     },
     toggleSelectContiguous() {
-      this.select.contiguous = !this.select.contiguous
+      this.selection.contiguous = !this.selection.contiguous
     },
     setFillType(type) {
       this.fill.type = type
@@ -855,7 +825,7 @@ export const useDocumentStore = defineStore('document', {
         const x = pointer.current.x
         const y = pointer.current.y
         ImageDataUtils.putColor(
-          this.selectionMaskImageData,
+          this.selection.getMaskImageData(),
           x,
           y,
           Color.fromRGBA(1, 1, 1, 1)
@@ -951,200 +921,10 @@ export const useDocumentStore = defineStore('document', {
       this.canvasRect = null
     },
     initSelection() {
-      this.selectionPolygon = []
-      this.selectionCanvas = Canvas.createOrGet(this.selectionCanvas, this.width, this.height)
-      this.selectionContext = CanvasContext2D.get(this.selectionCanvas)
-
-      // FIXME: Esto debería hacerse en alguna otra parte, no me gusta
-      // que se haga aquí, hace el código más farragoso y difícil de leer.
-      const onPointer = (e) => {
-        const { top, left, width, height } = this.canvasRect
-        const x = (e.clientX - left) / width
-        const y = (e.clientY - top) / height
-
-        if (e.type === 'pointerdown') {
-          this.selectionPolygon.length = 0
-          if (this.select.type === SelectType.RECTANGULAR) {
-            this.selectionPolygon.push([x, y], [x, y], [x, y], [x, y])
-          } else if (this.select.type === SelectType.COLOR) {
-            // TODO: Esto debería hacerse en el setter de
-            // selectionMaskImageData
-            const selectionMaskContext = CanvasContext2D.get(
-              this.selectionMaskCanvas,
-              {
-                willReadFrequently: true
-              }
-            )
-
-            // Si ya existía un MaskImageData lo utilizamos
-            // si no, creamos uno nuevo utilizando el contexto
-            // del canvas de selección.
-            const selectionMaskImageData = !this.selectionMaskImageData
-              ? selectionMaskContext.createImageData(this.width, this.height)
-              : this.selectionMaskImageData
-
-            // Dependiendo de si estamos añadiendo o sustrayendo
-            // usamos una máscara u otra.
-            const maskColor =
-              this.select.mode === SelectMode.ADD ? [0xff, 0, 0, 0xff] : [0, 0, 0, 0]
-
-            if (!this.select.contiguous) {
-              ImageDataUtils.copySelectedAt(
-                selectionMaskImageData,
-                this.imageData,
-                Math.floor(x * this.width),
-                Math.floor(y * this.height),
-                maskColor
-              )
-            } else {
-              ImageDataUtils.copyContiguousSelectedAt(
-                selectionMaskImageData,
-                this.imageData,
-                Math.floor(x * this.width),
-                Math.floor(y * this.height),
-                maskColor
-              )
-            }
-            this.selectionMaskImageData = selectionMaskImageData
-            selectionMaskContext.putImageData(this.selectionMaskImageData, 0, 0)
-          }
-
-          // TODO: Si el modo de selección de polígonos no es Freehand
-          // y es "rectangular", entonces lo que hacemos es dibujar un polígono
-          // rectangular que se redimensiona según el movimiento del ratón.
-
-          if (this.select.type !== SelectType.COLOR) {
-            window.addEventListener('pointermove', onPointer)
-            window.addEventListener('pointerup', onPointer)
-          } else {
-            return
-          }
-        } else if (e.type === 'pointerup') {
-          window.removeEventListener('pointermove', onPointer)
-          window.removeEventListener('pointerup', onPointer)
-        }
-
-        if (e.type !== 'pointerup') {
-          // TODO: Esto debería ir a una especie de
-          // composable que podría ser algo como
-          // this.selection.closePolygon()
-          if (this.select.type === SelectType.FREEHAND) {
-            this.selectionPolygon.push([x, y])
-          } else if (this.select.type === SelectType.RECTANGULAR) {
-            this.selectionPolygon[1][0] = x
-            this.selectionPolygon[2][0] = x
-            this.selectionPolygon[2][1] = y
-            this.selectionPolygon[3][1] = y
-          }
-        } else {
-          // Aquí convertimos el área del polígono en la máscara de selección
-          // es decir, rasterizamos el path en píxeles.
-          const path = new Path2D()
-          for (let index = 0; index < this.selectionPolygon.length; index++) {
-            const [x, y] = this.selectionPolygon[index]
-            const tx = x * this.canvas.width
-            const ty = y * this.canvas.height
-            if (index === 0) {
-              path.moveTo(tx, ty)
-            } else {
-              path.lineTo(tx, ty)
-            }
-          }
-          path.closePath()
-
-          // TODO: Aquí habría que hacer un fill de la máscara de selección
-          //       y obtener esa máscara en un ImageData donde cualquier pixel
-          //       con alpha > 0 es parte de la máscara.
-          const selectionMaskContext = CanvasContext2D.get(this.selectionMaskCanvas, {
-            willReadFrequently: true
-          })
-          // selectionMaskContext.clearRect(0,0,this.selectionMaskCanvas.width,this.selectionMaskCanvas.height)
-          if (this.select.mode === 'add') {
-            selectionMaskContext.globalCompositeOperation = 'source-over'
-          } else if (this.select.mode === 'subtract') {
-            selectionMaskContext.globalCompositeOperation = 'destination-out'
-          }
-          selectionMaskContext.fillStyle = '#f00'
-          selectionMaskContext.fill(path)
-
-          // Obtenemos el ImageData.
-          const selectionMaskImageData = selectionMaskContext.getImageData(
-            0,
-            0,
-            this.selectionMaskCanvas.width,
-            this.selectionMaskCanvas.height
-          )
-          for (
-            let index = 0;
-            index < selectionMaskImageData.data.length;
-            index += 4
-          ) {
-            const alpha = selectionMaskImageData.data[index + 3]
-            if (alpha > 0) {
-              selectionMaskImageData.data[index + 3] = 255
-            }
-          }
-          selectionMaskContext.putImageData(selectionMaskImageData, 0, 0)
-          this.selectionMaskImageData = selectionMaskImageData
-          this.selectionPolygon.length = 0
-
-          // TODO: Continuar aquí
-          /*
-                  const points = []
-                  for (let index = 0; index < this.selectionMaskImageData.data.length - 4; index += 4) {
-                    const mask = this.selectionMaskImageData.data[index]
-                    const nextMask = this.selectionMaskImageData.data[index + 4]
-                    const x = (index / 4) % this.selectionMaskImageData.width
-                    const y = Math.floor((index / 4) / this.selectionMaskImageData.width)
-                    if (mask != nextMask) {
-                      points.push([
-                        x / this.selectionMaskImageData.width,
-                        y / this.selectionMaskImageData.height
-                      ])
-                    }
-                  }
-                  */
-
-          // NO SIRVE
-          /*
-                  const recreate = [points[0], points[1]]
-                  let index = 3;
-                  for (index = 3; index < points.length / 2; index += 2) {
-                    recreate.push(points[index])
-                  }
-                  for (++index; index > 0; index -= 2) {
-                    recreate.push(points[index])
-                  }
-                  */
-          // this.selectionPolygon = points
-          console.log(this.selectionPolygon)
-          console.log(this.selectionMaskImageData)
-        }
-      }
-
-      this.selectionCanvas.addEventListener('pointerdown', onPointer)
-
-      this.selectionMaskCanvas = Canvas.createOrGet(this.selectionMaskCanvas, this.width, this.height)
-      this.selectionMaskImageData = null
+      this.selection.init(this.canvas, this.width, this.height)
     },
     initPattern() {
-      function createMatrix() {
-        return new DOMMatrix()
-      }
 
-      const SIZE = 8
-      const SIZE_HALF = SIZE >> 1
-
-      const patternCanvas = Canvas.createOffscreen(SIZE, SIZE)
-      const patternCx = CanvasContext2D.get(patternCanvas)
-      patternCx.fillStyle = '#fff'
-      patternCx.fillRect(0, 0, SIZE, SIZE)
-      patternCx.fillStyle = '#000'
-      patternCx.fillRect(0, 0, SIZE_HALF, SIZE_HALF)
-      patternCx.fillRect(SIZE_HALF, SIZE_HALF, SIZE_HALF, SIZE_HALF)
-      this.patternCanvas = patternCanvas
-      this.patternMatrix = createMatrix()
-      this.pattern = this.selectionContext.createPattern(patternCanvas, 'repeat')
     },
     init() {
       this.initDrawing()

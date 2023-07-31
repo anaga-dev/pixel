@@ -1,29 +1,29 @@
 <template>
     <ToolButton
       label="Freehand selection"
-      :active="documentStore.select.type === 'freehand'"
-      @click="documentStore.setSelectType('freehand')">
+      :active="documentStore.selection.type === SelectType.FREEHAND"
+      @click="documentStore.setSelectType(SelectType.FREEHAND)">
       <Icon i="freehand" />
       Freehand
     </ToolButton>
     <ToolButton
       label="Rectangular selection"
-      :active="documentStore.select.type === 'rectangular'"
-      @click="documentStore.setSelectType('rectangular')">
+      :active="documentStore.selection.type === SelectType.RECTANGULAR"
+      @click="documentStore.setSelectType(SelectType.RECTANGULAR)">
       <Icon i="selection" />
       Rectangular
     </ToolButton>
     <ToolButton
       label="Color selection"
-      :active="documentStore.select.type === 'color'"
-      @click="documentStore.setSelectType('color')">
+      :active="documentStore.selection.type === SelectType.COLOR"
+      @click="documentStore.setSelectType(SelectType.COLOR)">
       <Icon i="color" />
       Color
     </ToolButton>
     <ToolButton
-      v-if="documentStore.select.type === 'color'"
+      v-if="documentStore.selection.type === SelectType.COLOR"
       label="Contiguous color"
-      :active="documentStore.select.contiguous"
+      :active="documentStore.selection.contiguous"
       @click="documentStore.toggleSelectContiguous()">
       <Icon i="droplet" />
       Contiguous
@@ -31,15 +31,15 @@
     <Divider vertical />
     <ToolButton
       label="Add to selection"
-      :active="documentStore.select.mode === 'add'"
-      @click="documentStore.setSelectMode('add')">
+      :active="documentStore.selection.mode === SelectMode.ADD"
+      @click="documentStore.setSelectMode(SelectMode.ADD)">
       <Icon i="selection-add" />
       Add
     </ToolButton>
     <ToolButton
       label="Substract from selection"
-      :active="documentStore.select.mode === 'subtract'"
-      @click="documentStore.setSelectMode('subtract')">
+      :active="documentStore.selection.mode === SelectMode.SUBTRACT"
+      @click="documentStore.setSelectMode(SelectMode.SUBTRACT)">
       <Icon i="selection-substract" />
       Subtract
     </ToolButton>
@@ -47,12 +47,14 @@
     <Button
       variant="ghost"
       label="Deselect"
-      @click="documentStore.setSelectMode('transform')">
+      @click="documentStore.setSelectMode(SelectMode.TRANSFORM)">
       <Icon i="deselect" />
     </Button>
 </template>
 
 <script setup>
+import { SelectType } from '@/pixel/enums/SelectType'
+import { SelectMode } from '@/pixel/enums/SelectMode'
 import { useDocumentStore } from '@/stores/document'
 
 const documentStore = useDocumentStore()

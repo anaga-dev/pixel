@@ -11,7 +11,7 @@ import { useRequestAnimationFrame } from '@/composables/useRequestAnimationFrame
 
 const documentStore = useDocumentStore()
 
-const canvas = documentStore.selectionCanvas
+const canvas = documentStore.selection.getCanvas()
 const context = canvas.getContext('2d')
 
 const container = ref()
@@ -46,7 +46,7 @@ function updateSizeAndPosition() {
  * el "camino de hormigas".
  */
 function updatePattern() {
-  documentStore.pattern.setTransform(documentStore.patternMatrix.translateSelf(0.25, 0.25))
+  documentStore.selection.getPattern().setTransform(documentStore.selection.getPatternMatrix().translateSelf(0.25, 0.25))
 }
 
 /**
@@ -54,50 +54,52 @@ function updatePattern() {
  * con el "camino de hormigas".
  */
 function render() {
-  if (context.imageSmoothingEnabled)
+  if (context.imageSmoothingEnabled) {
     context.imageSmoothingEnabled = false
+  }
 
   context.clearRect(0, 0, canvas.width, canvas.height)
 
+  const maskCanvas = documentStore.selection.getMaskCanvas()
   // con esto podemos visualizar la máscara que
   // estamos generando a partir de la selección
-  if (documentStore.selectionMaskCanvas) {
+  if (maskCanvas) {
     // Esto dibuja cuatro veces la figura con un pixel
     // de diferencia para poder dibujar el "camino de
     // hormigas".
     // TODO: Quizá podríamos cachear este dibujo.
     context.drawImage(
-      documentStore.selectionMaskCanvas,
+      maskCanvas,
       -1, -1, canvas.width, canvas.height
     )
     context.drawImage(
-      documentStore.selectionMaskCanvas,
+      maskCanvas,
       1, -1, canvas.width, canvas.height
     )
     context.drawImage(
-      documentStore.selectionMaskCanvas,
+      maskCanvas,
       1, 1, canvas.width, canvas.height
     )
     context.drawImage(
-      documentStore.selectionMaskCanvas,
+      maskCanvas,
       -1, 1, canvas.width, canvas.height
     )
     // Esta es la parte responsable de dibujar
     // el contorno de nuestra selección.
     context.globalCompositeOperation = 'destination-out'
     context.drawImage(
-      documentStore.selectionMaskCanvas,
+      maskCanvas,
       0, 0, canvas.width, canvas.height
     )
     context.globalCompositeOperation = 'source-in'
-    context.fillStyle = documentStore.pattern
+    context.fillStyle = documentStore.selection.getPattern()
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.globalCompositeOperation = 'source-over'
   }
 
   context.beginPath()
-  for (let index = 0; index < documentStore.selectionPolygon.length; index++) {
-    const [x, y] = documentStore.selectionPolygon[index]
+  for (let index = 0; index < documentStore.selection.getPolygon().length; index++) {
+    const [x, y] = documentStore.selection.getPolygon()[index]
     const px = x * canvas.width
     const py = y * canvas.height
     if (index === 0) {
@@ -107,7 +109,7 @@ function render() {
     }
   }
   context.closePath()
-  context.strokeStyle = documentStore.pattern
+  context.strokeStyle = documentStore.selection.getPattern()
   context.stroke()
 }
 
@@ -117,7 +119,7 @@ const pipeline = [
   render
 ]
 
-useElement(container, documentStore.selectionCanvas)
+useElement(container, documentStore.selection.getCanvas())
 
 useRequestAnimationFrame(pipeline)
 </script>

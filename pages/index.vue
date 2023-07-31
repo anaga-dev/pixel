@@ -48,7 +48,6 @@ async function handleInstallClick() {
 }
 
 onMounted(() => {
-  console.log('hola')
   // Nos aseguramos de que no estamos en modo standalone (si lo estamos,
   // redirigimos al estudio)
   if (window.matchMedia('(display-mode: standalone)').matches) {
