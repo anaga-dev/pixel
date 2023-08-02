@@ -11,7 +11,13 @@
         <p>Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries.</p>
         <div class="links">
           <NuxtLink class="button-app" to="/studio">Use it now!</NuxtLink>
-          <a class="button-repo" href="">Github</a>
+          <a
+            class="button-repo"
+            href="https://github.com/anaga-dev/pixel"
+            title="Go to Pixel's Github page"
+            target="_blank">
+            Github
+          </a>
         </div>
       </section>
       <img src="@/assets/pixel.png">
@@ -19,7 +25,7 @@
       </section>
     </main>
     <footer>
-      <p>Made by <a href="https://anaga.dev">Anaga</a> with ♥ in Madrid -- 2023</p>
+      <p>Made by <a href="https://anaga.dev" title="Go to Anaga website" target="_blank">Anaga</a> with ♥ in Madrid -- 2023</p>
     </footer>
   </div>
 </template>
