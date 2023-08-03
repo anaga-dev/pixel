@@ -19,7 +19,9 @@ Run `pnpm build` for creating a production build.
 * [ ] Selection tool
 * [ ] Transformations tool (scale, rotate, skew)
 * [ ] Add formats (ASEprite, FLI, FLC, MAP, Animated GIF...)
+* [ ] Mobile phone version
 * [ ] Animation panel
+
 ## Contributing
 
 You're more than welcome to help to improve this project. Check our [contributing](https://github.com/anaga-dev/pixel/blob/main/CONTRIBUTING.md) guidelines if you're interested in helping!
