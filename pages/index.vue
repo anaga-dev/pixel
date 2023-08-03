@@ -20,7 +20,7 @@
           </a>
         </div>
       </section>
-      <img src="@/assets/pixel.png">
+      <img src="@/assets/pixel_screenshot.png">
       <section class="features">
       </section>
     </main>
