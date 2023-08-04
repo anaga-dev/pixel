@@ -86,6 +86,7 @@ onMounted(() => {
   background-color: var(--colorBgHome);
   overflow: hidden;
   color: var(--colorTextPrimary);
+  user-select: auto;
 }
 
 .background {
