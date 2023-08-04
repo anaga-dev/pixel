@@ -26,6 +26,11 @@ Run `pnpm build` for creating a production build.
 
 You're more than welcome to help to improve this project. Check our [contributing](https://github.com/anaga-dev/pixel/blob/main/CONTRIBUTING.md) guidelines if you're interested in helping!
 
+## Support us
+
+If you are enjoying Anaga Pixel and want to help us devote more time and resources to the project, please consider becoming a sponsor.
+Thank you!
+
 ## Authors
 
 * [AzazelN28](https://github.com/azazeln28)
