@@ -80,6 +80,7 @@ const documentStore = useDocumentStore()
 
 useBeforeUnload(() => true, () => 'Are you sure you want to leave? Your changes will be lost.')
 
+// TODO: this will show/hide the animation panel
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
 }
@@ -97,7 +98,7 @@ useTouch((e) => {
   documentStore.moveAndZoom(x, y, z)
 }, { target: board, passive: true })
 
-// TODO: Esto no tiene sentido que esté aquí
+// TODO: This shouldn't be here
 useKeyShortcuts(new Map([
   [['1'], () => documentStore.setTool('pencil')],
   [['p'], () => documentStore.setTool('pencil')],

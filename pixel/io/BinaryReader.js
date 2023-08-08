@@ -63,7 +63,7 @@ export default class BinaryReader extends BinaryView {
     if (typeof bytes === 'number' && Number.isInteger(bytes)) {
       return decoder.decode(this.readBuffer(bytes))
     } else if (bytes === undefined) {
-      // TODO: Ver cómo implemento
+      // TODO: See how this can be implemented
     } else {
       throw new TypeError(`Invalid bytes value "${bytes}"`)
     }

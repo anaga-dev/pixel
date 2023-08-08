@@ -12,7 +12,7 @@ import Canvas from '@/pixel/canvas/Canvas'
 function createThumbnail(source) {
   const canvas = Canvas.create(256, 256)
   const context = canvas.getContext('2d')
-  // TODO: Esto generará imágenes con aspect ratios erróneos, habría que hacer un crop inteligente.
+  // TODO: This will generate wrong aspect ratio images, we should make a smart crop.
   context.drawImage(source, 0, 0)
   return Canvas.createBlob(canvas)
 }
@@ -183,7 +183,7 @@ export async function load(blob) {
     console.log(error)
     throw new Error('Invalid OpenRaster stack.xml')
   }
-  // TODO: Terminar esta función para poder cargar archivos de tipo OpenRaster.
+  // TODO: We need to finish this function in order to be able to load OpenRaster files.
 }
 
 export default {

@@ -87,8 +87,7 @@ option {
 }
 
 /**
-  TODO: Habría que hacer que esto no esté pixelado siempre, sólo aquellos <canvas>
-  que lo necesiten.
+  TODO: We should only pixelate specific <canvas> elements.
 */
 canvas {
   image-rendering: pixelated;

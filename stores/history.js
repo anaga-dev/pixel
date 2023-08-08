@@ -1,5 +1,5 @@
 /**
- * Historial de acciones.
+ * Actions history.
  */
 export const useHistoryStore = defineStore('history', () => {
   const MAX_HISTORY = 2048
@@ -9,18 +9,18 @@ export const useHistoryStore = defineStore('history', () => {
   const canRedo = computed(() => index.value < list.length - 1)
 
   /**
-   * Añade una nueva entrada al historial.
+   * Adds a new entry to history.
    *
    * @param {HistoryEntry} item
    */
   function add(item) {
-    // Si estamos por detrás del historial...
+    // If we are behind in history...
     if (index.value < list.length - 1) {
-      // ...invalidamos todas las acciones posteriores a la actual.
+      // ...we invalidate all actions after the current one.
       const count = list.length - index.value
       list.splice(index.value, count, item)
     } else {
-      // Añadimos una nueva entrada al historial.
+      // We add a new entry to history.
       list.push(item)
     }
 

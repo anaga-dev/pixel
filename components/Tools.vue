@@ -24,8 +24,8 @@
       </ToolButton>
     </template>
           <!--
-      FIXME: Aunque parezca que no, esto está siendo un agujero de rendimiento, supongo
-      que porque `documentStore.history.canUndo` se recalcula cada vez que se pinta un pixel.
+      FIXME: This is a performance sinkhole, I guess it's because `documentStore.history.canUndo`
+      is recalculated every time we paint a pixel.
     -->
     <template #bottom>
       <ToolButton label="Undo" :disabled="!documentStore.history.canUndo" @click="documentStore.undo()">

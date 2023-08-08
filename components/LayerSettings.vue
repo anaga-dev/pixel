@@ -7,7 +7,7 @@
       </div>
       <input v-else type="text" v-focus v-model="layerName" @keydown="onKeyDown" />
     </header>
-    <!-- TODO: Muchos de estos elementos necesitan una llamada a `redrawAll` -->
+    <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
     <Field label="Opacity" for="opacity" class="opacity">
       <div class="layer-visibility">
         <Slider
@@ -22,7 +22,7 @@
         </Button>
       </div>
     </Field>
-    <!-- TODO: Muchos de estos elementos necesitan una llamada a `redrawAll` -->
+    <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
     <Field label="Blend mode"  for="blend-mode">
       <Select id="blend-mode" :modelValue="layer.blendMode.value" @update:modelValue="document.setLayerBlendMode(layer, $event)">
         <option v-for="[value, text] in blendModes" :key="value" :value="value">{{ text }}</option>

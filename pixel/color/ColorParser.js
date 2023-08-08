@@ -194,8 +194,7 @@ export function parseHSLA(color) {
   const matches = color.match(/^(hsla?)\((.*?)\)$/i)
   if (matches) {
     const [, model, values] = matches
-    // TODO: a esto habría que darle una vuelta porque podríamos
-    // permitir un montón de barbaridades.
+    // TODO: we should rethink this because it allows lots of wild stuff.
     const channels = values.split(/\s*[,/ ]\s*/g)
     if (!channels.every((channel) => isChannel(channel))) {
       throw new Error('Invalid channel values')

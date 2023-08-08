@@ -1,5 +1,4 @@
-// FIXME: Lo mejor sería contemplar una serie de funciones del tipo R5G6B5, RGBA8
-// R5G5B5A1, etc.
+// FIXME: It'd be better to use R5G6B5, RGBA8, R5G5B5A1 functions and the like.
 
 export function toUint32(r, g, b, a) {
   if (!Number.isInteger(r) || !Number.isInteger(g) || !Number.isInteger(b) || !Number.isInteger(a)) {

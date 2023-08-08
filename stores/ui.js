@@ -24,6 +24,9 @@ export const useUIStore = defineStore('ui', {
     isShowingLayersPanel() {
       return this.showPanel === 'layers'
     },
+    isShowingColorPanel() {
+      return this.showPanel === 'color-picker'
+    },
     isShowingPalettePanel() {
       return this.showPalette
     },

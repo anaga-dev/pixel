@@ -54,8 +54,53 @@ export const useSelectionStore = defineStore('selection', () => {
       const y = (e.clientY - top) / height
 
       if (e.type === 'pointerdown') {
-        selection.start(x, y)
-        if (type.value !== SelectionType.COLOR) {
+        polygon.length = 0
+        if (type.value === SelectType.RECTANGULAR) {
+          polygon.push([x, y], [x, y], [x, y], [x, y])
+        } else if (type.value === SelectType.COLOR) {
+          // TODO: This should be in selectionMaskImageData setter.
+          maskContext = CanvasContext2D.get(maskCanvas, {
+            willReadFrequently: true
+          })
+
+          // Si ya existía un MaskImageData lo utilizamos
+          // si no, creamos uno nuevo utilizando el contexto
+          // del canvas de selección.
+          const selectionMaskImageData = !maskImageData
+            ? maskContext.createImageData(width, height)
+            : maskImageData
+
+          // Dependiendo de si estamos añadiendo o sustrayendo
+          // usamos una máscara u otra.
+          const maskColor =
+            mode.value === SelectMode.ADD ? [0xff, 0, 0, 0xff] : [0, 0, 0, 0]
+
+          if (!contiguous.value) {
+            ImageDataUtils.copySelectedAt(
+              selectionMaskImageData,
+              imageData,
+              Math.floor(x * width),
+              Math.floor(y * height),
+              maskColor
+            )
+          } else {
+            ImageDataUtils.copyContiguousSelectedAt(
+              selectionMaskImageData,
+              imageData,
+              Math.floor(x * width),
+              Math.floor(y * height),
+              maskColor
+            )
+          }
+          maskImageData = selectionMaskImageData
+          maskContext.putImageData(maskImageData, 0, 0)
+        }
+
+        // TODO: When polygon selection mode isn't Freehand but rectangular,
+        // we need to draw a rectangular polygon that resizes according to 
+        // the mouse movement.
+
+        if (type.value !== SelectType.COLOR) {
           window.addEventListener('pointermove', onPointer)
           window.addEventListener('pointerup', onPointer)
         }

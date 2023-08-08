@@ -25,8 +25,7 @@ const canvas = ref()
 const offscreenCanvas = Canvas.createOffscreen(512, 512)
 
 /**
- * TODO: Reescribir esto para que no haya que recrear
- *       absolutamente todos los recursos del canvas.
+ * TODO: Rewrite this so we don't need to use all canvas resources.
  *
  * @param {*} param0
  */

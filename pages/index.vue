@@ -3,29 +3,45 @@
     <Background class="background" />
     <header>
       <Logo class="Logo" />
-      <button v-if="installable" class="button-install" @click="handleInstallClick">Install Pixel</button>
+      <button
+        v-if="installable"
+        class="button-install"
+        @click="handleInstallClick"
+      >
+        Install Pixel
+      </button>
     </header>
     <main>
       <section class="hero">
         <h1>Create pixel art on any device</h1>
-        <p>Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries.</p>
+        <p>
+          Pixel is a progressive web application that lets you create pixel art
+          on any device, operating system, and browser. Unleash your creativity
+          without boundaries.
+        </p>
         <div class="links">
           <NuxtLink class="button-app" to="/studio">Use it now!</NuxtLink>
           <a
             class="button-repo"
             href="https://github.com/anaga-dev/pixel"
             title="Go to Pixel's Github page"
-            target="_blank">
+            target="_blank"
+          >
             Github
           </a>
         </div>
       </section>
-      <img src="@/assets/pixel_screenshot.png">
-      <section class="features">
-      </section>
+      <img src="@/assets/pixel_screenshot.png" />
+      <section class="features"></section>
     </main>
     <footer>
-      <p>Made by <a href="https://anaga.dev" title="Go to Anaga website" target="_blank">Anaga</a> with ♥ in Madrid -- 2023</p>
+      <p>
+        Made by
+        <a href="https://anaga.dev" title="Go to Anaga website" target="_blank"
+          >Anaga</a
+        >
+        with ♥ in Madrid -- 2023
+      </p>
     </footer>
   </div>
 </template>
@@ -33,8 +49,7 @@
 <script setup>
 const router = useRouter()
 
-// Promise que se resuelve cuando el usuario hace clic
-// en el botón de instalar.
+// This Promise is resolved when user clicks on install button.
 let installPrompt = null
 const installable = ref(false)
 
@@ -54,22 +69,25 @@ async function handleInstallClick() {
 }
 
 onMounted(() => {
-  // Nos aseguramos de que no estamos en modo standalone (si lo estamos,
-  // redirigimos al estudio)
+  // We make sure that we're not in standalone mode. If we are, we redirect to studio.
   if (window.matchMedia('(display-mode: standalone)').matches) {
     installable.value = false
     installPrompt = null
     router.replace('/studio')
   }
 
-  // Si el navegador soporta el evento beforeinstallprompt, lo escuchamos
-  // para mostrar el botón de instalación
-  window.addEventListener('beforeinstallprompt', (event) => {
-    console.log('hey!')
-    event.preventDefault()
-    installPrompt = event
-    installable.value = true
-  }, { once: true })
+  // We listen to the event beforeinstallprompt if the browser supports it
+  // in order to display the install button.
+  window.addEventListener(
+    'beforeinstallprompt',
+    (event) => {
+      console.log('hey!')
+      event.preventDefault()
+      installPrompt = event
+      installable.value = true
+    },
+    { once: true }
+  )
 })
 </script>
 
@@ -163,7 +181,7 @@ img {
   place-content: center;
 }
 
-[class^=button] {
+[class^='button'] {
   display: grid;
   place-content: center;
   font-family: 'Silkscreen';
@@ -194,8 +212,6 @@ img {
   color: var(--colorLayer0);
   height: 5rem;
 }
-
-
 
 footer {
   padding: var(--spaceXXL) var(--spaceXL);

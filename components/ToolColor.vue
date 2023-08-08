@@ -11,6 +11,9 @@ const props = defineProps({
   color: {
     type: String,
     required: true
+  },
+  active: {
+    type: Boolean
   }
 })
 </script>

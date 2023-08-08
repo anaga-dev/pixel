@@ -26,11 +26,6 @@ import { useUIStore } from '@/stores/ui'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
-
-function onZoomShow() {
-  // TODO:
-  console.info('TO BE IMPLEMENTED')
-}
 </script>
 
 <style scoped>

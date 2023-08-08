@@ -103,7 +103,7 @@ function onLink() {
   }
 }
 
-// TODO: ¿Debería mover esto a la store del documento?
+// TODO: Show we move this to the document store?
 async function loadPalette(url) {
   const baseURL = import.meta.env.BASE_URL
   const response = await fetch(`${baseURL}${url}`)

@@ -17,7 +17,7 @@
       </Button>
       <Zoom />
       <Divider vertical />
-      <ToolColor :color="documentStore.color" @click="uiStore.togglePanel('color-picker')"></ToolColor>
+      <ToolColor :color="documentStore.color" :active="uiStore.isShowingColorPanel" @click="uiStore.togglePanel('color-picker')" />
       <Button
         variant="ghost"
         :active="uiStore.isShowingLayersPanel"

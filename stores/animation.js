@@ -52,7 +52,7 @@ export const useAnimationStore = defineStore('animation', () => {
   function play() {
     if (state.value !== AnimationState.PAUSED) return false
 
-    // TODO: Esto debería lanzar una función cada X segundos.
+    // TODO: This should call a function every X seconds.
     requestFrame()
     state.value = AnimationState.PLAYING
     return true

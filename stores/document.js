@@ -124,7 +124,7 @@ export const useDocumentStore = defineStore('document', {
       return this.animation.total
     },
     frames() {
-      // FIXME: Esto no es NADA óptimo.
+      // FIXME: This is not optimal at all.
       const frames = []
       for (let frame = 0; frame < this.totalFrames; frame++) {
         const frameCanvas = Canvas.createWithClasses(
@@ -145,8 +145,8 @@ export const useDocumentStore = defineStore('document', {
           frameContext.drawImage(layer.canvas, 0, 0)
           frameContext.restore()
         }
-        // TODO: Aquí deberíamos poder renderizar en el <canvas>
-        // el fotograma indicado.
+        // TODO: We should be able to render the selected frame
+        //  in the <canvas> element.
         frames.push({
           frame,
           canvas: frameCanvas
@@ -466,8 +466,8 @@ export const useDocumentStore = defineStore('document', {
       mask = null
     ) {
       if (lockAspectRatio) {
-        // FIXME: En los bordes esto se comporta de forma bastante rara
-        // y puede crear formas que no son "1:1".
+        // FIXME: This behaves in a weird way around the edges and 
+        // could create shapes that are not "1:1".
         const width = x2 - x1
         const height = y2 - y1
         const absWidth = Math.abs(width)
@@ -543,8 +543,8 @@ export const useDocumentStore = defineStore('document', {
       mask = null
     ) {
       if (lockAspectRatio) {
-        // FIXME: En los bordes esto se comporta de forma bastante rara
-        // y puede crear formas que no son "1:1".
+        // FIXME: This behaves in a weird way around the edges and 
+        // could create shapes that are not "1:1".
         const width = x2 - x1
         const height = y2 - y1
         const absWidth = Math.abs(width)
@@ -623,8 +623,7 @@ export const useDocumentStore = defineStore('document', {
       })
     },
     useTool(e, pointer) {
-      // TODO: Todo este comportamiento es MUY mejorable, tengo que ver cómo
-      // implementar todo esto de otra forma.
+      // TODO: All this behavior can be vastly improved.
       if (e.ctrlKey || e.buttons === 4) {
         if (pointer.pressure > 0) {
           this.moveBy(e.movementX, e.movementY)
@@ -855,7 +854,7 @@ export const useDocumentStore = defineStore('document', {
       } else if (this.tool === Tool.DROPPER && pointer.pressure > 0) {
         this.eyeDropper(pointer.current.x, pointer.current.y)
       } else if (this.tool === Tool.TRANSFORM && pointer.pressure > 0) {
-        // TODO: Esto es MUY mejorable.
+        // TODO: This could be A LOT better.
         const x = pointer.relative.x
         const y = pointer.relative.y
         this.transformation(x, y)
@@ -946,13 +945,9 @@ export const useDocumentStore = defineStore('document', {
     },
     initDrawing() {
       this.drawing = false
-      // TODO: Esto habría que rehacerlo todo para que no utilice drawImage
-      // si no putImageData.
-      this.drawingCanvas = Canvas.createOrGet(
-        this.drawingCanvas,
-        this.width,
-        this.height
-      )
+      // TODO: We should completely remake this so it uses putImageData
+      // instead of drawImage.
+      this.drawingCanvas = Canvas.createOrGet(this.drawingCanvas, this.width, this.height)
       this.drawingImageData = new ImageData(this.width, this.height)
       this.copyCanvas = Canvas.createOrGet(
         this.copyCanvas,
@@ -1017,8 +1012,8 @@ export const useDocumentStore = defineStore('document', {
      * Layers
      ***************************************************************************/
     mergeDown() {
-      // TODO: Cogemos todas las capaz "inferiores" a la capa seleccionada y las mezclamos en una
-      // única capa.
+      // TODO: We need to get all layers below the selected one and blend them together
+      // in a single layer.
       const index = this.layers.list.findIndex(
         (currentLayer) => currentLayer.id === this.layer.id
       )
@@ -1032,8 +1027,8 @@ export const useDocumentStore = defineStore('document', {
     },
     mergeBy(mode = 'all') {
       // 'visible', 'all'
-      // TODO: Cogemos todas las capas y las mezclamos en una única capa
-      // utilizando sólo las capas visibles.
+      // TODO: We have to get all the layers and blend them into a single one
+      // using only visible layers.
     },
     setLayer(layer) {
       this.layers.current = layer
@@ -1130,7 +1125,7 @@ export const useDocumentStore = defineStore('document', {
      * Load palette
      */
     async loadPalette() {
-      // FIXME: Ni firefox, ni Safari lo soportan
+      // FIXME: Neither Firefox nor Safari support this.
       const [fileHandle] = await window.showOpenFilePicker({
         types: PaletteTypes,
         excludeAcceptAllOption: true,
@@ -1149,12 +1144,12 @@ export const useDocumentStore = defineStore('document', {
      * Save palette
      */
     async savePalette() {
-      // FIXME: Ni firefox, ni Safari lo soportan
+      // FIXME: Neither Firefox nor Safari support this.
       const fileHandle = await window.showSaveFilePicker({
         types: PaletteTypes,
         excludeAcceptAllOption: true
       })
-      // TODO: ¿Deberíamos lanzar una excepción?
+      // TODO: Shall we throw an exception?
       if (fileHandle.kind !== 'file') return
 
       console.log(fileHandle)
@@ -1309,9 +1304,9 @@ export const useDocumentStore = defineStore('document', {
         }
         console.log(fileHandle)
       } else {
-        // TODO: Ver cómo implementar esto
-        // los navegadores que no lo soportan.
-        // Safari y Firefox
+        // TODO: We should research how to do this.
+        // Non supported browsers:
+        // Safari and Firefox
       }
     },
     /**
