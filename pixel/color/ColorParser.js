@@ -3,7 +3,7 @@ import { fromHSLA } from './ColorConverter.js'
 import Color from './Color.js'
 
 /**
- * Devuelve si el color es `currentcolor`.
+ * Returns whether color is `currentcolor`.
  *
  * @param {string} color
  * @returns {boolean}
@@ -13,7 +13,7 @@ export function isCurrentColor(color) {
 }
 
 /**
- * Devuelve si el valor es 'none'.
+ * Returns whether value is 'none'.
  *
  * @param {string} value
  * @returns {boolean}
@@ -23,8 +23,7 @@ export function isNone(value) {
 }
 
 /**
- * Detecta si es un nombre de color consultando la tabla
- * de nombres de colores.
+ * Detects whether it's a color name consulting color names table.
  *
  * @param {string} color
  * @param {Map<string, Color>} namedColors
@@ -35,7 +34,7 @@ export function isNamedColor(color, namedColors = NamedColors) {
 }
 
 /**
- * Devuelve si el color está escrito de forma hexadecimal.
+ * Returns whether color is hexadecimal.
  *
  * @param {string} color
  * @returns {boolean}
@@ -52,11 +51,11 @@ export function isHex(color) {
 }
 
 /**
- * Parsea el valor de un canal hexadecimal.
+ * Parses the value of a hexadecimal channel.
  *
  * @param {string} color Color
- * @param {number} index Índice del canal
- * @param {number} size Tamaño del canal
+ * @param {number} index Channel index
+ * @param {number} size Channel size
  * @returns {number}
  */
 export function parseHexChannel(color, index, size) {
@@ -71,11 +70,11 @@ export function parseHexChannel(color, index, size) {
 }
 
 /**
- * Devuelve los canales de un color hexadecimal parseados
+ * Returns parsed hexadecimal color channels.
  *
  * @param {string} color Color
- * @param {number} quantity Número de canales
- * @param {number} size Tamaño del canal
+ * @param {number} quantity Channel count
+ * @param {number} size Channel size
  * @returns {Array<number>}
  */
 export function parseHexChannels(color, quantity, size) {
@@ -90,7 +89,7 @@ export function parseHexChannels(color, quantity, size) {
 }
 
 /**
- * Parsea un color hexadecimal.
+ * Parses an hexadecimal color.
  *
  * @param {string} color
  * @returns {Array<number>}
@@ -140,7 +139,7 @@ export function parseChannel(value, index) {
   if (index < 3) {
     return parseFloat(value) / 255
   }
-  // Estaríamos parseando el canal alpha.
+  // It's parsing alpha channel
   return Math.max(0, Math.min(1, parseFloat(value)))
 }
 

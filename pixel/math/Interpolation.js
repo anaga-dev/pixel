@@ -1,5 +1,5 @@
 /**
- * Interpolación lineal
+ * Linear interpolation
  *
  * @param {number} x
  * @param {number} a
@@ -11,7 +11,7 @@ export function linear(x, a, b) {
 }
 
 /**
- * Interpolación cuadrática
+ * Quadratic interpolation
  *
  * @param {number} x
  * @param {number} a
@@ -24,7 +24,7 @@ export function quadratic(x, a, b, c) {
 }
 
 /**
- * Interpolación cúbica
+ * Cubic interpolation
  *
  * @param {number} x
  * @param {number} a

@@ -5,7 +5,7 @@ import BinaryType from './BinaryType'
 
 export default class BinaryReader extends BinaryView {
   /**
-   * Obtenemos un BinaryReader a partir de un ArrayBuffer
+   * Gets a BinaryReader from an ArrayBuffer
    *
    * @param {ArrayBuffer} arrayBuffer
    * @returns {Promise<BinaryReader>}
@@ -15,7 +15,7 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
-   * Obtenemos un BinaryReader a partir de un Blob
+   * Gets a BinaryReader from a Blob
    *
    * @param {Blob} blob
    * @returns {Promise<BinaryReader>}
@@ -26,7 +26,7 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
-   * Lee un valor
+   * Reads a value
    *
    * @param {BinaryType} type
    * @param {Endianness} [endianness]
@@ -50,7 +50,7 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
-   * Lee una cadena de texto
+   * Reads a string
    *
    * @param {BinaryReaderReadStringOptions} [options]
    * @returns {string}

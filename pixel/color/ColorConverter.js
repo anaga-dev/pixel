@@ -27,10 +27,10 @@ export function toUint8(out, [r, g, b, a]) {
  * @returns {Color}
  */
 export function fromHSLA(out, [h, s, l, a]) {
-  const û = l / 100 // convertimos de [0, 100] a [0,1]
-  const ŝ = s / 100 // convertimos de [0, 100] a [0,1]
+  const û = l / 100 // converts from [0, 100] to [0,1]
+  const ŝ = s / 100 // converts from [0, 100] to [0,1]
   const c = (1 - Math.abs(2 * û - 1)) * ŝ
-  const ĥ = h / 60 // convertimos de [0º,360º] a [0,6]
+  const ĥ = h / 60 // converts from [0º,360º] to [0,6]
   const x = c * (1 - Math.abs((ĥ % 2) - 1))
   let r, g, b
   if (ĥ >= 0 && ĥ < 1) {
@@ -51,10 +51,10 @@ export function fromHSLA(out, [h, s, l, a]) {
 }
 
 /**
- * Convertimos un color de RGBA a HSLA
+ * Converts a RGBA color into HSLA
  *
- * @param {Color} out Color de destino (en HSLA)
- * @param {Color} color Color de origen (en RGBA)
+ * @param {Color} out Target color (HSLA)
+ * @param {Color} color Origin color (RGBA)
  * @returns {Color}
  */
 export function toHSLA(out, color) {

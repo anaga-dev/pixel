@@ -25,11 +25,11 @@ export async function load(blob) {
     throw new Error('Invalid PCX signature')
   }
   /**
-   * 0 = Versión 2.5
-   * 2 = Versión 2.8 con Paleta
-   * 3 = Versión 2.8 paleta por defecto
-   * 4 = Paintbrush para Windows
-   * 5 = Version 3.0 o superior
+   * 0 = Version 2.5
+   * 2 = Version 2.8 with Palette
+   * 3 = Version 2.8 default palette
+   * 4 = Paintbrush for Windows
+   * 5 = Version 3.0 or higher
    */
   const version = reader.read('u1')
   if (version === 0) {
@@ -44,7 +44,7 @@ export async function load(blob) {
     console.log('Versión 3.0 o superior')
   }
   /**
-   * 0 - Sin compresión
+   * 0 - No compression
    * 1 - RLE
    */
   const compression = reader.read('u1')
@@ -52,10 +52,10 @@ export async function load(blob) {
     throw new Error('Unknown PCX compression algorithm')
   }
   /**
-   * 1 - Monocromo
-   * 4 - 16 colores
-   * 8 - 256 colores
-   * 24 - 16.7 millones de colores o truecolor
+   * 1 - Monochrome
+   * 4 - 16 colors
+   * 8 - 256 colors
+   * 24 - 16.7 millon colors or truecolor
    */
   const bpp = (reader.position = 128)
   const xmin = reader.read('u2')

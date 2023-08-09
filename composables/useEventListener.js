@@ -1,6 +1,6 @@
 
 /**
- * Escucha un evento.
+ * Listens to an event.
  *
  * @param {EventTarget} target
  * @param {string} type

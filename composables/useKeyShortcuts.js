@@ -10,18 +10,17 @@ function isTextInputElement(element) {
 }
 
 /**
- * TODO: Una pequeña mejora a esto sería utilizar un árbol en el que se mapean las teclas
- * de la siguiente manera:
+ * TODO: Could be improved a bit using a tree with mapped keys like this:
  *
- * <tecla clave> -> <función>
- *               -> <con shift> -> <función>
+ * <key> -> <function>
+ *               -> <shift> -> <function>
  *
  * @param {Map<Array<string>,Function>} bindings
  */
 export function useKeyShortcuts(bindings, target) {
   useEventListener(target ?? globalThis, 'keydown', (e) => {
-    // Si el elemento actual seleccionado es un <input>, <select> o <textarea>
-    // entonces salimos de esta función.
+    // If the current selected element is <input>, <select> or <textarea>
+    // this function is stopped.
     if (isTextInputElement(document.activeElement)) {
       return
     }

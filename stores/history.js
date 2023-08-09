@@ -23,25 +23,22 @@ export const useHistoryStore = defineStore('history', () => {
       // We add a new entry to history.
       list.push(item)
     }
-
-    // Eliminamos todos los elementos por la cabecera del historial
-    // si superamos el número de undos.
+    // If the number of undos are exceeded, deletes all elements by history header
     if (list.length > MAX_HISTORY) {
       const count = list.length - MAX_HISTORY
       list.splice(0, count)
     }
-    // Actualizamos el index de la historia automáticamente.
+    // Updates history index automatically.
     index.value = list.length - 1
   }
 
   /**
-   * Deshace la última acción realizada.
+   * Undoes last action
    *
    * @returns {HistoryEntry}
    */
   function undo() {
-    // guardamos la información de la acción que hemos realizado
-    // y una copia del buffer que estabamos modificando.
+    // Stores data from the last action made and a copy of the modified buffer .
     if (index.value < 0) {
       return
     }
@@ -51,12 +48,12 @@ export const useHistoryStore = defineStore('history', () => {
   }
 
   /**
-   * Rehace la última acción deshecha.
+   * Redoes last undone action.
    *
    * @returns {HistoryEntry}
    */
   function redo() {
-    // restauramos el buffer almacenado.
+    // Restores the stored buffer.
     if (index.value === list.length - 1) {
       return
     }
@@ -75,4 +72,3 @@ export const useHistoryStore = defineStore('history', () => {
     redo
   }
 })
-

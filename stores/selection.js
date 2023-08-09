@@ -63,15 +63,14 @@ export const useSelectionStore = defineStore('selection', () => {
             willReadFrequently: true
           })
 
-          // Si ya existía un MaskImageData lo utilizamos
-          // si no, creamos uno nuevo utilizando el contexto
-          // del canvas de selección.
+          // Uses MaskData if there's one
+          // Otherwise, a new one is created using selection canvas context.
           const selectionMaskImageData = !maskImageData
             ? maskContext.createImageData(width, height)
             : maskImageData
 
-          // Dependiendo de si estamos añadiendo o sustrayendo
-          // usamos una máscara u otra.
+          // Uses a mask or the other depending on whether
+          // add or substract mode is being used.
           const maskColor =
             mode.value === SelectMode.ADD ? [0xff, 0, 0, 0xff] : [0, 0, 0, 0]
 

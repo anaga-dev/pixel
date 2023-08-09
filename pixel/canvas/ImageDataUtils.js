@@ -11,8 +11,7 @@ import FillStack from './FillStack'
  * @returns {boolean}
  */
 export function isInside(imageData, x, y) {
-  return x >= 0 && x < imageData.width
-      && y >= 0 && y < imageData.height
+  return x >= 0 && x < imageData.width && y >= 0 && y < imageData.height
 }
 
 /**
@@ -155,8 +154,8 @@ export function clear(imageData) {
 }
 
 /**
- * Realiza cualquier operación de pintado desde el origen al destino.
- * El callback debe recibir los siguientes parámetros:
+ * Performs any painting operation from origin to destination.
+ * The callback must must receive the following parameters:
  * - targetData: Uint8ClampedArray
  * - sourceData: Uint8ClampedArray
  * - targetOffset: number
@@ -204,8 +203,7 @@ export function fill(imageData, x, y, color, dither, maskImageData, directions =
   const VISITED_COLOR = 0xFF
   const [r, g, b, a] = color
   const [sr, sg, sb, sa] = getColor(imageData, x, y)
-  // si estamos pintando sobre el mismo color que tenemos
-  // seleccionado, pasamos.
+  // If it's painting over the same color that we've selected, skips it.
   if (r == sr && g == sg && b == sb && a == sa) {
     return false
   }
@@ -223,7 +221,10 @@ export function fill(imageData, x, y, color, dither, maskImageData, directions =
     for (const [dx, dy] of directions) {
       const nx = x + dx
       const ny = y + dy
-      if (!visited.isInside(nx, ny) || visited.getColor(nx, ny) === VISITED_COLOR) {
+      if (
+        !visited.isInside(nx, ny) ||
+        visited.getColor(nx, ny) === VISITED_COLOR
+      ) {
         continue
       }
       fillStack.push(nx, ny)
@@ -257,8 +258,7 @@ export function line(imageData, px1, py1, px2, py2, color, dither, maskImageData
   }
 
   let yAxis = false
-  // Si la altura de la línea es mayor que la anchura, iteraremos
-  // sobre el eje Y.
+  // Iterates over Y axis when line's height is more than its width.
   if (Math.abs(y2 - y1) > Math.abs(x2 - x1)) {
     x1 = py1
     y1 = px1
@@ -275,18 +275,17 @@ export function line(imageData, px1, py1, px2, py2, color, dither, maskImageData
   let e = 0
   let y = y1
 
-  // Mueve x2 un pixel extra a la dirección dx para que podamos usar
-  // operador!=() en lugar de operador<(). Aquí prefiero operator!=()
-  // en lugar de intercambiar x1 con x2 para que el error siempre comience desde 0
-  // en el origen (x1,y1).
+  // Moves x2 an extra pixel in dx direction so
+  // operator!=() can be used instead of operator<(). operator!=() is preferred here
+  // over exchanging x1 with x2 so the error in origin (x1,y1) always starts in 0.
   x2 += dx
 
   for (let x = x1; x !== x2; x += dx) {
     if (yAxis) putColor(imageData, y, x, color, dither, maskImageData)
     else putColor(imageData, x, y, color, dither, maskImageData)
 
-    // El error avanza "h/w" por cada paso "x". Como estamos usando un
-    // valor entero para "e", utilizamos "w" como unidad.
+    // The error advances "h/w" for each "x" step. Since we are using an integer value
+    // for "e", "w" is used as unit.
     e += h
     if (e >= w) {
       y += dy
@@ -455,10 +454,10 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither, mask
   if (py1 > py2) {
     py1 = py2 /* .. exchange them */
   }
-  py1 += (b+1)/2
-  py2 = py1-b1   /* starting pixel */
-  a *= 8*a
-  b1 = 8*b*b
+  py1 += (b + 1) / 2
+  py2 = py1 - b1 /* starting pixel */
+  a *= 8 * a
+  b1 = 8 * b * b
 
   do {
     putColor(imageData, px2, py1, color, dither, maskImageData) /*   I. Quadrant */
@@ -470,8 +469,8 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither, mask
       py1++
       py2--
       err += dy += a
-    }  /* y step */
-    if (e2 >= dx || 2*err > dy) {
+    } /* y step */
+    if (e2 >= dx || 2 * err > dy) {
       px1++
       px2--
       err += dx += b1
@@ -534,7 +533,11 @@ export function equals(a, b) {
  * @returns {ImageData}
  */
 export function clone(imageData) {
-  return new ImageData(imageData.data.slice(), imageData.width, imageData.height)
+  return new ImageData(
+    imageData.data.slice(),
+    imageData.width,
+    imageData.height
+  )
 }
 
 /**
@@ -558,13 +561,22 @@ export function copy(targetImageData, sourceImageData) {
  * @param {Color} [maskColor]
  * @returns {ImageData}
  */
-export function copySelected(targetImageData, sourceImageData, [r, g, b], maskColor = null) {
-  if (sourceImageData.width !== targetImageData.width
-   || sourceImageData.height !== targetImageData.height) {
-    throw new Error('sourceImageData and targetImageData must have the same size')
+export function copySelected(
+  targetImageData,
+  sourceImageData,
+  [r, g, b],
+  maskColor = null
+) {
+  if (
+    sourceImageData.width !== targetImageData.width ||
+    sourceImageData.height !== targetImageData.height
+  ) {
+    throw new Error(
+      'sourceImageData and targetImageData must have the same size'
+    )
   }
   for (let y = 0; y < sourceImageData.height; y++) {
-    const baseOffset = (y * sourceImageData.width)
+    const baseOffset = y * sourceImageData.width
     for (let x = 0; x < sourceImageData.width; x++) {
       const index = (baseOffset + x) * 4
       const cr = sourceImageData.data[index + 0]
@@ -594,7 +606,13 @@ export function copySelected(targetImageData, sourceImageData, [r, g, b], maskCo
  * @param {Color} [maskColor]
  * @returns {ImageData}
  */
-export function copySelectedAt(targetImageData, sourceImageData, x, y, maskColor = null) {
+export function copySelectedAt(
+  targetImageData,
+  sourceImageData,
+  x,
+  y,
+  maskColor = null
+) {
   const color = getColor(sourceImageData, x, y)
   return copySelected(targetImageData, sourceImageData, color, maskColor)
 }
@@ -617,15 +635,19 @@ export function copyContiguousSelectedAt(
   y,
   maskColor = null
 ) {
-  if (sourceImageData.width !== targetImageData.width
-   || sourceImageData.height !== targetImageData.height) {
-    throw new Error('sourceImageData and targetImageData must have the same size')
+  if (
+    sourceImageData.width !== targetImageData.width ||
+    sourceImageData.height !== targetImageData.height
+  ) {
+    throw new Error(
+      'sourceImageData and targetImageData must have the same size'
+    )
   }
   const directions = [
     [-1, 0],
     [1, 0],
     [0, -1],
-    [0, 1],
+    [0, 1]
   ]
   const [r, g, b] = getColor(sourceImageData, x, y)
   const visited = IndexedImageData.fromImageData(sourceImageData)
@@ -633,7 +655,7 @@ export function copyContiguousSelectedAt(
   fillStack.push(x, y)
   while (!fillStack.isEmpty) {
     const [x, y, offset] = fillStack.pop()
-    visited.putColor(x, y, 0xFF)
+    visited.putColor(x, y, 0xff)
     const cr = sourceImageData.data[offset + 0]
     const cg = sourceImageData.data[offset + 1]
     const cb = sourceImageData.data[offset + 2]
@@ -653,7 +675,7 @@ export function copyContiguousSelectedAt(
       }
       const nx = x + dx
       const ny = y + dy
-      if (visited.isInside(nx, ny) && visited.getColor(nx, ny) !== 0xFF) {
+      if (visited.isInside(nx, ny) && visited.getColor(nx, ny) !== 0xff) {
         fillStack.push(x + dx, y + dy)
       }
     }
@@ -669,9 +691,14 @@ export function copyContiguousSelectedAt(
  */
 export function copyFromCanvas(targetImageData, canvas) {
   const context = CanvasContext2D.get(canvas, {
-    willReadFrequently: true,
+    willReadFrequently: true
   })
-  const sourceImageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height)
+  const sourceImageData = context.getImageData(
+    0,
+    0,
+    context.canvas.width,
+    context.canvas.height
+  )
   return copy(targetImageData, sourceImageData)
 }
 
@@ -699,7 +726,8 @@ export function copyToCanvas(targetImageData, canvas) {
  * @param {*} mode TODO: implementar
  */
 export function translate(imageData, tx, ty, mode) {
-  let dx = tx, dy = ty
+  let dx = tx,
+    dy = ty
   if (!Number.isInteger(tx)) {
     dx = tx < 0 ? Math.ceil(tx) : Math.floor(tx)
   }
@@ -724,7 +752,7 @@ export function translate(imageData, tx, ty, mode) {
       target[targetOffset] = source[sourceOffset]
     }
   }
-  // Cuando terminamos, volcamos un buffer sobre el otro.
+  // One buffer is dumped on top of the other when it's finished.
   source.set(target, 0)
 }
 

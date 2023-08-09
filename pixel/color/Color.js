@@ -17,15 +17,15 @@ import { stringify } from './ColorStringifier.js'
 /**
  *
  * @param {number} h Hue [0,360]
- * @param {number} s Saturación [0,100]
- * @param {number} l Saturación [0,100]
+ * @param {number} s Saturation [0,100]
+ * @param {number} l Saturation [0,100]
  * @param {number}
  */
 export function fromHSLA(h, s, l, a) {
-  const û = Math.min(1, Math.max(0, l / 100)) // convertimos de [0, 100] a [0,1]
-  const ŝ = Math.min(1, Math.max(0, s / 100)) // convertimos de [0, 100] a [0,1]
+  const û = Math.min(1, Math.max(0, l / 100)) // converts from [0, 100] to [0,1]
+  const ŝ = Math.min(1, Math.max(0, s / 100)) // converts from [0, 100] to [0,1]
   const c = (1 - Math.abs(2 * û - 1)) * ŝ
-  const ĥ = Math.min(6, Math.max(0, h / 60)) // convertimos de [0º,360º] a [0,6]
+  const ĥ = Math.min(6, Math.max(0, h / 60)) // converts from [0º,360º] to [0,6]
   const x = c * (1 - Math.abs((ĥ % 2) - 1))
   let r, g, b
   if (ĥ >= 0 && ĥ < 1) {
@@ -70,7 +70,7 @@ export function create(r = 0, g = 0, b = 0, a = 1) {
 }
 
 /**
- * Establecemos el valor del color.
+ * Sets the color value.
  *
  * @param {Color} out
  * @param {number} r
@@ -117,26 +117,24 @@ export function saturationHSV(color) {
 }
 
 /**
- * Devuelve el valor medio de todos los componentes
- * del color.
+ * Returns average value from all color components.
  *
  * @param {Color} color
- * @returns {number} Valor entre 0 y 1 con el valor medio de todos los componentes.
+ * @returns {number} Value from 0 to 1.
  */
 export function average([r, g, b]) {
   return (r + g + b) / 3
 }
 
 /**
- * Luminosidad
+ * Luminosity
  *
- * Alias de average
+ * Average alias
  */
 export const lightness = mid
 
 /**
- * Devuelve el rango entre el componente mayor
- * y el componente menor del color.
+ * Returns the range between the highest and lowest color components.
  *
  * @param {Color} color
  * @returns {number}
@@ -146,25 +144,24 @@ export function range(color) {
 }
 
 /**
- * Croma
+ * Chroma
  *
- * Alias de range
+ * Range alias
  */
 export const chroma = range
 
 /**
- * Obtenemos el hue del color
+ * Gets color hue
  *
  * @param {Color} color
- * @returns {number} Hue en grados de 0 a 360
+ * @returns {number} Hue in degrees from 0 to 360
  */
 export function hue(color) {
   const c = chroma(color)
   const M = max(color)
   const [r, g, b] = color
-  // en realidad si el chroma es 0, el hue
-  // no estaría definido pero ponemos 0 por
-  // conveniencia
+  // actually if chroma is equal to 0, hue
+  // would be undefined, but it's set to 0 for convenience
   if (c === 0) {
     return 0
   }
@@ -176,15 +173,15 @@ export function hue(color) {
   } else if (M === b) {
     hue = (r - g) / c + 4
   }
-  // retornamos el valor en grados (0 a 360).
+  // returns the value in degrees (0 to 360).
   return hue * 60
 }
 
 /**
- * Devuelve la saturación
+ * Returns saturation
  *
  * @param {Color} color
- * @returns {number} Un valor entre 0 y 1 representando la saturación del color
+ * @returns {number} Value from 0 to 1
  */
 export function saturation(color) {
   const l = lightness(color)

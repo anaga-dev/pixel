@@ -1,21 +1,21 @@
 import BinaryType from './BinaryType'
 
 /**
- * Lista de tamaños válidos para enteros.
+ * List of valid sizes for integers.
  *
  * @type {Array<number>}
  */
 export const BinaryTypeIntegerSizes = [1, 2, 4, 8]
 
 /**
- * Lista de tamaños válidos para reales.
+ * List of valid sizes for floats.
  *
  * @type {Array<number>}
  */
 export const BinaryTypeFloatSizes = [4, 8]
 
 /**
- * Lista de tamaños permitidos.
+ * List of allowed sizes.
  */
 export const BinaryTypeAllowedSizes = {
   [BinaryType.UNSIGNED]: BinaryTypeIntegerSizes,
@@ -24,7 +24,7 @@ export const BinaryTypeAllowedSizes = {
 }
 
 /**
- * Lista de tipos permitidos.
+ * List of allowed types.
  */
 export const BinaryTypes = [
   BinaryType.U1,
@@ -40,8 +40,8 @@ export const BinaryTypes = [
 ]
 
 /**
- * Obtenemos el nombre del método de DataView que tenemos que llamar
- * para leer el dato a partir de un tipo fijo.
+ * Gets DataView's method name that needs to be called
+ * in order to read a data piece from a fixed type.
  *
  * @param {BinaryOperation} operation
  * @param {BinaryType} typeSize
@@ -57,8 +57,8 @@ export function getMethodNameByType(operation, typeSize) {
 }
 
 /**
- * Obtenemos el nombre del método de DataView que tenemos que llamar
- * para leer el dato.
+ * Gets the name of the DataView method that we have to call
+ * to read the data.
  *
  * @param {BinaryOperation} operation
  * @param {BinaryType} type

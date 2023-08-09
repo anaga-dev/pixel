@@ -1,5 +1,5 @@
 /**
- * Operaciones binarias.
+ * Binary operations.
  *
  * @readonly
  * @enum {string}

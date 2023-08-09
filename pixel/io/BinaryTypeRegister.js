@@ -1,6 +1,6 @@
 export default class BinaryTypeRegister {
   /**
-   * Tipos
+   * Types
    *
    * @type {Map<string, BinaryTypeDefinition>}
    */
@@ -16,7 +16,7 @@ export default class BinaryTypeRegister {
   }
 
   /**
-   * Devuelve si está definido el tipo
+   * Returns whether type is defined
    *
    * @param {string} type
    * @returns {boolean}
@@ -26,7 +26,7 @@ export default class BinaryTypeRegister {
   }
 
   /**
-   * Devuelve la definición del tipo.
+   * Returns type definition.
    *
    * @param {string} type
    * @returns {BinaryTypeDefinition}
@@ -39,7 +39,7 @@ export default class BinaryTypeRegister {
   }
 
   /**
-   * Registra un tipo.
+   * Registers a type.
    *
    * @param {string} type
    * @param {BinaryTypeDefinition} definition
@@ -49,7 +49,7 @@ export default class BinaryTypeRegister {
   }
 
   /**
-   * Borra un tipo del registro de tipos.
+   * Removes a type from the types registry.
    *
    * @param {string} type
    */

@@ -2,7 +2,7 @@ import { addEventListeners } from './addEventListeners'
 import { removeEventListeners } from './removeEventListeners'
 
 /**
- * Escucha a todos los eventos que le indicamos.
+ * Listens to all the events specified.
  *
  * @param {EventTarget} target
  * @param {Array<string>} types

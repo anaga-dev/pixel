@@ -1,12 +1,12 @@
 import Endianness from './Endianness';
 
 /**
- * Vista binaria.
+ * Binary view.
  *
- * Esta clase nos permite posicionarnos dentro de un DataView
- * y realizar movimientos en el fichero. Necesitarás utilizar
- * un `BinaryReader` o un `BinaryWriter` para poder leer o
- * escribir de él.
+ * This class allows positioning into a DataView
+ * and make movements in the file.
+ * A `BinaryReader` or a `BinaryWriter` is required
+ * in order to make read or write operations.
  */
 export default class BinaryView {
   #dataView
@@ -67,10 +67,10 @@ export default class BinaryView {
   }
 
   /**
-   * Rebobina la posición del "cabezal" de escritura.
+   * Rewinds the writing head position.
    *
-   * @param {number} [bytes] Número de bytes que rebobinar. Si no se especifica vuelve al principio.
-   * @returns {number} La nueva posición
+   * @param {number} [bytes] Number of bytes to be rewinded. If not specified goes back to the top.
+   * @returns {number} New position
    */
   rewind(bytes) {
     if (bytes === undefined) {
@@ -86,10 +86,10 @@ export default class BinaryView {
   }
 
   /**
-   * Salta una cantidad determinada de bytes.
+   * Skips a certain number of bytes
    *
-   * @param {number} bytes Número de bytes que saltar
-   * @returns {number} La nueva posición
+   * @param {number} bytes Number of bytes to skip
+   * @returns {number} New position
    */
   skip(bytes) {
     if (!Number.isInteger(bytes)) {

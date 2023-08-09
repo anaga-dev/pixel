@@ -4,7 +4,7 @@ import Canvas from '@/pixel/canvas/Canvas'
 // @see https://www.openraster.org/baseline/layer-stack-spec.html
 
 /**
- * Convierte un <canvas> o un OffscreenCanvas en un thumbnail.
+ * Turns a <canvas> or a OffscreenCanvas into a thumbnail.
  *
  * @param {*} source
  * @returns {Promise<Blob>}
@@ -18,9 +18,8 @@ function createThumbnail(source) {
 }
 
 /**
- * Traduce las operaciones de composición de Canvas a
- * OpenRaster.
- *
+ * Translates composition operations from Canvas to OpenRaster.
+ * 
  * @param {string} operation
  * @returns {string}
  */
@@ -48,8 +47,7 @@ function getCompositeOperation(operation) {
 }
 
 /**
- * Traduce las operaciones de composición de OpenRaster a
- * Canvas.
+ * Translates composition operations from OpenRaster to Canvas.
  *
  * @param {string} operation
  * @returns {string}
@@ -81,7 +79,7 @@ function getBlendMode(operation) {
 }
 
 /**
- * Devuelve el XML de las capas
+ * Returns layers XML
  *
  * @param {documentStoreStore} document
  * @returns {string}
@@ -100,7 +98,7 @@ function createStack(document) {
 }
 
 /**
- * Guardamos un archivo .ora (Open Raster)
+ * Saves a .ora file (Open Raster)
  *
  * @param {documentStoreStore} doc
  * @returns {Promise<Blob>}
@@ -122,7 +120,7 @@ export async function save(doc) {
 }
 
 /**
- * Cargamos un archivo .ora (Open Raster)
+ * Loads a .ora file (Open Raster)
  *
  * @param {File|Blob} blob
  * @returns {Promise}

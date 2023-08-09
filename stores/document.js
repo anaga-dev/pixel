@@ -167,8 +167,8 @@ export const useDocumentStore = defineStore('document', {
   },
   actions: {
     updateCanvasRect() {
-      // Necesitamos obtener el client rect para poder calcular
-      // donde irá el canvas de selección.
+      // We need to get client rect so we can calculate
+      // the selection canvas position.
       this.canvasRect = this.canvas.getBoundingClientRect()
     },
     toggleColorPicker() {
@@ -873,24 +873,21 @@ export const useDocumentStore = defineStore('document', {
       */
     },
     /**
-     * Copia lo que haya en el <canvas> principal
-     * a un <canvas> secundario utilizado como "copia".
+     * Copies main <canvas> content to a secondary <canvas> (copyCanvas) used as a copy.
      */
     saveCopyBuffer() {
       Canvas.copy(this.copyCanvas, this.canvas)
       ImageDataUtils.copyFromCanvas(this.copyImageData, this.canvas)
     },
     /**
-     * Dibuja lo que haya en el <canvas> "copia" en
-     * el <canvas> principal.
+     * Draws the secondary canvas (copyCanvas) content into the main canvas.
      */
     restoreCopyBuffer() {
       Canvas.copy(this.canvas, this.copyCanvas)
       ImageDataUtils.copyToCanvas(this.copyImageData, this.canvas)
     },
     /**
-     * Dibuja lo que haya en el <canvas> "dibujo"
-     * en el <canvas> principal.
+     * Draws the drawing <canvas> (drawingCanvas) content into the main canvas.
      */
     drawDrawingBuffer() {
       requestAnimationFrame(() => {
@@ -1022,7 +1019,7 @@ export const useDocumentStore = defineStore('document', {
       })
       const removedLayers = this.layers.list.splice(0, index, mergedLayer)
       for (const layer of removedLayers) {
-        // pintamos todas las capas en la capa nueva.
+        // TODO: We paint all the layers in the new layer.
       }
     },
     mergeBy(mode = 'all') {

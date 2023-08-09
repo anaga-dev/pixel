@@ -1,19 +1,19 @@
 /**
- * Constante para convertir de radianes a grados
+ * Constant to translate radians into degrees
  *
  * @type {number}
  */
 export const RAD_TO_DEG = 180 / Math.PI
 
 /**
- * Constante para convertir de grados a radianes
+ * Constant to translate degrees into radians
  *
  * @type {number}
  */
 export const DEG_TO_RAD = Math.PI / 180
 
 /**
- * Convierte grados a radianes
+ * Translates degrees to radians
  *
  * @param {number} degrees
  * @returns {number}
@@ -23,7 +23,7 @@ export function degreesToRadians(degrees) {
 }
 
 /**
- * Convierte radianes a grados
+ * Translates radians to degrees
  *
  * @param {number} radians
  * @returns {number}

@@ -4,7 +4,7 @@ import DataViewUtils from './DataViewUtils'
 
 export default class BinaryWriter extends BinaryView {
   /**
-   * Obtenemos un BinaryWriter
+   * Gets a BinaryWriter
    *
    * @param {number} byteLength
    * @returns {BinaryWriter}

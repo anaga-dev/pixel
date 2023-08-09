@@ -2,7 +2,7 @@ export const ZERO = 0x00000000
 export const ONE = 0xFFFFFFFF
 
 /**
- * Patrones de dithering
+ * Dithering patterns
  */
 export const patterns = [
   // 0
