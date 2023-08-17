@@ -170,7 +170,7 @@ main {
   gap: var(--spaceL);
   place-content: center;
   justify-items: center;
-  min-height: 50vh;
+  margin-bottom: var(--spaceXL);
 }
 
 img {
