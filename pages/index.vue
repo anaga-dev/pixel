@@ -3,13 +3,15 @@
     <Background class="background" />
     <header>
       <Logo class="Logo" />
-      <button
-        v-if="installable"
-        class="button-install"
-        @click="handleInstallClick"
-      >
-        Install Pixel
-      </button>
+      <div class="actions">
+        <button
+          v-if="installable"
+          class="button-install"
+          @click="handleInstallClick"
+        >
+          Install Pixel
+        </button>
+      </div>
     </header>
     <main>
       <section class="hero">
@@ -123,7 +125,7 @@ header {
   height: var(--headerHeight);
   z-index: 1;
   display: grid;
-  grid-auto-flow: column;
+  grid-template-columns: auto 1fr;
   justify-content: space-between;
   align-items: center;
 }
@@ -132,9 +134,14 @@ header {
   width: 3rem;
 }
 
+.actions {
+  display: grid;
+  justify-content: end;
+}
+
 h1 {
   font-family: 'Silkscreen';
-  font-size: var(--fontSizeXL);
+  font-size: clamp(1.5rem, 10vw, 6rem);
   color: var(--colorTextPrimary);
   line-height: 1.25;
   margin: 0;
@@ -163,7 +170,7 @@ main {
   gap: var(--spaceL);
   place-content: center;
   justify-items: center;
-  min-height: 60vh;
+  min-height: 50vh;
 }
 
 img {
@@ -186,7 +193,7 @@ img {
   place-content: center;
   font-family: 'Silkscreen';
   font-size: var(--fontSizeL);
-  padding: 0 var(--spaceXL);
+  padding: 0 var(--spaceM);
   text-decoration: none;
   cursor: pointer;
 }
