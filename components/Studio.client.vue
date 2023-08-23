@@ -67,6 +67,7 @@ import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
+import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
 import Tool from '@/pixel/enums/Tool'
 
