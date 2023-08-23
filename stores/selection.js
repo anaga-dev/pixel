@@ -54,52 +54,8 @@ export const useSelectionStore = defineStore('selection', () => {
       const y = (e.clientY - top) / height
 
       if (e.type === 'pointerdown') {
-        polygon.length = 0
-        if (type.value === SelectType.RECTANGULAR) {
-          polygon.push([x, y], [x, y], [x, y], [x, y])
-        } else if (type.value === SelectType.COLOR) {
-          // TODO: This should be in selectionMaskImageData setter.
-          maskContext = CanvasContext2D.get(maskCanvas, {
-            willReadFrequently: true
-          })
-
-          // Uses MaskData if there's one
-          // Otherwise, a new one is created using selection canvas context.
-          const selectionMaskImageData = !maskImageData
-            ? maskContext.createImageData(width, height)
-            : maskImageData
-
-          // Uses a mask or the other depending on whether
-          // add or substract mode is being used.
-          const maskColor =
-            mode.value === SelectMode.ADD ? [0xff, 0, 0, 0xff] : [0, 0, 0, 0]
-
-          if (!contiguous.value) {
-            ImageDataUtils.copySelectedAt(
-              selectionMaskImageData,
-              imageData,
-              Math.floor(x * width),
-              Math.floor(y * height),
-              maskColor
-            )
-          } else {
-            ImageDataUtils.copyContiguousSelectedAt(
-              selectionMaskImageData,
-              imageData,
-              Math.floor(x * width),
-              Math.floor(y * height),
-              maskColor
-            )
-          }
-          maskImageData = selectionMaskImageData
-          maskContext.putImageData(maskImageData, 0, 0)
-        }
-
-        // TODO: When polygon selection mode isn't Freehand but rectangular,
-        // we need to draw a rectangular polygon that resizes according to 
-        // the mouse movement.
-
-        if (type.value !== SelectType.COLOR) {
+        if (type.value !== SelectionType.COLOR) {
+          selection.start(x, y)
           window.addEventListener('pointermove', onPointer)
           window.addEventListener('pointerup', onPointer)
         }

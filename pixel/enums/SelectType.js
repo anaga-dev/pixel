@@ -1,6 +1,7 @@
 export const SelectType = {
   FREEHAND: 'freehand',
-  RECTANGULAR: 'rectangular',
+  RECTANGLE: 'rectangle',
+  ELLIPSE: 'ellipse',
   COLOR: 'color'
 }
 

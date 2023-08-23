@@ -94,17 +94,13 @@ function onDragLeave(e) {
 }
 
 function onDrop(e) {
-  console.log(e.type, e)
   const payload = e.dataTransfer.getData('text/plain')
-  console.log(payload)
   if (!payload) {
     return
   }
   const { index: fromIndex, layer } = JSON.parse(payload)
-  // console.log(index, layer)
   const destination = e.target
   const toIndex = parseInt(destination.dataset.index, 10)
-  console.log('from', fromIndex, 'to', toIndex)
   document.layers.swap(fromIndex, toIndex)
 }
 </script>

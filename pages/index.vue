@@ -83,7 +83,6 @@ onMounted(() => {
   window.addEventListener(
     'beforeinstallprompt',
     (event) => {
-      console.log('hey!')
       event.preventDefault()
       installPrompt = event
       installable.value = true

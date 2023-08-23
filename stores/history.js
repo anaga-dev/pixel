@@ -23,7 +23,7 @@ export const useHistoryStore = defineStore('history', () => {
       // We add a new entry to history.
       list.push(item)
     }
-    // If the number of undos are exceeded, deletes all elements by history header
+// If the number of undos are exceeded, deletes all elements by history header
     if (list.length > MAX_HISTORY) {
       const count = list.length - MAX_HISTORY
       list.splice(0, count)
@@ -72,3 +72,4 @@ export const useHistoryStore = defineStore('history', () => {
     redo
   }
 })
+

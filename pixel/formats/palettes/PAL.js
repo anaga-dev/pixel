@@ -14,7 +14,6 @@ export async function save(palette) {
     writer.write('u1', Math.floor(r * 0xFF))
     writer.write('u1', Math.floor(g * 0xFF))
     writer.write('u1', Math.floor(b * 0xFF))
-
   }
 }
 
@@ -30,7 +29,6 @@ export async function load(blob) {
     const r = reader.read('u1')
     const g = reader.read('u1')
     const b = reader.read('u1')
-    console.log(r, g, b)
   }
 }
 

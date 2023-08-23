@@ -25,7 +25,6 @@ export async function load(blob)
 
   const palette = colors.map((color) => {
     const [r, g, b, hex] = color.split(/\s+/)
-    console.log(r, g, b, hex)
     return `#${hex}`
   })
 

@@ -221,12 +221,9 @@ export const useDocumentStore = defineStore('document', {
       this.shape.lockAspectRatio = !this.shape.lockAspectRatio
     },
     setSymmetrySettings(axis) {
-      console.log('Axis', axis)
       if (this.symmetry.axis === axis) {
-        console.log('Symmetry off!!!')
         this.symmetry.axis = null
       } else {
-        console.log('Symmetry set to:', axis)
         this.symmetry.axis = axis
       }
     },
@@ -294,7 +291,9 @@ export const useDocumentStore = defineStore('document', {
             imageData,
             x,
             y,
-            color
+            color,
+            null,
+            mask
           )
         )
       }
@@ -466,7 +465,7 @@ export const useDocumentStore = defineStore('document', {
       mask = null
     ) {
       if (lockAspectRatio) {
-        // FIXME: This behaves in a weird way around the edges and 
+        // FIXME: This behaves in a weird way around the edges and
         // could create shapes that are not "1:1".
         const width = x2 - x1
         const height = y2 - y1
@@ -543,7 +542,7 @@ export const useDocumentStore = defineStore('document', {
       mask = null
     ) {
       if (lockAspectRatio) {
-        // FIXME: This behaves in a weird way around the edges and 
+        // FIXME: This behaves in a weird way around the edges and
         // could create shapes that are not "1:1".
         const width = x2 - x1
         const height = y2 - y1
@@ -817,7 +816,11 @@ export const useDocumentStore = defineStore('document', {
               pointer.current.x,
               pointer.current.y,
               this.color,
-              'temp'
+              'temp',
+              this.shape.filled,
+              this.shape.lockAspectRatio,
+              null,
+              this.selection.getMaskImageData()
             )
           } else if (e.type === 'pointerup') {
             this.rectangle(
@@ -839,7 +842,11 @@ export const useDocumentStore = defineStore('document', {
               pointer.current.x,
               pointer.current.y,
               this.color,
-              'temp'
+              'temp',
+              this.shape.filled,
+              this.shape.lockAspectRatio,
+              null,
+              this.selection.getMaskImageData()
             )
           } else if (e.type === 'pointerup') {
             this.ellipse(
@@ -854,7 +861,7 @@ export const useDocumentStore = defineStore('document', {
       } else if (this.tool === Tool.DROPPER && pointer.pressure > 0) {
         this.eyeDropper(pointer.current.x, pointer.current.y)
       } else if (this.tool === Tool.TRANSFORM && pointer.pressure > 0) {
-        // TODO: This could be A LOT better.
+        // TODO: Esto es MUY mejorable.
         const x = pointer.relative.x
         const y = pointer.relative.y
         this.transformation(x, y)
@@ -973,7 +980,6 @@ export const useDocumentStore = defineStore('document', {
     init() {
       this.initDrawing()
       this.initSelection()
-      this.initPattern()
     },
     createFromDocument(document) {
       this.create(
@@ -1031,12 +1037,10 @@ export const useDocumentStore = defineStore('document', {
       this.layers.current = layer
     },
     setLayerBlendMode(layer, blendMode) {
-      console.log('blend mode', blendMode)
       layer.blendMode.value = blendMode
       this.redrawAll()
     },
     setLayerOpacity(layer, opacity) {
-      console.log('opacity changed to', opacity)
       layer.opacityPercentage.value = opacity
       this.redrawAll()
     },
@@ -1218,7 +1222,6 @@ export const useDocumentStore = defineStore('document', {
       for (const layer of this.layers) {
         if (!layer.isStatic) {
           const [removedFrame] = layer.frames.splice(frame, 1)
-          console.log('Frame', removedFrame, 'removed')
         }
       }
       this.animation.remove()

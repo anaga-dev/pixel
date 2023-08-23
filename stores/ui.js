@@ -36,7 +36,6 @@ export const useUIStore = defineStore('ui', {
   },
   actions: {
     toggleOverlay(el) {
-      console.log(el)
       if (this.showOverlay !== el) {
         this.showOverlay = el
       } else if (this.showOverlay === el) {

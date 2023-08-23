@@ -19,7 +19,7 @@ function createThumbnail(source) {
 
 /**
  * Translates composition operations from Canvas to OpenRaster.
- * 
+ *
  * @param {string} operation
  * @returns {string}
  */
@@ -153,7 +153,6 @@ export async function load(blob) {
     const layers = await Promise.all(layerElements.map(async (layerElement, index) => {
       const blob = blobs[index]
       const imageBitmap = await createImageBitmap(blob)
-      console.log(imageBitmap)
       const canvas = Canvas.create(width, height)
       const context = canvas.getContext('2d', {
         willReadFrequently: true
@@ -161,7 +160,6 @@ export async function load(blob) {
       context.drawImage(imageBitmap, 0, 0)
       const { data } = context.getImageData(0, 0, width, height)
       const frame = new ImageData(data, width, height) //
-      console.log(frame)
       return {
         name: layerElement.getAttribute('name'),
         opacity: parseFloat(layerElement.getAttribute('opacity')),

@@ -8,10 +8,17 @@
     </ToolButton>
     <ToolButton
       label="Rectangular selection"
-      :active="documentStore.selection.type === SelectType.RECTANGULAR"
-      @click="documentStore.setSelectType(SelectType.RECTANGULAR)">
+      :active="documentStore.selection.type === SelectType.RECTANGLE"
+      @click="documentStore.setSelectType(SelectType.RECTANGLE)">
       <Icon i="selection" />
       Rectangular
+    </ToolButton>
+    <ToolButton
+      label="Elliptical selection"
+      :active="documentStore.selection.type === SelectType.ELLIPSE"
+      @click="documentStore.setSelectType(SelectType.ELLIPSE)">
+      <Icon i="selection" />
+      Ellipse
     </ToolButton>
     <ToolButton
       label="Color selection"

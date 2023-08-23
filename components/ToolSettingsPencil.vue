@@ -34,7 +34,6 @@ function onBrushShape(shape) {
 }
 
 function onBrushSize(size) {
-  console.log('on brush size', size)
   documentStore.setPencilSize(size)
 }
 

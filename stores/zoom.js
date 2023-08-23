@@ -72,7 +72,6 @@ export const useZoomStore = defineStore('zoom', () => {
   }
 
   function fromEvent(e) {
-    console.log(e.deltaX, e.deltaY, e.deltaZ, e.deltaMode, e)
     delta(e.deltaY, e.deltaMode)
   }
 

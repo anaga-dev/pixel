@@ -36,7 +36,6 @@ export const useLayersStore = defineStore('layers', () => {
     )
     const canvas = initialCanvas ?? Canvas.create(width, height)
     const context = initialContext ?? canvas.getContext('2d')
-    console.log(frames, canvas, context)
     return {
       id,
       name,
@@ -98,7 +97,6 @@ export const useLayersStore = defineStore('layers', () => {
       (currentLayer) => currentLayer.id === current.value.id
     )
     const newIndex = index + 1
-    console.log(index, newIndex)
     current.value = created
     if (newIndex === list.length) {
       list.push(created)
@@ -113,7 +111,6 @@ export const useLayersStore = defineStore('layers', () => {
       throw new Error(`Layer with ${id} not found`)
     }
     const [removedLayer] = list.splice(index, 1)
-    console.log(removedLayer)
   }
 
   /**

@@ -62,11 +62,13 @@ function render() {
   context.clearRect(0, 0, canvas.width, canvas.height)
 
   const maskCanvas = documentStore.selection.getMaskCanvas()
-  // Displays the mask we're generating from selection
+  // con esto podemos visualizar la máscara que
+  // estamos generando a partir de la selección
   if (maskCanvas) {
-    // Draws the figure four times with one pixel offset
-    // so it can draw the ant trail.
-    // TODO: We might better cache this drawing
+    // Esto dibuja cuatro veces la figura con un pixel
+    // de diferencia para poder dibujar el "camino de
+    // hormigas".
+    // TODO: Quizá podríamos cachear este dibujo.
     context.drawImage(
       maskCanvas,
       -1, -1, canvas.width, canvas.height
@@ -83,7 +85,8 @@ function render() {
       maskCanvas,
       -1, 1, canvas.width, canvas.height
     )
-    // Draws the selection outline.
+    // Esta es la parte responsable de dibujar
+    // el contorno de nuestra selección.
     context.globalCompositeOperation = 'destination-out'
     context.drawImage(
       maskCanvas,
