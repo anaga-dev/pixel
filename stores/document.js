@@ -202,6 +202,9 @@ export const useDocumentStore = defineStore('document', {
     toggleSelectContiguous() {
       this.selection.contiguous = !this.selection.contiguous
     },
+    deselect() {
+      this.selection.clear()
+    },
     setFillType(type) {
       this.fill.type = type
     },
@@ -276,18 +279,18 @@ export const useDocumentStore = defineStore('document', {
       })
       this.redrawAll()
     },
-    fillColor(color, x, y) {
+    fillColor(color, x, y, mask) {
       // FIXME: Cuando el color es el inicial #000 por algún motivo
       // no pinta bien el alpha.
       if (!this.fill.contiguous) {
         this.doLayerPaintOperation((imageData) =>
-          ImageDataUtils.replaceColorAt(imageData, x, y, Color.toUint8(color))
+          ImageDataUtils.replaceColorAt(imageData, x, y, Color.toUint8(color), mask)
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
           this.doSymmetry2Operation(
             (imageData, x, y, color, dither) =>
-              ImageDataUtils.fill(imageData, x, y, Color.toUint8(color)),
+              ImageDataUtils.fill(imageData, x, y, Color.toUint8(color), mask),
             imageData,
             x,
             y,
@@ -296,29 +299,30 @@ export const useDocumentStore = defineStore('document', {
         )
       }
     },
-    doSymmetry2Operation(callback, imageData, x, y, color, dither) {
-      callback(imageData, x, y, color, dither)
+    doSymmetry2Operation(callback, imageData, x, y, color, dither, mask) {
+      callback(imageData, x, y, color, dither, mask)
       if (this.symmetry.axis === null) {
         return
       }
       if (this.symmetry.axis === SymmetryAxis.HORIZONTAL) {
-        callback(imageData, this.width - 1 - x, y, color, dither)
+        callback(imageData, this.width - 1 - x, y, color, dither, mask)
       } else if (this.symmetry.axis === SymmetryAxis.VERTICAL) {
-        callback(imageData, x, this.height - 1 - y, color, dither)
+        callback(imageData, x, this.height - 1 - y, color, dither, mask)
       } else if (this.symmetry.axis === SymmetryAxis.BOTH) {
-        callback(imageData, this.width - 1 - x, y, color, dither)
-        callback(imageData, x, this.height - 1 - y, color, dither)
+        callback(imageData, this.width - 1 - x, y, color, dither, mask)
+        callback(imageData, x, this.height - 1 - y, color, dither, mask)
         callback(
           imageData,
           this.width - 1 - x,
           this.height - 1 - y,
           color,
-          dither
+          dither,
+          mask
         )
       }
     },
-    doSymmetry4Operation(callback, imageData, x1, y1, x2, y2, color, dither) {
-      callback(imageData, x1, y1, x2, y2, color, dither)
+    doSymmetry4Operation(callback, imageData, x1, y1, x2, y2, color, dither, mask) {
+      callback(imageData, x1, y1, x2, y2, color, dither, mask)
       if (this.symmetry.axis === null) {
         return
       }
@@ -330,7 +334,8 @@ export const useDocumentStore = defineStore('document', {
           this.width - 1 - x2,
           y2,
           color,
-          dither
+          dither,
+          mask
         )
       } else if (this.symmetry.axis === SymmetryAxis.VERTICAL) {
         callback(
@@ -340,7 +345,8 @@ export const useDocumentStore = defineStore('document', {
           x2,
           this.height - 1 - y2,
           color,
-          dither
+          dither,
+          mask
         )
       } else if (this.symmetry.axis === SymmetryAxis.BOTH) {
         callback(
@@ -350,7 +356,8 @@ export const useDocumentStore = defineStore('document', {
           this.width - 1 - x2,
           y2,
           color,
-          dither
+          dither,
+          mask
         )
         callback(
           imageData,
@@ -359,7 +366,8 @@ export const useDocumentStore = defineStore('document', {
           x2,
           this.height - 1 - y2,
           color,
-          dither
+          dither,
+          mask
         )
         callback(
           imageData,
@@ -368,34 +376,37 @@ export const useDocumentStore = defineStore('document', {
           this.width - 1 - x2,
           this.height - 1 - y2,
           color,
-          dither
+          dither,
+          mask
         )
       }
     },
-    putColor(x, y, color, dither) {
+    putColor(x, y, color, dither, mask) {
       this.doLayerPaintOperation((imageData) =>
         this.doSymmetry2Operation(
-          (imageData, x, y, color, dither) =>
+          (imageData, x, y, color, dither, mask) =>
             ImageDataUtils.putColor(
               imageData,
               x,
               y,
               Color.toUint8(color),
-              dither
+              dither,
+              mask
             ),
           imageData,
           x,
           y,
           color,
-          dither
+          dither,
+          mask
         )
       )
     },
-    line(x1, y1, x2, y2, color, isTemp = false, dither = null) {
+    line(x1, y1, x2, y2, color, isTemp = false, dither = null, mask = null) {
       if (isTemp) {
         this.doTempPaintOperation((imageData) =>
           this.doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither) =>
+            (imageData, x1, y1, x2, y2, color, dither, mask) =>
               ImageDataUtils.line(
                 imageData,
                 x1,
@@ -403,7 +414,8 @@ export const useDocumentStore = defineStore('document', {
                 x2,
                 y2,
                 Color.toUint8(color),
-                dither
+                dither,
+                mask
               ),
             imageData,
             x1,
@@ -411,13 +423,14 @@ export const useDocumentStore = defineStore('document', {
             x2,
             y2,
             color,
-            dither
+            dither,
+            mask
           )
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
           this.doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither) =>
+            (imageData, x1, y1, x2, y2, color, dither, mask) =>
               ImageDataUtils.line(
                 imageData,
                 x1,
@@ -425,7 +438,8 @@ export const useDocumentStore = defineStore('document', {
                 x2,
                 y2,
                 Color.toUint8(color),
-                dither
+                dither,
+                mask
               ),
             imageData,
             x1,
@@ -433,7 +447,8 @@ export const useDocumentStore = defineStore('document', {
             x2,
             y2,
             color,
-            dither
+            dither,
+            mask
           )
         )
       }
@@ -447,7 +462,8 @@ export const useDocumentStore = defineStore('document', {
       isTemp = false,
       isFilled = this.shape.filled,
       lockAspectRatio = this.shape.lockAspectRatio,
-      dither = null
+      dither = null,
+      mask = null
     ) {
       if (lockAspectRatio) {
         // FIXME: En los bordes esto se comporta de forma bastante rara
@@ -465,7 +481,7 @@ export const useDocumentStore = defineStore('document', {
       if (isTemp) {
         this.doTempPaintOperation((imageData) =>
           this.doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither) =>
+            (imageData, x1, y1, x2, y2, color, dither, mask) =>
               ImageDataUtils.rect(
                 imageData,
                 x1,
@@ -474,6 +490,7 @@ export const useDocumentStore = defineStore('document', {
                 y2,
                 Color.toUint8(color),
                 dither,
+                mask,
                 isFilled
               ),
             imageData,
@@ -482,13 +499,14 @@ export const useDocumentStore = defineStore('document', {
             x2,
             y2,
             color,
-            dither
+            dither,
+            mask
           )
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
           this.doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither) =>
+            (imageData, x1, y1, x2, y2, color, dither, mask) =>
               ImageDataUtils.rect(
                 imageData,
                 x1,
@@ -497,6 +515,7 @@ export const useDocumentStore = defineStore('document', {
                 y2,
                 Color.toUint8(color),
                 dither,
+                mask,
                 isFilled
               ),
             imageData,
@@ -505,7 +524,8 @@ export const useDocumentStore = defineStore('document', {
             x2,
             y2,
             color,
-            dither
+            dither,
+            mask
           )
         )
       }
@@ -519,7 +539,8 @@ export const useDocumentStore = defineStore('document', {
       isTemp = false,
       isFilled = this.shape.filled,
       lockAspectRatio = this.shape.lockAspectRatio,
-      dither = null
+      dither = null,
+      mask = null
     ) {
       if (lockAspectRatio) {
         // FIXME: En los bordes esto se comporta de forma bastante rara
@@ -537,7 +558,7 @@ export const useDocumentStore = defineStore('document', {
       if (isTemp) {
         this.doTempPaintOperation((imageData) =>
           this.doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither) =>
+            (imageData, x1, y1, x2, y2, color, dither, mask) =>
               ImageDataUtils.ellipse(
                 imageData,
                 x1,
@@ -546,6 +567,7 @@ export const useDocumentStore = defineStore('document', {
                 y2,
                 Color.toUint8(color),
                 dither,
+                mask,
                 isFilled
               ),
             imageData,
@@ -554,13 +576,14 @@ export const useDocumentStore = defineStore('document', {
             x2,
             y2,
             color,
-            dither
+            dither,
+            mask
           )
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
           this.doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither) =>
+            (imageData, x1, y1, x2, y2, color, dither, mask) =>
               ImageDataUtils.ellipse(
                 imageData,
                 x1,
@@ -569,6 +592,7 @@ export const useDocumentStore = defineStore('document', {
                 y2,
                 Color.toUint8(color),
                 dither,
+                mask,
                 isFilled
               ),
             imageData,
@@ -577,7 +601,8 @@ export const useDocumentStore = defineStore('document', {
             x2,
             y2,
             color,
-            dither
+            dither,
+            mask
           )
         )
       }
@@ -621,9 +646,11 @@ export const useDocumentStore = defineStore('document', {
         const dither =
           this.tool === Tool.PENCIL ? this.pencil.dither : this.eraser.dither
 
+        const mask = this.selection.getMaskImageData()
+
         if (e.type === 'pointerdown') {
           if (this.pencil.size === 1) {
-            this.putColor(pointer.current.x, pointer.current.y, color, dither)
+            this.putColor(pointer.current.x, pointer.current.y, color, dither, mask)
           } else {
             const sizeHalf = size / 2
             const subSizeHalf = size % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
@@ -638,7 +665,8 @@ export const useDocumentStore = defineStore('document', {
                 false,
                 true,
                 false,
-                null
+                null,
+                mask
               )
             } else if (shape === PencilShape.SQUARE) {
               this.rectangle(
@@ -650,7 +678,8 @@ export const useDocumentStore = defineStore('document', {
                 false,
                 true,
                 false,
-                null
+                null,
+                mask
               )
             } else if (shape === PencilShape.DITHER) {
               this.rectangle(
@@ -675,7 +704,8 @@ export const useDocumentStore = defineStore('document', {
               pointer.previous.y,
               color,
               false,
-              dither
+              dither,
+              mask
             )
           } else {
             const sizeHalf = size / 2
@@ -707,7 +737,8 @@ export const useDocumentStore = defineStore('document', {
                   false,
                   true,
                   false,
-                  null
+                  null,
+                  mask
                 )
               } else if (shape === PencilShape.SQUARE) {
                 this.rectangle(
@@ -719,7 +750,8 @@ export const useDocumentStore = defineStore('document', {
                   false,
                   true,
                   false,
-                  null
+                  null,
+                  mask
                 )
               } else if (shape === PencilShape.DITHER) {
                 this.rectangle(
@@ -731,7 +763,8 @@ export const useDocumentStore = defineStore('document', {
                   false,
                   true,
                   false,
-                  dither
+                  dither,
+                  mask
                 )
               }
             }
@@ -739,9 +772,9 @@ export const useDocumentStore = defineStore('document', {
         }
       } else if (this.tool === Tool.FILL && pointer.pressure > 0) {
         if (this.fill.type === FillType.ERASE) {
-          this.fillColor('rgba(0,0,0,0)', pointer.current.x, pointer.current.y)
+          this.fillColor('rgba(0,0,0,0)', pointer.current.x, pointer.current.y, this.selection.getMaskImageData())
         } else if (this.fill.type === FillType.FILL) {
-          this.fillColor(this.color, pointer.current.x, pointer.current.y)
+          this.fillColor(this.color, pointer.current.x, pointer.current.y, this.selection.getMaskImageData())
         }
       } else if (this.tool === Tool.SHAPE) {
         if (e.type === 'pointerdown') {
@@ -758,7 +791,9 @@ export const useDocumentStore = defineStore('document', {
               pointer.current.x,
               pointer.current.y,
               this.color,
-              'temp'
+              'temp',
+              null,
+              this.selection.getMaskImageData()
             )
           } else if (e.type === 'pointerup') {
             this.line(
@@ -767,6 +802,9 @@ export const useDocumentStore = defineStore('document', {
               pointer.end.x,
               pointer.end.y,
               this.color,
+              null,
+              null,
+              this.selection.getMaskImageData()
             )
           }
         } else if (this.shape.type === ShapeType.RECTANGLE) {
@@ -788,7 +826,7 @@ export const useDocumentStore = defineStore('document', {
               pointer.start.y,
               pointer.end.x,
               pointer.end.y,
-              this.color,
+              this.color
             )
           }
         } else if (this.shape.type === ShapeType.ELLIPSE) {
@@ -810,7 +848,7 @@ export const useDocumentStore = defineStore('document', {
               pointer.start.y,
               pointer.end.x,
               pointer.end.y,
-              this.color,
+              this.color
             )
           }
         }
@@ -821,7 +859,9 @@ export const useDocumentStore = defineStore('document', {
         const x = pointer.relative.x
         const y = pointer.relative.y
         this.transformation(x, y)
-      } else if (this.tool === Tool.SELECT && pointer.pressure > 0) {
+      }
+      /*
+      else if (this.tool === Tool.SELECT && pointer.pressure > 0) {
         const x = pointer.current.x
         const y = pointer.current.y
         ImageDataUtils.putColor(
@@ -831,6 +871,7 @@ export const useDocumentStore = defineStore('document', {
           Color.fromRGBA(1, 1, 1, 1)
         )
       }
+      */
     },
     /**
      * Copia lo que haya en el <canvas> principal
@@ -907,9 +948,17 @@ export const useDocumentStore = defineStore('document', {
       this.drawing = false
       // TODO: Esto habría que rehacerlo todo para que no utilice drawImage
       // si no putImageData.
-      this.drawingCanvas = Canvas.createOrGet(this.drawingCanvas, this.width, this.height)
+      this.drawingCanvas = Canvas.createOrGet(
+        this.drawingCanvas,
+        this.width,
+        this.height
+      )
       this.drawingImageData = new ImageData(this.width, this.height)
-      this.copyCanvas = Canvas.createOrGet(this.copyCanvas, this.width, this.height)
+      this.copyCanvas = Canvas.createOrGet(
+        this.copyCanvas,
+        this.width,
+        this.height
+      )
       this.copyImageData = new ImageData(this.width, this.height)
       this.previewCanvas = Canvas.createOrGetWithClasses(
         this.previewCanvas,
@@ -917,15 +966,18 @@ export const useDocumentStore = defineStore('document', {
         this.height,
         'preview-canvas'
       )
-      this.canvas = Canvas.createOrGetWithClasses(this.canvas, this.width, this.height, 'pixel-canvas')
+      this.canvas = Canvas.createOrGetWithClasses(
+        this.canvas,
+        this.width,
+        this.height,
+        'pixel-canvas'
+      )
       this.canvasRect = null
     },
     initSelection() {
       this.selection.init(this.canvas, this.width, this.height)
     },
-    initPattern() {
-
-    },
+    initPattern() {},
     init() {
       this.initDrawing()
       this.initSelection()
@@ -940,7 +992,12 @@ export const useDocumentStore = defineStore('document', {
       )
       this.redrawAll()
     },
-    create(width, height, palette = [], layers = [{ name: 'Background', width, height }]) {
+    create(
+      width,
+      height,
+      palette = [],
+      layers = [{ name: 'Background', width, height }]
+    ) {
       if (!Number.isInteger(width) && width < 0) {
         throw new Error('Invalid width value')
       }
@@ -1247,7 +1304,6 @@ export const useDocumentStore = defineStore('document', {
             console.log(document)
           }
           if (!document) {
-
           }
           this.createFromDocument(document)
         }
@@ -1292,7 +1348,10 @@ export const useDocumentStore = defineStore('document', {
           this.palette.removeLast()
           break
         case 'removePaletteColor':
-          this.palette.addAt(actionToUndo.payload.index, actionToUndo.payload.color)
+          this.palette.addAt(
+            actionToUndo.payload.index,
+            actionToUndo.payload.color
+          )
           break
         case 'setColor':
           this.color = actionToUndo.payload.previousColor

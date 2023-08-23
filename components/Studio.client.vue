@@ -8,7 +8,7 @@
     </div>
     <main class="BOARD" ref="board">
       <Document v-if="documentStore.canvas" :board="board" />
-      <Selection v-if="documentStore.canvas && documentStore.tool === Tool.SELECT" />
+      <Selection v-if="documentStore.canvas && (documentStore.selection.visible || documentStore.tool === Tool.SELECT)" />
     </main>
     <!--
     <div class="ANIMATION">
@@ -78,17 +78,14 @@ const MIN_TOUCHES = 2
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
 
+useBeforeUnload(() => true, () => 'Are you sure you want to leave? Your changes will be lost.')
+
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
 }
 
 useWheel((e) => {
-  console.log(e.deltaX, e.deltaY, e.deltaZ, e.deltaMode)
-  if (e.deltaY < 0) {
-    documentStore.zoom.increase()
-  } else {
-    documentStore.zoom.decrease()
-  }
+  documentStore.zoom.fromEvent(e)
 }, { target: board })
 
 useTouch((e) => {

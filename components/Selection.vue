@@ -1,6 +1,6 @@
 <template>
-  <div class="selection" ref="container">
-    <!-- aquí inyectamos el canvas de selección -->
+  <div class="selection" :class="{ active }" ref="container">
+    <!-- inject canvas -->
   </div>
 </template>
 
@@ -8,17 +8,18 @@
 import { useDocumentStore } from '@/stores/document'
 import { useElement } from '@/composables/useElement'
 import { useRequestAnimationFrame } from '@/composables/useRequestAnimationFrame'
+import { Tool } from '@/pixel/enums/Tool'
 
 const documentStore = useDocumentStore()
 
 const canvas = documentStore.selection.getCanvas()
 const context = canvas.getContext('2d')
 
+const active = computed(() => documentStore.tool === Tool.SELECT)
 const container = ref()
 
 /**
- * Actualiza la posición del canvas de
- * selección.
+ * Updates the size and position of the canvas.
  */
 function updateSizeAndPosition() {
   if (canvas.style.position !== 'absolute')
@@ -42,16 +43,16 @@ function updateSizeAndPosition() {
 }
 
 /**
- * Actualiza el patrón usado para pintar
- * el "camino de hormigas".
+ * Updates the pattern of the selection.
  */
 function updatePattern() {
-  documentStore.selection.getPattern().setTransform(documentStore.selection.getPatternMatrix().translateSelf(0.25, 0.25))
+  documentStore.selection.getPattern().update()
 }
 
 /**
- * Renderiza el polígono de selección
- * con el "camino de hormigas".
+ * Renders the selection.
+ *
+ * TODO: Move this to pixel/selection
  */
 function render() {
   if (context.imageSmoothingEnabled) {
@@ -92,25 +93,14 @@ function render() {
       0, 0, canvas.width, canvas.height
     )
     context.globalCompositeOperation = 'source-in'
-    context.fillStyle = documentStore.selection.getPattern()
+    context.fillStyle = documentStore.selection.getPattern().pattern
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.globalCompositeOperation = 'source-over'
   }
 
-  context.beginPath()
-  for (let index = 0; index < documentStore.selection.getPolygon().length; index++) {
-    const [x, y] = documentStore.selection.getPolygon()[index]
-    const px = x * canvas.width
-    const py = y * canvas.height
-    if (index === 0) {
-      context.moveTo(px, py)
-    } else {
-      context.lineTo(px, py)
-    }
-  }
-  context.closePath()
-  context.strokeStyle = documentStore.selection.getPattern()
-  context.stroke()
+  // Esto dibuja el contorno de la selección.
+  context.strokeStyle = documentStore.selection.getPattern().pattern
+  context.stroke(documentStore.selection.getPath2D(canvas.width, canvas.height))
 }
 
 const pipeline = [
@@ -126,8 +116,12 @@ useRequestAnimationFrame(pipeline)
 
 <style scoped>
 .selection {
+  pointer-events: none;
   position: fixed;
   top: 0;
   left: 0;
+}
+.active {
+  pointer-events: auto;
 }
 </style>

@@ -46,6 +46,36 @@ export const useZoomStore = defineStore('zoom', () => {
     }
   }
 
+  function deltaMultiplier(delta, deltaMode) {
+    switch (deltaMode) {
+      case 0: // PIXEL
+        return delta * 0.01
+      case 1: // LINE
+      case 2: // PAGE
+      default:
+        return delta * 0.01
+    }
+  }
+
+  function delta(delta, deltaMode = 0) {
+    const value = -deltaMultiplier(delta, deltaMode)
+    if (
+      current.value + value >= Zoom.MIN &&
+      current.value + value <= Zoom.MAX
+    ) {
+      current.value += value
+    } else if (current.value * value >= Zoom.MAX) {
+      current.value = Zoom.MAX
+    } else if (current.value * value <= Zoom.MIN) {
+      current.value = Zoom.MIN
+    }
+  }
+
+  function fromEvent(e) {
+    console.log(e.deltaX, e.deltaY, e.deltaZ, e.deltaMode, e)
+    delta(e.deltaY, e.deltaMode)
+  }
+
   function set(zoom) {
     current.value = zoom >= 1 ? zoom * 0.1 : 1
   }
@@ -59,6 +89,12 @@ export const useZoomStore = defineStore('zoom', () => {
     increase,
     decrease,
     relative,
+    delta,
+    fromEvent,
     set
   }
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useZoomStore, import.meta.hot))
+}

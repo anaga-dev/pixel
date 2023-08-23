@@ -47,7 +47,7 @@
     <Button
       variant="ghost"
       label="Deselect"
-      @click="documentStore.setSelectMode(SelectMode.TRANSFORM)">
+      @click="documentStore.deselect()">
       <Icon i="deselect" />
     </Button>
 </template>
