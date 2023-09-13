@@ -41,6 +41,32 @@ export class SelectionMask {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Selects the pixel at the given coordinates
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {ImageData} sourceImageData
+   * @param {boolean} contiguous
+   */
+  selectAt(x, y, sourceImageData, contiguous = true) {
+    if (this.#imageData === null) {
+      this.#imageData = this.#context.getImageData(
+        0,
+        0,
+        this.#canvas.width,
+        this.#canvas.height
+      )
+    }
+    if (contiguous) {
+      return this.#context.putImageData(ImageDataUtils.copyContiguousSelectedAt(this.#imageData, sourceImageData, x, y, [0xFF, 0x00, 0x00, 0xFF]), 0, 0)
+    }
+    return this.#context.putImageData(ImageDataUtils.copySelectedAt(this.#imageData, sourceImageData, x, y, [0xFF, 0x00, 0x00, 0xFF]), 0, 0)
+  }
+
+  /**
+>>>>>>> be9f9ba (feat: selection tool)
    * Rasterizes the selection path
    *
    * @param {SelectionPath} selectionPath

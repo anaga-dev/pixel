@@ -63,6 +63,7 @@ export const useDocumentStore = defineStore('document', {
     drawingCanvas: null,
     copyCanvas: null,
     previewCanvas: null,
+    modified: false,
     color: '#000000',
     colorMode: ColorMode.PALETTE,
     colorPicker: false,
@@ -623,6 +624,7 @@ export const useDocumentStore = defineStore('document', {
     },
     useTool(e, pointer) {
       // TODO: All this behavior can be vastly improved.
+      this.modified = true
       if (e.ctrlKey || e.buttons === 4) {
         if (pointer.pressure > 0) {
           this.moveBy(e.movementX, e.movementY)
@@ -1329,6 +1331,7 @@ export const useDocumentStore = defineStore('document', {
         a.download = 'test.ora'
         a.click()
       }
+      this.modified = false
     },
     /**
      * History

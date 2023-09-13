@@ -12,15 +12,25 @@
 <script setup>
 import { useUIStore } from '@/stores/ui'
 import { useDocumentStore } from '@/stores/document'
+import { useConfirmationStore } from '../stores/confirmation';
 
 const overlay = 'general-settings'
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
+const confirmationStore = useConfirmationStore()
 
-function newFile(params) {
-  documentStore.newFile()
-  uiStore.showOverlay = null
+async function newFile(params) {
+  if (documentStore.modified) {
+    const confirmation = await confirmationStore.open("You will lose any changes you haven't saved. Are you sure?")
+    if (confirmation) {
+      documentStore.newFile()
+      uiStore.showOverlay = null
+    }
+  } else {
+    documentStore.newFile()
+    uiStore.showOverlay = null
+  }
 }
 
 function openFile() {

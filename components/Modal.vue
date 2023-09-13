@@ -2,7 +2,7 @@
   <Overlay />
   <div class="wrapper">
     <div class="Modal">
-      <header>
+      <header v-if="title || !nondismissable">
         <h2>{{ title }}</h2>
         <Button label="Close" v-if="!nondismissable" variant="ghost">
           <Icon i="close" />
@@ -18,8 +18,7 @@
 <script setup>
 const props = defineProps({
   title: {
-    type: String,
-    required: true
+    type: String
   },
   nondismissable: {
     type: Boolean
