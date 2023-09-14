@@ -7,7 +7,9 @@ export const useUIStore = defineStore('ui', {
       height: 0
     },
     showOverlay: null,
-    showPanel: null,
+    showPanel: true,
+    showColorPicker: true,
+    showLayers: true,
     showSplash: false,
     showLayerSettings: false
   }),
@@ -24,8 +26,8 @@ export const useUIStore = defineStore('ui', {
     isShowingLayersPanel() {
       return this.showPanel === 'layers'
     },
-    isShowingColorPanel() {
-      return this.showPanel === 'color-picker'
+    isShowingPanel() {
+      return this.showPanel === true
     },
     isShowingPalettePanel() {
       return this.showPalette
@@ -42,15 +44,14 @@ export const useUIStore = defineStore('ui', {
         this.showOverlay = null
       }
     },
-    togglePanel(el) {
-      if (this.showPanel !== el) {
-        this.showPanel = el
-      } else if (this.showPanel === el) {
-        this.showPanel = null
-      }
+    togglePanel() {
+      this.showPanel = !this.showPanel
+    },
+    toggleLayers() {
+      this.showLayers = !this.showLayers
     },
     toggleColorPicker() {
-      this.showPanel = !this.showColorPicker
+      this.showColorPicker = !this.showColorPicker
     },
     togglePalettePanel() {
       this.showPalette = !this.showPalette

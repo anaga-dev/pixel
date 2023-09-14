@@ -8,7 +8,13 @@
     </div>
     <main class="BOARD" ref="board">
       <Document v-if="documentStore.canvas" :board="board" />
-      <Selection v-if="documentStore.canvas && (documentStore.selection.visible || documentStore.tool === Tool.SELECT)" />
+      <Selection
+        v-if="
+          documentStore.canvas &&
+          (documentStore.selection.visible ||
+            documentStore.tool === Tool.SELECT)
+        "
+      />
     </main>
     <!--
     <div class="ANIMATION">
@@ -23,40 +29,40 @@
       <Animation v-if="showingAnimation" />
     </div>
     -->
-    <aside class="PANELS">
-      <Panel v-if="uiStore.showPanel === 'color-picker'" @close="uiStore.toggleColorPicker">
-        <ColorPicker />
-      </Panel>
-      <Panel scrollable v-if="uiStore.showPanel === 'layers'" title="Layers">
-        <template #actions>
-          <Button label="Add layer" variant="ghost" @click="documentStore.addLayer">
-            <Icon i="add-item" />
-          </Button>
-        </template>
-        <Layers :layers="documentStore.layers"></Layers>
-      </Panel>
-      <!--
-      <Panel v-if="uiStore.isShowingPalettePanel" title="Palette">
-        <template #actions>
-          <Button label="Load palette" variant="ghost" @click="documentStore.loadPalette">
-            <Icon i="load" />
-          </Button>
-          <Button label="Save palette" variant="ghost" @click="documentStore.savePalette">
-            <Icon i="save" />
-          </Button>
-          <Button label="Create new palette" variant="ghost" @click="documentStore.addPaletteColor">
-            <Icon i="add-item" />
-          </Button>
-        </template>
-        <Palette :palette="documentStore.palette" :selected-color="documentStore.color" @select="documentStore.setColor"></Palette>
-      </Panel>
-      <Panel v-if="uiStore.isShowingPreviewPanel" title="preview" :scrollable="false">
-        <Preview></Preview>
-      </Panel>
-      -->
-    </aside>
+    <Transition name="slide">
+      <aside v-if="uiStore.showPanel" class="PANELS">
+        <Panel
+          title="Color"
+          :expanded="uiStore.showColorPicker"
+          @toggle="uiStore.toggleColorPicker"
+        >
+          <ColorPicker />
+        </Panel>
+        <Divider />
+        <Panel
+          scrollable
+          title="Layers"
+          :expanded="uiStore.showLayers"
+          @toggle="uiStore.toggleLayers"
+        >
+          <template #actions>
+            <Button
+              label="Add layer"
+              variant="ghost"
+              @click="documentStore.addLayer"
+            >
+              <Icon i="add-item" />
+            </Button>
+          </template>
+          <Layers :layers="documentStore.layers"></Layers>
+        </Panel>
+      </aside>
+    </Transition>
   </div>
-  <LayerSettings v-if="documentStore.layers.settings" :layer="documentStore.layers.settings" />
+  <LayerSettings
+    v-if="documentStore.layers.settings"
+    :layer="documentStore.layers.settings"
+  />
   <SymmetrySettings v-if="uiStore.showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
   <Splash v-if="uiStore.isShowingSplash" />
@@ -90,47 +96,52 @@ useWheel((e) => {
   documentStore.zoom.fromEvent(e)
 }, { target: board })
 
-useTouch((e) => {
-  if (e.touches < MIN_TOUCHES) {
-    return
-  }
-  const [x, y] = e.movement
-  const z = e.distance
-  documentStore.moveAndZoom(x, y, z)
-}, { target: board, passive: true })
+useTouch(
+  (e) => {
+    if (e.touches < MIN_TOUCHES) {
+      return
+    }
+    const [x, y] = e.movement
+    const z = e.distance
+    documentStore.moveAndZoom(x, y, z)
+  },
+  { target: board, passive: true }
+)
 
 // TODO: This shouldn't be here
-useKeyShortcuts(new Map([
-  [['1'], () => documentStore.setTool('pencil')],
-  [['p'], () => documentStore.setTool('pencil')],
-  [['2'], () => documentStore.setTool('eraser')],
-  [['e'], () => documentStore.setTool('eraser')],
-  [['3'], () => documentStore.setTool('fill')],
-  [['f'], () => documentStore.setTool('fill')],
-  [['4'], () => documentStore.setTool('shape')],
-  [['r'], () => documentStore.setTool('shape')],
-  [['5'], () => documentStore.setTool('transform')],
-  [['h'], () => documentStore.setTool('transform')],
-  [['6'], () => documentStore.setTool('select')],
-  [['s'], () => documentStore.setTool('select')],
-  [['7'], () => documentStore.toggleColorPicker()],
-  [['c'], () => documentStore.toggleColorPicker()],
-  [['q'], () => documentStore.flipHorizontally()],
-  [['w'], () => documentStore.flipVertically()],
-  [['z', 'ctrl'], () => documentStore.undo()],
-  [['y', 'ctrl'], () => documentStore.redo()],
-  [['arrowup'], () => documentStore.moveLayerUp()],
-  [['arrowdown'], () => documentStore.moveLayerDown()],
-  [['y'], () => documentStore.toggleSymmetry()],
-  [[' '], () => documentStore.toggleAnimation()],
-  [['0', 'ctrl'], () => documentStore.zoom.reset()],
-  [['0'], () => documentStore.zoom.reset()],
-  [['+'], () => documentStore.zoom.increase()],
-  [['='], () => documentStore.zoom.increase()],
-  [['z'], () => documentStore.zoom.increase()],
-  [['-'], () => documentStore.zoom.decrease()],
-  [['x'], () => documentStore.zoom.decrease()],
-]))
+useKeyShortcuts(
+  new Map([
+    [['1'], () => documentStore.setTool('pencil')],
+    [['p'], () => documentStore.setTool('pencil')],
+    [['2'], () => documentStore.setTool('eraser')],
+    [['e'], () => documentStore.setTool('eraser')],
+    [['3'], () => documentStore.setTool('fill')],
+    [['f'], () => documentStore.setTool('fill')],
+    [['4'], () => documentStore.setTool('shape')],
+    [['r'], () => documentStore.setTool('shape')],
+    [['5'], () => documentStore.setTool('transform')],
+    [['h'], () => documentStore.setTool('transform')],
+    [['6'], () => documentStore.setTool('select')],
+    [['s'], () => documentStore.setTool('select')],
+    [['7'], () => documentStore.toggleColorPicker()],
+    [['c'], () => documentStore.toggleColorPicker()],
+    [['q'], () => documentStore.flipHorizontally()],
+    [['w'], () => documentStore.flipVertically()],
+    [['z', 'ctrl'], () => documentStore.undo()],
+    [['y', 'ctrl'], () => documentStore.redo()],
+    [['arrowup'], () => documentStore.moveLayerUp()],
+    [['arrowdown'], () => documentStore.moveLayerDown()],
+    [['y'], () => documentStore.toggleSymmetry()],
+    [[' '], () => documentStore.toggleAnimation()],
+    [['0', 'ctrl'], () => documentStore.zoom.reset()],
+    [['0'], () => documentStore.zoom.reset()],
+    [['+'], () => documentStore.zoom.increase()],
+    [['='], () => documentStore.zoom.increase()],
+    [['z'], () => documentStore.zoom.increase()],
+    [['-'], () => documentStore.zoom.decrease()],
+    [['x'], () => documentStore.zoom.decrease()]
+  ])
+)
 </script>
 
 <style scoped>
@@ -158,7 +169,7 @@ useKeyShortcuts(new Map([
 
 .TOOLS {
   display: grid;
-  align-items: stretch;
+  align-self: center;
   grid-column: 1;
   grid-row: 2;
   z-index: 2;
@@ -187,9 +198,14 @@ useKeyShortcuts(new Map([
   grid-row: 2;
   z-index: 1;
   position: relative;
-  pointer-events: none;
   overflow: hidden;
-  padding: var(--spaceS);
+  padding: var(--spaceM);
+  background-color: var(--colorLayer1);
+  box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
+  display: grid;
+  grid-template-rows: auto auto 1fr ;
+  gap: var(--spaceL);
+  align-content: start;
 }
 
 .button-show {
@@ -206,5 +222,19 @@ useKeyShortcuts(new Map([
 .button-show.expanded {
   box-shadow: none;
   transform: translate(-50%, calc(var(--spaceM) * -1));
+}
+
+.slide-enter-active {
+  transition: all 200ms ease-out;
+}
+
+.slide-leave-active {
+  transition: all 200ms ease-in;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  translate: 100%;
+  opacity: 0;
 }
 </style>

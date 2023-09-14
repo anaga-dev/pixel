@@ -1,6 +1,6 @@
 :root {
-  --colorLayer0: hsl(0 0% 12%);
-  --colorLayer1: hsl(0 0% 16%);
+  --colorLayer0: hsl(0, 0%, 10%);
+  --colorLayer1: hsl(0 0% 15%);
   --colorLayer2: hsl(0 0% 18%);
   --colorText: hsl(0 0% 72%);
   --colorTextPrimary: hsl(0 0% 96%);

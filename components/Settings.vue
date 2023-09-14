@@ -7,22 +7,34 @@
     </div>
     <div class="group">
       <Button
-      label="Symmetry aid"
-      variant="dropdown"
-      :active="documentStore.symmetry.axis !== null"
-      @click="uiStore.toggleOverlay('symmetry-settings')">
-        <Icon i="symmetry-vertical" v-if="documentStore.symmetry.axis === 'vertical'" />
-        <Icon i="symmetry-two-axis" v-else-if="documentStore.symmetry.axis === 'both'" />
+        label="Symmetry aid"
+        variant="dropdown"
+        :active="documentStore.symmetry.axis !== null"
+        @click="uiStore.toggleOverlay('symmetry-settings')"
+      >
+        <Icon
+          i="symmetry-vertical"
+          v-if="documentStore.symmetry.axis === 'vertical'"
+        />
+        <Icon
+          i="symmetry-two-axis"
+          v-else-if="documentStore.symmetry.axis === 'both'"
+        />
         <Icon i="symmetry-horizontal" v-else />
       </Button>
       <Zoom />
       <Divider vertical />
-      <ToolColor :color="documentStore.color" :active="uiStore.isShowingColorPanel" @click="uiStore.togglePanel('color-picker')" />
+      <ToolColor
+        :color="documentStore.color"
+        :active="uiStore.isShowingColorPanel"
+        @click="handleColorPanel"
+      />
       <Button
         variant="ghost"
         :active="uiStore.isShowingLayersPanel"
-        @click="uiStore.togglePanel('layers')">
-        <Icon i="layers" />
+        @click="uiStore.togglePanel"
+      >
+        <Icon :i="icon" />
       </Button>
     </div>
   </section>
@@ -42,6 +54,16 @@ import Zoom from '@/components/Zoom.vue'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
+
+const handleColorPanel = () => {
+  uiStore.showColorPicker = true
+  uiStore.showPanel = true
+
+}
+
+const icon = computed(() => {
+  return uiStore.isShowingPanel ? 'collapse-side-panel' : 'expand-side-panel'
+})
 </script>
 
 <style scoped>
