@@ -2,7 +2,7 @@ const APP_TITLE = 'Anaga Pixel'
 const DESCRIPTION = 'Create pixel art on any device.'
 
 export default defineNuxtConfig({
-  extends: [process.env.PIXEL_CLOUD],
+  extends: [process.env.PIXEL_LAYER || './base'],
   app: {
     head: {
       htmlAttrs: {
