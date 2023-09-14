@@ -1,13 +1,8 @@
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-
-const currentDir = dirname(fileURLToPath(import.meta.url))
-
-
 const APP_TITLE = 'Anaga Pixel'
 const DESCRIPTION = 'Create pixel art on any device.'
 
 export default defineNuxtConfig({
+  extends: [process.env.PIXEL_CLOUD],
   app: {
     head: {
       htmlAttrs: {
@@ -23,16 +18,41 @@ export default defineNuxtConfig({
         { hid: 'image', property: 'image', content: '/og.jpg' },
         { hid: 'og:title', property: 'og:title', content: APP_TITLE },
         { hid: 'og:type', property: 'og:type', content: 'app' },
-        { hid: 'og:url', property: 'og:url', content: 'https://pixel.anaga.dev' },
+        {
+          hid: 'og:url',
+          property: 'og:url',
+          content: 'https://pixel.anaga.dev'
+        },
         { hid: 'og:image', property: 'og:image', content: '/og.png' },
         { hid: 'og:image:width', property: 'og:image:width', content: '1200' },
         { hid: 'og:image:height', property: 'og:image:height', content: '630' },
-        { hid: 'og:image:alt', property: 'og:image:alt', content: `${APP_TITLE} - ${DESCRIPTION}` },
-        { hid: 'og:description', property: 'og:description', content: DESCRIPTION },
+        {
+          hid: 'og:image:alt',
+          property: 'og:image:alt',
+          content: `${APP_TITLE} - ${DESCRIPTION}`
+        },
+        {
+          hid: 'og:description',
+          property: 'og:description',
+          content: DESCRIPTION
+        },
         { hid: 'og:locale', property: 'og:locale', content: 'en_US' },
-        { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
-        { hid: 'twitter:title', name: 'twitter:title', property: 'og:title', content: APP_TITLE },
-        { hid: 'twitter:description', name: 'twitter:description', content: DESCRIPTION }
+        {
+          hid: 'twitter:card',
+          name: 'twitter:card',
+          content: 'summary_large_image'
+        },
+        {
+          hid: 'twitter:title',
+          name: 'twitter:title',
+          property: 'og:title',
+          content: APP_TITLE
+        },
+        {
+          hid: 'twitter:description',
+          name: 'twitter:description',
+          content: DESCRIPTION
+        }
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: 'favicon.svg' },
@@ -41,21 +61,22 @@ export default defineNuxtConfig({
       ]
     }
   },
-  modules: [
-    '@nuxt/devtools',
-    '@vueuse/nuxt',
-    '@pinia/nuxt',
-    '@vite-pwa/nuxt'
-  ],
+  modules: ['@nuxt/devtools', '@vueuse/nuxt', '@pinia/nuxt', '@vite-pwa/nuxt'],
   css: [
-    join(currentDir, './styles/reset.css'),
-    join(currentDir, './styles/fonts.css'),
-    join(currentDir, './styles/global.css'),
-    join(currentDir, './styles/variables.css')
+    '/styles/reset.css',
+    '/styles/fonts.css',
+    '/styles/global.css',
+    '/styles/variables.css'
   ],
   pinia: {
     autoImports: ['defineStore', 'acceptHMRUpdate']
   },
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false
+    }
+  ],
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
