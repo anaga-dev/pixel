@@ -1,3 +1,9 @@
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+
+const currentDir = dirname(fileURLToPath(import.meta.url))
+
+
 const APP_TITLE = 'Anaga Pixel'
 const DESCRIPTION = 'Create pixel art on any device.'
 
@@ -42,10 +48,10 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt'
   ],
   css: [
-    '~/styles/reset.css',
-    '~/styles/fonts.css',
-    '~/styles/global.css',
-    '~/styles/variables.css'
+    join(currentDir, './styles/reset.css'),
+    join(currentDir, './styles/fonts.css'),
+    join(currentDir, './styles/global.css'),
+    join(currentDir, './styles/variables.css')
   ],
   pinia: {
     autoImports: ['defineStore', 'acceptHMRUpdate']
