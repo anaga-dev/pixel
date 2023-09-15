@@ -71,12 +71,6 @@ export default defineNuxtConfig({
   pinia: {
     autoImports: ['defineStore', 'acceptHMRUpdate']
   },
-  components: [
-    {
-      path: '~/components',
-      pathPrefix: false
-    }
-  ],
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
