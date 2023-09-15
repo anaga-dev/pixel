@@ -5,6 +5,7 @@
   accent-color: var(--colorAccent);
   user-select: none;
   scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
 html {
