@@ -3,7 +3,6 @@
 *::after {
   scrollbar-color: var(--colorSecondary) transparent;
   accent-color: var(--colorAccent);
-  user-select: none;
   scroll-behavior: smooth;
   scrollbar-width: thin;
 }

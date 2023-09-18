@@ -9,13 +9,13 @@
           class="button-install"
           @click="handleInstallClick"
         >
-          Install Pixel
+          {{ $t('install') }}
         </button>
       </div>
     </header>
     <main>
       <section class="hero">
-        <h1>Create pixel art on any device</h1>
+        <h1>{{$t('website.hero-title')}}</h1>
         <p>
           Pixel is a progressive web application that lets you create pixel art
           on any device, operating system, and browser. Unleash your creativity

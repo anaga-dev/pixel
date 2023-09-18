@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^0.6.7",
-    "@vite-pwa/nuxt": "^0.1.0"
+    "@vite-pwa/nuxt": "^0.1.0",
+    "vue-i18n": "^9.4.1"
   }
 }

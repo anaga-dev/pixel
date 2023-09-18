@@ -156,6 +156,7 @@ useKeyShortcuts(
   height: 100svh;
   overflow: hidden;
   display: grid;
+  user-select: none;
   grid-template-columns: var(--widthToolbar) 1fr var(--widthSidebar);
   grid-template-rows: var(--widthToolbar) 1fr auto;
 }
