@@ -1,20 +1,3 @@
-<template>
-  <Overlay />
-  <div class="wrapper">
-    <div class="Modal">
-      <header v-if="title || !nondismissable">
-        <h2>{{ title }}</h2>
-        <Button label="Close" v-if="!nondismissable" variant="ghost">
-          <Icon i="close" />
-        </Button>
-      </header>
-      <div class="body">
-        <slot></slot>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   title: {
@@ -24,7 +7,26 @@ const props = defineProps({
     type: Boolean
   }
 })
+
+const emit = defineEmits(['close'])
 </script>
+
+<template>
+  <Overlay />
+  <div class="wrapper">
+    <div class="Modal">
+      <header v-if="title || !nondismissable">
+        <h2>{{ title }}</h2>
+        <Button label="Close" v-if="!nondismissable" variant="ghost" @click="emit('close')">
+          <Icon i="close" />
+        </Button>
+      </header>
+      <div class="body">
+        <slot></slot>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .wrapper {

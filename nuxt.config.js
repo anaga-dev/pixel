@@ -120,12 +120,12 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      cleanupOutdatedCaches: false,
+      cleanupOutdatedCaches: true,
       // navigateFallback: '/studio',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}']
     },
     devOptions: {
-      enabled: true,
+      enabled: false,
       type: 'module'
     }
   }
