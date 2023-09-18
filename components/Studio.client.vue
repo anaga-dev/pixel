@@ -85,16 +85,22 @@ const MIN_TOUCHES = 2
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
 
-useBeforeUnload(() => true, () => 'Are you sure you want to leave? Your changes will be lost.')
+useBeforeUnload(
+  () => true,
+  () => 'Are you sure you want to leave? Your changes will be lost.'
+)
 
 // TODO: this will show/hide the animation panel
 function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
 }
 
-useWheel((e) => {
-  documentStore.zoom.fromEvent(e)
-}, { target: board })
+useWheel(
+  (e) => {
+    documentStore.zoom.fromEvent(e)
+  },
+  { target: board.value }
+)
 
 useTouch(
   (e) => {
@@ -105,7 +111,7 @@ useTouch(
     const z = e.distance
     documentStore.moveAndZoom(x, y, z)
   },
-  { target: board, passive: true }
+  { target: board.value, passive: true }
 )
 
 // TODO: This shouldn't be here
@@ -203,7 +209,7 @@ useKeyShortcuts(
   background-color: var(--colorLayer1);
   box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
   display: grid;
-  grid-template-rows: auto auto 1fr ;
+  grid-template-rows: auto auto 1fr;
   gap: var(--spaceL);
   align-content: start;
 }
