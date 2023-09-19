@@ -1,7 +1,26 @@
 {
   "install": "Instalar Pixel",
+  "email": "Correo",
+  "password": "Contraseña",
+  "login": "Iniciar sesión",
+  "logout": "Cerrar sesión",
+  "or": "o",
+  "create-account": "Crear cuenta",
+  "already-have-account": "¿Ya tienes una cuenta?",
+  "dont-have-account": "¿No tienes una cuenta?",
+  "forgot-password": "¿Olvidaste tu contraseña?",
+  "enter-email-to-reset-password": "Introduce tu correo para restablecer tu contraseña",
   "website": {
     "hero-title": "Crea pixel art en cualquier dispositivo",
-    "hero-description": "Pixel es una aplicación web progresiva que te permite crear pixel art en cualquier dispositivo, sistema operativo y navegador. Da rienda suelta a tu creatividad sin barreras."
+    "hero-description": "Pixel es una aplicación web progresiva que te permite crear pixel art en cualquier dispositivo, sistema operativo y navegador. Da rienda suelta a tu creatividad sin barreras.",
+    "start-now": "Empieza a crear!",
+    "sign-up-now": "Regístrate!",
+    "made-by": "Hecho por",
+    "in-madrid": "en Madrid"
+  },
+  "dashboard": {
+    "projects": "Proyectos",
+    "account-settings": "Ajustes de cuenta",
+    "recent": "Recientes"
   }
 }

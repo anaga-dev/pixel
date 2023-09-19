@@ -15,14 +15,12 @@
     </header>
     <main>
       <section class="hero">
-        <h1>{{$t('website.hero-title')}}</h1>
-        <p>
-          Pixel is a progressive web application that lets you create pixel art
-          on any device, operating system, and browser. Unleash your creativity
-          without boundaries.
-        </p>
+        <h1>{{ $t('website.hero-title') }}</h1>
+        <p>{{ $t('website.hero-description') }}</p>
         <div class="links">
-          <NuxtLink class="button-app" to="/studio">Use it now!</NuxtLink>
+          <NuxtLink class="button-app" to="/studio">{{
+            $t('website.start-now')
+          }}</NuxtLink>
           <a
             class="button-repo"
             href="https://github.com/anaga-dev/pixel"
@@ -38,11 +36,11 @@
     </main>
     <footer>
       <p>
-        Made by
+        {{ $t('website.made-by') }}
         <a href="https://anaga.dev" title="Go to Anaga website" target="_blank"
           >Anaga</a
         >
-        with ♥ in Madrid -- 2023
+        {{ $t('website.in-madrid') }} -- 2023
       </p>
     </footer>
   </div>
