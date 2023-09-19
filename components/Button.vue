@@ -4,8 +4,9 @@
       :type="type"
       :aria-label="label"
       :aria-selected="active === true"
-      :class="[variant, {active: active }]"
-      :title="variant === 'ghost' ? label : ''">
+      :class="[variant, { active: active }, { disabled: disabled }]"
+      :title="variant === 'ghost' ? label : ''"
+    >
       <slot></slot>
       <IconDropdown v-if="variant === 'dropdown'" />
     </button>
@@ -30,13 +31,18 @@ const props = defineProps({
   },
   active: {
     type: Boolean
+  },
+  disabled: {
+    type: Boolean
   }
 })
 </script>
 
 <style scoped>
 .button-wrap {
-  filter: drop-shadow(calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow));
+  filter: drop-shadow(
+    calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow)
+  );
   transition: all 60ms ease;
 }
 
@@ -86,5 +92,10 @@ button:is(.ghost, .dropdown):hover {
 
 button:active {
   transform: translate(calc(var(--spaceXS) * -1), var(--spaceXS));
+}
+
+button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 </style>

@@ -7,6 +7,14 @@
     </div>
     <div class="group">
       <Button
+        variant="ghost"
+        label="Deselect"
+        :disabled="!documentStore.selection.visible"
+        @click="documentStore.deselect()">
+        <Icon i="deselect" />
+      </Button>
+      <Divider vertical />
+      <Button
         label="Symmetry aid"
         variant="dropdown"
         :active="documentStore.symmetry.axis !== null"

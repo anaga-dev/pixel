@@ -50,13 +50,6 @@
       <Icon i="selection-substract" />
       Subtract
     </ToolButton>
-    <Divider vertical />
-    <Button
-      variant="ghost"
-      label="Deselect"
-      @click="documentStore.deselect()">
-      <Icon i="deselect" />
-    </Button>
 </template>
 
 <script setup>
