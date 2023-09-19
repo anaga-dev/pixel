@@ -1,6 +1,7 @@
 <template>
   <button type="button" :style="`color: ${color}`" @click.stop="$emit('click')">
-    <Icon i="color" />
+    <Icon class="outline" :class="{ active: active }" i="color-outline" />
+    <Icon class="color" i="color" />
   </button>
 </template>
 
@@ -17,3 +18,22 @@ const props = defineProps({
   }
 })
 </script>
+
+<style scoped>
+button {
+  display: grid;
+}
+
+.color,
+.outline {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.outline:not(.active) {
+  color: var(--colorSecondary);
+}
+.active {
+  color: var(--colorAccent);
+}
+</style>
