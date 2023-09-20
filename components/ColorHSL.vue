@@ -1,12 +1,12 @@
 <template>
   <div class="ColorHSL">
-    <Field label="Hue" for="hue">
+    <Field :label="$t('studio.hue')" for="hue">
       <Slider id="hue" :min="0" :max="359" v-model="hue" />
     </Field>
-    <Field label="Saturation" for="saturation">
+    <Field :label="$t('studio.saturation')" for="saturation">
       <Slider id="saturation" :min="0" :max="100" v-model="saturation" />
     </Field>
-    <Field label="Lightness" for="lightness">
+    <Field :label="$t('studio.lightness')" for="lightness">
       <Slider id="lightness" :min="0" :max="100" v-model="lightness" />
     </Field>
   </div>

@@ -17,7 +17,7 @@ const emit = defineEmits(['close'])
     <div class="Modal">
       <header v-if="title || !nondismissable">
         <h2>{{ title }}</h2>
-        <Button label="Close" v-if="!nondismissable" variant="ghost" @click="emit('close')">
+        <Button :label="$t('close')" v-if="!nondismissable" variant="ghost" @click="emit('close')">
           <Icon i="close" />
         </Button>
       </header>

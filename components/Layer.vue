@@ -13,10 +13,10 @@
     @dragend="onDragEnd"
     @drop.capture="onDrop">
     <div class="actions">
-      <Button class="action" label="Layer settings" :active="settings" variant="ghost" @click.stop="$emit('settings', layer)" @drop="onDrop">
+      <Button class="action" :label="$t('studio.layer-settings')" :active="settings" variant="ghost" @click.stop="$emit('settings', layer)" @drop="onDrop">
         <Icon i="settings" />
       </Button>
-      <Button class="action" :label="layer.visible.value ? 'Hide label' : 'Show label'" variant="ghost" @click="$emit('visible', layer)">
+      <Button class="action" :label="layer.visible.value ? $t('studio.hide-layer') : $t('studio.show-layer')" variant="ghost" @click="$emit('visible', layer)">
         <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
       </Button>
     </div>

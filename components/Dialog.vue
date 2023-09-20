@@ -2,8 +2,8 @@
   <Modal nondismissable>
     <p>{{ message }}</p>
     <footer>
-      <Button variant="primary" @click="confirm">Confirm</Button>
-      <Button @click="cancel">Cancel</Button>
+      <Button variant="primary" @click="confirm">{{ $t('confirm') }}</Button>
+      <Button @click="cancel">{{ $t('cancel') }}</Button>
     </footer>
   </Modal>
 </template>

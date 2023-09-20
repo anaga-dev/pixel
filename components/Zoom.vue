@@ -1,21 +1,38 @@
 <template>
   <section class="Zoom">
-    <Button label="Zoom in" variant="dropdown" @click.stop="uiStore.toggleOverlay('zoom-settings')">
+    <Button
+      :label="$t('studio.zoom')"
+      variant="dropdown"
+      @click.stop="uiStore.toggleOverlay('zoom-settings')"
+    >
       <Icon i="zoom-in" />
     </Button>
   </section>
-  <Dropdown v-if="uiStore.showOverlay === 'zoom-settings'" class="ZoomMenu" @close="uiStore.toggleOverlay('zoom-settings')">
-    <Button label="Zoom in" @click="documentStore.zoom.increase()">
+  <Dropdown
+    v-if="uiStore.showOverlay === 'zoom-settings'"
+    class="ZoomMenu"
+    @close="uiStore.toggleOverlay('zoom-settings')"
+  >
+    <Button
+      :label="$t('studio.zoom-in')"
+      @click="documentStore.zoom.increase()"
+    >
       <Icon i="zoom-in" />
-      Zoom in
+      {{ $t('studio.zoom-in') }}
     </Button>
-    <Button label="Zoom out" @click="documentStore.zoom.decrease()">
+    <Button
+      :label="$t('studio.zoom-out')"
+      @click="documentStore.zoom.decrease()"
+    >
       <Icon i="zoom-out" />
-      Zoom Out
+      {{ $t('studio.zoom-out') }}
     </Button>
-    <Button label="Reset zoom" @click="documentStore.zoom.reset()">
+    <Button
+      :label="$t('studio.zoom-reset')"
+      @click="documentStore.zoom.reset()"
+    >
       <Icon i="zoom-reset" />
-      Reset zoom
+      {{ $t('studio.zoom-reset') }}
     </Button>
   </Dropdown>
 </template>

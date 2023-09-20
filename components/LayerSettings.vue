@@ -5,10 +5,16 @@
         {{ layer.name.value }}
         <Icon i="edit" />
       </div>
-      <input v-else type="text" v-focus v-model="layerName" @keydown="onKeyDown" />
+      <input
+        v-else
+        type="text"
+        v-focus
+        v-model="layerName"
+        @keydown="onKeyDown"
+      />
     </header>
     <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
-    <Field label="Opacity" for="opacity" class="opacity">
+    <Field :label="$t('opacity')" for="opacity" class="opacity">
       <div class="layer-visibility">
         <Slider
           id="opacity"
@@ -16,26 +22,44 @@
           :max="100"
           :step="1"
           :modelValue="layer.opacityPercentage.value"
-          @update:modelValue="document.setLayerOpacity(layer, $event)" />
-        <Button :label="layer.visible.value ? 'Hide layer' : 'Show layer'" variant="ghost" @click="document.toggleLayer(layer)">
+          @update:modelValue="document.setLayerOpacity(layer, $event)"
+        />
+        <Button
+          :label="layer.visible.value ? $t('studio.hide-layer') : $t('studio.show-layer')"
+          variant="ghost"
+          @click="document.toggleLayer(layer)"
+        >
           <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
         </Button>
       </div>
     </Field>
     <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
-    <Field label="Blend mode"  for="blend-mode">
-      <Select id="blend-mode" :modelValue="layer.blendMode.value" @update:modelValue="document.setLayerBlendMode(layer, $event)">
-        <option v-for="[value, text] in blendModes" :key="value" :value="value">{{ text }}</option>
+    <Field :label="$t('blend-mode')" for="blend-mode">
+      <Select
+        id="blend-mode"
+        :modelValue="layer.blendMode.value"
+        @update:modelValue="document.setLayerBlendMode(layer, $event)"
+      >
+        <option v-for="[value, text] in blendModes" :key="value" :value="value">
+          {{ text }}
+        </option>
       </Select>
     </Field>
     <div class="actions">
-      <Button label="Duplicate layer" @click="document.duplicateLayer(layer)">
+      <Button
+        :label="$t('studio.duplicate-layer')"
+        @click="document.duplicateLayer(layer)"
+      >
         <Icon i="duplicate" />
-        Duplicate
+        {{ $t('studio.duplicate') }}
       </Button>
-      <Button label="Remove layer" variant="critical" @click="onDelete(layer)">
+      <Button
+        :label="$t('studio.delete-layer')"
+        variant="critical"
+        @click="onDelete(layer)"
+      >
         <Icon i="delete" />
-        Delete
+        {{ $t('delete') }}
       </Button>
     </div>
   </Dropdown>
@@ -71,7 +95,7 @@ const blendModes = readonly([
   ['hue', 'Hue'],
   ['saturation', 'Saturation'],
   ['color', 'Color'],
-  ['luminosity', 'Luminosity'],
+  ['luminosity', 'Luminosity']
 ])
 
 const vFocus = {

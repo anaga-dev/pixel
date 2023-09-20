@@ -1,6 +1,6 @@
 <template>
   <Dropdown class="BrushDither">
-    <Button v-for="dither of patterns" label="Dither" @click="$emit('select', dither)">
+    <Button v-for="dither of patterns" :label="$t('studio.dither')" @click="$emit('select', dither)">
       <Icon :i="`dither-${dither}`" />
     </Button>
   </Dropdown>

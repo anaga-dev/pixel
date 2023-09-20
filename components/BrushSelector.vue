@@ -1,16 +1,19 @@
 <template>
   <Dropdown class="BrushSelector">
-    <Button label="Round brush" @click="$emit('select', 'round')">
+    <Button :label="$t('studio.round')" @click="$emit('select', 'round')">
       <Icon i="brush-round" />
-      Round
+      {{ $t('studio.round') }}
     </Button>
-    <Button label="Square brush" @click="$emit('select', 'square')">
+    <Button :label="$t('studio.square')" @click="$emit('select', 'square')">
       <Icon i="brush-square" />
-      Square
+      {{ $t('studio.square') }}
     </Button>
-    <Button label="Dither brush" @click="$emit('select', 'dither')">
+    <Button
+      :label="$t('studio.dither')"
+      @click="$emit('select', 'dither')"
+    >
       <Icon i="brush-dither" />
-      Dither
+      {{ $t('studio.dither') }}
     </Button>
   </Dropdown>
 </template>

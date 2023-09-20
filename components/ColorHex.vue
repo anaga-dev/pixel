@@ -10,13 +10,38 @@
         minlength="6"
         maxlength="6"
         :value="hexColor"
-        @input="onInput" />
+        @input="onInput"
+      />
       <div class="hex" v-else>
         {{ hexColor }}
       </div>
     </div>
     <div class="key-buttons">
-      <Button v-for="key in [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F']" :label="`Key ${key}`" :key="key" @click="onKeyButton(key)">{{ key}}</Button>
+      <Button
+        v-for="key in [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          'A',
+          'B',
+          'C',
+          'D',
+          'E',
+          'F'
+        ]"
+        :label="`${$t('studio.key')} ${key}`"
+        :key="key"
+        @click="onKeyButton(key)"
+      >
+        {{ key }}
+      </Button>
     </div>
   </div>
 </template>
@@ -32,9 +57,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits([
-  'update'
-])
+const emit = defineEmits(['update'])
 
 const hexColor = computed(() => rgbToHex(red.value, green.value, blue.value))
 const isTouch = computed(() => navigator.maxTouchPoints > 0)

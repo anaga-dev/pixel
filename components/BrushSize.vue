@@ -1,6 +1,6 @@
 <template>
   <Dropdown class="BrushSize">
-    <Field label="Brush size" for="brush-size">
+    <Field :label="$t('studio.brush-size')" for="brush-size">
       <Slider
         id="brush-size"
         :min="1"
