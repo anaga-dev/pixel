@@ -5,11 +5,29 @@
   "login": "Login",
   "logout": "Logout",
   "or": "or",
+  "custom": "Custom",
   "create-account": "Create account",
   "already-have-account": "Already have an account?",
   "dont-have-account": "Don't have an account?",
   "forgot-password": "Forgot password?",
   "enter-email-to-reset-password": "Enter your email to reset your password",
+  "settings": "Settings",
+  "account": "Account",
+  "cancel": "Cancel",
+  "save": "Save",
+  "create": "Create",
+  "create-new-document": "Create new document",
+  "create-new-palette": "Create new palette",
+  "width": "Width",
+  "height": "Height",
+  "palette": "Palette",
+  "save-changes": "Save changes",
+  "change-password": "Change password",
+  "current-password": "Current password",
+  "new-password": "New password",
+  "confirm-new-password": "Confirm new password",
+  "delete-account": "Delete account",
+  "plan-and-billing": "Plan & Billing",
   "website": {
     "hero-title": "Create Pixel Art on any device",
     "hero-description": "Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries.",
@@ -21,6 +39,20 @@
   "dashboard": {
     "projects": "Projects",
     "account-settings": "Account settings",
-    "recent": "Recent"
+    "recent": "Recent",
+    "create-new-artwork": "Create new artwork"
+  },
+  "studio": {
+    "preset": "Preset",
+    "color": "Color",
+    "layers": "Layers",
+    "tools": "Tools",
+    "export": "Export",
+    "undo": "Undo",
+    "redo": "Redo",
+    "clear-canvas": "Clear canvas",
+    "add-layer": "Add layer",
+    "delete-layer": "Delete layer",
+    "lock-aspect-ratio": "Lock aspect ratio"
   }
 }

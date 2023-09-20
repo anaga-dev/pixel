@@ -32,7 +32,7 @@
     <Transition name="slide">
       <aside v-if="uiStore.showPanel" class="PANELS">
         <Panel
-          title="Color"
+          :title="$t('studio.color')"
           :expanded="uiStore.showColorPicker"
           @toggle="uiStore.toggleColorPicker"
         >
@@ -41,13 +41,13 @@
         <Divider />
         <Panel
           scrollable
-          title="Layers"
+          :title="$t('studio.layers')"
           :expanded="uiStore.showLayers"
           @toggle="uiStore.toggleLayers"
         >
           <template #actions>
             <Button
-              label="Add layer"
+              :label="$t('studio.add-layer')"
               variant="ghost"
               @click="documentStore.addLayer"
             >
@@ -65,7 +65,6 @@
   />
   <SymmetrySettings v-if="uiStore.showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
-  <Splash v-if="uiStore.isShowingSplash" />
 </template>
 
 <script setup>

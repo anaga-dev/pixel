@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Create new document" nondismissable>
+  <Modal :title="$t('create-new-document')" nondismissable>
     <form class="form" @submit.prevent="onSubmit">
       <!--
 
@@ -20,9 +20,9 @@
         640x360
 
       -->
-      <Field label="Preset" for="preset">
+      <Field :label="$t('studio.preset')" for="preset">
         <Select id="preset" v-model="preset">
-          <option value="custom">Custom</option>
+          <option value="custom">{{ $t('custom') }}</option>
           <option value="8x8">8x8</option>
           <option value="16x16">16x16</option>
           <option value="32x32">32x32</option>
@@ -38,18 +38,28 @@
         </Select>
       </Field>
       <div class="size">
-        <Field label="Width" for="width">
+        <Field :label="$t('width')" for="width">
           <input type="number" min="1" max="4096" v-model="width" />
         </Field>
-        <Button label="Lock aspect ratio" variant="ghost" @click="onLink">
+        <Button
+          :label="$t('studio.lock-aspect-ratio')"
+          variant="ghost"
+          @click="onLink"
+        >
           <Icon i="linked" v-if="linked" />
           <Icon i="unlinked" v-else />
         </Button>
-        <Field label="Height" for="height">
-          <input type="number" min="1" max="4096" v-model="height" :disabled="linked" />
+        <Field :label="$t('height')" for="height">
+          <input
+            type="number"
+            min="1"
+            max="4096"
+            v-model="height"
+            :disabled="linked"
+          />
         </Field>
       </div>
-      <Field label="Palette" for="palette">
+      <Field :label="$t('palette')" for="palette">
         <Select id="palette" v-model="palette">
           <option value="palettes/cga.json">CGA</option>
           <option value="palettes/gameboy.json">Gameboy</option>
@@ -65,7 +75,12 @@
           <option value="palettes/commodore64.json">Commodore 64</option>
         </Select>
       </Field>
-      <Button label="Create new document" type="submit" variant="primary">Create</Button>
+      <Button
+        :label="$t('create-new-document')"
+        type="submit"
+        variant="primary"
+        >{{ $t('create') }}</Button
+      >
     </form>
   </Modal>
 </template>
