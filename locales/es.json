@@ -51,7 +51,8 @@
     "projects": "Proyectos",
     "account-settings": "Ajustes de cuenta",
     "recent": "Recientes",
-    "create-new-artwork": "Crear nuevo pixel art"
+    "create-new-artwork": "Crear nuevo pixel art",
+    "more": "Más"
   },
   "studio": {
     "blend-mode": "Modo de fusión",
