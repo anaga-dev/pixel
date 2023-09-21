@@ -54,7 +54,6 @@ export function getOffset(imageData, x, y) {
  * @returns {ImageData}
  */
 export function putColor(imageData, x, y, [r, g, b, a], dither = null, maskImageData = null) {
-  debugger
   if (isOutside(imageData, x, y)) {
     return imageData
   }

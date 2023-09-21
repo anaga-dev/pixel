@@ -84,7 +84,7 @@ export default defineNuxtConfig({
     '/styles/variables.css'
   ],
   pinia: {
-    autoImports: ['defineStore', 'acceptHMRUpdate']
+    autoImports: ['defineStore', 'acceptHMRUpdate', 'storeToRefs']
   },
   pwa: {
     registerType: 'autoUpdate',
