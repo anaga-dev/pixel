@@ -47,13 +47,6 @@
     "made-by": "Hecho por",
     "in-madrid": "en Madrid"
   },
-  "dashboard": {
-    "projects": "Proyectos",
-    "account-settings": "Ajustes de cuenta",
-    "recent": "Recientes",
-    "create-new-artwork": "Crear nuevo pixel art",
-    "more": "Más"
-  },
   "studio": {
     "back-to-dashboard": "Volver al panel",
     "blend-mode": "Modo de fusión",

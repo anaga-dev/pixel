@@ -48,13 +48,6 @@
     "made-by": "Made by",
     "in-madrid": "in Madrid"
   },
-  "dashboard": {
-    "projects": "Projects",
-    "account-settings": "Account settings",
-    "recent": "Recent",
-    "create-new-artwork": "Create new artwork",
-    "more": "More"
-  },
   "studio": {
     "back-to-dashboard": "Back to dashboard",
     "blend-mode": "Blend mode",
