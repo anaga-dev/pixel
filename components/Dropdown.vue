@@ -9,7 +9,10 @@ const target = ref(null)
 
 const emit = defineEmits(['close'])
 
-onClickOutside(target, () => emit('close'))
+onClickOutside(target, (e) => {
+  e.stopPropagation()
+  emit('close')
+})
 </script>
 
 <style scoped>
