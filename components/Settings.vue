@@ -10,7 +10,8 @@
         variant="ghost"
         label="Deselect"
         :disabled="!documentStore.selection.visible"
-        @click="documentStore.deselect()">
+        @click="documentStore.deselect()"
+      >
         <Icon i="deselect" />
       </Button>
       <Divider vertical />
@@ -51,14 +52,6 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
-import SettingsButton from '@/components/SettingsButton.vue'
-import ToolSettings from '@/components/ToolSettings.vue'
-import Button from '@/components/Button.vue'
-import Icon from '@/components/Icon.vue'
-import Divider from '@/components/Divider.vue'
-import ToolColor from '@/components/ToolColor.vue'
-import ColorPicker from '@/components/ColorPicker.vue'
-import Zoom from '@/components/Zoom.vue'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
@@ -66,7 +59,6 @@ const uiStore = useUIStore()
 const handleColorPanel = () => {
   uiStore.showColorPicker = true
   uiStore.showPanel = true
-
 }
 
 const icon = computed(() => {

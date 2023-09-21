@@ -61,7 +61,22 @@ export default defineNuxtConfig({
       ]
     }
   },
-  modules: ['@nuxt/devtools', '@vueuse/nuxt', '@pinia/nuxt', '@vite-pwa/nuxt'],
+  modules: ['@nuxt/devtools', '@vueuse/nuxt', '@pinia/nuxt', '@vite-pwa/nuxt', '@nuxtjs/i18n'],
+  i18n: {
+    locales: [
+      { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
+      { code: 'es', iso: 'es-ES', file: 'es.json', name: 'Español' }
+    ],
+    defaultLocale: 'en',
+    langDir: 'locales/',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n',
+      redirectOn: 'root'
+    },
+    strategy: 'prefix_and_default',
+    debug: true
+  },
   css: [
     '/styles/reset.css',
     '/styles/fonts.css',
