@@ -25,7 +25,7 @@ onClickOutside(target, (e) => {
   padding: var(--spaceM);
   background-color: var(--colorLayer1);
   box-shadow: var(--shadowLayer);
-  position: fixed;
+  position: absolute;
   z-index: 1000;
 }
 </style>
