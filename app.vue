@@ -4,15 +4,16 @@
       <NuxtPage />
     </NuxtLayout>
   </div>
-  <Dialog v-if="show" />
+  <Dialog v-if="showDialog" />
+  <Tooltip v-if="showTooltip" />
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
 import { useUIStore } from '@/stores/ui'
 import { useConfirmationStore } from '@/stores/confirmation'
 const uiStore = useUIStore()
 const confirmationStore = useConfirmationStore()
 
-const { show } = storeToRefs(confirmationStore)
+const { showDialog } = storeToRefs(confirmationStore)
+const { showTooltip } = storeToRefs(uiStore)
 </script>

@@ -11,6 +11,7 @@ export const useUIStore = defineStore('ui', {
     showColorPicker: true,
     showLayers: true,
     showSplash: false,
+    showTooltip: null,
     showLayerSettings: false
   }),
   getters: {

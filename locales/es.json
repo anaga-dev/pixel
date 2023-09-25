@@ -78,5 +78,12 @@
     "saturation": "Saturación",
     "lightness": "Luminosidad",
     "freehand": "Trazo libre"
+  },
+  "error": {
+    "title": "Error",
+    "description-default": "Algo ha ido mal. Por favor, inténtalo de nuevo más tarde.",
+    "description-404": "Lo sentimos, no hemos podido encontrar la página que buscas.",
+    "description-500": "Lo sentimos, ha habido un error en el servidor. Por favor, inténtalo de nuevo más tarde.",
+    "link": "Ir a la página de inicio"
   }
 }

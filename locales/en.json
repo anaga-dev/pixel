@@ -79,5 +79,12 @@
     "saturation": "Saturation",
     "lightness": "Lightness",
     "freehand": "Freehand"
+  },
+  "error": {
+    "title": "Error",
+    "description-default": "Something went wrong. Please try again later.",
+    "description-404": "The page you are looking for does not exist.",
+    "description-500": "Something went wrong. Please try again later.",
+    "link": "Go back to the homepage"
   }
 }
