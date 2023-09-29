@@ -5,7 +5,7 @@ export const useConfirmationStore = defineStore('confirmation', () => {
   const message = ref('')
   const resolve = ref(null)
 
-  const open = (msg) => {
+  const openDialog = (msg) => {
     message.value = msg
     showDialog.value = true
     return new Promise((rslv) => {
@@ -17,6 +17,6 @@ export const useConfirmationStore = defineStore('confirmation', () => {
     showDialog,
     message,
     resolve,
-    open
+    openDialog
   }
 })

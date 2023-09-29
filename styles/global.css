@@ -1,7 +1,7 @@
 *,
 *::before,
 *::after {
-  scrollbar-color: var(--colorSecondary) transparent;
+  scrollbar-color: var(--colorTextSecondary) transparent;
   accent-color: var(--colorAccent);
   scroll-behavior: smooth;
   scrollbar-width: thin;
@@ -46,9 +46,17 @@ a:not([class]):hover {
   width: var(--spaceS);
 }
 
+h1 {
+  font-family: 'Silkscreen';
+  font-size: var(--fontSizeXL);
+  color: var(--colorTextPrimary);
+  letter-spacing: -0.025em;
+}
+
 h2 {
-  font-size: var(--textM);
+  font-size: var(--fontSizeL);
   text-transform: uppercase;
+  color: var(--colorTextSecondary);
 }
 
 .active {

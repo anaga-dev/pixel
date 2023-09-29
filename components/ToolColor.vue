@@ -31,7 +31,7 @@ button {
 }
 
 .outline:not(.active) {
-  color: var(--colorSecondary);
+  color: var(--colorTextSecondary);
 }
 .active {
   color: var(--colorAccent);
