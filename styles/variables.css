@@ -45,8 +45,31 @@
     0% calc(100% - var(--spaceXS))
   );
 
-  --shadowLayer:
-    calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow),
+  --pixelCornersOuter: polygon(
+    0% calc(var(--spaceXS) * 2),
+    var(--spaceXS) calc(var(--spaceXS) * 2),
+    var(--spaceXS) var(--spaceXS),
+    calc(var(--spaceXS) * 2) var(--spaceXS),
+    calc(var(--spaceXS) * 2) 0%,
+    calc(100% - var(--spaceXS) * 2) 0%,
+    calc(100% - var(--spaceXS) * 2) var(--spaceXS),
+    calc(100% - var(--spaceXS)) var(--spaceXS),
+    calc(100% - var(--spaceXS)) calc(var(--spaceXS) * 2),
+    100% calc(var(--spaceXS) * 2),
+    100% calc(100% - var(--spaceXS) * 2),
+    calc(100% - var(--spaceXS)) calc(100% - var(--spaceXS) * 2),
+    calc(100% - var(--spaceXS)) calc(100% - var(--spaceXS)),
+    calc(100% - var(--spaceXS) * 2) calc(100% - var(--spaceXS)),
+    calc(100% - var(--spaceXS) * 2) 100%,
+    calc(100% - var(--spaceXS)) 100%,
+    calc(var(--spaceXS) * 2) 100%,
+    calc(var(--spaceXS) * 2) calc(100% - var(--spaceXS)),
+    var(--spaceXS) calc(100% - var(--spaceXS)),
+    var(--spaceXS) calc(100% - var(--spaceXS) * 2),
+    0% calc(100% - var(--spaceXS) * 2)
+  );
+
+  --shadowLayer: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow),
     calc(var(--spaceM) * -1) var(--spaceM) 0 var(--colorShadow);
   --shadowInput: inset var(--spaceS) var(--spaceS) 0 var(--colorShadow);
 }
