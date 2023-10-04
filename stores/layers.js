@@ -7,7 +7,7 @@ export const useLayersStore = defineStore('layers', () => {
   const list = reactive([])
   const settings = ref(null)
 
-  function create({
+  function createLayer({
     name: initialName = 'Unnamed',
     visible: initialVisible = true,
     blendMode: initialBlendMode = BlendMode.NORMAL,
@@ -49,7 +49,7 @@ export const useLayersStore = defineStore('layers', () => {
     }
   }
 
-  function duplicate({
+  function duplicateLayer({
     name: initialName,
     visible: initialVisible,
     blendMode: initialBlendMode,
@@ -92,7 +92,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   function add(options) {
-    const created = shallowReactive(create(options))
+    const created = shallowReactive(createLayer(options))
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.value.id
     )
@@ -103,6 +103,13 @@ export const useLayersStore = defineStore('layers', () => {
     } else {
       list.splice(newIndex, 0, created)
     }
+    return { index: newIndex, layer: created }
+  }
+
+  function addAt(index, layer) {
+    list.splice(index, 0, layer)
+    current.value = layer
+    return { index, layer }
   }
 
   function remove(layer) {
@@ -111,6 +118,12 @@ export const useLayersStore = defineStore('layers', () => {
       throw new Error(`Layer with ${id} not found`)
     }
     const [removedLayer] = list.splice(index, 1)
+    return { index, layer: removedLayer }
+  }
+
+  function removeAt(index) {
+    const [removedLayer] = list.splice(index, 1)
+    return { index, layer: removedLayer }
   }
 
   /**
@@ -118,13 +131,14 @@ export const useLayersStore = defineStore('layers', () => {
    * @param {*} layer
    */
   function duplicate(layer) {
-    const duplicated = shallowReactive(duplicate(layer))
+    const duplicated = shallowReactive(duplicateLayer(layer))
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.id
     )
     current.value = duplicated
     list.splice(index, 0, duplicated)
     settings.value = null
+    return { index, layer: duplicated }
   }
 
   function swap(fromIndex, toIndex) {
@@ -165,7 +179,9 @@ export const useLayersStore = defineStore('layers', () => {
     settings,
     set,
     add,
+    addAt,
     remove,
+    removeAt,
     duplicate,
     swap,
     toggle,

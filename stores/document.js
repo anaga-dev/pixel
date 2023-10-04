@@ -1,4 +1,3 @@
-import { useDither } from '@/composables/useDither'
 import { usePoint } from '@/composables/usePoint'
 import Color from '@/pixel/color/Color'
 import ColorMode from '@/pixel/enums/ColorMode'
@@ -17,6 +16,7 @@ import Interpolation from '@/pixel/math/Interpolation'
 import GIMP from '@/pixel/formats/palettes/GIMP'
 import ACT from '@/pixel/formats/palettes/ACT'
 import PAL from '@/pixel/formats/palettes/PAL'
+import FilePicker from '@/pixel/io/FilePicker'
 
 import OpenRaster from '@/pixel/formats/images/OpenRaster'
 import PNG from '@/pixel/formats/images/PNG'
@@ -35,6 +35,7 @@ import { useOnionSkin } from './onionSkin'
 import { useShapeStore } from './shape'
 import { useTransformStore } from './transform'
 import { useSelectionStore } from './selection'
+
 
 /**
  * This is the Document type that is used when
@@ -1065,29 +1066,50 @@ export const useDocumentStore = defineStore('document', {
       this.redrawAll()
     },
     addLayer() {
-      this.layers.add({
+      const { index, layer } = this.layers.add({
         width: this.width,
         height: this.height
       })
+      this.history.add({
+        type: 'addLayer',
+        payload: { index, layer }
+      })
     },
     duplicateLayer(layer) {
-      this.layers.duplicate(layer)
+      const { index, layer: duplicatedLayer } = this.layers.duplicate(layer)
       this.redrawAll()
+      this.history.add({
+        type: 'duplicateLayer',
+        payload: { index, layer: duplicatedLayer }
+      })
     },
     toggleLayer(layer) {
       this.layers.toggle(layer)
       this.redrawAll()
     },
     removeLayer(layer) {
-      this.layers.remove(layer)
+      const { index, layer: removedLayer } = this.layers.remove(layer)
       this.redrawAll()
+      this.history.add({
+        type: 'removeLayer',
+        payload: { index, layer: removedLayer }
+      })
     },
     swapLayers(fromIndex, toIndex) {
       this.layers.swap(fromIndex, toIndex)
       this.redrawAll()
+      this.history.add({
+        type: 'swapLayers',
+        payload: { from: fromIndex, toIndex: toIndex }
+      })
     },
     changeLayerName(layer, name) {
+      const previousName = layer.name.value
       layer.name.value = name
+      this.history.add({
+        type: 'changeLayerName',
+        payload: { layer, name, previousName }
+      })
     },
     /***************************************************************************
      * Movement and zoom
@@ -1306,9 +1328,13 @@ export const useDocumentStore = defineStore('document', {
         }
         console.log(fileHandle)
       } else {
-        // TODO: We should research how to do this.
-        // Non supported browsers:
-        // Safari and Firefox
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = '.ora,.png'
+        input.multiple = false
+        input.onchange = async (e) => {
+
+        }
       }
     },
     /**
@@ -1364,6 +1390,23 @@ export const useDocumentStore = defineStore('document', {
           )
           this.redrawAll()
           break
+        case 'duplicateLayer':
+        case 'addLayer':
+          this.layers.removeAt(actionToUndo.payload.index)
+          break
+        case 'removeLayer':
+          this.layers.addAt(actionToUndo.payload.index, actionToUndo.payload.layer)
+          break
+        case 'swapLayers':
+          this.layers.swap(
+            actionToUndo.payload.toIndex,
+            actionToUndo.payload.fromIndex
+          )
+          break
+        case 'changeLayerName':
+          actionToUndo.payload.layer.name.value =
+            actionToUndo.payload.previousName
+          break
         default:
           console.log('To implement', actionToUndo)
       }
@@ -1392,6 +1435,23 @@ export const useDocumentStore = defineStore('document', {
             actionToRedo.payload.nextImageData
           )
           this.redrawAll()
+          break
+        case 'duplicateLayer':
+        case 'addLayer':
+          this.layers.addAt(actionToRedo.payload.index, actionToRedo.payload.layer)
+          break
+        case 'removeLayer':
+          this.layers.removeAt(actionToRedo.payload.index)
+          break
+        case 'swapLayers':
+          this.layers.swap(
+            actionToRedo.payload.fromIndex,
+            actionToRedo.payload.toIndex
+          )
+          break
+        case 'changeLayerName':
+          actionToRedo.payload.layer.name.value =
+            actionToRedo.payload.name
           break
         default:
           console.log('To implement', actionToRedo)
