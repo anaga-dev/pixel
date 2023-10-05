@@ -32,6 +32,10 @@ option {
   line-height: 1;
 }
 
+p, small {
+  line-height: 1.5;
+}
+
 a:not([class]) {
   color: var(--colorText);
   text-decoration: none;

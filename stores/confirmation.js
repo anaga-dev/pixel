@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia'
-
 export const useConfirmationStore = defineStore('confirmation', () => {
   const showDialog = ref(false)
   const message = ref('')
