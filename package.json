@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "nuxt build",
+    "build:nw": "cd nw && node build.mjs && cd ..",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@nuxt/devtools": "^0.6.7",
     "@nuxtjs/i18n": "8.0.0-rc.4",
-    "@vite-pwa/nuxt": "^0.1.0"
+    "@vite-pwa/nuxt": "^0.1.0",
+    "nw-builder": "^4.4.1"
   }
 }

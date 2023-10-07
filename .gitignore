@@ -340,3 +340,6 @@ dev-dist
 
 sw.*
 cloud
+
+nw/out
+nw/cache
