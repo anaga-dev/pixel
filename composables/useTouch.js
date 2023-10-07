@@ -28,12 +28,12 @@ function computeMid(touches, bounds) {
     const [minX, maxX, minY, maxY] = bounds
     const midX = minX + (maxX - minX) * 0.5
     const midY = minY + (maxY - minY) * 0.5
-    return usePoint(midX, midY)
+    return [midX, midY]
   } else if (touches.length === 1) {
     const [touch] = touches
-    return usePoint(touch.clientX, touch.clientY)
+    return [touch.clientX, touch.clientY]
   } else {
-    return usePoint(0, 0)
+    return [0, 0]
   }
 }
 
@@ -88,12 +88,12 @@ export function useTouch(callback, options) {
     state.type = e.type
     state.touches = e.touches.length
     const bounds = computeMinMax(e.touches)
-    const delta = computeDelta(bounds)
-    const center = computeMid(e.touches, bounds)
+    const [deltaX, deltaY] = computeDelta(bounds)
+    const [centerX, centerY] = computeMid(e.touches, bounds)
     const distance = computeDistance(e.touches)
     const angle = computeAngle(e.touches)
-    state.delta.copy(delta)
-    state.center.copy(center)
+    state.delta.set(deltaX, deltaY)
+    state.center.set(centerX, centerY)
 
     if (e.type === 'touchstart') {
       state.startDistance = distance
@@ -106,10 +106,10 @@ export function useTouch(callback, options) {
       state.currentAngle = angle
       state.previousAngle = angle
 
-      state.startCenter.copy(center)
-      state.endCenter.copy(center)
-      state.currentCenter.copy(center)
-      state.previousCenter.copy(center)
+      state.startCenter.set(centerX, centerY)
+      state.endCenter.set(centerX, centerY)
+      state.currentCenter.set(centerX, centerY)
+      state.previousCenter.set(centerX, centerY)
     }
 
     state.previousDistance = state.currentDistance
@@ -117,18 +117,19 @@ export function useTouch(callback, options) {
     state.previousAngle = state.currentAngle
     state.currentAngle = angle
     state.previousCenter.copy(state.currentCenter)
-    state.currentCenter.copy(center)
+    state.currentCenter.set(centerX, centerY)
 
     if (e.type === 'touchend' || e.type === 'touchcancel') {
       state.endDistance = state.currentDistance
       state.endAngle = state.currentAngle
-      state.endCenter.copy(center)
+      state.endCenter.set(centerX, centerY)
     }
 
     state.angle = state.currentAngle - state.previousAngle
     state.distance = state.currentDistance / state.previousDistance
 
-    state.movement.copy(state.currentCenter).subtract(state.previousCenter)
+    state.movement.copy(state.currentCenter)
+    state.movement.subtract(state.previousCenter)
   }
 
   function handler(e) {
