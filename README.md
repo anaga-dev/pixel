@@ -14,13 +14,19 @@ You can try Anaga Pixel on [https://pixel.anaga.dev](https://pixel.anaga.dev)
 
 Run `pnpm build` for creating a production build.
 
+## Build NW.js app
+
+Run `pnpm build:nw` for creating a native app running on [nw.js](https://nwjs.io).
+
+NOTE: Right now it only generates a Linux app.
+
 ## Roadmap
 
-* [ ] Selection tool
-* [ ] Transformations tool (scale, rotate, skew)
-* [ ] Add formats (ASEprite, FLI, FLC, MAP, Animated GIF...)
-* [ ] Mobile phone version
+* [x] Selection tool
+* [ ] Transformations tool (scale, rotate)
 * [ ] Animation panel
+* [ ] Mobile phone version
+* [ ] Add formats (ASEprite, FLI, FLC, MAP, Animated GIF...)
 
 ## Contributing
 
