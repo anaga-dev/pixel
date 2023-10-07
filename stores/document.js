@@ -831,7 +831,12 @@ export const useDocumentStore = defineStore('document', {
               pointer.start.y,
               pointer.end.x,
               pointer.end.y,
-              this.color
+              this.color,
+              null,
+              this.shape.filled,
+              this.shape.lockAspectRatio,
+              null,
+              this.selection.getMaskImageData()
             )
           }
         } else if (this.shape.type === ShapeType.ELLIPSE) {
@@ -857,7 +862,12 @@ export const useDocumentStore = defineStore('document', {
               pointer.start.y,
               pointer.end.x,
               pointer.end.y,
-              this.color
+              this.color,
+              null,
+              this.shape.filled,
+              this.shape.lockAspectRatio,
+              null,
+              this.selection.getMaskImageData()
             )
           }
         }
