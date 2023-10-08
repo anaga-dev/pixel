@@ -17,7 +17,9 @@ export class SelectionMask {
    */
   constructor(width, height) {
     this.#canvas = Canvas.createOffscreen(width, height)
-    this.#context = CanvasContext2D.get(this.#canvas)
+    this.#context = CanvasContext2D.get(this.#canvas, {
+      willReadFrequently: true
+    })
   }
 
   get canvas() {
@@ -41,8 +43,6 @@ export class SelectionMask {
   }
 
   /**
-<<<<<<< HEAD
-=======
    * Selects the pixel at the given coordinates
    *
    * @param {number} x
@@ -66,7 +66,6 @@ export class SelectionMask {
   }
 
   /**
->>>>>>> be9f9ba (feat: selection tool)
    * Rasterizes the selection path
    *
    * @param {SelectionPath} selectionPath
