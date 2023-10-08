@@ -171,6 +171,9 @@ export const useDocumentStore = defineStore('document', {
     updateCanvasRect() {
       // We need to get client rect so we can calculate
       // the selection canvas position.
+      if (!this.canvas)
+        return
+
       this.canvasRect = this.canvas.getBoundingClientRect()
     },
     toggleColorPicker() {

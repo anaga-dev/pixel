@@ -94,6 +94,8 @@ function toggleShowAnimation() {
   showingAnimation.value = !showingAnimation.value
 }
 
+useResizeObserver(board, () => documentStore.updateCanvasRect())
+
 useWheel(
   (e) => {
     documentStore.zoom.fromEvent(e)
