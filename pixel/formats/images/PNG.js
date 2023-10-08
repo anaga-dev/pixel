@@ -17,18 +17,43 @@ export function loadImage(src, { crossOrigin = 'anonymous', decoding = 'async', 
   })
 }
 
+/**
+ * Returns an Image or an ImageBitmap using a blob.
+ *
+ * @param {Blob} blob
+ * @returns {Promise<Image|ImageBitmap>}
+ */
+export async function getImage(blob) {
+  if ('createImageBitmap' in window) {
+    return createImageBitmap(blob)
+  } else {
+    const url = URL.createObjectURL(file)
+    const image = await loadImage(url)
+    // Ensure that the image has the correct dimensions.
+    image.width = image.naturalWidth
+    image.height = image.naturalHeight
+    URL.revokeObjectURL(url)
+    return image
+  }
+}
+
+/**
+ * Loads a PNG file.
+ *
+ * @param {File} file
+ * @returns {Promise<Document>}
+ */
 export async function load(file) {
-  const url = URL.createObjectURL(file)
-  const image = await loadImage(url)
+  const image = await getImage(file)
   const canvas = document.createElement('canvas')
-  canvas.width = image.naturalWidth
-  canvas.height = image.naturalHeight
+  canvas.width = image.width
+  canvas.height = image.height
   const context = canvas.getContext('2d')
   context.drawImage(image, 0, 0)
-  const frame = context.getImageData(0, 0, image.naturalWidth, image.naturalHeight)
+  const frame = context.getImageData(0, 0, image.width, image.height)
   return {
-    width: image.naturalWidth,
-    height: image.naturalHeight,
+    width: image.width,
+    height: image.height,
     layers: [
       {
         name: file.name,
@@ -43,8 +68,21 @@ export async function load(file) {
   }
 }
 
+/**
+ * Saves a PNG file.
+ *
+ * @param {Document} document
+ * @returns {Blob}
+ */
 export async function save(document) {
-  // TODO:
+  const offscreenCanvas = new OffscreenCanvas(document.width, document.height)
+  const context = offscreenCanvas.getContext('2d')
+  context.drawImage(document.canvas, 0, 0)
+  const blob = await offscreenCanvas.convertToBlob({
+    type: 'image/png',
+    quality: 1
+  })
+  return blob
 }
 
 export default {
