@@ -69,11 +69,13 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+import { useZoomStore } from '@/stores/zoom'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
+import { useMove, usePinch, useGesture } from '@vueuse/gesture'
 import Tool from '@/pixel/enums/Tool'
 
 const board = ref(null)
@@ -83,6 +85,7 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
+const zoomStore = useZoomStore()
 
 useBeforeUnload(
   () => true,
@@ -95,26 +98,68 @@ function toggleShowAnimation() {
 }
 
 useResizeObserver(board, () => documentStore.updateCanvasRect())
+/* 
+usePinch(
+  ({ offset: [d, a], pinching }) => {
+    if (!pinching) {
+      return
+    }
 
+    zoomStore.set(d)
+  },
+  { domTarget: board, passive: true }
+)
+ */
+
+useGesture(
+  {
+/*     onDrag: ({offset: [x, y]}) => {
+      documentStore.moveBy(x*0.001, y*0.001)
+    }, */
+    onPinch: ({ offset: [d, a], origin: [x, y] }) => {
+      console.log('ORIGEN', x, y)
+      zoomStore.set(d)
+      documentStore.moveTo(x*0.1, y*0.1)
+    },
+    onWheel: ({ movement: [x, y] }) => {
+      console.log(x, y)
+    }
+  },
+  {
+    domTarget: board,
+    eventOptions: { passive: true }
+  }
+)
+
+/* useMove(
+  ({ event, moving, ...state }) => {
+    const x = event.pageX - boxRect.left - boxRect.width / 2
+    const y = event.pageY - boxRect.top - boxRect.height / 2
+
+    documentStore.moveAndZoom(x, y, distance * 10)
+  },
+  { domTarget: board, passive: true }
+)
+ */
 useWheel(
   (e) => {
     documentStore.zoom.fromEvent(e)
   },
-  { target: board.value }
+  { domTarget: board }
 )
-
+/* 
 useTouch(
   (e) => {
     if (e.touches < MIN_TOUCHES) {
       return
     }
     const [x, y] = e.movement
-    const z = e.distance
+    const z = e.distance * 10
     documentStore.moveAndZoom(x, y, z)
   },
-  { target: board.value, passive: true }
+  { domTarget: board, passive: true }
 )
-
+ */
 // TODO: This shouldn't be here
 useKeyShortcuts(
   new Map([
