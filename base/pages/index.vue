@@ -101,8 +101,8 @@ onMounted(() => {
 <style scoped>
 .PAGE {
   --headerHeight: 6rem;
-  --colorBgHome: hsl(162 60% 48%);
-  --colorBgHomeAlt: hsl(162 66% 18%);
+  --colorBgHome: hsl(94 66% 52%);
+  --colorBgHomeAlt: hsl(94 66% 18%);
 
   display: grid;
   min-height: 100svh;
