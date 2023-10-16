@@ -75,6 +75,7 @@ import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
+import { usePoint } from '@/composables/usePoint'
 import { useMove, usePinch, useGesture } from '@vueuse/gesture'
 import Tool from '@/pixel/enums/Tool'
 
@@ -86,6 +87,7 @@ const MIN_TOUCHES = 2
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
 const zoomStore = useZoomStore()
+const coords = ref(null)
 
 useBeforeUnload(
   () => true,
@@ -98,68 +100,30 @@ function toggleShowAnimation() {
 }
 
 useResizeObserver(board, () => documentStore.updateCanvasRect())
-/* 
-usePinch(
-  ({ offset: [d, a], pinching }) => {
-    if (!pinching) {
-      return
-    }
 
-    zoomStore.set(d)
-  },
-  { domTarget: board, passive: true }
-)
- */
-
-useGesture(
-  {
-/*     onDrag: ({offset: [x, y]}) => {
-      documentStore.moveBy(x*0.001, y*0.001)
-    }, */
-    onPinch: ({ offset: [d, a], origin: [x, y] }) => {
-      console.log('ORIGEN', x, y)
-      zoomStore.set(d)
-      documentStore.moveTo(x*0.1, y*0.1)
-    },
-    onWheel: ({ movement: [x, y] }) => {
-      console.log(x, y)
-    }
-  },
-  {
-    domTarget: board,
-    eventOptions: { passive: true }
-  }
-)
-
-/* useMove(
-  ({ event, moving, ...state }) => {
-    const x = event.pageX - boxRect.left - boxRect.width / 2
-    const y = event.pageY - boxRect.top - boxRect.height / 2
-
-    documentStore.moveAndZoom(x, y, distance * 10)
-  },
-  { domTarget: board, passive: true }
-)
- */
 useWheel(
   (e) => {
     documentStore.zoom.fromEvent(e)
   },
-  { domTarget: board }
+  { domTarget: board, passive: true }
 )
-/* 
+
 useTouch(
   (e) => {
     if (e.touches < MIN_TOUCHES) {
       return
     }
-    const [x, y] = e.movement
-    const z = e.distance * 10
-    documentStore.moveAndZoom(x, y, z)
+    const { x: currentX, y: currentY } = e.currentCenter
+    const { x: previousX, y: previousY } = e.previousCenter
+    const deltaX = currentX.value - previousX.value
+    const deltaY = currentY.value - previousY.value
+    const z = e.distance
+
+    documentStore.moveAndZoom(deltaX, deltaY, z)
   },
-  { domTarget: board, passive: true }
+  { domTarget: board }
 )
- */
+
 // TODO: This shouldn't be here
 useKeyShortcuts(
   new Map([
