@@ -69,11 +69,14 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+import { useZoomStore } from '@/stores/zoom'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
+import { usePoint } from '@/composables/usePoint'
+import { useMove, usePinch, useGesture } from '@vueuse/gesture'
 import Tool from '@/pixel/enums/Tool'
 
 const board = ref(null)
@@ -83,6 +86,8 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
+const zoomStore = useZoomStore()
+const coords = ref(null)
 
 useBeforeUnload(
   () => true,
@@ -100,7 +105,7 @@ useWheel(
   (e) => {
     documentStore.zoom.fromEvent(e)
   },
-  { target: board.value }
+  { domTarget: board, passive: true }
 )
 
 useTouch(
@@ -108,11 +113,15 @@ useTouch(
     if (e.touches < MIN_TOUCHES) {
       return
     }
-    const [x, y] = e.movement
+    const { x: currentX, y: currentY } = e.currentCenter
+    const { x: previousX, y: previousY } = e.previousCenter
+    const deltaX = currentX.value - previousX.value
+    const deltaY = currentY.value - previousY.value
     const z = e.distance
-    documentStore.moveAndZoom(x, y, z)
+
+    documentStore.moveAndZoom(deltaX, deltaY, z)
   },
-  { target: board.value, passive: true }
+  { domTarget: board }
 )
 
 // TODO: This shouldn't be here

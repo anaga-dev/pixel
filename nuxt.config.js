@@ -61,7 +61,14 @@ export default defineNuxtConfig({
       ]
     }
   },
-  modules: ['@nuxt/devtools', '@vueuse/nuxt', '@pinia/nuxt', '@vite-pwa/nuxt', '@nuxtjs/i18n'],
+  buildModules: [ '@vueuse/gesture' ],
+  modules: [
+    '@nuxt/devtools',
+    '@vueuse/nuxt',
+    '@pinia/nuxt',
+    '@vite-pwa/nuxt',
+    '@nuxtjs/i18n'
+  ],
   i18n: {
     locales: [
       { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
