@@ -1,8 +1,8 @@
 <template>
-  <button type="button" :style="`color: ${color}`" @click.stop="$emit('click')">
-    <Icon class="outline" :class="{ active: active }" i="color-outline" />
+  <Button variant="ghost" :style="`color: ${color}`" @click.stop="$emit('click')">
+    <Icon class="outline" i="color-outline" />
     <Icon class="color" i="color" />
-  </button>
+  </Button>
 </template>
 
 <script setup>
@@ -12,9 +12,6 @@ const props = defineProps({
   color: {
     type: String,
     required: true
-  },
-  active: {
-    type: Boolean
   }
 })
 </script>
@@ -30,10 +27,7 @@ button {
   grid-row: 1;
 }
 
-.outline:not(.active) {
-  color: var(--colorTextSecondary);
-}
-.active {
-  color: var(--colorAccent);
+.outline {
+  color: var(--colorText);
 }
 </style>

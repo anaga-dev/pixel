@@ -33,11 +33,6 @@
       </Button>
       <Zoom />
       <Divider vertical />
-      <ToolColor
-        :color="documentStore.color"
-        :active="uiStore.isShowingColorPanel"
-        @click="handleColorPanel"
-      />
       <Button
         variant="ghost"
         :active="uiStore.isShowingLayersPanel"
@@ -55,11 +50,6 @@ import { useUIStore } from '@/stores/ui'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
-
-const handleColorPanel = () => {
-  uiStore.showColorPicker = true
-  uiStore.showPanel = true
-}
 
 const icon = computed(() => {
   return uiStore.isShowingPanel ? 'collapse-side-panel' : 'expand-side-panel'

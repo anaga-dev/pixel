@@ -135,3 +135,19 @@ canvas {
     --widthSidebar: 16rem;
   }
 }
+
+/* Transitions */
+
+.slide-enter-active {
+  transition: all 200ms ease-out;
+}
+
+.slide-leave-active {
+  transition: all 200ms ease-in;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  translate: 100%;
+  opacity: 0;
+}

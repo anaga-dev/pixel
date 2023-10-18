@@ -54,6 +54,11 @@ header {
   justify-content: space-between;
   align-items: center;
 }
+
+h2 {
+  font-size: var(--fontSizeM);
+  color: var(--colorText);
+}
 .actions {
   display: grid;
   grid-auto-flow: column;

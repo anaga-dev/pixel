@@ -76,7 +76,6 @@ import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
 import { usePoint } from '@/composables/usePoint'
-import { useMove, usePinch, useGesture } from '@vueuse/gesture'
 import Tool from '@/pixel/enums/Tool'
 
 const board = ref(null)
@@ -239,19 +238,5 @@ useKeyShortcuts(
 .button-show.expanded {
   box-shadow: none;
   transform: translate(-50%, calc(var(--spaceM) * -1));
-}
-
-.slide-enter-active {
-  transition: all 200ms ease-out;
-}
-
-.slide-leave-active {
-  transition: all 200ms ease-in;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  translate: 100%;
-  opacity: 0;
 }
 </style>

@@ -1,3 +1,16 @@
+<script setup>
+import Tool from '@/pixel/enums/Tool'
+import { useDocumentStore } from '@/stores/document'
+import { useUIStore } from '@/stores/ui'
+
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
+
+const handleColorPanel = () => {
+  uiStore.showColorPicker = true
+}
+</script>
+
 <template>
   <div class="Tools">
     <ToolButton
@@ -42,6 +55,10 @@
     >
       <Icon i="selection" />
     </ToolButton>
+    <ToolColor
+        :color="documentStore.color"
+        @click="handleColorPanel"
+      />
     <ToolButton
       label="Eyedropper"
       :active="documentStore.tool === Tool.DROPPER"
@@ -70,13 +87,6 @@
     </ToolButton>
   </div>
 </template>
-
-<script setup>
-import Tool from '@/pixel/enums/Tool'
-import { useDocumentStore } from '@/stores/document'
-
-const documentStore = useDocumentStore()
-</script>
 
 <style scoped>
 .Tools {
