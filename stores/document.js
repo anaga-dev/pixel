@@ -35,6 +35,7 @@ import { useOnionSkin } from './onionSkin'
 import { useShapeStore } from './shape'
 import { useTransformStore } from './transform'
 import { useSelectionStore } from './selection'
+import { useMagicKeys } from '@vueuse/core'
 
 
 /**
@@ -49,6 +50,7 @@ import { useSelectionStore } from './selection'
 
 export const useDocumentStore = defineStore('document', {
   state: () => ({
+    keys: useMagicKeys(),
     modal: '',
     width: 0, // document width
     height: 0, // document height
@@ -629,7 +631,7 @@ export const useDocumentStore = defineStore('document', {
     useTool(e, pointer) {
       // TODO: All this behavior can be vastly improved.
       this.modified = true
-      if (e.ctrlKey || e.buttons === 4) {
+      if (e.ctrlKey || e.buttons === 4 || this.keys.current.has(' ')) {
         if (pointer.pressure > 0) {
           this.moveBy(e.movementX, e.movementY)
         }
