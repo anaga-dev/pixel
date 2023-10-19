@@ -51,6 +51,7 @@ import { useMagicKeys } from '@vueuse/core'
 export const useDocumentStore = defineStore('document', {
   state: () => ({
     keys: useMagicKeys(),
+    cursor: 'default',
     modal: '',
     width: 0, // document width
     height: 0, // document height
@@ -68,7 +69,7 @@ export const useDocumentStore = defineStore('document', {
     previewCanvas: null,
     modified: false,
     color: '#000000',
-    colorMode: ColorMode.PALETTE,
+    colorMode: ColorMode.HSL,
     colorPicker: false,
     grid: useGridStore(),
     symmetry: useSymmetryStore(),
@@ -633,6 +634,7 @@ export const useDocumentStore = defineStore('document', {
       this.modified = true
       if (e.ctrlKey || e.buttons === 4 || this.keys.current.has(' ')) {
         if (pointer.pressure > 0) {
+          this.cursor = 'grabbing'
           this.moveBy(e.movementX, e.movementY)
         }
         return

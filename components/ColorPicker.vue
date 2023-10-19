@@ -1,5 +1,5 @@
 <template>
-  <div class="ColorPicker">
+  <Dropdown class="ColorPicker">
     <div class="colors">
       <div class="color previous" :style="{ backgroundColor: previous }">
         <div class="color-name" :style="{ color: previous }">
@@ -18,12 +18,6 @@
     <CombinedColorPicker :color="current" />
     <HuePicker :color="current" />
     <TabMenu>
-      <Tab
-        :active="documentStore.colorMode === ColorMode.PALETTE"
-        @click="documentStore.setColorMode(ColorMode.PALETTE)"
-      >
-        {{ $t('palette') }}
-      </Tab>
       <Tab
         :active="documentStore.colorMode === ColorMode.HEX"
         @click="documentStore.setColorMode(ColorMode.HEX)"
@@ -53,13 +47,7 @@
       v-else-if="documentStore.colorMode === ColorMode.RGB"
       :color="current"
     />
-    <Palette
-      v-else-if="documentStore.colorMode === ColorMode.PALETTE"
-      :selected-color="previous"
-      :palette="documentStore.palette"
-      @select="onSelectColor"
-    />
-  </div>
+  </Dropdown>
 </template>
 
 <script setup>
@@ -78,10 +66,6 @@ function onUpdateHex(color) {
   current.blue.value = color.blue
 }
 
-function onSelectColor(newStyle) {
-  current.style.value = newStyle
-}
-
 watch(
   () => current.style.value,
   (newValue) => {
@@ -92,6 +76,9 @@ watch(
 
 <style scoped>
 .ColorPicker {
+  left: calc(var(--widthToolbar) + var(--spaceS));
+  top: 50%;
+  translate: 0% -50%;
   display: grid;
   grid-auto-flow: row;
   gap: var(--spaceM);

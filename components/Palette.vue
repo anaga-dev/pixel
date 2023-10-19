@@ -4,25 +4,34 @@
       v-for="(color, index) in palette"
       :key="index"
       :color="color"
-      :active="selectedColor === color"
-      @select="$emit('select', color)"
+      :active="activeColor === color"
+      @select="onSelectColor(color)"
     />
   </div>
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
 import PaletteColor from './PaletteColor.vue'
+import { useDocumentStore } from '@/stores/document'
 
-const props = defineProps({
-  palette: {
-    type: Array,
-    required: true
-  },
-  selectedColor: {
-    type: String,
-    required: true
+const documentStore = useDocumentStore()
+const { palette } = storeToRefs(documentStore)
+
+const activeColor = ref(null)
+const current = useColor(documentStore.color)
+
+function onSelectColor(newStyle) {
+  current.style.value = newStyle
+  activeColor.value = newStyle
+}
+
+watch(
+  () => current.style.value,
+  (newValue) => {
+    documentStore.setColor(newValue)
   }
-})
+)
 </script>
 
 <style scoped>

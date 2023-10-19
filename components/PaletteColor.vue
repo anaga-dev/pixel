@@ -27,6 +27,6 @@ const props = defineProps({
 }
 
 .active {
-  border: 2px solid var(--colorAccent);
+  outline: 2px solid var(--colorTextPrimary);
 }
 </style>

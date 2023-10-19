@@ -55,10 +55,7 @@ const handleColorPanel = () => {
     >
       <Icon i="selection" />
     </ToolButton>
-    <ToolColor
-        :color="documentStore.color"
-        @click="handleColorPanel"
-      />
+    <ToolColor :color="documentStore.color" />
     <ToolButton
       label="Eyedropper"
       :active="documentStore.tool === Tool.DROPPER"

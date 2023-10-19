@@ -32,11 +32,11 @@
     <Transition name="slide">
       <aside v-if="uiStore.showPanel" class="PANELS">
         <Panel
-          :title="$t('studio.color')"
-          :expanded="uiStore.showColorPicker"
-          @toggle="uiStore.toggleColorPicker"
+          :title="$t('palette')"
+          :expanded="uiStore.showPalette"
+          @toggle="uiStore.togglePalette"
         >
-          <ColorPicker />
+          <Palette />
         </Panel>
         <Divider />
         <Panel
@@ -65,17 +65,19 @@
   />
   <SymmetrySettings v-if="uiStore.showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
+  <ColorPicker
+    v-if="uiStore.showColorPicker"
+    @close="uiStore.toggleColorPicker()"
+  />
 </template>
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import { useZoomStore } from '@/stores/zoom'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
-import { usePoint } from '@/composables/usePoint'
 import Tool from '@/pixel/enums/Tool'
 
 const board = ref(null)
@@ -85,8 +87,7 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
-const zoomStore = useZoomStore()
-const coords = ref(null)
+const current = useColor(documentStore.color)
 
 useBeforeUnload(
   () => true,

@@ -8,7 +8,8 @@ export const useUIStore = defineStore('ui', {
     },
     showOverlay: null,
     showPanel: true,
-    showColorPicker: true,
+    showColorPicker: false,
+    showPalette: true,
     showLayers: true,
     showSplash: false,
     showTooltip: null,
@@ -53,6 +54,9 @@ export const useUIStore = defineStore('ui', {
     },
     toggleColorPicker() {
       this.showColorPicker = !this.showColorPicker
+    },
+    togglePalette() {
+      this.showPalette = !this.showPalette
     },
     togglePalettePanel() {
       this.showPalette = !this.showPalette
