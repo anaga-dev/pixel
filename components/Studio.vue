@@ -6,7 +6,7 @@
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="board" :class="{ dragging: draggingCanvas }">
+    <main class="BOARD" ref="board" :class="{ dragging: draggingCanvas }" @keydown.ctrl="draggingCanvas = true">
       <Document v-if="documentStore.canvas" :board="board" />
       <Selection
         v-if="
@@ -79,6 +79,7 @@ import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
 import Tool from '@/pixel/enums/Tool'
+import { onKeyDown, onKeyUp } from '@vueuse/core'
 
 const board = ref(null)
 const showingAnimation = ref(false)
@@ -158,6 +159,14 @@ useKeyShortcuts(
     [['x'], () => documentStore.zoom.decrease()]
   ])
 )
+
+/* onKeyDown(' ', () => {
+  draggingCanvas.value = true
+})
+
+onKeyUp(' ', () => {
+  draggingCanvas.value = false
+}) */
 </script>
 
 <style scoped>

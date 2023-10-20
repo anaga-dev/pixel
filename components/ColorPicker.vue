@@ -1,19 +1,14 @@
 <template>
   <Dropdown class="ColorPicker">
     <div class="colors">
-      <div class="color previous" :style="{ backgroundColor: previous }">
-        <div class="color-name" :style="{ color: previous }">
-          {{ $t('previous') }}
-        </div>
+      <div class="samples">
+        <div class="sample previous" :style="{ backgroundColor: previous }"></div>
+        <div
+          class="sample current"
+          :style="{ backgroundColor: current.style.value }"
+        ></div>
       </div>
-      <div
-        class="color current"
-        :style="{ backgroundColor: current.style.value }"
-      >
-        <div class="color-name" :style="{ color: previous }">
-          {{ $t('current') }}
-        </div>
-      </div>
+      <Button variant="ghost" @click="documentStore.addPaletteColor()"><Icon i="add-to-palette" /></Button>
     </div>
     <CombinedColorPicker :color="current" />
     <HuePicker :color="current" />
@@ -52,10 +47,12 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+import { usePaletteStore } from '@/stores/palette'
 import { useColor } from '@/composables/useColor'
 import ColorMode from '@/pixel/enums/ColorMode'
 
 const documentStore = useDocumentStore()
+const paletteStore = usePaletteStore()
 
 const previous = readonly(ref(documentStore.color))
 const current = useColor(documentStore.color)
@@ -64,6 +61,10 @@ function onUpdateHex(color) {
   current.red.value = color.red
   current.green.value = color.green
   current.blue.value = color.blue
+}
+
+function addColorToPalette() {
+  paletteStore.add(current.style.value)
 }
 
 watch(
@@ -91,12 +92,19 @@ watch(
 
 .colors {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
+  gap: var(--spaceS);
+  align-items: center;
+}
+
+.samples {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   clip-path: var(--pixelCorners);
   overflow: hidden;
 }
 
-.color {
+.sample {
   padding: var(--spaceM);
   display: grid;
   place-content: center;

@@ -248,6 +248,7 @@ export const useDocumentStore = defineStore('document', {
       this.tool = tool
     },
     eyeDropper(x, y) {
+      // TODO: I could use this.canvas for selecting the composite color. I should modify getColor so if alpha is transparent it doesn't select anything.
       const context = CanvasContext2D.get(this.layer.canvas)
       const previousColor = this.color
       const nextColor = CanvasContext2D.getColor(context, x, y)
