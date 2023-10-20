@@ -79,6 +79,7 @@ button {
   border: none;
   background-color: transparent;
   color: var(--colorText);
+  text-align: center;
 }
 
 input:is([type=text], [type=number], [type=date], [type=email], [type=password]),

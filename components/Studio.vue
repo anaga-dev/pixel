@@ -6,7 +6,7 @@
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="board">
+    <main class="BOARD" ref="board" :class="{ dragging: draggingCanvas }">
       <Document v-if="documentStore.canvas" :board="board" />
       <Selection
         v-if="
@@ -87,7 +87,7 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
-const current = useColor(documentStore.color)
+const draggingCanvas = ref(false)
 
 useBeforeUnload(
   () => true,
@@ -200,7 +200,14 @@ useKeyShortcuts(
   overflow: hidden;
   background-color: var(--colorLayer0);
   z-index: 0;
+}
+
+.BOARD:not(.dragging) {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
+}
+.BOARD.dragging {
+  background-color: red;
+  cursor: url('@/assets/cursors/dragging.svg') 12 12, auto;
 }
 
 .ANIMATION {

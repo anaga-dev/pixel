@@ -51,7 +51,6 @@ import { useMagicKeys } from '@vueuse/core'
 export const useDocumentStore = defineStore('document', {
   state: () => ({
     keys: useMagicKeys(),
-    cursor: 'default',
     modal: '',
     width: 0, // document width
     height: 0, // document height
@@ -632,9 +631,8 @@ export const useDocumentStore = defineStore('document', {
     useTool(e, pointer) {
       // TODO: All this behavior can be vastly improved.
       this.modified = true
-      if (e.ctrlKey || e.buttons === 4 || this.keys.current.has(' ')) {
+      if (e.buttons === 4 || this.keys.current.has(' ')) {
         if (pointer.pressure > 0) {
-          this.cursor = 'grabbing'
           this.moveBy(e.movementX, e.movementY)
         }
         return
