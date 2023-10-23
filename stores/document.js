@@ -253,8 +253,14 @@ export const useDocumentStore = defineStore('document', {
     eyeDropper(x, y) {
       if (x < 0 || x > this.width || y < 0 || y > this.height) return
       const context = this.getLayerContext(this.dropper.selectCompositeColor)
+      const sampledColor = CanvasContext2D.getColor(context, x, y)
+
+      const alpha = parseFloat(sampledColor.match(/(\d+\.\d+|\d+)/g)[3])
+      if (alpha === 0) return
+
       const previousColor = this.color
-      const nextColor = CanvasContext2D.getColor(context, x, y)
+      const nextColor = sampledColor
+
       console.log('eyeDropper', nextColor)
       this.history.add({
         type: 'setColor',
