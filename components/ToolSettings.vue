@@ -6,6 +6,7 @@
     <ToolSettingsShape v-else-if="tool === Tool.SHAPE" />
     <ToolSettingsTransform v-else-if="tool === Tool.TRANSFORM" />
     <ToolSettingsSelect v-else-if="tool === Tool.SELECT" />
+    <ToolSettingsEyedropper v-else-if="tool === Tool.DROPPER" />
   </div>
 </template>
 

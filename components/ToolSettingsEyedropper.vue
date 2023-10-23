@@ -1,7 +1,7 @@
 <template>
-  <ToolButton :active="document.fill.contiguous" @click="document.toggleFillContiguous()">
-    <Icon i="droplet" />
-    Composite
+  <ToolButton :active="document.dropper.selectCompositeColor" @click="document.toggleDropperCompositeColor()">
+    <Icon i="composite" />
+    {{ $t('studio.composite') }}
   </ToolButton>
 </template>
 

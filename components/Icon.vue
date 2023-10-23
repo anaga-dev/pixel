@@ -159,6 +159,19 @@
           d="M8 4V8H4V40H8V44H40V40H44V8H40V4H8ZM40 8H8V40H40V8Z"
         />
       </g>
+      <g id="composite">
+        <path d="M20 20H24V24H20V20Z" />
+        <path d="M28 24H32V20H28V24Z" />
+        <path d="M28 28V24H24V28H20V32H24V28H28Z" />
+        <path d="M28 28H32V32H28V28Z" />
+        <path d="M20 20V16H16V20H20Z" />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12 4V8H8V12H4V28H8V32H12V36H16V40H20V44H36V40H40V36H44V20H40V16H36V12H32V8H28V4H12ZM12 8V12H8V28H12V20H16V24H20V28H16V32H20V36H24V32H28V36H32V32H36V28H32V24H36V20H32V16H28V20H24V16H20V12H28V8H12Z"
+         
+        />
+      </g>
       <g id="contract">
         <path
           fill-rule="evenodd"
