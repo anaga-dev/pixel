@@ -79,7 +79,7 @@
     "saturation": "Saturation",
     "lightness": "Lightness",
     "freehand": "Freehand",
-    "composite": "Composite"
+    "composite": "All layers"
   },
   "error": {
     "title": "Error",
