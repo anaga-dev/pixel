@@ -1073,7 +1073,8 @@ export const useDocumentStore = defineStore('document', {
       this.modal = ''
       this.width = width
       this.height = height
-      this.palette = palette
+      console.log(palette)
+      this.palette.set(palette)
       this.symmetry.position.set(this.width / 2, this.height / 2)
       this.layers.set(layers)
       this.tool = Tool.PENCIL

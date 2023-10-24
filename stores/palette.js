@@ -1,20 +1,21 @@
 export const usePaletteStore = defineStore('palette', () => {
-  const colors = ref([])
+  const colors = reactive([])
+  console.log(colors)
 
   /**
    * Set palette colors
    *
-   * @param {Array<string>} colors
+   * @param {Array<string>} newColors
    */
-  function set(colors) {
-    colors.splice(0, colors.length, ...colors)
+  function set(newColors) {
+    colors.splice(0, colors.length, ...newColors)
   }
 
   /**
    * Add color to palette
    */
-  function add() {
-    colors.push(this.color)
+  function add(color) {
+    colors.push(color)
   }
 
   function addAt(index, color) {

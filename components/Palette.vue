@@ -1,7 +1,7 @@
 <template>
   <div class="Palette">
     <PaletteColor
-      v-for="(color, index) in palette"
+      v-for="(color, index) in palette.colors"
       :key="index"
       :color="color"
       :active="activeColor === color"
@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 import PaletteColor from './PaletteColor.vue'
 import { useDocumentStore } from '@/stores/document'
 
