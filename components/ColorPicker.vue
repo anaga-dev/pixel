@@ -1,29 +1,18 @@
 <template>
-  <div class="ColorPicker">
+  <Dropdown class="ColorPicker">
     <div class="colors">
-      <div class="color previous" :style="{ backgroundColor: previous }">
-        <div class="color-name" :style="{ color: previous }">
-          {{ $t('previous') }}
-        </div>
+      <div class="samples">
+        <div class="sample previous" :style="{ backgroundColor: previous }"></div>
+        <div
+          class="sample current"
+          :style="{ backgroundColor: current.style.value }"
+        ></div>
       </div>
-      <div
-        class="color current"
-        :style="{ backgroundColor: current.style.value }"
-      >
-        <div class="color-name" :style="{ color: previous }">
-          {{ $t('current') }}
-        </div>
-      </div>
+      <Button variant="ghost" @click="documentStore.addPaletteColor()"><Icon i="add-to-palette" /></Button>
     </div>
     <CombinedColorPicker :color="current" />
     <HuePicker :color="current" />
     <TabMenu>
-      <Tab
-        :active="documentStore.colorMode === ColorMode.PALETTE"
-        @click="documentStore.setColorMode(ColorMode.PALETTE)"
-      >
-        {{ $t('palette') }}
-      </Tab>
       <Tab
         :active="documentStore.colorMode === ColorMode.HEX"
         @click="documentStore.setColorMode(ColorMode.HEX)"
@@ -53,21 +42,17 @@
       v-else-if="documentStore.colorMode === ColorMode.RGB"
       :color="current"
     />
-    <Palette
-      v-else-if="documentStore.colorMode === ColorMode.PALETTE"
-      :selected-color="previous"
-      :palette="documentStore.palette"
-      @select="onSelectColor"
-    />
-  </div>
+  </Dropdown>
 </template>
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+import { usePaletteStore } from '@/stores/palette'
 import { useColor } from '@/composables/useColor'
 import ColorMode from '@/pixel/enums/ColorMode'
 
 const documentStore = useDocumentStore()
+const paletteStore = usePaletteStore()
 
 const previous = readonly(ref(documentStore.color))
 const current = useColor(documentStore.color)
@@ -78,8 +63,8 @@ function onUpdateHex(color) {
   current.blue.value = color.blue
 }
 
-function onSelectColor(newStyle) {
-  current.style.value = newStyle
+function addColorToPalette() {
+  paletteStore.add(current.style.value)
 }
 
 watch(
@@ -92,6 +77,9 @@ watch(
 
 <style scoped>
 .ColorPicker {
+  left: calc(var(--widthToolbar) + var(--spaceS));
+  top: 50%;
+  translate: 0% -50%;
   display: grid;
   grid-auto-flow: row;
   gap: var(--spaceM);
@@ -104,12 +92,19 @@ watch(
 
 .colors {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
+  gap: var(--spaceS);
+  align-items: center;
+}
+
+.samples {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   clip-path: var(--pixelCorners);
   overflow: hidden;
 }
 
-.color {
+.sample {
   padding: var(--spaceM);
   display: grid;
   place-content: center;

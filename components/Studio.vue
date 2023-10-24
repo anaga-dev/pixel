@@ -6,7 +6,7 @@
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="board">
+    <main class="BOARD" ref="board" :class="{ dragging: draggingCanvas }" @keydown.ctrl="draggingCanvas = true">
       <Document v-if="documentStore.canvas" :board="board" />
       <Selection
         v-if="
@@ -32,11 +32,11 @@
     <Transition name="slide">
       <aside v-if="uiStore.showPanel" class="PANELS">
         <Panel
-          :title="$t('studio.color')"
-          :expanded="uiStore.showColorPicker"
-          @toggle="uiStore.toggleColorPicker"
+          :title="$t('palette')"
+          :expanded="uiStore.showPalette"
+          @toggle="uiStore.togglePalette"
         >
-          <ColorPicker />
+          <Palette />
         </Panel>
         <Divider />
         <Panel
@@ -65,18 +65,21 @@
   />
   <SymmetrySettings v-if="uiStore.showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
+  <ColorPicker
+    v-if="uiStore.showColorPicker"
+    @close="uiStore.toggleColorPicker()"
+  />
 </template>
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import { useZoomStore } from '@/stores/zoom'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
-import { usePoint } from '@/composables/usePoint'
 import Tool from '@/pixel/enums/Tool'
+import { onKeyDown, onKeyUp } from '@vueuse/core'
 
 const board = ref(null)
 const showingAnimation = ref(false)
@@ -85,8 +88,7 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
-const zoomStore = useZoomStore()
-const coords = ref(null)
+const draggingCanvas = ref(false)
 
 useBeforeUnload(
   () => true,
@@ -157,6 +159,14 @@ useKeyShortcuts(
     [['x'], () => documentStore.zoom.decrease()]
   ])
 )
+
+/* onKeyDown(' ', () => {
+  draggingCanvas.value = true
+})
+
+onKeyUp(' ', () => {
+  draggingCanvas.value = false
+}) */
 </script>
 
 <style scoped>
@@ -199,7 +209,14 @@ useKeyShortcuts(
   overflow: hidden;
   background-color: var(--colorLayer0);
   z-index: 0;
+}
+
+.BOARD:not(.dragging) {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
+}
+.BOARD.dragging {
+  background-color: red;
+  cursor: url('@/assets/cursors/dragging.svg') 12 12, auto;
 }
 
 .ANIMATION {

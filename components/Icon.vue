@@ -29,6 +29,18 @@
           d="M20 8H16V4H20H24H28V8H24H20ZM36 16H32V12H28V8H32H36V12V16ZM40 36V32V28V24H36V20V16H40V20H44V24V28V32V36H40ZM36 40V36H40V40H36ZM16 36H20H24V40H28H32H36V44H32H28H24H20V40H16V36ZM8 28H12V32H16V36H12H8V32V28ZM8 16V20V24V28H4V24V20V16H8ZM8 16H12V12H16V8H12H8V12V16ZM20 20V16H24V20H28V24H24V28H20V24H16V20H20ZM32 32H36V28H32V32ZM32 32H28V36H32V32Z"
         />
       </g>
+      <g id="add-to-palette">
+        <path d="M12 8H36V12H12V8Z" />
+        <path d="M8 16V12H12V16H8Z" />
+        <path d="M8 36H4V16H8V36Z" />
+        <path d="M12 40H8V36H12V40Z" />
+        <path d="M20 36V44H12V40H16V36H20Z" />
+        <path d="M36 32V36H20V32H36Z" />
+        <path d="M40 28V32H36V28H40Z" />
+        <path d="M40 16H44V28H40V16Z" />
+        <path d="M40 16V12H36V16H40Z" />
+        <path d="M26 20V16H22V20H18V24H22V28H26V24H30V20H26Z" />
+      </g>
       <g id="arrow-down">
         <path
           fill-rule="evenodd"
@@ -141,7 +153,24 @@
         <rect x="8" y="8" width="32" height="32" />
       </g>
       <g id="color-outline">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4V8H4V40H8V44H40V40H44V8H40V4H8ZM40 8H8V40H40V8Z" />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M8 4V8H4V40H8V44H40V40H44V8H40V4H8ZM40 8H8V40H40V8Z"
+        />
+      </g>
+      <g id="composite">
+        <path d="M20 20H24V24H20V20Z" />
+        <path d="M28 24H32V20H28V24Z" />
+        <path d="M28 28V24H24V28H20V32H24V28H28Z" />
+        <path d="M28 28H32V32H28V28Z" />
+        <path d="M20 20V16H16V20H20Z" />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12 4V8H8V12H4V28H8V32H12V36H16V40H20V44H36V40H40V36H44V20H40V16H36V12H32V8H28V4H12ZM12 8V12H8V28H12V20H16V24H20V28H16V32H20V36H24V32H28V36H32V32H36V28H32V24H36V20H32V16H28V20H24V16H20V12H28V8H12Z"
+         
+        />
       </g>
       <g id="contract">
         <path

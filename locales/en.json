@@ -78,7 +78,8 @@
     "hue": "Hue",
     "saturation": "Saturation",
     "lightness": "Lightness",
-    "freehand": "Freehand"
+    "freehand": "Freehand",
+    "composite": "Composite"
   },
   "error": {
     "title": "Error",

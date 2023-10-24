@@ -37,7 +37,6 @@ import { useTransformStore } from './transform'
 import { useSelectionStore } from './selection'
 import { useMagicKeys } from '@vueuse/core'
 
-
 /**
  * This is the Document type that is used when
  * loading and saving a document.
@@ -68,7 +67,7 @@ export const useDocumentStore = defineStore('document', {
     previewCanvas: null,
     modified: false,
     color: '#000000',
-    colorMode: ColorMode.PALETTE,
+    colorMode: ColorMode.HSL,
     colorPicker: false,
     grid: useGridStore(),
     symmetry: useSymmetryStore(),
@@ -81,6 +80,7 @@ export const useDocumentStore = defineStore('document', {
     transform: useTransformStore(),
     selection: useSelectionStore(),
     dropper: {
+      selectCompositeColor: false,
       includeReferenceLayers: true
     },
     history: useHistoryStore(),
@@ -173,8 +173,7 @@ export const useDocumentStore = defineStore('document', {
     updateCanvasRect() {
       // We need to get client rect so we can calculate
       // the selection canvas position.
-      if (!this.canvas)
-        return
+      if (!this.canvas) return
 
       this.canvasRect = this.canvas.getBoundingClientRect()
     },
@@ -247,10 +246,22 @@ export const useDocumentStore = defineStore('document', {
       })
       this.tool = tool
     },
+    getLayerContext(composite) {
+      if (composite) return CanvasContext2D.get(this.canvas)
+      return CanvasContext2D.get(this.layer.canvas)
+    },
     eyeDropper(x, y) {
-      const context = CanvasContext2D.get(this.layer.canvas)
+      if (x < 0 || x > this.width || y < 0 || y > this.height) return
+      const context = this.getLayerContext(this.dropper.selectCompositeColor)
+      const sampledColor = CanvasContext2D.getColor(context, x, y)
+
+      const alpha = parseFloat(sampledColor.match(/(\d+\.\d+|\d+)/g)[3])
+      if (alpha === 0) return
+
       const previousColor = this.color
-      const nextColor = CanvasContext2D.getColor(context, x, y)
+      const nextColor = sampledColor
+
+      console.log('eyeDropper', nextColor)
       this.history.add({
         type: 'setColor',
         payload: {
@@ -259,6 +270,9 @@ export const useDocumentStore = defineStore('document', {
         }
       })
       this.color = nextColor
+    },
+    toggleDropperCompositeColor() {
+      this.dropper.selectCompositeColor = !this.dropper.selectCompositeColor
     },
     doTempPaintOperation(callback) {
       ImageDataUtils.clear(this.drawingImageData, [0, 0, 0, 0])
@@ -288,7 +302,13 @@ export const useDocumentStore = defineStore('document', {
       // no pinta bien el alpha.
       if (!this.fill.contiguous) {
         this.doLayerPaintOperation((imageData) =>
-          ImageDataUtils.replaceColorAt(imageData, x, y, Color.toUint8(color), mask)
+          ImageDataUtils.replaceColorAt(
+            imageData,
+            x,
+            y,
+            Color.toUint8(color),
+            mask
+          )
         )
       } else {
         this.doLayerPaintOperation((imageData) =>
@@ -327,7 +347,17 @@ export const useDocumentStore = defineStore('document', {
         )
       }
     },
-    doSymmetry4Operation(callback, imageData, x1, y1, x2, y2, color, dither, mask) {
+    doSymmetry4Operation(
+      callback,
+      imageData,
+      x1,
+      y1,
+      x2,
+      y2,
+      color,
+      dither,
+      mask
+    ) {
       callback(imageData, x1, y1, x2, y2, color, dither, mask)
       if (this.symmetry.axis === null) {
         return
@@ -631,7 +661,7 @@ export const useDocumentStore = defineStore('document', {
     useTool(e, pointer) {
       // TODO: All this behavior can be vastly improved.
       this.modified = true
-      if (e.ctrlKey || e.buttons === 4 || this.keys.current.has(' ')) {
+      if (e.buttons === 4 || this.keys.current.has(' ')) {
         if (pointer.pressure > 0) {
           this.moveBy(e.movementX, e.movementY)
         }
@@ -656,7 +686,13 @@ export const useDocumentStore = defineStore('document', {
 
         if (e.type === 'pointerdown') {
           if (this.pencil.size === 1) {
-            this.putColor(pointer.current.x, pointer.current.y, color, dither, mask)
+            this.putColor(
+              pointer.current.x,
+              pointer.current.y,
+              color,
+              dither,
+              mask
+            )
           } else {
             const sizeHalf = size / 2
             const subSizeHalf = size % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
@@ -778,9 +814,19 @@ export const useDocumentStore = defineStore('document', {
         }
       } else if (this.tool === Tool.FILL && pointer.pressure > 0) {
         if (this.fill.type === FillType.ERASE) {
-          this.fillColor('rgba(0,0,0,0)', pointer.current.x, pointer.current.y, this.selection.getMaskImageData())
+          this.fillColor(
+            'rgba(0,0,0,0)',
+            pointer.current.x,
+            pointer.current.y,
+            this.selection.getMaskImageData()
+          )
         } else if (this.fill.type === FillType.FILL) {
-          this.fillColor(this.color, pointer.current.x, pointer.current.y, this.selection.getMaskImageData())
+          this.fillColor(
+            this.color,
+            pointer.current.x,
+            pointer.current.y,
+            this.selection.getMaskImageData()
+          )
         }
       } else if (this.tool === Tool.SHAPE) {
         if (e.type === 'pointerdown') {
@@ -969,7 +1015,11 @@ export const useDocumentStore = defineStore('document', {
       this.drawing = false
       // TODO: We should completely remake this so it uses putImageData
       // instead of drawImage.
-      this.drawingCanvas = Canvas.createOrGet(this.drawingCanvas, this.width, this.height)
+      this.drawingCanvas = Canvas.createOrGet(
+        this.drawingCanvas,
+        this.width,
+        this.height
+      )
       this.drawingImageData = new ImageData(this.width, this.height)
       this.copyCanvas = Canvas.createOrGet(
         this.copyCanvas,
@@ -1347,9 +1397,7 @@ export const useDocumentStore = defineStore('document', {
         input.type = 'file'
         input.accept = '.ora,.png'
         input.multiple = false
-        input.onchange = async (e) => {
-
-        }
+        input.onchange = async (e) => {}
       }
     },
     /**
@@ -1410,7 +1458,10 @@ export const useDocumentStore = defineStore('document', {
           this.layers.removeAt(actionToUndo.payload.index)
           break
         case 'removeLayer':
-          this.layers.addAt(actionToUndo.payload.index, actionToUndo.payload.layer)
+          this.layers.addAt(
+            actionToUndo.payload.index,
+            actionToUndo.payload.layer
+          )
           break
         case 'swapLayers':
           this.layers.swap(
@@ -1453,7 +1504,10 @@ export const useDocumentStore = defineStore('document', {
           break
         case 'duplicateLayer':
         case 'addLayer':
-          this.layers.addAt(actionToRedo.payload.index, actionToRedo.payload.layer)
+          this.layers.addAt(
+            actionToRedo.payload.index,
+            actionToRedo.payload.layer
+          )
           break
         case 'removeLayer':
           this.layers.removeAt(actionToRedo.payload.index)
@@ -1465,8 +1519,7 @@ export const useDocumentStore = defineStore('document', {
           )
           break
         case 'changeLayerName':
-          actionToRedo.payload.layer.name.value =
-            actionToRedo.payload.name
+          actionToRedo.payload.layer.name.value = actionToRedo.payload.name
           break
         default:
           console.log('To implement', actionToRedo)

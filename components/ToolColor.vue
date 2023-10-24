@@ -1,11 +1,7 @@
-<template>
-  <Button variant="ghost" :style="`color: ${color}`" @click.stop="$emit('click')">
-    <Icon class="outline" i="color-outline" />
-    <Icon class="color" i="color" />
-  </Button>
-</template>
-
 <script setup>
+import { useUIStore } from '@/stores/ui'
+const uiStore = useUIStore()
+
 const emit = defineEmits(['click'])
 
 const props = defineProps({
@@ -15,6 +11,13 @@ const props = defineProps({
   }
 })
 </script>
+
+<template>
+  <Button variant="ghost" :style="`color: ${color}`" @click.stop="uiStore.toggleColorPicker()">
+    <Icon class="outline" i="color-outline" />
+    <Icon class="color" i="color" />
+  </Button>
+</template>
 
 <style scoped>
 button {

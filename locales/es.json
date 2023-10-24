@@ -77,7 +77,8 @@
     "hue": "Tono",
     "saturation": "Saturación",
     "lightness": "Luminosidad",
-    "freehand": "Trazo libre"
+    "freehand": "Trazo libre",
+    "composite": "Composición"
   },
   "error": {
     "title": "Error",
