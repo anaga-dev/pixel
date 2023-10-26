@@ -2,21 +2,35 @@
   <div
     class="Layer"
     draggable="true"
-    :class="{ active: active, invisible: !layer.visible.value }"
+    :class="{
+      active: active,
+      invisible: !layer.visible.value,
+      top: dropTop,
+      bottom: dropBottom
+    }"
     :data-index="index"
     @click="$emit('activate', layer)"
-    @drag="onDrag"
-    @dragstart="onDragStart"
-    @dragover="onDragOver"
-    @dragenter="onDragEnter"
-    @dragleave="onDragLeave"
-    @dragend="onDragEnd"
-    @drop.capture="onDrop">
+  >
     <div class="actions">
-      <Button class="action" :label="$t('studio.layer-settings')" :active="settings" variant="ghost" @click.stop="$emit('settings', layer)" @drop="onDrop">
+      <Button
+        class="action"
+        :label="$t('studio.layer-settings')"
+        :active="settings"
+        variant="ghost"
+        @click.stop="$emit('settings', layer)"
+      >
         <Icon i="settings" />
       </Button>
-      <Button class="action" :label="layer.visible.value ? $t('studio.hide-layer') : $t('studio.show-layer')" variant="ghost" @click="$emit('visible', layer)">
+      <Button
+        class="action"
+        :label="
+          layer.visible.value
+            ? $t('studio.hide-layer')
+            : $t('studio.show-layer')
+        "
+        variant="ghost"
+        @click="$emit('visible', layer)"
+      >
         <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
       </Button>
     </div>
@@ -35,10 +49,6 @@
 </template>
 
 <script setup>
-import { useDocumentStore } from '@/stores/document'
-
-const document = useDocumentStore()
-
 const props = defineProps({
   index: {
     type: Number,
@@ -55,54 +65,20 @@ const props = defineProps({
   settings: {
     type: Boolean,
     required: false
+  },
+  dropTop: {
+    type: Boolean,
+    required: false
+  },
+  dropBottom: {
+    type: Boolean,
+    required: false
   }
 })
 
 const preview = ref()
 
 onMounted(() => preview.value.appendChild(props.layer.canvas))
-
-function onDrag(e) {
-  console.log(e.type, e)
-}
-
-function onDragStart(e) {
-  console.log(e.type, e)
-  e.dataTransfer.setData('text/plain', JSON.stringify({
-    index: props.index,
-    layer: {
-      id: props.layer.id
-    }
-  }))
-}
-
-function onDragOver(e) {
-  console.log(e.type, e)
-  e.preventDefault()
-}
-
-function onDragEnd(e) {
-  console.log(e.type, e)
-}
-
-function onDragEnter(e) {
-  console.log(e.type, e)
-}
-
-function onDragLeave(e) {
-  console.log(e.type, e)
-}
-
-function onDrop(e) {
-  const payload = e.dataTransfer.getData('text/plain')
-  if (!payload) {
-    return
-  }
-  const { index: fromIndex, layer } = JSON.parse(payload)
-  const destination = e.target
-  const toIndex = parseInt(destination.dataset.index, 10)
-  document.layers.swap(fromIndex, toIndex)
-}
 </script>
 
 <style scoped>
@@ -110,6 +86,7 @@ function onDrop(e) {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
+  position: relative;
 }
 
 .Layer.active {
@@ -139,6 +116,26 @@ function onDrop(e) {
   aspect-ratio: 1;
   overflow: hidden;
   background: url('@/assets/checkers.png');
+}
+
+.top::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  top: -2px;
+  height: 4px;
+  left: 0;
+  background-color: var(--colorAccent);
+}
+
+.bottom::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  bottom: -2px;
+  height: 4px;
+  left: 0;
+  background-color: var(--colorAccent);
 }
 
 canvas {

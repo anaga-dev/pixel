@@ -1405,8 +1405,11 @@ export const useDocumentStore = defineStore('document', {
      * Save file
      */
     async saveFileAs() {
+      const suggestedFileName = 'untitled'
+      const fileExtension = '.ora'
       if ('showSaveFilePicker' in window) {
         const fileHandle = await window.showSaveFilePicker({
+          suggestedName: suggestedFileName + fileExtension,
           types: ImageTypes,
           excludeAcceptAllOption: true,
           multiple: false
@@ -1418,7 +1421,7 @@ export const useDocumentStore = defineStore('document', {
         const zip = await OpenRaster.save(this)
         const a = document.createElement('a')
         a.href = URL.createObjectURL(zip)
-        a.download = 'test.ora'
+        a.download = suggestedFileName + fileExtension
         a.click()
       }
       this.modified = false

@@ -127,7 +127,7 @@ function onDelete(layer) {
 <style scoped>
 .layer-settings {
   top: calc(var(--widthToolbar) + var(--spaceS));
-  right: var(--widthSidebar);
+  right: calc(var(--widthSidebar) + var(--spaceS));
   min-width: 20rem;
 }
 

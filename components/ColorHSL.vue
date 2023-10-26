@@ -1,7 +1,7 @@
 <template>
   <div class="ColorHSL">
     <Field :label="$t('studio.hue')" for="hue">
-      <Slider id="hue" :min="0" :max="359" v-model="hue" />
+      <Slider id="hue" :min="0" :max="360" v-model="hue" />
     </Field>
     <Field :label="$t('studio.saturation')" for="saturation">
       <Slider id="saturation" :min="0" :max="100" v-model="saturation" />

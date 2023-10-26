@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="HuePicker" @pointermove="onPointer">
+  <div ref="container" class="HuePicker" @pointerdown="startDragging">
     <!-- Picker -->
     <div class="bar" :style="{ left: `${((hue / 360) * 100)}%` }">
     </div>
@@ -19,13 +19,25 @@ const props = defineProps({
 const { hue } = props.color
 
 const container = ref()
+const boundingClientRect = computed(() => container.value.getBoundingClientRect())
 
-function onPointer(e) {
-  if (e.pressure === 0) {
-    return
-  }
-  const { width } = container.value.getBoundingClientRect()
-  hue.value = Math.floor(e.offsetX / width * 360)
+function startDragging(e) {
+  const { width } = boundingClientRect.value
+  hue.value = Math.max(0, Math.min(360, Math.round(e.offsetX / width * 360)))
+  window.addEventListener('pointermove', updateHue)
+  window.addEventListener('pointerup', stopDragging, { once: true })
+  container.addEventListener('pointerleave', stopDragging, { once: true })
+}
+
+function updateHue(e) {
+  const { width } = boundingClientRect.value
+  hue.value = Math.max(0, Math.min(360, Math.round(e.offsetX / width * 360)))
+}
+
+function stopDragging(e) {
+  window.removeEventListener('pointermove', updateHue)
+  window.removeEventListener('pointerup', stopDragging)
+  container.removeEventListener('pointerleave', stopDragging)
 }
 </script>
 
@@ -55,6 +67,7 @@ function onPointer(e) {
   position: absolute;
   width: 2px;
   height: 100%;
-  background-color: var(--colorLayer1);
+  background-color: var(--colorLayer0);
+  outline: 2px solid var(--colorTextPrimary);
 }
 </style>

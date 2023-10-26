@@ -48,4 +48,12 @@ onUpdated(() => documentStore.updateCanvasRect())
 .paint canvas {
   position: absolute;
 }
+
+canvas::after {
+  display: block;
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(transparent 1px, #000 1px), linear-gradient(90deg, transparent 1px, #000 1px);
+}
 </style>
