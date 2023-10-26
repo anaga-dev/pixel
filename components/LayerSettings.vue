@@ -1,18 +1,15 @@
 <template>
-  <Dropdown class="layer-settings" @close="document.hideLayerSettings()">
-    <header>
-      <div v-if="!editLayerName" class="name" @click="onToggleLayerNameEdit">
-        {{ layer.name.value }}
-        <Icon i="edit" />
-      </div>
-      <input
-        v-else
-        type="text"
-        v-focus
-        v-model="layerName"
-        @keydown="onKeyDown"
-      />
-    </header>
+  <Dropdown class="LayerSettings" @close="document.hideLayerSettings()">
+    <div v-if="!editLayerName" class="name" @click="onToggleLayerNameEdit">
+      {{ layer.name.value }}
+    </div>
+    <input
+      v-else
+      type="text"
+      v-focus
+      v-model="layerName"
+      @keydown="onKeyDown"
+    />
     <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
     <Field :label="$t('opacity')" for="opacity" class="opacity">
       <div class="layer-visibility">
@@ -25,7 +22,11 @@
           @update:modelValue="document.setLayerOpacity(layer, $event)"
         />
         <Button
-          :label="layer.visible.value ? $t('studio.hide-layer') : $t('studio.show-layer')"
+          :label="
+            layer.visible.value
+              ? $t('studio.hide-layer')
+              : $t('studio.show-layer')
+          "
           variant="ghost"
           @click="document.toggleLayer(layer)"
         >
@@ -125,20 +126,22 @@ function onDelete(layer) {
 </script>
 
 <style scoped>
-.layer-settings {
+.LayerSettings {
   top: calc(var(--widthToolbar) + var(--spaceS));
   right: calc(var(--widthSidebar) + var(--spaceS));
-  min-width: 20rem;
+  width: 20rem;
+  display: grid;
+  justify-content: stretch;
+  gap: var(--spaceS);
 }
 
 .name {
+  max-width: 100%;
   font-weight: bold;
   height: var(--spaceXL);
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: var(--spaceM);
-  align-items: center;
-  justify-content: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .layer-visibility {

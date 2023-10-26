@@ -34,9 +34,18 @@
         <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
       </Button>
     </div>
-    <div class="name">
-      {{ layer.name.value }}
+    <div v-if="!editLayerName" class="name" @dblclick="onToggleLayerNameEdit">
+        {{ layer.name.value }}
     </div>
+    <input
+      v-else
+      class="input-name"
+      ref="input"
+      type="text"
+      v-focus
+      v-model="layerName"
+      @keydown="onKeyDown"
+    />
     <!--
     <div class="collapse">
       <i class="bx bx-chevron-down"></i>
@@ -49,6 +58,9 @@
 </template>
 
 <script setup>
+import { useDocumentStore } from '@/stores/document'
+const documentStore = useDocumentStore()
+
 const props = defineProps({
   index: {
     type: Number,
@@ -77,6 +89,35 @@ const props = defineProps({
 })
 
 const preview = ref()
+const input = ref(null)
+const editLayerName = ref()
+const layerName = ref(unref(props.layer.name))
+
+const vFocus = {
+  mounted(el) {
+    el.focus()
+  }
+}
+
+onClickOutside(input, (e) => {
+  e.stopPropagation()
+  editLayerName.value = false
+})
+
+function onToggleLayerNameEdit() {
+  editLayerName.value = true
+}
+
+function onKeyDown(e) {
+  if (e.key === 'Enter') {
+    documentStore.changeLayerName(props.layer, layerName.value)
+    editLayerName.value = false
+  }
+  if (e.key === 'Escape') {
+    layerName.value = props.layer.name
+    editLayerName.value = false
+  }
+}
 
 onMounted(() => preview.value.appendChild(props.layer.canvas))
 </script>
@@ -107,6 +148,14 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
 .name {
   font-weight: bold;
   padding: var(--spaceS);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.input-name {
+  width: 100%;
+  color: var(--colorTextPrimary);
 }
 
 .preview {
