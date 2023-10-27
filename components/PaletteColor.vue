@@ -3,6 +3,7 @@
     class="PaletteColor"
     :class="{ active: active }"
     :style="{ backgroundColor: color }"
+    :data-index="index"
     @click="$emit('select', color)">
   </div>
 </template>
@@ -17,6 +18,10 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  index: {
+    type: Number,
+    required: true
   }
 })
 </script>

@@ -36,5 +36,14 @@ export const usePaletteStore = defineStore('palette', () => {
     return colors.pop()
   }
 
-  return { colors, set, add, addAt, removeAt, removeLast }
+  /* 
+  * Swap colors in palette
+  */
+  
+  function swap(fromIndex, toIndex) {
+    const [color] = colors.splice(fromIndex, 1)
+    colors.splice(toIndex, 0, color)
+  }
+
+  return { colors, set, add, addAt, removeAt, removeLast, swap }
 })
