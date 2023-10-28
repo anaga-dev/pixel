@@ -49,6 +49,7 @@ import { useMagicKeys } from '@vueuse/core'
 
 export const useDocumentStore = defineStore('document', {
   state: () => ({
+    board: null,
     keys: useMagicKeys(),
     modal: '',
     width: 0, // document width
@@ -1528,6 +1529,12 @@ export const useDocumentStore = defineStore('document', {
         default:
           console.log('To implement', actionToRedo)
       }
+    },
+    setBoard(board) {
+      this.board = board
+    },
+    unsetBoard() {
+      this.board = null
     }
   }
 })

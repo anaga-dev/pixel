@@ -24,7 +24,11 @@ export function usePointer(element, callback, { receiver = null, mode = 'down' }
     if (receiver === null) {
       return element
     } else {
-      return receiver
+      if (isRef(receiver)) {
+        return receiver.value
+      } else {
+        return receiver
+      }
     }
   }
 

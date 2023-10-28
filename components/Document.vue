@@ -9,13 +9,6 @@ import { useDocumentStore } from '@/stores/document'
 import { useElement } from '@/composables/useElement'
 import { usePointer } from '@/composables/usePointer'
 
-const props = defineProps({
-  board: {
-    type: Object,
-    required: true
-  }
-})
-
 const documentStore = useDocumentStore()
 
 const container = ref()
@@ -26,7 +19,7 @@ const transform = computed(() => `scale(${documentStore.zoom.current}) translate
 
 useElement(container, documentStore.canvas)
 usePointer(documentStore.canvas, documentStore.useTool, {
-  receiver: props.board
+  receiver: documentStore.board
 })
 
 onMounted(() => {

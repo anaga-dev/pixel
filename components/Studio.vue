@@ -7,7 +7,7 @@
       <Tools />
     </div>
     <main class="BOARD" ref="board" :class="{ dragging: draggingCanvas }" @keydown.ctrl="draggingCanvas = true">
-      <Document v-if="documentStore.canvas" :board="board" />
+      <Document v-if="documentStore.canvas" />
       <Selection
         v-if="
           documentStore.canvas &&
@@ -89,6 +89,9 @@ const MIN_TOUCHES = 2
 const uiStore = useUIStore()
 const documentStore = useDocumentStore()
 const draggingCanvas = ref(false)
+
+onMounted(() => documentStore.setBoard(board))
+onUnmounted(() => documentStore.unsetBoard())
 
 useBeforeUnload(
   () => true,
