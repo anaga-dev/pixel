@@ -98,6 +98,23 @@ function createStack(document) {
 }
 
 /**
+ * Returns palette XML
+ *
+ * @param {documentStoreStore} document
+ * @returns {string}
+ */
+function createPalette(document) {
+  let xml = '<?xml version="1.0" encoding="UTF-8" ?>'
+  xml += '<palette>'
+  for (let index = 0; index < document.palette.colors.length; index++) {
+    const color = document.palette.colors[index]
+    xml += `<color value="${color}" />`
+  }
+  xml += '</palette>'
+  return xml
+}
+
+/**
  * Saves a .ora file (Open Raster)
  *
  * @param {documentStoreStore} doc
@@ -105,12 +122,14 @@ function createStack(document) {
  */
 export async function save(doc) {
   const stack = createStack(doc)
+  const palette = createPalette(doc)
   const mergedImage = await Canvas.createBlob(doc.canvas, 'image/png')
   const zip = new JSZip()
   zip.file('mimetype', 'image/openraster', {
     compression: 'STORE'
   })
   zip.file('stack.xml', stack)
+  zip.file('palette.xml', palette)
   zip.file('mergedimage.png', mergedImage)
   const dataFolder = zip.folder('data')
   const layers = await Promise.all(doc.layers.list.map((layer) => Canvas.createBlob(layer.canvas, 'image/png')))
@@ -140,12 +159,16 @@ export async function load(blob) {
   }
   try {
     const stack = await zip.file('stack.xml').async('string')
+    const paletteFile = zip.file('palette.xml') ? await zip.file('palette.xml').async('string') : ''
     const parser = new DOMParser()
     const xmlDoc = parser.parseFromString(stack, 'text/xml')
+    const xmlPalette = parser.parseFromString(paletteFile, 'text/xml')
+    console.log('palette', xmlPalette)
     const image = xmlDoc.querySelector('image')
     const width = parseInt(image.getAttribute('w'), 10)
     const height = parseInt(image.getAttribute('h'), 10)
     const layerElements = Array.from(xmlDoc.querySelectorAll('layer'))
+    const paletteElements = Array.from(xmlPalette.querySelectorAll('color'))
     const blobs = await Promise.all(layerElements.map((layer) => {
       const src = layer.getAttribute('src')
       return zip.file(src).async('blob')
@@ -170,14 +193,16 @@ export async function load(blob) {
         frames: [frame]
       }
     }))
+    const palette = paletteElements.map((color) => color.getAttribute('value'))
     return {
       width,
       height,
-      layers
+      layers,
+      palette
     }
   } catch (error) {
     console.log(error)
-    throw new Error('Invalid OpenRaster stack.xml')
+    throw new Error('Invalid OpenRaster stack.xml', error)
   }
   // TODO: We need to finish this function in order to be able to load OpenRaster files.
 }
