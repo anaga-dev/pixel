@@ -1,7 +1,12 @@
 import JSZip from 'jszip'
 import Canvas from '@/pixel/canvas/Canvas'
+import Color from '@/pixel/color/Color'
 
-// @see https://www.openraster.org/baseline/layer-stack-spec.html
+/**
+ * OpenRaster format
+ *
+ * @see https://www.openraster.org/
+ */
 
 /**
  * Turns a <canvas> or a OffscreenCanvas into a thumbnail.
@@ -81,15 +86,15 @@ function getBlendMode(operation) {
 /**
  * Returns layers XML
  *
- * @param {documentStoreStore} document
+ * @param {documentStoreStore} doc
  * @returns {string}
  */
-function createStack(document) {
+function createStack(doc) {
   let xml = '<?xml version="1.0" encoding="UTF-8" ?>'
-  xml += `<image version="0.0.3" w="${document.width}" h="${document.height}" xres="${document.width}" yres="${document.height}">`
+  xml += `<image version="0.0.3" w="${doc.width}" h="${doc.height}" xres="72" yres="72">`
   xml += '<stack>'
-  for (let index = 0; index < document.layers.list.length; index++) {
-    const layer = document.layers.list[index]
+  for (let index = doc.layers.list.length - 1; index >= 0; --index) {
+    const layer = doc.layers.list[index]
     xml += `<layer name="${layer.name.value}" src="data/layer${index}.png" opacity="${layer.opacity.value}" visibility="${layer.visible.value ? 'visible': 'hidden'}" composite-op="${getCompositeOperation(layer.blendMode.value)}" x="0" y="0" />`
   }
   xml += '</stack>'
@@ -100,17 +105,21 @@ function createStack(document) {
 /**
  * Returns palette XML
  *
- * @param {documentStoreStore} document
+ * @see https://www.freedesktop.org/wiki/Specifications/OpenRaster/Draft/Palette/SwatchesFileFormatDraft/
+ * @param {documentStoreStore} doc
  * @returns {string}
  */
-function createPalette(document) {
+function createPalette(doc) {
   let xml = '<?xml version="1.0" encoding="UTF-8" ?>'
-  xml += '<palette>'
-  for (let index = 0; index < document.palette.colors.length; index++) {
-    const color = document.palette.colors[index]
-    xml += `<color value="${color}" />`
+  xml += '<colors>'
+  for (let index = 0; index < doc.palette.colors.length; index++) {
+    const color = doc.palette.colors[index]
+    const [r, g, b] = Color.parse(color)
+    // console.log(r, g, b)
+    xml += `<color name="color-${index}"><sRGB r="${r.toFixed(4)}" g="${g.toFixed(4)}" b="${b.toFixed(4)}" /></color>`
+    // xml += `<color value="${color}" />`
   }
-  xml += '</palette>'
+  xml += '</colors>'
   return xml
 }
 
@@ -159,7 +168,9 @@ export async function load(blob) {
   }
   try {
     const stack = await zip.file('stack.xml').async('string')
-    const paletteFile = zip.file('palette.xml') ? await zip.file('palette.xml').async('string') : ''
+    const paletteFile = zip.file('palette.xml')
+      ? await zip.file('palette.xml').async('string')
+      : ''
     const parser = new DOMParser()
     const xmlDoc = parser.parseFromString(stack, 'text/xml')
     const xmlPalette = parser.parseFromString(paletteFile, 'text/xml')
@@ -193,7 +204,18 @@ export async function load(blob) {
         frames: [frame]
       }
     }))
-    const palette = paletteElements.map((color) => color.getAttribute('value'))
+    const palette = paletteElements.map((color) => {
+      if (color.hasAttribute('value')) {
+        return color.getAttribute('value')
+      }
+      const srgb = color.firstElementChild
+      return Color.stringify([
+        parseFloat(srgb.getAttribute('r')),
+        parseFloat(srgb.getAttribute('g')),
+        parseFloat(srgb.getAttribute('b')),
+        1
+      ])
+    })
     return {
       width,
       height,

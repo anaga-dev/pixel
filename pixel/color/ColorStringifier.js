@@ -1,7 +1,7 @@
 import { hue } from './Color.js'
 
 export function stringifyHexChannel(channel) {
-  return (channel * 0xFF).toString(16).padStart(2, 0)
+  return Math.round(channel * 0xFF).toString(16).padStart(2, 0)
 }
 
 export function stringifyPercentageChannel(channel) {
