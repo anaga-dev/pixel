@@ -5,7 +5,7 @@
     </NuxtLayout>
   </div>
   <Dialog v-if="showDialog" />
-  <Tooltip v-if="showTooltip" />
+  <Tooltip v-if="tooltip" />
   <Notifications v-if="notifications?.length > 0" />
 </template>
 
@@ -18,6 +18,6 @@ const notificationStore = useNotificationStore()
 const confirmationStore = useConfirmationStore()
 
 const { showDialog } = storeToRefs(confirmationStore)
-const { showTooltip } = storeToRefs(uiStore)
+const { tooltip } = storeToRefs(uiStore)
 const { notifications } = storeToRefs(notificationStore)
 </script>

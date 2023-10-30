@@ -65,7 +65,7 @@ watch(
 <style scoped>
 .Palette {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--spaceL), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(2rem, 1fr));
   gap: 2px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <Dropdown class="SymmetrySettings" @close="uiStore.toggleOverlay('symmetry-settings')">
+  <Dropdown class="SymmetrySettings" @close="toggleOverlay('symmetry-settings')">
     <Button label="Horizontal symmetry" :active="axis === 'horizontal'" @click="onClick('horizontal')">
       <Icon i="symmetry-horizontal" /> Horizontal
     </Button>
@@ -19,11 +19,13 @@ import { useUIStore } from '@/stores/ui'
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
+const { toggleOverlay } = uiStore
+
 const axis = ref(documentStore.symmetry.axis)
 
 function onClick(axis) {
   documentStore.setSymmetrySettings(axis)
-  uiStore.toggleOverlay('symmetry-settings')
+  toggleOverlay('symmetry-settings')
 }
 </script>
 

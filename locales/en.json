@@ -79,7 +79,24 @@
     "saturation": "Saturation",
     "lightness": "Lightness",
     "freehand": "Freehand",
-    "composite": "All layers"
+    "composite": "All layers",
+    "tooltips": {
+      "pencil": "Pencil (B)",
+      "eraser": "Eraser (E)",
+      "fill": "Fill (G)",
+      "shapes": "Shapes (S)",
+      "transform": "Transform (V)",
+      "selection": "Selection (M)",
+      "color-picker": "Color picker (C)",
+      "eyedropper": "Eyedropper (I)",
+      "undo": "Undo (CTRL + Z)",
+      "redo": "Redo (CTRL + Y)",
+      "deselect": "Deselect (D)",
+      "expand-side-panel": "Expand side panel",
+      "collapse-side-panel": "Collapse side panel",
+      "symmetry": "Symmetry",
+      "Zoom": "Zoom"
+    }
   },
   "error": {
     "title": "Error",

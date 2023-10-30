@@ -47,14 +47,6 @@
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
-import { useUIStore } from '@/stores/ui'
-import { useConfirmationStore } from '@/stores/confirmation'
-const uiStore = useUIStore()
-const confirmationStore = useConfirmationStore()
-
-const { open } = confirmationStore
-
 const router = useRouter()
 
 // This Promise is resolved when user clicks on install button.

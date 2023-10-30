@@ -14,7 +14,6 @@ const props = defineProps({
 })
 
 const handleSettings = (layer) => {
-  document
   document.showLayerSettings(layer)
 }
 

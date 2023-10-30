@@ -1,8 +1,8 @@
 <template>
-  <Button variant="dropdown" label="Brush shape" @click.stop="uiStore.toggleOverlay('brush-shape')">
+  <Button variant="dropdown" label="Brush shape" @click.stop="toggleOverlay('brush-shape')">
     <Icon :i="`brush-${documentStore.pencil.shape}`" />
   </Button>
-  <Button variant="dropdown" label="Brush size" @click.stop="uiStore.toggleOverlay('brush-size')">
+  <Button variant="dropdown" label="Brush size" @click.stop="toggleOverlay('brush-size')">
     {{ documentStore.pencil.size }}px
   </Button>
   <Divider vertical v-if="documentStore.pencil.shape === 'dither'" />
@@ -10,27 +10,31 @@
     <Icon :i="`dither-${documentStore.pencil.dither.level}`" />
   </Button>
   <BrushSelector
-    v-if="uiStore.showOverlay === 'brush-shape'"
+    v-if="showOverlay === 'brush-shape'"
     @select="onBrushShape"
-    @close="uiStore.toggleOverlay('brush-shape')" />
+    @close="toggleOverlay('brush-shape')" />
   <BrushSize
-    v-else-if="uiStore.showOverlay === 'brush-size'"
+    v-else-if="showOverlay === 'brush-size'"
     :size="documentStore.pencil.size"
     @update="onBrushSize"
-    @close="uiStore.toggleOverlay('brush-size')" />
-  <BrushDither v-else-if="uiStore.showOverlay === 'brush-dither'" @select="onBrushDither" @close="uiStore.toggleOverlay('brush-dither')" />
+    @close="toggleOverlay('brush-size')" />
+  <BrushDither v-else-if="showOverlay === 'brush-dither'" @select="onBrushDither" @close="toggleOverlay('brush-dither')" />
 </template>
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
+import { storeToRefs } from 'pinia'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
+const { showOverlay } = storeToRefs(uiStore)
+const { toggleOverlay } = uiStore
+
 function onBrushShape(shape) {
   documentStore.setPencilShape(shape)
-  uiStore.toggleOverlay('brush-shape')
+  toggleOverlay('brush-shape')
 }
 
 function onBrushSize(size) {
@@ -39,6 +43,6 @@ function onBrushSize(size) {
 
 function onBrushDither(dither) {
   documentStore.setPencilDitherLevel(dither)
-  uiStore.toggleOverlay('brush-dither')
+  toggleOverlay('brush-dither')
 }
 </script>

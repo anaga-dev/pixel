@@ -1,5 +1,5 @@
 <template>
-  <div class="CONTAINER" :class="{ expanded: uiStore.expandedSidebar }">
+  <div class="CONTAINER">
     <div class="SETTINGS">
       <Settings />
     </div>
@@ -30,11 +30,11 @@
     </div>
     -->
     <Transition name="slide">
-      <aside v-if="uiStore.showPanel" class="PANELS">
+      <aside v-if="showPanel" class="PANELS">
         <Panel
           :title="$t('palette')"
-          :expanded="uiStore.showPalette"
-          @toggle="uiStore.togglePalette"
+          :expanded="showPalette"
+          @toggle="togglePalette"
         >
           <Palette />
         </Panel>
@@ -42,8 +42,8 @@
         <Panel
           scrollable
           :title="$t('studio.layers')"
-          :expanded="uiStore.showLayers"
-          @toggle="uiStore.toggleLayers"
+          :expanded="showLayers"
+          @toggle="toggleLayers"
         >
           <template #actions>
             <Button
@@ -63,11 +63,11 @@
     v-if="documentStore.layers.settings"
     :layer="documentStore.layers.settings"
   />
-  <SymmetrySettings v-if="uiStore.showOverlay === 'symmetry-settings'" />
+  <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
   <ColorPicker
-    v-if="uiStore.showColorPicker"
-    @close="uiStore.toggleColorPicker()"
+    v-if="showColorPicker"
+    @close="toggleColorPicker()"
   />
 </template>
 
@@ -80,6 +80,7 @@ import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
 import Tool from '@/pixel/enums/Tool'
 import { onKeyDown, onKeyUp } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
 
 const board = ref(null)
 const showingAnimation = ref(false)
@@ -87,6 +88,10 @@ const showingAnimation = ref(false)
 const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
+
+const { showPanel, showPalette, showLayers, showOverlay, showColorPicker } = storeToRefs(uiStore)
+const { togglePalette, toggleLayers, toggleColorPicker } = uiStore
+
 const documentStore = useDocumentStore()
 const draggingCanvas = ref(false)
 
@@ -132,17 +137,17 @@ useTouch(
 useKeyShortcuts(
   new Map([
     [['1'], () => documentStore.setTool('pencil')],
-    [['p'], () => documentStore.setTool('pencil')],
+    [['b'], () => documentStore.setTool('pencil')],
     [['2'], () => documentStore.setTool('eraser')],
     [['e'], () => documentStore.setTool('eraser')],
     [['3'], () => documentStore.setTool('fill')],
-    [['f'], () => documentStore.setTool('fill')],
+    [['g'], () => documentStore.setTool('fill')],
     [['4'], () => documentStore.setTool('shape')],
-    [['r'], () => documentStore.setTool('shape')],
+    [['s'], () => documentStore.setTool('shape')],
     [['5'], () => documentStore.setTool('transform')],
-    [['h'], () => documentStore.setTool('transform')],
+    [['v'], () => documentStore.setTool('transform')],
     [['6'], () => documentStore.setTool('select')],
-    [['s'], () => documentStore.setTool('select')],
+    [['m'], () => documentStore.setTool('select')],
     [['7'], () => documentStore.toggleColorPicker()],
     [['c'], () => documentStore.toggleColorPicker()],
     [['q'], () => documentStore.flipHorizontally()],

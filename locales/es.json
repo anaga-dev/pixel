@@ -78,7 +78,24 @@
     "saturation": "Saturación",
     "lightness": "Luminosidad",
     "freehand": "Trazo libre",
-    "composite": "Todas las capas"
+    "composite": "Todas las capas",
+    "tooltips": {
+      "pencil": "Lápiz (B)",
+      "eraser": "Borrador (E)",
+      "fill": "Rellenar (G)",
+      "shapes": "Formas (S)",
+      "transform": "Transformar (V)",
+      "selection": "Seleccionar (M)",
+      "color-picker": "Selector de color (C)",
+      "eyedropper": "Cuentagotas (I)",
+      "undo": "Deshacer (CTRL + Z)",
+      "redo": "Rehacer (CTRL + Y)",
+      "deselect": "Deseleccionar (D)",
+      "expand-side-panel": "Expandir panel lateral",
+      "collapse-side-panel": "Contraer panel lateral",
+      "symmetry": "Simetría",
+      "Zoom": "Zoom"
+    }
   },
   "error": {
     "title": "Error",

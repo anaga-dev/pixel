@@ -3,15 +3,15 @@
     <Button
       :label="$t('studio.zoom')"
       variant="dropdown"
-      @click.stop="uiStore.toggleOverlay('zoom-settings')"
+      @click.stop="toggleOverlay('zoom-settings')"
     >
       <Icon i="zoom-in" />
     </Button>
   </section>
   <Dropdown
-    v-if="uiStore.showOverlay === 'zoom-settings'"
+    v-if="showOverlay === 'zoom-settings'"
     class="ZoomMenu"
-    @close="uiStore.toggleOverlay('zoom-settings')"
+    @close="toggleOverlay('zoom-settings')"
   >
     <Button
       :label="$t('studio.zoom-in')"
@@ -40,9 +40,13 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
+import { storeToRefs } from 'pinia'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
+
+const { showOverlay } = storeToRefs(uiStore)
+const { toggleOverlay } = uiStore
 </script>
 
 <style scoped>

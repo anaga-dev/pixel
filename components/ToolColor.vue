@@ -2,6 +2,8 @@
 import { useUIStore } from '@/stores/ui'
 const uiStore = useUIStore()
 
+const { toggleColorPicker } = uiStore
+
 const emit = defineEmits(['click'])
 
 const props = defineProps({
@@ -13,7 +15,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <Button variant="ghost" :style="`color: ${color}`" @click.stop="uiStore.toggleColorPicker()">
+  <Button variant="ghost" :style="`color: ${color}`" @click.stop="toggleColorPicker()">
     <Icon class="outline" i="color-outline" />
     <Icon class="color" i="color" />
   </Button>

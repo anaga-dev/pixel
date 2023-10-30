@@ -5,7 +5,6 @@
       :aria-label="label"
       :aria-selected="active === true"
       :class="[variant, { active: active }, { disabled: disabled }]"
-      :title="variant === 'ghost' ? label : ''"
     >
       <slot></slot>
       <IconDropdown v-if="variant === 'dropdown'" />
