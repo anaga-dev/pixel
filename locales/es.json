@@ -79,6 +79,8 @@
     "lightness": "Luminosidad",
     "freehand": "Trazo libre",
     "composite": "Todas las capas",
+    "deselect": "Deseleccionar",
+    "symmetry-aid": "Ayuda de simetría",
     "tooltips": {
       "pencil": "Lápiz (B)",
       "eraser": "Borrador (E)",
@@ -94,7 +96,8 @@
       "expand-side-panel": "Expandir panel lateral",
       "collapse-side-panel": "Contraer panel lateral",
       "symmetry": "Simetría",
-      "Zoom": "Zoom"
+      "Zoom": "Zoom",
+      "new-layer": "Nueva capa"
     }
   },
   "error": {

@@ -80,6 +80,8 @@
     "lightness": "Lightness",
     "freehand": "Freehand",
     "composite": "All layers",
+    "deselect": "Deselect",
+    "symmetry-aid": "Symmetry aid",
     "tooltips": {
       "pencil": "Pencil (B)",
       "eraser": "Eraser (E)",
@@ -95,7 +97,8 @@
       "expand-side-panel": "Expand side panel",
       "collapse-side-panel": "Collapse side panel",
       "symmetry": "Symmetry",
-      "Zoom": "Zoom"
+      "zoom": "Zoom",
+      "new-layer": "New layer"
     }
   },
   "error": {

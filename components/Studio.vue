@@ -46,13 +46,15 @@
           @toggle="toggleLayers"
         >
           <template #actions>
-            <Button
-              :label="$t('studio.add-layer')"
-              variant="ghost"
-              @click="documentStore.addLayer"
-            >
-              <Icon i="add-item" />
-            </Button>
+            <Tooltip :message="$t('studio.tooltips.new-layer')" position="bottom left">
+              <Button
+                :label="$t('studio.add-layer')"
+                variant="ghost"
+                @click="documentStore.addLayer"
+              >
+                <Icon i="add-item" />
+              </Button>
+            </Tooltip>
           </template>
           <Layers :layers="documentStore.layers"></Layers>
         </Panel>

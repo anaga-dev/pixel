@@ -7,6 +7,7 @@
       :color="color"
       :active="activeColor === color"
       @select="onSelectColor(color)"
+      @remove="onRemoveColor(index)"
       draggable="true"
       @dragstart="onDragStart(index, color)"
       @dragover="onDragOver"
@@ -52,6 +53,10 @@ function onDrop(e) {
 function onSelectColor(newStyle) {
   current.style.value = newStyle
   activeColor.value = newStyle
+}
+
+function onRemoveColor(index) {
+  documentStore.palette.removeAt(index)
 }
 
 watch(

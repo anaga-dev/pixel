@@ -4,7 +4,7 @@
     :class="{ active: active }"
     :style="{ backgroundColor: color }"
     :data-index="index"
-    @click="$emit('select', color)">
+    @click="handleClick">
   </div>
 </template>
 
@@ -24,6 +24,16 @@ const props = defineProps({
     required: true
   }
 })
+
+const emit = defineEmits(['select', 'remove'])
+
+const handleClick = (e) => {
+  if(e.ctrlKey) {
+    emit('remove', props.index)
+    return
+  }
+  emit('select', color)
+}
 </script>
 
 <style scoped>

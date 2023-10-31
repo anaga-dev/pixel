@@ -6,10 +6,10 @@
       <ToolSettings :tool="documentStore.tool" />
     </div>
     <div class="group">
-      <Tooltip :message="$t('studio.tooltips.deselect (D)')" position="bottom">
+      <Tooltip :message="$t('studio.tooltips.deselect')" position="bottom">
         <Button
           variant="ghost"
-          label="Deselect"
+          :label="$t('studio.deselect')"
           :disabled="!documentStore.selection.visible"
           @click="documentStore.deselect()"
         >
@@ -19,7 +19,7 @@
       <Divider vertical />
       <Tooltip :message="$t('studio.tooltips.symmetry')" position="left bottom">
         <Button
-          label="Symmetry aid"
+          :label="$t('studio.symmetry-aid')"
           variant="dropdown"
           :active="documentStore.symmetry.axis !== null"
           @click="toggleOverlay('symmetry-settings')"
@@ -35,7 +35,7 @@
           <Icon i="symmetry-horizontal" v-else />
         </Button>
       </Tooltip>
-      <Tooltip :message="$t('studio.tooltips.symmetry')" position="left bottom">
+      <Tooltip :message="$t('studio.tooltips.zoom')" position="left bottom">
         <Zoom />
       </Tooltip>
       <Divider vertical />
