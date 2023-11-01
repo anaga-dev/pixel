@@ -1,16 +1,17 @@
-
 /**
+ * Uses an element as a child of another element when the component is mounted.
  *
  * @param {Ref<Element>} parent
  * @param {*} child
  */
 export function useElement(parent, child) {
+  if  (!isRef(parent)) {
+    throw new Error('Parent must be a ref')
+  }
+
   onMounted(() => {
-    if (isRef(child)) {
-      parent.value.appendChild(child.value)
-    } else {
-      parent.value.appendChild(child)
-    }
+    const element = isRef(child) ? child.value : child
+    parent.value.appendChild(element)
   })
 }
 
