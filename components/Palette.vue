@@ -100,10 +100,6 @@ watch(
   gap: 2px;
 }
 
-.Palette.remove {
-  cursor: grab;
-}
-
 .remove-area {
   display: grid;
   place-content: center;

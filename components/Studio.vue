@@ -37,7 +37,7 @@
           @toggle="togglePalette"
         >
           <template #actions>
-            <Tooltip
+<!--             <Tooltip
               :message="$t('studio.tooltips.new-layer')"
               position="bottom left"
             >
@@ -48,7 +48,7 @@
               >
                 <Icon i="add-item" />
               </Button>
-            </Tooltip>
+            </Tooltip> -->
           </template>
           <Palette />
         </Panel>

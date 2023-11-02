@@ -56,6 +56,6 @@ const handleOver = (e) => {
 }
 
 .remove {
-  cursor: grab;
+  cursor: url('@/assets/cursors/delete.svg') 12 12, auto;
 }
 </style>
