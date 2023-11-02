@@ -38,6 +38,7 @@
   "current-password": "Current password",
   "new-password": "New password",
   "confirm-new-password": "Confirm new password",
+  "delete": "Delete",
   "delete-account": "Delete account",
   "plan-and-billing": "Plan & Billing",
   "website": {
@@ -98,7 +99,8 @@
       "collapse-side-panel": "Collapse side panel",
       "symmetry": "Symmetry",
       "zoom": "Zoom",
-      "new-layer": "New layer"
+      "new-layer": "New layer",
+      "add-to-palette": "Add to palette"
     }
   },
   "error": {

@@ -1,14 +1,18 @@
 <template>
   <div
     class="PaletteColor"
-    :class="{ active: active }"
+    :class="{ active: active, remove: removeMode }"
     :style="{ backgroundColor: color }"
     :data-index="index"
+    @pointerover="handleOver"
     @click="handleClick">
   </div>
 </template>
 
 <script setup>
+import { useDocumentStore } from '@/stores/document'
+const documentStore = useDocumentStore()
+
 const props = defineProps({
   color: {
     type: String,
@@ -25,6 +29,8 @@ const props = defineProps({
   }
 })
 
+const removeMode = ref(false)
+
 const emit = defineEmits(['select', 'remove'])
 
 const handleClick = (e) => {
@@ -33,6 +39,10 @@ const handleClick = (e) => {
     return
   }
   emit('select', color)
+}
+
+const handleOver = (e) => {
+  removeMode.value = documentStore.keys.current.has('control')
 }
 </script>
 
@@ -43,5 +53,9 @@ const handleClick = (e) => {
 
 .active {
   outline: 2px solid var(--colorTextPrimary);
+}
+
+.remove {
+  cursor: grab;
 }
 </style>

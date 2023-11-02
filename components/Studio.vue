@@ -6,7 +6,7 @@
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="board" :class="{ dragging: draggingCanvas }" @keydown.ctrl="draggingCanvas = true">
+    <main class="BOARD" ref="board" :class="{ dragging: spaceDown }">
       <Document v-if="documentStore.canvas" />
       <Selection
         v-if="
@@ -36,6 +36,20 @@
           :expanded="showPalette"
           @toggle="togglePalette"
         >
+          <template #actions>
+            <Tooltip
+              :message="$t('studio.tooltips.new-layer')"
+              position="bottom left"
+            >
+              <Button
+                :label="$t('studio.add-layer')"
+                variant="ghost"
+                @click="documentStore.addLayer"
+              >
+                <Icon i="add-item" />
+              </Button>
+            </Tooltip>
+          </template>
           <Palette />
         </Panel>
         <Divider />
@@ -46,7 +60,10 @@
           @toggle="toggleLayers"
         >
           <template #actions>
-            <Tooltip :message="$t('studio.tooltips.new-layer')" position="bottom left">
+            <Tooltip
+              :message="$t('studio.tooltips.new-layer')"
+              position="bottom left"
+            >
               <Button
                 :label="$t('studio.add-layer')"
                 variant="ghost"
@@ -67,10 +84,7 @@
   />
   <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
-  <ColorPicker
-    v-if="showColorPicker"
-    @close="toggleColorPicker()"
-  />
+  <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
 </template>
 
 <script setup>
@@ -91,11 +105,18 @@ const MIN_TOUCHES = 2
 
 const uiStore = useUIStore()
 
-const { showPanel, showPalette, showLayers, showOverlay, showColorPicker } = storeToRefs(uiStore)
+const {
+  showPanel,
+  ctrlDown,
+  spaceDown,
+  showPalette,
+  showLayers,
+  showOverlay,
+  showColorPicker
+} = storeToRefs(uiStore)
 const { togglePalette, toggleLayers, toggleColorPicker } = uiStore
 
 const documentStore = useDocumentStore()
-const draggingCanvas = ref(false)
 
 onMounted(() => documentStore.setBoard(board))
 onUnmounted(() => documentStore.unsetBoard())
@@ -170,13 +191,8 @@ useKeyShortcuts(
   ])
 )
 
-/* onKeyDown(' ', () => {
-  draggingCanvas.value = true
-})
-
-onKeyUp(' ', () => {
-  draggingCanvas.value = false
-}) */
+onKeyDown('Control', () => (ctrlDown.value = true))
+onKeyUp('Control', () => (ctrlDown.value = false))
 </script>
 
 <style scoped>

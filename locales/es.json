@@ -37,6 +37,7 @@
   "current-password": "Contraseña actual",
   "new-password": "Nueva contraseña",
   "confirm-new-password": "Confirmar nueva contraseña",
+  "delete": "Borrar",
   "delete-account": "Borrar cuenta",
   "plan-and-billing": "Plan y facturación",
   "website": {
@@ -97,7 +98,8 @@
       "collapse-side-panel": "Contraer panel lateral",
       "symmetry": "Simetría",
       "Zoom": "Zoom",
-      "new-layer": "Nueva capa"
+      "new-layer": "Nueva capa",
+      "add-to-palette": "Añadir a la paleta"
     }
   },
   "error": {

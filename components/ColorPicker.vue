@@ -2,13 +2,20 @@
   <Dropdown class="ColorPicker">
     <div class="colors">
       <div class="samples">
-        <div class="sample previous" :style="{ backgroundColor: previous }"></div>
+        <div
+          class="sample previous"
+          :style="{ backgroundColor: previous }"
+        ></div>
         <div
           class="sample current"
           :style="{ backgroundColor: current.style.value }"
         ></div>
       </div>
-      <Button variant="ghost" @click="documentStore.addPaletteColor()"><Icon i="add-to-palette" /></Button>
+      <Tooltip :message="$t('studio.tooltips.add-to-palette')" position="right">
+        <Button variant="ghost" @click="documentStore.addPaletteColor()">
+          <Icon i="add-to-palette" />
+        </Button>
+      </Tooltip>
     </div>
     <CombinedColorPicker :color="current" />
     <HuePicker :color="current" />

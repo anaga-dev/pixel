@@ -14,6 +14,9 @@ export const useUIStore = defineStore('ui', () => {
   const showLayerSettings = ref(false)
   const expandedSidebar = ref(true)
 
+  const ctrlDown = ref(false)
+  const spaceDown = ref(false)
+
   const toggleOverlay = (el) => {
     if (showOverlay.value !== el) {
       showOverlay.value = el
@@ -51,6 +54,8 @@ export const useUIStore = defineStore('ui', () => {
     tooltip,
     showLayerSettings,
     expandedSidebar,
+    ctrlDown,
+    spaceDown,
     toggleOverlay,
     toggleLayers,
     togglePalette,

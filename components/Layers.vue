@@ -5,6 +5,7 @@ const document = useDocumentStore()
 const dropArea = ref({})
 const fromIndex = ref(null)
 const fromLayerId = ref(null)
+const draggingLayer = ref(false)
 
 const props = defineProps({
   layers: {
@@ -18,11 +19,13 @@ const handleSettings = (layer) => {
 }
 
 function onDragStart(index, layerId) {
+  draggingLayer.value = true
   fromIndex.value = index
   fromLayerId.value = layerId
 }
 
 function onDragOver(e) {
+  if(!draggingLayer.value) return
   e.preventDefault()
   const ownIndex = e.currentTarget.dataset.index
   console.log('Drag over', fromIndex.value, ownIndex)
@@ -34,14 +37,17 @@ function onDragOver(e) {
 }
 
 function onDragEnd(e) {
+  draggingLayer.value = false
   dropArea.value = {}
 }
 
 function onDrop(e) {
+  if(!draggingLayer.value) return
   const destination = e.currentTarget
   const toIndex = parseInt(destination.dataset.index, 10)
   document.layers.swap(fromIndex.value, toIndex)
   dropArea.value = {}
+  draggingLayer.value = false
 }
 </script>
 
