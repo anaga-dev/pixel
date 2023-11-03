@@ -12,6 +12,15 @@ export const usePaletteStore = defineStore('palette', () => {
   }
 
   /**
+   * Clear palette colors
+   *
+   * @param {Array<string>} newColors
+   */
+  function clear() {
+    colors.splice(0, colors.length)
+  }
+
+  /**
    * Add color to palette
    */
   function add(color) {
@@ -45,5 +54,5 @@ export const usePaletteStore = defineStore('palette', () => {
     colors.splice(toIndex, 0, color)
   }
 
-  return { colors, set, add, addAt, removeAt, removeLast, swap }
+  return { colors, set, clear, add, addAt, removeAt, removeLast, swap }
 })

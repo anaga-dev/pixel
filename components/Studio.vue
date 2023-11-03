@@ -37,18 +37,33 @@
           @toggle="togglePalette"
         >
           <template #actions>
-<!--             <Tooltip
-              :message="$t('studio.tooltips.new-layer')"
+            <Tooltip
+              :message="$t('studio.tooltips.palette-options')"
               position="bottom left"
             >
               <Button
                 :label="$t('studio.add-layer')"
                 variant="ghost"
-                @click="documentStore.addLayer"
+                @click="toggleOverlay('palette-options')"
               >
-                <Icon i="add-item" />
+                <Icon i="menu" />
               </Button>
-            </Tooltip> -->
+            </Tooltip>
+            <Dropdown
+              v-if="showOverlay === 'palette-options'"
+              class="palette-menu"
+              @close="toggleOverlay('palette-options')"
+            >
+              <Button @click="documentStore.loadPalette">{{
+                $t('studio.load-palette')
+              }}</Button>
+              <Button @click="documentStore.savePalette">{{
+                $t('studio.save-palette')
+              }}</Button>
+              <Button @click="documentStore.clearPalette">{{
+                $t('studio.clear-palette')
+              }}</Button>
+            </Dropdown>
           </template>
           <Palette />
         </Panel>
@@ -103,6 +118,7 @@ const showingAnimation = ref(false)
 
 const MIN_TOUCHES = 2
 
+const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
 const {
@@ -114,9 +130,8 @@ const {
   showOverlay,
   showColorPicker
 } = storeToRefs(uiStore)
-const { togglePalette, toggleLayers, toggleColorPicker } = uiStore
-
-const documentStore = useDocumentStore()
+const { togglePalette, toggleOverlay, toggleLayers, toggleColorPicker } =
+  uiStore
 
 onMounted(() => documentStore.setBoard(board))
 onUnmounted(() => documentStore.unsetBoard())
@@ -281,5 +296,12 @@ onKeyUp('Control', () => (ctrlDown.value = false))
 .button-show.expanded {
   box-shadow: none;
   transform: translate(-50%, calc(var(--spaceM) * -1));
+}
+
+.palette-menu {
+  position: absolute;
+  top: 100%;
+  right: var(--spaceS);
+  z-index: 1000;
 }
 </style>

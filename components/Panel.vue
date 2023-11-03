@@ -53,6 +53,7 @@ header {
   padding: var(--spaceXS) 0;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 h2 {

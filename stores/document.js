@@ -974,6 +974,8 @@ export const useDocumentStore = defineStore('document', {
     redraw() {
       const context = CanvasContext2D.get(this.canvas)
       context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+      // createPattern --> fillRect
+      // context.drawImage(el fondo transparente)
       const frame = this.animation.current
       for (const layer of this.layers.list) {
         if (!layer.visible.value) {
@@ -1256,6 +1258,12 @@ export const useDocumentStore = defineStore('document', {
         await writable.write(await ACT.save(this.palette.colors))
       }
       await writable.close()
+    },
+    /**
+     * Clear palette
+     */
+    async clearPalette() {
+      this.palette.clear()
     },
     /**
      * Add color to palette

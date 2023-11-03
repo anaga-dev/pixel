@@ -82,6 +82,10 @@
     "composite": "Todas las capas",
     "deselect": "Deseleccionar",
     "symmetry-aid": "Ayuda de simetría",
+    "load-palette": "Cargar paleta",
+    "save-palette": "Guardar paleta",
+    "new-palette": "Nueva paleta",
+    "clear-palette": "Limpiar paleta",
     "tooltips": {
       "pencil": "Lápiz (B)",
       "eraser": "Borrador (E)",
@@ -99,7 +103,8 @@
       "symmetry": "Simetría",
       "Zoom": "Zoom",
       "new-layer": "Nueva capa",
-      "add-to-palette": "Añadir a la paleta"
+      "add-to-palette": "Añadir a la paleta",
+      "palette-options": "Opciones de paleta"
     }
   },
   "error": {

@@ -83,6 +83,10 @@
     "composite": "All layers",
     "deselect": "Deselect",
     "symmetry-aid": "Symmetry aid",
+    "load-palette": "Load palette",
+    "save-palette": "Save palette",
+    "new-palette": "New palette",
+    "clear-palette": "Clear palette",
     "tooltips": {
       "pencil": "Pencil (B)",
       "eraser": "Eraser (E)",
@@ -100,7 +104,8 @@
       "symmetry": "Symmetry",
       "zoom": "Zoom",
       "new-layer": "New layer",
-      "add-to-palette": "Add to palette"
+      "add-to-palette": "Add to palette",
+      "palette-options": "Palette options"
     }
   },
   "error": {
