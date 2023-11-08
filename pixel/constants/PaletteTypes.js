@@ -2,10 +2,10 @@ export default [
   {
     description: 'Palettes',
     accept: {
-      '*/*': ['.pal', '.act', '.gpl'],
+      '*/*': ['.pal', '.act', '.gpl']/* ,
       'ACT Adobe Photoshop Color Table': ['.act'],
       'GIMP Palette': ['.gpl'],
-      'DIV Games Studio Palette': ['.pal']
+      'DIV Games Studio Palette': ['.pal'] */
     }
   }
 ]

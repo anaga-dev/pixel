@@ -1237,27 +1237,40 @@ export const useDocumentStore = defineStore('document', {
     /**
      * Save palette
      */
-    async savePalette() {
-      // FIXME: Neither Firefox nor Safari support this.
-      const fileHandle = await window.showSaveFilePicker({
-        types: PaletteTypes,
-        excludeAcceptAllOption: true
-      })
-      // TODO: Shall we throw an exception?
-      if (fileHandle.kind !== 'file') return
-
-      console.log(fileHandle)
-      const writable = await fileHandle.createWritable()
-      console.log(writable)
-      const extension = fileHandle.name.slice(fileHandle.name.lastIndexOf('.'))
-      if (extension === '.gpl') {
-        await writable.write(await GIMP.save(this.palette.colors))
-      } else if (extension === '.pal') {
-        await writable.write(await PAL.save(this.palette.colors))
-      } else if (extension === '.act') {
-        await writable.write(await ACT.save(this.palette.colors))
+    async savePaletteAs() {
+      const suggestedFileName = 'untitled'
+      const fileExtension = '.gpl'
+      
+      if ('showSaveFilePicker' in window) {
+        const fileHandle = await window.showSaveFilePicker({
+          suggestedName: suggestedFileName + fileExtension,
+          types: PaletteTypes,
+          excludeAcceptAllOption: true
+        })
+        const writable = await fileHandle.createWritable()
+        const extension = fileHandle.name.slice(fileHandle.name.lastIndexOf('.'))
+        if (extension === '.gpl') {
+          await writable.write(await GIMP.save(this.palette.colors))
+        } else if (extension === '.pal') {
+          await writable.write(await PAL.save(this.palette.colors))
+         } /* else if (extension === '.act') {
+          await writable.write(await ACT.save(this.palette.colors))
+        } */
+        await writable.close()
+      } else {
+        let zip
+        if (extension === '.gpl') {
+          zip = await GIMP.save(this.palette.colors)
+        } else if (extension === '.pal') {
+          zip = await PAL.save(this.palette.colors)
+        } /* else if (extension === '.act') {
+          zip = await ACT.save(this.palette.colors)
+        } */
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(zip)
+        a.download = suggestedFileName + fileExtension
+        a.click()
       }
-      await writable.close()
     },
     /**
      * Clear palette

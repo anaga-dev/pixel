@@ -54,13 +54,13 @@
               class="palette-menu"
               @close="toggleOverlay('palette-options')"
             >
-              <Button @click="documentStore.loadPalette">{{
+              <Button @click="loadPalette">{{
                 $t('studio.load-palette')
               }}</Button>
-              <Button @click="documentStore.savePalette">{{
+              <Button @click="savePalette">{{
                 $t('studio.save-palette')
               }}</Button>
-              <Button @click="documentStore.clearPalette">{{
+              <Button @click="clearPalette">{{
                 $t('studio.clear-palette')
               }}</Button>
             </Dropdown>
@@ -130,6 +130,7 @@ const {
   showOverlay,
   showColorPicker
 } = storeToRefs(uiStore)
+
 const { togglePalette, toggleOverlay, toggleLayers, toggleColorPicker } =
   uiStore
 
@@ -208,6 +209,21 @@ useKeyShortcuts(
 
 onKeyDown('Control', () => (ctrlDown.value = true))
 onKeyUp('Control', () => (ctrlDown.value = false))
+
+function loadPalette() {
+  documentStore.loadPalette()
+  uiStore.showOverlay = null
+}
+
+function savePalette() {
+  documentStore.savePaletteAs()
+  uiStore.showOverlay = null
+}
+
+function clearPalette() {
+  documentStore.clearPalette()
+  uiStore.showOverlay = null
+}
 </script>
 
 <style scoped>
