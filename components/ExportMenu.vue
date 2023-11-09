@@ -40,31 +40,37 @@ const scales = [
   }
 ]
 
+const title = ref('Untitled')
 const format = ref('png')
 const scale = ref(1)
 const quality = ref(90)
 
 function handleExport() {
   console.log('exporting')
-  documentStore.exportFileAs(format.value, scale.value, quality.value)
+  documentStore.exportFileAs(
+    title.value,
+    format.value,
+    scale.value,
+    quality.value
+  )
 }
 </script>
 
 <template>
   <Modal :title="$t('export-artwork')">
     <div class="ExportMenu">
-      <div class="row">
-        <label>{{ $t('format') }}</label>
+      <Field :label="$t('title')">
+        <input type="text" v-model="title" />
+      </Field>
+      <Field :label="$t('format')">
         <ButtonSelect :data="formats" v-model="format" />
-      </div>
-      <div class="row">
-        <label>Scale</label>
+      </Field>
+      <Field :label="$t('scale')">
         <ButtonSelect :data="scales" v-model="scale" />
-      </div>
-      <div class="row">
-        <label for="">Quality</label>
+      </Field>
+      <Field :label="$t('quality')">
         <Slider v-model="quality" />
-      </div>
+      </Field>
       <Button variant="primary" @click="handleExport">{{
         $t('export-file')
       }}</Button>

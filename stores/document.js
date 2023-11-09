@@ -1454,8 +1454,7 @@ export const useDocumentStore = defineStore('document', {
     /**
      * Export file
      */
-    async exportFileAs(format, scale, quality) {
-      const suggestedFileName = 'untitled'
+    async exportFileAs(title, format, scale, quality) {
       const fileExtension = `.${format}`
       const transformedQuality = quality / 100
 
@@ -1483,7 +1482,7 @@ export const useDocumentStore = defineStore('document', {
       )
       const a = document.createElement('a')
       a.href = dataURL
-      a.download = suggestedFileName + fileExtension
+      a.download = title + fileExtension
       a.click()
     },
 
