@@ -12,16 +12,16 @@
     @close="uiStore.toggleOverlay(overlay)"
   >
     <Button @click="newFile">
-      {{ $t('studio.new-artwork') }}
+      {{ $t('new-artwork') }}
     </Button>
     <Button @click="openFile">
-      {{ $t('studio.open-artwork') }}
+      {{ $t('open-artwork') }}
     </Button>
     <Button @click="saveFile">
-      {{ $t('studio.save-artwork') }}
+      {{ $t('save-artwork') }}
     </Button>
-    <Button @click="saveFile">
-      {{ $t('studio.export-artwork') }}
+    <Button @click="exportFile">
+      {{ $t('export-artwork') }}
     </Button>
   </Dropdown>
 </template>
@@ -30,10 +30,15 @@
 import { useUIStore } from '@/stores/ui'
 import { useDocumentStore } from '@/stores/document'
 import { useConfirmationStore } from '@/stores/confirmation'
+import { storeToRefs } from 'pinia'
 
+const router = useRouter()
 const overlay = 'general-settings'
 
 const uiStore = useUIStore()
+
+const { showOverlay } = storeToRefs(uiStore)
+
 const documentStore = useDocumentStore()
 const confirmationStore = useConfirmationStore()
 
@@ -44,22 +49,29 @@ async function newFile(params) {
     )
     if (confirmation) {
       documentStore.newFile()
-      uiStore.showOverlay = null
+      showOverlay.value = null
+    } else {
+      showOverlay.value = null
     }
   } else {
     documentStore.newFile()
-    uiStore.showOverlay = null
+    showOverlay.value = null
   }
 }
 
 function openFile() {
   documentStore.openFile()
-  uiStore.showOverlay = null
+  showOverlay.value = null
 }
 
 function saveFile() {
   documentStore.saveFileAs()
-  uiStore.showOverlay = null
+  showOverlay.value = null
+}
+
+function exportFile() {
+  uiStore.showExportMenu = true
+  showOverlay.value = null
 }
 </script>
 
