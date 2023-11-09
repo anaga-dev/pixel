@@ -11,9 +11,18 @@
     class="menu"
     @close="uiStore.toggleOverlay(overlay)"
   >
-    <Button label="New file" @click="newFile">New file</Button>
-    <Button label="Open file" @click="openFile">Open file</Button>
-    <Button label="Save file" @click="saveFile">Save file</Button>
+    <Button @click="newFile">
+      {{ $t('studio.new-artwork') }}
+    </Button>
+    <Button @click="openFile">
+      {{ $t('studio.open-artwork') }}
+    </Button>
+    <Button @click="saveFile">
+      {{ $t('studio.save-artwork') }}
+    </Button>
+    <Button @click="saveFile">
+      {{ $t('studio.export-artwork') }}
+    </Button>
   </Dropdown>
 </template>
 

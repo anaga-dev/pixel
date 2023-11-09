@@ -1240,7 +1240,7 @@ export const useDocumentStore = defineStore('document', {
     async savePaletteAs() {
       const suggestedFileName = 'untitled'
       const fileExtension = '.gpl'
-      
+
       if ('showSaveFilePicker' in window) {
         const fileHandle = await window.showSaveFilePicker({
           suggestedName: suggestedFileName + fileExtension,
@@ -1248,12 +1248,14 @@ export const useDocumentStore = defineStore('document', {
           excludeAcceptAllOption: true
         })
         const writable = await fileHandle.createWritable()
-        const extension = fileHandle.name.slice(fileHandle.name.lastIndexOf('.'))
+        const extension = fileHandle.name.slice(
+          fileHandle.name.lastIndexOf('.')
+        )
         if (extension === '.gpl') {
           await writable.write(await GIMP.save(this.palette.colors))
         } else if (extension === '.pal') {
           await writable.write(await PAL.save(this.palette.colors))
-         } /* else if (extension === '.act') {
+        } /* else if (extension === '.act') {
           await writable.write(await ACT.save(this.palette.colors))
         } */
         await writable.close()
@@ -1448,6 +1450,43 @@ export const useDocumentStore = defineStore('document', {
       }
       this.modified = false
     },
+
+    /**
+     * Export file
+     */
+    async exportFileAs(format, scale, quality) {
+      const suggestedFileName = 'untitled'
+      const fileExtension = `.${format}`
+      const transformedQuality = quality / 100
+
+      // Calculate new size
+      const originalWidth = this.canvas.width
+      const originalHeight = this.canvas.height
+
+      const newWidth = originalWidth * scale
+      const newHeight = originalHeight * scale
+
+      // Create new canvas with modified size
+      const scaledCanvas = document.createElement('canvas')
+      scaledCanvas.width = newWidth
+      scaledCanvas.height = newHeight
+
+      const scaledCtx = scaledCanvas.getContext('2d')
+
+      // Copy original image to new canvas with modified size
+      scaledCtx.imageSmoothingEnabled = false
+      scaledCtx.drawImage(this.canvas, 0, 0, newWidth, newHeight)
+
+      const dataURL = scaledCanvas.toDataURL(
+        `image/${format}`,
+        transformedQuality
+      )
+      const a = document.createElement('a')
+      a.href = dataURL
+      a.download = suggestedFileName + fileExtension
+      a.click()
+    },
+
     /**
      * History
      */

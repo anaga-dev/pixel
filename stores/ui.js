@@ -10,6 +10,7 @@ export const useUIStore = defineStore('ui', () => {
   const showColorPicker = ref(false)
   const showPalette = ref(true)
   const showLayers = ref(true)
+  const showExportMenu = ref(false)
   const tooltip = ref(null)
   const showLayerSettings = ref(false)
   const expandedSidebar = ref(true)
@@ -39,6 +40,10 @@ export const useUIStore = defineStore('ui', () => {
     showColorPicker.value = !showColorPicker.value
   }
 
+  const toggleExportMenu = () => {
+    showExportMenu.value = !showExportMenu.value
+  }
+
   const showTooltip  = (rect, message) => {
     tooltip.value.rect = rect
     tooltip.value.message = message
@@ -51,6 +56,7 @@ export const useUIStore = defineStore('ui', () => {
     showColorPicker,
     showPalette,
     showLayers,
+    showExportMenu,
     tooltip,
     showLayerSettings,
     expandedSidebar,
@@ -61,6 +67,7 @@ export const useUIStore = defineStore('ui', () => {
     togglePalette,
     togglePanel,
     toggleColorPicker,
+    toggleExportMenu,
     showTooltip
   }
 })

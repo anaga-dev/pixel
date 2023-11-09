@@ -100,6 +100,7 @@
   <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
   <DocumentCreate v-if="!documentStore.canvas" />
   <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
+  <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
 </template>
 
 <script setup>
@@ -128,11 +129,17 @@ const {
   showPalette,
   showLayers,
   showOverlay,
-  showColorPicker
+  showColorPicker,
+  showExportMenu
 } = storeToRefs(uiStore)
 
-const { togglePalette, toggleOverlay, toggleLayers, toggleColorPicker } =
-  uiStore
+const {
+  togglePalette,
+  toggleOverlay,
+  toggleLayers,
+  toggleColorPicker,
+  toggleExportMenu
+} = uiStore
 
 onMounted(() => documentStore.setBoard(board))
 onUnmounted(() => documentStore.unsetBoard())

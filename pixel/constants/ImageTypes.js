@@ -2,7 +2,7 @@ export default [
   {
     description: 'Images',
     accept: {
-      '*/*': ['.ora', '.png', '.jpg']
+      '*/*': ['.ora', '.png', '.jpg', '.webp']
     }
   }
 ]
