@@ -13,23 +13,16 @@ import { useConfirmationStore } from '@/stores/confirmation'
 import { storeToRefs } from 'pinia'
 const confirmationStore = useConfirmationStore()
 
-const { show, message } = storeToRefs(confirmationStore)
-
-const props = defineProps({
-  message: {
-    type: String,
-    required: true
-  }
-})
+const { showDialog, message, resolve } = storeToRefs(confirmationStore)
 
 const confirm = () => {
-  show.value = false
   confirmationStore.resolve(true)
+  showDialog.value = false
 }
 
 const cancel = () => {
-  show.value = false
   confirmationStore.resolve(false)
+  showDialog.value = false
 }
 </script>
 

@@ -44,7 +44,7 @@ const confirmationStore = useConfirmationStore()
 
 async function newFile(params) {
   if (documentStore.modified) {
-    const confirmation = await confirmationStore.open(
+    const confirmation = await confirmationStore.openDialog(
       "You will lose any changes you haven't saved. Are you sure?"
     )
     if (confirmation) {

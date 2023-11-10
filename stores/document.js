@@ -1389,7 +1389,7 @@ export const useDocumentStore = defineStore('document', {
       }
     },
     newFile() {
-      console.info('TO BE IMPLEMENTED!')
+      this.canvas = null
     },
     /**
      * Open file
