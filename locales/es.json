@@ -58,6 +58,7 @@
   },
   "studio": {
     "back-to-dashboard": "Volver al panel",
+    "new-artwork-confirmation": "¿Estás seguro de que quieres crear un nuevo dibujo? Se perderán todos los cambios no guardados.",
     "blend-mode": "Modo de fusión",
     "preset": "Preajuste",
     "color": "Color",

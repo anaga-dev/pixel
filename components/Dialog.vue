@@ -1,6 +1,6 @@
 <template>
   <Modal nondismissable>
-    <p>{{ message }}</p>
+    <p>{{ $t(message) }}</p>
     <footer>
       <Button variant="primary" @click="confirm">{{ $t('confirm') }}</Button>
       <Button @click="cancel">{{ $t('cancel') }}</Button>

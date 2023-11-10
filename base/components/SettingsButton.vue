@@ -43,19 +43,17 @@ const documentStore = useDocumentStore()
 const confirmationStore = useConfirmationStore()
 
 async function newFile(params) {
+  showOverlay.value = null
   if (documentStore.modified) {
     const confirmation = await confirmationStore.openDialog(
-      "You will lose any changes you haven't saved. Are you sure?"
+      'studio.new-artwork-confirmation'
     )
     if (confirmation) {
+      console.log('new file!!!!')
       documentStore.newFile()
-      showOverlay.value = null
-    } else {
-      showOverlay.value = null
     }
   } else {
     documentStore.newFile()
-    showOverlay.value = null
   }
 }
 

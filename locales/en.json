@@ -59,6 +59,7 @@
   },
   "studio": {
     "back-to-dashboard": "Back to dashboard",
+    "new-artwork-confirmation": "Are you sure you want to create a new artwork? All unsaved changes will be lost.",
     "blend-mode": "Blend mode",
     "preset": "Preset",
     "color": "Color",
