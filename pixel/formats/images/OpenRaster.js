@@ -93,17 +93,9 @@ function createStack(doc) {
   let xml = '<?xml version="1.0" encoding="UTF-8" ?>'
   xml += `<image version="0.0.3" w="${doc.width}" h="${doc.height}" xres="72" yres="72">`
   xml += '<stack>'
-  for (let index = doc.layers.list.length - 1; index >= 0; ++index) {
+  for (let index = doc.layers.list.length - 1; index >= 0; --index) {
     const layer = doc.layers.list[index]
-    xml += `<layer name="${
-      layer.name.value
-    }" src="data/layer${index}.png" opacity="${
-      layer.opacity.value
-    }" visibility="${
-      layer.visible.value ? 'visible' : 'hidden'
-    }" composite-op="${getCompositeOperation(
-      layer.blendMode.value
-    )}" x="0" y="0" />`
+    xml += `<layer name="${layer.name.value}" src="data/layer${index}.png" opacity="${layer.opacity.value}" visibility="${layer.visible.value ? 'visible': 'hidden'}" composite-op="${getCompositeOperation(layer.blendMode.value)}" x="0" y="0" />`
   }
   xml += '</stack>'
   xml += '</image>'
@@ -124,9 +116,7 @@ function createPalette(doc) {
     const color = doc.palette.colors[index]
     const [r, g, b] = Color.parse(color)
     // console.log(r, g, b)
-    xml += `<color name="color-${index}"><sRGB r="${r.toFixed(
-      4
-    )}" g="${g.toFixed(4)}" b="${b.toFixed(4)}" /></color>`
+    xml += `<color name="color-${index}"><sRGB r="${r.toFixed(4)}" g="${g.toFixed(4)}" b="${b.toFixed(4)}" /></color>`
     // xml += `<color value="${color}" />`
   }
   xml += '</colors>'
@@ -151,13 +141,9 @@ export async function save(doc) {
   zip.file('palette.xml', palette)
   zip.file('mergedimage.png', mergedImage)
   const dataFolder = zip.folder('data')
-  const layers = await Promise.all(
-    doc.layers.list.map((layer) => Canvas.createBlob(layer.canvas, 'image/png'))
-  )
+  const layers = await Promise.all(doc.layers.list.map((layer) => Canvas.createBlob(layer.canvas, 'image/png')))
   layers.forEach((blob, index) => dataFolder.file(`layer${index}.png`, blob))
-  zip
-    .folder('Thumbnails')
-    .file('thumbnail.png', await createThumbnail(doc.canvas))
+  zip.folder('Thumbnails').file('thumbnail.png', await createThumbnail(doc.canvas))
   return zip.generateAsync({ type: 'blob' })
 }
 
@@ -194,36 +180,31 @@ export async function load(blob) {
     const height = parseInt(image.getAttribute('h'), 10)
     const layerElements = Array.from(xmlDoc.querySelectorAll('layer'))
     const paletteElements = Array.from(xmlPalette.querySelectorAll('color'))
-    const blobs = await Promise.all(
-      layerElements.map((layer) => {
-        const src = layer.getAttribute('src')
-        return zip.file(src).async('blob')
+    const blobs = await Promise.all(layerElements.map((layer) => {
+      const src = layer.getAttribute('src')
+      return zip.file(src).async('blob')
+    }))
+    const layers = await Promise.all(layerElements.map(async (layerElement, index) => {
+      const blob = blobs[index]
+      const imageBitmap = await createImageBitmap(blob)
+      const canvas = Canvas.create(width, height)
+      const context = canvas.getContext('2d', {
+        willReadFrequently: true
       })
-    )
-    const layers = await Promise.all(
-      layerElements.map(async (layerElement, index) => {
-        const blob = blobs[index]
-        const imageBitmap = await createImageBitmap(blob)
-        const canvas = Canvas.create(width, height)
-        const context = canvas.getContext('2d', {
-          willReadFrequently: true
-        })
-        context.drawImage(imageBitmap, 0, 0)
-        const { data } = context.getImageData(0, 0, width, height)
-        const frame = new ImageData(data, width, height) //
-        return {
-          name: layerElement.getAttribute('name'),
-          opacity: parseFloat(layerElement.getAttribute('opacity')),
-          visible: layerElement.getAttribute('visibility') === 'visible',
-          blendMode: getBlendMode(layerElement.getAttribute('composite-op')),
-          canvas,
-          context,
-          frames: [frame]
-        }
-      })
-    )
+      context.drawImage(imageBitmap, 0, 0)
+      const { data } = context.getImageData(0, 0, width, height)
+      const frame = new ImageData(data, width, height) //
+      return {
+        name: layerElement.getAttribute('name'),
+        opacity: parseFloat(layerElement.getAttribute('opacity')),
+        visible: layerElement.getAttribute('visibility') === 'visible',
+        blendMode: getBlendMode(layerElement.getAttribute('composite-op')),
+        canvas,
+        context,
+        frames: [frame]
+      }
+    }))
     layers.reverse()
-
     const palette = paletteElements.map((color) => {
       if (color.hasAttribute('value')) {
         return color.getAttribute('value')
