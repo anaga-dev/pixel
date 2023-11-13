@@ -186,7 +186,6 @@ export const useDocumentStore = defineStore('document', {
     },
     setPencilSize(size) {
       this.pencil.size = size
-      this.pencil.sizeHalf = size / 2
     },
     setPencilDitherLevel(level) {
       this.pencil.dither.level = level
@@ -700,10 +699,10 @@ export const useDocumentStore = defineStore('document', {
             const addSizeHalf = size % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
             if (shape === PencilShape.ROUND) {
               this.ellipse(
-                pointer.current.x - subSizeHalf,
-                pointer.current.y - subSizeHalf,
-                pointer.current.x + addSizeHalf,
-                pointer.current.y + addSizeHalf,
+                pointer.current.x - sizeHalf,
+                pointer.current.y - sizeHalf,
+                pointer.current.x + sizeHalf,
+                pointer.current.y + sizeHalf,
                 color,
                 false,
                 true,
@@ -1146,11 +1145,11 @@ export const useDocumentStore = defineStore('document', {
     },
     duplicateLayer(layer) {
       const { index, layer: duplicatedLayer } = this.layers.duplicate(layer)
-      this.redrawAll()
       this.history.add({
         type: 'duplicateLayer',
         payload: { index, layer: duplicatedLayer }
       })
+      this.redrawAll()
     },
     toggleLayer(layer) {
       this.layers.toggle(layer)
@@ -1166,11 +1165,11 @@ export const useDocumentStore = defineStore('document', {
     },
     swapLayers(fromIndex, toIndex) {
       this.layers.swap(fromIndex, toIndex)
-      this.redrawAll()
       this.history.add({
         type: 'swapLayers',
         payload: { from: fromIndex, toIndex: toIndex }
       })
+      this.redrawAll()
     },
     changeLayerName(layer, name) {
       const previousName = layer.name.value

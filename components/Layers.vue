@@ -45,7 +45,7 @@ function onDrop(e) {
   if(!draggingLayer.value) return
   const destination = e.currentTarget
   const toIndex = parseInt(destination.dataset.index, 10)
-  document.layers.swap(fromIndex.value, toIndex)
+  document.swapLayers(fromIndex.value, toIndex)
   dropArea.value = {}
   draggingLayer.value = false
 }
