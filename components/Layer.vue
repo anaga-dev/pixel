@@ -9,7 +9,7 @@
       bottom: dropBottom
     }"
     :data-index="index"
-    @click="$emit('activate', layer)"
+    @click.prevent="$emit('activate', layer)"
   >
     <div class="actions">
       <Button
@@ -29,13 +29,13 @@
             : $t('studio.show-layer')
         "
         variant="ghost"
-        @click="$emit('visible', layer)"
+        @click.prevent="$emit('visible', layer)"
       >
         <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
       </Button>
     </div>
     <div v-if="!editLayerName" class="name" @dblclick="onToggleLayerNameEdit">
-        {{ layer.name.value }}
+      {{ layer.name.value }}
     </div>
     <input
       v-else
