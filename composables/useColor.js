@@ -17,9 +17,7 @@ export function useColor(string) {
     if (R === 0) return 0
 
     const L = l(r, g, b)
-    if (L > 0.5) return R / (2 * L)
-
-    return R / (2 - 2 * L)
+    return R / (1 - Math.abs(2 * L - 1))
   }
   const h = (r, g, b) => {
     const R = range(r, g, b)
@@ -92,29 +90,29 @@ export function useColor(string) {
 
   const red = computed({
     set(value) {
-      rgb.r = value / 0xff
+      rgb.r = value / 0xFF
       updateFromRGB(rgb.r, rgb.g, rgb.b)
     },
     get() {
-      return ~~(rgb.r * 0xff)
+      return Math.floor(rgb.r * 0xFF)
     }
   })
   const green = computed({
     set(value) {
-      rgb.g = value / 0xff
+      rgb.g = value / 0xFF
       updateFromRGB(rgb.r, rgb.g, rgb.b)
     },
     get() {
-      return ~~(rgb.g * 0xff)
+      return Math.floor(rgb.g * 0xFF)
     }
   })
   const blue = computed({
     set(value) {
-      rgb.b = value / 0xff
+      rgb.b = value / 0xFF
       updateFromRGB(rgb.r, rgb.g, rgb.b)
     },
     get() {
-      return ~~(rgb.b * 0xff)
+      return Math.floor(rgb.b * 0xFF)
     }
   })
   const hue = computed({
@@ -123,7 +121,7 @@ export function useColor(string) {
       updateFromHSL(hsl.h, hsl.s, hsl.l)
     },
     get() {
-      return ~~(360 + hsl.h * 60) % 360
+      return Math.floor(360 + hsl.h * 60) % 360
     }
   })
   const saturation = computed({
@@ -132,7 +130,7 @@ export function useColor(string) {
       updateFromHSL(hsl.h, hsl.s, hsl.l)
     },
     get() {
-      return ~~(hsl.s * PERCENTAGE)
+      return Math.floor(hsl.s * PERCENTAGE)
     }
   })
   const lightness = computed({
@@ -141,7 +139,7 @@ export function useColor(string) {
       updateFromHSL(hsl.h, hsl.s, hsl.l)
     },
     get() {
-      return ~~(hsl.l * PERCENTAGE)
+      return Math.floor(hsl.l * PERCENTAGE)
     }
   })
 
