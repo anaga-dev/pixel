@@ -6,7 +6,8 @@ import Color from '@/pixel/color/Color'
  * @returns {Color}
  */
 export function useColor(string) {
-  const PERCENTAGE = 101
+  const PERCENTAGE = 100
+
   const max = (r, g, b) => Math.max(r, g, b)
   const min = (r, g, b) => Math.min(r, g, b)
   const range = (r, g, b) => max(r, g, b) - min(r, g, b)
