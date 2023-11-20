@@ -1,62 +1,55 @@
 <template>
   <ToolButton
-    label="Freehand selection"
+    tooltipText="studio.tooltips.freehand-selection"
+    label="studio.freehand"
+    icon="freehand"
     :active="documentStore.selection.type === SelectType.FREEHAND"
     @click="documentStore.setSelectType(SelectType.FREEHAND)"
-  >
-    <Icon i="freehand" />
-    {{ $t('studio.freehand') }}
-  </ToolButton>
+  />
   <ToolButton
-    label="Rectangular selection"
+    tooltipText="studio.tooltips.rectangle-selection"
+    label="studio.rectangle"
+    icon="selection"
     :active="documentStore.selection.type === SelectType.RECTANGLE"
     @click="documentStore.setSelectType(SelectType.RECTANGLE)"
-  >
-    <Icon i="selection" />
-    Rectangular
-  </ToolButton>
+  />
   <ToolButton
-    label="Elliptical selection"
+    tooltipText="studio.tooltips.ellipse-selection"
+    label="studio.ellipse"
+    icon="selection-ellipse"
     :active="documentStore.selection.type === SelectType.ELLIPSE"
     @click="documentStore.setSelectType(SelectType.ELLIPSE)"
-  >
-    <Icon i="selection" />
-    Ellipse
-  </ToolButton>
+  />
   <ToolButton
-    label="Color selection"
+    tooltipText="studio.tooltips.color-selection"
+    label="studio.color"
+    icon="color"
     :active="documentStore.selection.type === SelectType.COLOR"
     @click="documentStore.setSelectType(SelectType.COLOR)"
-  >
-    <Icon i="color" />
-    Color
-  </ToolButton>
+  />
   <ToolButton
     v-if="documentStore.selection.type === SelectType.COLOR"
-    label="Contiguous color"
+    tooltipText="studio.tooltips.contiguous"
+    label="studio.contiguous"
+    icon="droplet"
     :active="documentStore.selection.contiguous"
     @click="documentStore.toggleSelectContiguous()"
-  >
-    <Icon i="droplet" />
-    Contiguous
-  </ToolButton>
+  />
   <Divider vertical />
   <ToolButton
-    label="Add to selection"
+    tooltipText="studio.tooltips.add-to-selection"
+    label="studio.add-to-selection"
+    icon="selection-add"
     :active="documentStore.selection.mode === SelectMode.ADD"
     @click="documentStore.setSelectMode(SelectMode.ADD)"
-  >
-    <Icon i="selection-add" />
-    Add
-  </ToolButton>
+  />
   <ToolButton
-    label="Substract from selection"
+    tooltipText="studio.tooltips.subtract-from-selection"
+    label="studio.subtract-from-selection"
+    icon="selection-substract"
     :active="documentStore.selection.mode === SelectMode.SUBTRACT"
     @click="documentStore.setSelectMode(SelectMode.SUBTRACT)"
-  >
-    <Icon i="selection-substract" />
-    Subtract
-  </ToolButton>
+  />
 </template>
 
 <script setup>

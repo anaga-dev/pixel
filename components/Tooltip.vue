@@ -17,7 +17,7 @@ const props = defineProps({
 
 <template>
   <div class="tooltip-container">
-    <div class="Tooltip" :class="[position]">{{ message }}</div>
+    <div class="Tooltip" :class="[position]">{{ $t(message) }}</div>
     <slot></slot>
   </div>
 </template>

@@ -1,8 +1,11 @@
 <template>
-  <ToolButton :active="document.dropper.selectCompositeColor" @click="document.toggleDropperCompositeColor()">
-    <Icon i="composite" />
-    {{ $t('studio.composite') }}
-  </ToolButton>
+  <ToolButton
+    tooltipText="studio.tooltips.all-layers"
+    label="studio.composite"
+    icon="composite"
+    :active="document.dropper.selectCompositeColor"
+    @click="document.toggleDropperCompositeColor()"
+  />
 </template>
 
 <script setup>

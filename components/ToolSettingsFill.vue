@@ -1,17 +1,26 @@
 <template>
-  <ToolButton :active="document.fill.type === 'fill'" @click="document.setFillType('fill')">
-    <Icon i="droplet" />
-    Fill
-  </ToolButton>
-  <ToolButton :active="document.fill.type === 'erase'" @click="document.setFillType('erase')">
-    <Icon i="eraser" />
-    Erase
-  </ToolButton>
+  <ToolButton
+    tooltipText="studio.tooltips.fill-fill"
+    label="studio.fill"
+    icon="droplet"
+    :active="document.fill.type === 'fill'"
+    @click="document.setFillType('fill')"
+  />
+  <ToolButton
+    tooltipText="studio.tooltips.fill-erase"
+    label="studio.erase"
+    icon="eraser"
+    :active="document.fill.type === 'erase'"
+    @click="document.setFillType('erase')"
+  />
   <Divider vertical />
-  <ToolButton :active="document.fill.contiguous" @click="document.toggleFillContiguous()">
-    <Icon i="droplet" />
-    Contiguous
-  </ToolButton>
+  <ToolButton
+    tooltipText="studio.tooltips.contiguous"
+    label="studio.contiguous"
+    icon="droplet"
+    :active="document.fill.contiguous"
+    @click="document.toggleFillContiguous()"
+  />
 </template>
 
 <script setup>

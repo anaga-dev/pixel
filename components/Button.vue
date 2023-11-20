@@ -51,11 +51,11 @@ button {
   grid-auto-flow: column;
   justify-content: center;
   align-items: center;
-  height: var(--spaceXL);
   gap: var(--spaceS);
   font-weight: bold;
+  line-height: 1.5rem;
   text-transform: uppercase;
-  padding: 0 var(--spaceM);
+  padding: var(--spaceS) var(--spaceM);
   background-color: var(--colorShade);
   clip-path: var(--pixelCorners);
   transition: background-color 240ms ease, transform 60ms ease;

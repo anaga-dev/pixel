@@ -32,6 +32,7 @@
     <Transition name="slide">
       <aside v-if="showPanel" class="PANELS">
         <Panel
+          scrollable
           :title="$t('palette')"
           :expanded="showPalette"
           @toggle="togglePalette"
@@ -240,8 +241,8 @@ function clearPalette() {
   overflow: hidden;
   display: grid;
   user-select: none;
-  grid-template-columns: var(--widthToolbar) 1fr var(--widthSidebar);
-  grid-template-rows: var(--widthToolbar) 1fr auto;
+  grid-template-columns: auto 1fr var(--widthSidebar);
+  grid-template-rows: auto 1fr auto;
 }
 
 .SETTINGS,
@@ -299,10 +300,10 @@ function clearPalette() {
   padding: var(--spaceM);
   background-color: var(--colorLayer1);
   box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-  gap: var(--spaceL);
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceM);
+  align-content: flex-start;
 }
 
 .button-show {

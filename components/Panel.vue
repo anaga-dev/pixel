@@ -1,20 +1,21 @@
 <template>
   <Transition appear name="slide">
-    <section class="Panel">
+    <section class="Panel" :class="{ expanded: expanded }">
       <header>
-        <Button variant="ghost" @click="emit('toggle')"><Icon :i="icon" /></Button>
+        <Button variant="ghost" @click="emit('toggle')"
+          ><Icon :i="icon"
+        /></Button>
         <h2>{{ title }}</h2>
         <div class="actions">
           <slot name="actions"></slot>
         </div>
       </header>
-        <div v-if="expanded" class="content"  :class="{ scrollable: scrollable }">
-          <div v-if="scrollable" class="scroll-wrapper">
-            
-            <slot></slot>
-          </div>
-          <slot v-else><!-- optional fallback --></slot>
+      <div v-if="expanded" class="content" :class="{ scrollable: scrollable }">
+        <div v-if="scrollable" class="scroll-wrapper">
+          <slot></slot>
         </div>
+        <slot v-else><!-- optional fallback --></slot>
+      </div>
     </section>
   </Transition>
 </template>
@@ -42,10 +43,16 @@ const emit = defineEmits(['toggle'])
 
 <style scoped>
 .Panel {
+  flex: 0 0 auto;
   pointer-events: initial;
   display: grid;
   grid-template-rows: auto 1fr;
 }
+
+.Panel.expanded {
+  flex: 1;
+}
+
 header {
   display: grid;
   grid-template-columns: auto 1fr auto;

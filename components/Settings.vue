@@ -79,14 +79,18 @@ const sidePanelMessage = computed(() => {
   justify-content: space-between;
   align-items: center;
   gap: var(--spaceS);
-  padding: 0 var(--spaceM);
+  padding: var(--spaceS);
 }
 
 .group {
   display: grid;
   grid-auto-flow: column;
-  gap: var(--spaceM);
   align-items: center;
+  gap: var(--spaceS);
+}
+
+.group > *:last-child {
+  margin-right: 0;
 }
 
 .group:first-child {
