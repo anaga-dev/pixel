@@ -183,6 +183,10 @@ export const useDocumentStore = defineStore('document', {
     },
     setPencilShape(shape) {
       this.pencil.shape = shape
+      if (this.pencil.shape !== PencilShape.DITHER) {
+        this.pencil.dither.level = 0
+        this.pencil.dither.reset()
+      }
     },
     setPencilSize(size) {
       this.pencil.size = size
