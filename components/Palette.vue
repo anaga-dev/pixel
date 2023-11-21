@@ -98,6 +98,7 @@ watch(
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
   gap: 2px;
+  padding: 2px;
 }
 
 .remove-area {

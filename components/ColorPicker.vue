@@ -1,54 +1,58 @@
 <template>
   <Dropdown class="ColorPicker">
-    <div class="colors">
-      <div class="samples">
-        <div
-          class="sample previous"
-          :style="{ backgroundColor: previous }"
-        ></div>
-        <div
-          class="sample current"
-          :style="{ backgroundColor: current.style.value }"
-        ></div>
+    <div class="picker">
+      <div class="colors">
+        <div class="samples">
+          <div
+            class="sample previous"
+            :style="{ backgroundColor: previous }"
+          ></div>
+          <div
+            class="sample current"
+            :style="{ backgroundColor: current.style.value }"
+          ></div>
+        </div>
+        <Tooltip :message="$t('studio.tooltips.add-to-palette')" position="right">
+          <Button :label="$t('studio.add-to-palette')" variant="ghost" @click="documentStore.addPaletteColor()">
+            <Icon i="add-to-palette" />
+          </Button>
+        </Tooltip>
       </div>
-      <Tooltip :message="$t('studio.tooltips.add-to-palette')" position="right">
-        <Button variant="ghost" @click="documentStore.addPaletteColor()">
-          <Icon i="add-to-palette" />
-        </Button>
-      </Tooltip>
+      <CombinedColorPicker :color="current" />
+      <HuePicker :color="current" />
     </div>
-    <CombinedColorPicker :color="current" />
-    <HuePicker :color="current" />
-    <TabMenu>
-      <Tab
-        :active="documentStore.colorMode === ColorMode.HEX"
-        @click="documentStore.setColorMode(ColorMode.HEX)"
-        >Hex</Tab
-      >
-      <Tab
-        :active="documentStore.colorMode === ColorMode.HSL"
-        @click="documentStore.setColorMode(ColorMode.HSL)"
-        >HSL</Tab
-      >
-      <Tab
-        :active="documentStore.colorMode === ColorMode.RGB"
-        @click="documentStore.setColorMode(ColorMode.RGB)"
-        >RGB</Tab
-      >
-    </TabMenu>
-    <ColorHex
-      v-if="documentStore.colorMode === ColorMode.HEX"
-      :color="current"
-      @update="onUpdateHex"
-    />
-    <ColorHSL
-      v-else-if="documentStore.colorMode === ColorMode.HSL"
-      :color="current"
-    />
-    <ColorRGB
-      v-else-if="documentStore.colorMode === ColorMode.RGB"
-      :color="current"
-    />
+    <div class="controls">
+      <TabMenu>
+        <Tab
+          :active="documentStore.colorMode === ColorMode.HEX"
+          @click="documentStore.setColorMode(ColorMode.HEX)"
+          >Hex</Tab
+        >
+        <Tab
+          :active="documentStore.colorMode === ColorMode.HSL"
+          @click="documentStore.setColorMode(ColorMode.HSL)"
+          >HSL</Tab
+        >
+        <Tab
+          :active="documentStore.colorMode === ColorMode.RGB"
+          @click="documentStore.setColorMode(ColorMode.RGB)"
+          >RGB</Tab
+        >
+      </TabMenu>
+      <ColorHex
+        v-if="documentStore.colorMode === ColorMode.HEX"
+        :color="current"
+        @update="onUpdateHex"
+      />
+      <ColorHSL
+        v-else-if="documentStore.colorMode === ColorMode.HSL"
+        :color="current"
+      />
+      <ColorRGB
+        v-else-if="documentStore.colorMode === ColorMode.RGB"
+        :color="current"
+      />
+    </div>
   </Dropdown>
 </template>
 
@@ -121,5 +125,20 @@ watch(
   text-transform: uppercase;
   font-weight: bold;
   filter: invert(100%);
+}
+
+.picker,
+.controls {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spaceS);
+}
+
+@media (max-height: 640px) {
+  .ColorPicker {
+    grid-template-columns: 24vw 1fr;
+    gap: var(--spaceL);
+    left: 9rem;
+  }
 }
 </style>

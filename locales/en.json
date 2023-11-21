@@ -58,6 +58,7 @@
     "in-madrid": "in Madrid"
   },
   "studio": {
+    "add-to-palette":"Add to palette",
     "back-to-dashboard": "Back to dashboard",
     "new-artwork-confirmation": "Are you sure you want to create a new artwork? All unsaved changes will be lost.",
     "blend-mode": "Blend mode",
@@ -132,7 +133,7 @@
       "zoom": "Zoom",
       "all-layers": "All layers",
       "new-layer": "New layer",
-      "add-to-palette": "Add to palette",
+      "add-to-palette": "Add color to palette",
       "palette-options": "Palette options",
       "freehand-selection": "Freehand selection",
       "rectangle-selection": "Rectangular selection",

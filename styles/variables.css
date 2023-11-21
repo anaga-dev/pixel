@@ -70,7 +70,9 @@
     0% calc(100% - var(--spaceXS) * 2)
   );
 
-  --shadowLayer: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow),
+  --shadowLayer:
+    inset 0 0 0 2px var(--colorLayer2),
+    calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow),
     calc(var(--spaceM) * -1) var(--spaceM) 0 var(--colorShadow);
   --shadowInput: inset var(--spaceS) var(--spaceS) 0 var(--colorShadow);
 }

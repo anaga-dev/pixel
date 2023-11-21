@@ -57,6 +57,7 @@
     "in-madrid": "en Madrid"
   },
   "studio": {
+    "add-to-palette":"Añadir a la paleta",
     "back-to-dashboard": "Volver al panel",
     "new-artwork-confirmation": "¿Estás seguro de que quieres crear un nuevo dibujo? Se perderán todos los cambios no guardados.",
     "blend-mode": "Modo de fusión",
@@ -131,7 +132,7 @@
       "Zoom": "Zoom",
       "all-layers": "Todas las capas",
       "new-layer": "Nueva capa",
-      "add-to-palette": "Añadir a la paleta",
+      "add-to-palette": "Añadir color a la paleta",
       "palette-options": "Opciones de paleta",
       "freehand-selection": "Selección a mano alzada",
       "rectangle-selection": "Selección rectangular",

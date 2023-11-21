@@ -104,7 +104,6 @@ onMounted(() => {
 .CombinedColorPicker {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
   position: relative;
   overflow: hidden;
 }

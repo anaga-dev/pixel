@@ -111,7 +111,7 @@ const { tooltip } = storeToRefs(uiStore)
   gap: var(--spaceM);
   padding: var(--spaceM) var(--spaceS);
   background-color: var(--colorLayer1);
-  box-shadow: var(--shadowLayer);
+  box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
 }
 
 @media (max-height: 640px) {

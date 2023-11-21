@@ -82,7 +82,5 @@ h2 {
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  box-shadow: inset 0 var(--spaceXS) 0 var(--colorShadow),
-    inset 0 calc(var(--spaceXS) * -1) 0 var(--colorShadow);
 }
 </style>

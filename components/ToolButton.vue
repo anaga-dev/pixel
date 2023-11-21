@@ -2,13 +2,12 @@
   <Tooltip :message="tooltipText" :position="tooltipPosition">
     <Button
       variant="ghost"
-      :class="[variant]"
       :label="label"
       :active="active"
       :disabled="disabled"
     >
       <Icon v-if="icon" :i="icon" />
-      <span>{{ $t(label) }}</span>
+      <span v-if="variant !== 'icon'">{{ $t(label) }}</span>
     </Button>
   </Tooltip>
 </template>
