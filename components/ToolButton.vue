@@ -1,7 +1,7 @@
 <template>
   <Tooltip :message="tooltipText" :position="tooltipPosition">
     <Button
-      variant="ghost"
+      :variant="variant === 'icon' ? 'ghost' : 'setting'"
       :label="label"
       :active="active"
       :disabled="disabled"
@@ -74,7 +74,7 @@ button:hover {
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   span {
     display: none;
   }

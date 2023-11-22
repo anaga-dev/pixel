@@ -13,11 +13,11 @@
     :active="document.fill.type === 'erase'"
     @click="document.setFillType('erase')"
   />
-  <Divider vertical />
+  <Divider vertical transparent />
   <ToolButton
     tooltipText="studio.tooltips.contiguous"
     label="studio.contiguous"
-    icon="droplet"
+    icon="contiguous"
     :active="document.fill.contiguous"
     @click="document.toggleFillContiguous()"
   />

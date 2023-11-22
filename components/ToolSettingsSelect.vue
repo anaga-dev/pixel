@@ -23,7 +23,7 @@
   <ToolButton
     tooltipText="studio.tooltips.color-selection"
     label="studio.color"
-    icon="color"
+    icon="palette"
     :active="documentStore.selection.type === SelectType.COLOR"
     @click="documentStore.setSelectType(SelectType.COLOR)"
   />
@@ -31,11 +31,11 @@
     v-if="documentStore.selection.type === SelectType.COLOR"
     tooltipText="studio.tooltips.contiguous"
     label="studio.contiguous"
-    icon="droplet"
+    icon="contiguous"
     :active="documentStore.selection.contiguous"
     @click="documentStore.toggleSelectContiguous()"
   />
-  <Divider vertical />
+  <Divider vertical transparent />
   <ToolButton
     tooltipText="studio.tooltips.add-to-selection"
     label="studio.add-to-selection"

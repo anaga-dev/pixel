@@ -82,25 +82,6 @@ const { tooltip } = storeToRefs(uiStore)
         FIXME: This is a performance sinkhole, I guess it's because `documentStore.history.canUndo`
         is recalculated every time we paint a pixel.
             -->
-    <Divider class="divider" />
-    <ToolButton
-      tooltipText="studio.tooltips.undo"
-      tooltipPosition="right"
-      label="studio.undo"
-      icon="undo"
-      variant="icon"
-      :disabled="!documentStore.history.canUndo"
-      @click="documentStore.undo()"
-    />
-    <ToolButton
-      tooltipText="studio.tooltips.redo"
-      tooltipPosition="right"
-      label="studio.redo"
-      icon="redo"
-      variant="icon"
-      :disabled="!documentStore.history.canRedo"
-      @click="documentStore.redo()"
-    />
   </div>
 </template>
 
@@ -114,7 +95,7 @@ const { tooltip } = storeToRefs(uiStore)
   box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
 }
 
-@media (max-height: 640px) {
+@media (max-height: 480px) {
   .Tools {
     gap: var(--spaceM);
     padding: var(--spaceM);

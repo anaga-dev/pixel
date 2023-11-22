@@ -75,7 +75,7 @@ function exportFile() {
 
 <style scoped>
 .menu {
-  left: var(--spaceS);
-  top: calc(var(--widthToolbar) + var(--spaceS));
+  top: var(--spaceS);
+  right: calc(var(--widthToolbar) + var(--spaceS));
 }
 </style>

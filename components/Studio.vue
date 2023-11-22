@@ -1,109 +1,3 @@
-<template>
-  <div class="CONTAINER">
-    <div class="SETTINGS">
-      <Settings />
-    </div>
-    <div class="TOOLS">
-      <Tools />
-    </div>
-    <main class="BOARD" ref="board" :class="{ dragging: spaceDown }">
-      <Document v-if="documentStore.canvas" />
-      <Selection
-        v-if="
-          documentStore.canvas &&
-          (documentStore.selection.visible ||
-            documentStore.tool === Tool.SELECT)
-        "
-      />
-    </main>
-    <!--
-    <div class="ANIMATION">
-      <button
-        class="button-show"
-        :class="{ expanded: showingAnimation }"
-        type="button"
-        :aria-label="showingAnimation ? 'Hide animation panel' : 'Show animation panel'"
-        @click="toggleShowAnimation">
-        <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
-      </button>
-      <Animation v-if="showingAnimation" />
-    </div>
-    -->
-    <Transition name="slide">
-      <aside v-if="showPanel" class="PANELS">
-        <Panel
-          scrollable
-          :title="$t('palette')"
-          :expanded="showPalette"
-          @toggle="togglePalette"
-        >
-          <template #actions>
-            <Tooltip
-              :message="$t('studio.tooltips.palette-options')"
-              position="bottom left"
-            >
-              <Button
-                :label="$t('studio.add-layer')"
-                variant="ghost"
-                @click="toggleOverlay('palette-options')"
-              >
-                <Icon i="menu" />
-              </Button>
-            </Tooltip>
-            <Dropdown
-              v-if="showOverlay === 'palette-options'"
-              class="palette-menu"
-              @close="toggleOverlay('palette-options')"
-            >
-              <Button @click="loadPalette">{{
-                $t('studio.load-palette')
-              }}</Button>
-              <Button @click="savePalette">{{
-                $t('studio.save-palette')
-              }}</Button>
-              <Button @click="clearPalette">{{
-                $t('studio.clear-palette')
-              }}</Button>
-            </Dropdown>
-          </template>
-          <Palette />
-        </Panel>
-        <Divider />
-        <Panel
-          scrollable
-          :title="$t('studio.layers')"
-          :expanded="showLayers"
-          @toggle="toggleLayers"
-        >
-          <template #actions>
-            <Tooltip
-              :message="$t('studio.tooltips.new-layer')"
-              position="bottom left"
-            >
-              <Button
-                :label="$t('studio.add-layer')"
-                variant="ghost"
-                @click="documentStore.addLayer"
-              >
-                <Icon i="add-item" />
-              </Button>
-            </Tooltip>
-          </template>
-          <Layers :layers="documentStore.layers"></Layers>
-        </Panel>
-      </aside>
-    </Transition>
-  </div>
-  <LayerSettings
-    v-if="documentStore.layers.settings"
-    :layer="documentStore.layers.settings"
-  />
-  <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
-  <DocumentCreate v-if="!documentStore.canvas" />
-  <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
-  <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
-</template>
-
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
@@ -135,6 +29,7 @@ const {
 } = storeToRefs(uiStore)
 
 const {
+  togglePanel,
   togglePalette,
   toggleOverlay,
   toggleLayers,
@@ -232,7 +127,178 @@ function clearPalette() {
   documentStore.clearPalette()
   uiStore.showOverlay = null
 }
+
+const icon = computed(() => {
+  return showPanel.value ? 'collapse-side-panel' : 'expand-side-panel'
+})
+
+const sidePanelMessage = computed(() => {
+  return showPanel.value ? 'studio.tooltips.collapse-side-panel' : 'studio.tooltips.expand-side-panel'
+})
 </script>
+
+<template>
+  <div class="CONTAINER">
+    <div class="SETTINGS">
+      <Settings />
+    </div>
+    <div class="TOOLS">
+      <Tools />
+    </div>
+    <main class="BOARD" ref="board" :class="{ dragging: spaceDown }">
+      <Document v-if="documentStore.canvas" />
+      <Selection
+        v-if="
+          documentStore.canvas &&
+          (documentStore.selection.visible ||
+            documentStore.tool === Tool.SELECT)
+        "
+      />
+    </main>
+    <!--
+    <div class="ANIMATION">
+      <button
+        class="button-show"
+        :class="{ expanded: showingAnimation }"
+        type="button"
+        :aria-label="showingAnimation ? 'Hide animation panel' : 'Show animation panel'"
+        @click="toggleShowAnimation">
+        <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
+      </button>
+      <Animation v-if="showingAnimation" />
+    </div>
+    -->
+    <Transition name="slide">
+      <section v-if="showPanel" class="PANELS">
+        <Panel
+          scrollable
+          :title="$t('palette')"
+          :expanded="showPalette"
+          @toggle="togglePalette"
+        >
+          <template #actions>
+            <Tooltip
+              :message="$t('studio.tooltips.palette-options')"
+              position="bottom left"
+            >
+              <Button
+                :label="$t('studio.add-layer')"
+                variant="ghost"
+                @click="toggleOverlay('palette-options')"
+              >
+                <Icon i="more" />
+              </Button>
+            </Tooltip>
+            <Dropdown
+              v-if="showOverlay === 'palette-options'"
+              class="palette-menu"
+              @close="toggleOverlay('palette-options')"
+            >
+              <Button @click="loadPalette">{{
+                $t('studio.load-palette')
+              }}</Button>
+              <Button @click="savePalette">{{
+                $t('studio.save-palette')
+              }}</Button>
+              <Button @click="clearPalette">{{
+                $t('studio.clear-palette')
+              }}</Button>
+            </Dropdown>
+          </template>
+          <Palette />
+        </Panel>
+        <Divider />
+        <Panel
+          scrollable
+          :title="$t('studio.layers')"
+          :expanded="showLayers"
+          @toggle="toggleLayers"
+        >
+          <template #actions>
+            <Tooltip
+              :message="$t('studio.tooltips.new-layer')"
+              position="bottom left"
+            >
+              <Button
+                :label="$t('studio.add-layer')"
+                variant="ghost"
+                @click="documentStore.addLayer"
+              >
+                <Icon i="add-item" />
+              </Button>
+            </Tooltip>
+          </template>
+          <Layers :layers="documentStore.layers"></Layers>
+        </Panel>
+      </section>
+    </Transition>
+    <aside class="SIDEBAR">
+      <div class="group">
+        <SettingsButton />
+        <Divider />
+        <Tooltip :message="$t(sidePanelMessage)" position="left bottom">
+          <Button
+            variant="ghost"
+            @click="togglePanel"
+          >
+            <Icon :i="icon" />
+          </Button>
+        </Tooltip>
+      </div>
+      <div class="group">
+        <Tooltip :message="$t('studio.tooltips.symmetry')" position="left bottom">
+          <Button
+            :label="$t('studio.symmetry-aid')"
+            variant="ghost"
+            :active="documentStore.symmetry.axis !== null"
+            @click="toggleOverlay('symmetry-settings')"
+          >
+            <Icon
+              i="symmetry-vertical"
+              v-if="documentStore.symmetry.axis === 'vertical'"
+            />
+            <Icon
+              i="symmetry-two-axis"
+              v-else-if="documentStore.symmetry.axis === 'both'"
+            />
+            <Icon i="symmetry-horizontal" v-else />
+          </Button>
+        </Tooltip>
+        <Divider />
+        <Tooltip :message="$t('studio.tooltips.zoom')" position="left bottom">
+          <Zoom />
+        </Tooltip>
+        <Divider class="divider" />
+            <ToolButton
+        tooltipText="studio.tooltips.undo"
+        tooltipPosition="right"
+        label="studio.undo"
+        icon="undo"
+        variant="icon"
+        :disabled="!documentStore.history.canUndo"
+        @click="documentStore.undo()"
+            />
+            <ToolButton
+        tooltipText="studio.tooltips.redo"
+        tooltipPosition="right"
+        label="studio.redo"
+        icon="redo"
+        variant="icon"
+        :disabled="!documentStore.history.canRedo"
+        @click="documentStore.redo()"
+            />
+      </div>
+    </aside>
+  </div>
+  <LayerSettings
+    v-if="documentStore.layers.settings"
+    :layer="documentStore.layers.settings"
+  />
+  <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
+  <DocumentCreate v-if="!documentStore.canvas" />
+  <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
+  <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
+</template>
 
 <style scoped>
 .CONTAINER {
@@ -241,33 +307,33 @@ function clearPalette() {
   overflow: hidden;
   display: grid;
   user-select: none;
-  grid-template-columns: auto 1fr var(--widthSidebar);
+  grid-template-columns: auto 1fr var(--widthSidebar) auto;
   grid-template-rows: auto 1fr auto;
 }
 
-.SETTINGS,
 .TOOLS,
-.ANIMATION {
+.ANIMATION,
+.SIDEBAR {
   background-color: var(--colorLayer1);
 }
 
 .SETTINGS {
-  grid-column: 1 / span 3;
+  grid-column: 1 / span 2;
   grid-row: 1;
   z-index: 3;
-  box-shadow: calc(var(--spaceXS) * -1) var(--spaceXS) 0 var(--colorShadow);
+  display: grid;
+  justify-self: start;
 }
-
 .TOOLS {
   display: grid;
   align-self: center;
   grid-column: 1;
-  grid-row: 2;
+  grid-row: 1 / span 2;
   z-index: 2;
 }
 
 .BOARD {
-  grid-column: 1 / span 3;
+  grid-column: 1 / span 4;
   grid-row: 1 / span 3;
   display: grid;
   place-items: center;
@@ -293,8 +359,8 @@ function clearPalette() {
 
 .PANELS {
   grid-column: 3;
-  grid-row: 2;
-  z-index: 1;
+  grid-row: 1 / span 2;
+  z-index: 4;
   position: relative;
   overflow: hidden;
   padding: var(--spaceM);
@@ -304,6 +370,22 @@ function clearPalette() {
   flex-direction: column;
   gap: var(--spaceM);
   align-content: flex-start;
+}
+
+.SIDEBAR {
+  grid-column: 4;
+  grid-row: 1 / span 2;
+  z-index: 5;
+  display: grid;
+  padding: var(--spaceS);
+  box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
+  gap: var(--spaceS);
+  align-content: space-between;
+}
+
+.group {
+  display: grid;
+  gap: var(--spaceS);
 }
 
 .button-show {
@@ -325,7 +407,17 @@ function clearPalette() {
 .palette-menu {
   position: absolute;
   top: 100%;
-  right: var(--spaceS);
+  right: 0;
   z-index: 1000;
+}
+
+@media (orientation: portrait) {
+  .SETTINGS {
+    grid-column: 1 / span 4;
+    justify-self: center;
+  }
+  .PANELS {
+    grid-row: 2;
+  }
 }
 </style>

@@ -20,7 +20,7 @@
     :active="document.shape.type === 'ellipse'"
     @click="document.setShapeType('ellipse')"
   />
-  <Divider vertical />
+  <Divider vertical transparent />
   <ToolButton
     tooltipText="studio.tooltips.shapes.fill"
     label="studio.fill"
@@ -44,12 +44,6 @@ const document = useDocumentStore()
 </script>
 
 <style scoped>
-.ToolSettingsShape {
-  display: grid;
-  grid-auto-flow: column;
-  align-items: center;
-  gap: var(--spaceS);
-}
 
 @media screen and (max-width: 768px) {
   span {

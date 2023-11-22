@@ -2,7 +2,7 @@
   <section class="Zoom">
     <Button
       :label="$t('studio.zoom')"
-      variant="dropdown"
+      variant="ghost"
       @click.stop="toggleOverlay('zoom-settings')"
     >
       <Icon i="zoom-in" />
@@ -63,8 +63,8 @@ const { toggleOverlay } = uiStore
 }
 
 .ZoomMenu {
-  top: calc(var(--spaceS) + var(--widthToolbar));
-  right: 0;
+  bottom: 0;
+  right: var(--widthToolbar);
 }
 
 @media (max-width: 1024px) {

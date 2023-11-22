@@ -128,7 +128,7 @@ function onDelete(layer) {
 <style scoped>
 .LayerSettings {
   top: calc(var(--widthToolbar) + var(--spaceS));
-  right: calc(var(--widthSidebar) + var(--spaceS));
+  right: calc(var(--widthSidebar) + var(--widthToolbar) + var(--spaceS));
   width: 20rem;
   display: grid;
   justify-content: stretch;
