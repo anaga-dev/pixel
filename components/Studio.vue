@@ -11,6 +11,7 @@ import { storeToRefs } from 'pinia'
 
 const board = ref(null)
 const showingAnimation = ref(false)
+const consolin = ref(null)
 
 const MIN_TOUCHES = 2
 
@@ -61,8 +62,15 @@ useWheel(
 
 useTouch(
   (e) => {
+    if(e.type === 'touchend' || e.type === 'touchcancel') {
+      documentStore.stopMoving()
+    }
     if (e.touches < MIN_TOUCHES) {
+      documentStore.stopMoving()
       return
+    }
+    if(e.type === 'touchstart') {
+      documentStore.startMoving()
     }
     const { x: currentX, y: currentY } = e.currentCenter
     const { x: previousX, y: previousY } = e.previousCenter

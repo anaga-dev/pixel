@@ -133,7 +133,7 @@ export function useTouch(callback, options) {
   }
 
   function handler(e) {
-    if (e.type === 'touchend' || e.type === 'touchcancel') return
+    /* if (e.type === 'touchend' || e.type === 'touchcancel') return */
 
     updateStateFromEvent(e, state)
     callback(state)

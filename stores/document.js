@@ -60,6 +60,7 @@ export const useDocumentStore = defineStore('document', {
     canvas: null,
     canvasRect: null,
     tool: Tool.PENCIL,
+    moving: false,
     drawing: false,
     copyImageData: null,
     drawingImageData: null,
@@ -97,6 +98,9 @@ export const useDocumentStore = defineStore('document', {
     isPlaying() {
       if (!this.animation) return false
       return this.animation.isPlaying
+    },
+    isMoving() {
+      return this.moving
     },
     canPlayAnimation() {
       if (!this.animation) return false
@@ -171,6 +175,12 @@ export const useDocumentStore = defineStore('document', {
     }
   },
   actions: {
+    startMoving() {
+      this.moving = true
+    },
+    stopMoving() {
+      this.moving = false
+    },
     updateCanvasRect() {
       // We need to get client rect so we can calculate
       // the selection canvas position.
@@ -663,6 +673,9 @@ export const useDocumentStore = defineStore('document', {
       })
     },
     useTool(e, pointer) {
+      if (this.moving) {
+        return
+      }
       // TODO: All this behavior can be vastly improved.
       this.modified = true
       if (e.buttons === 4 || this.keys.current.has(' ')) {
