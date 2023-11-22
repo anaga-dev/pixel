@@ -1,5 +1,5 @@
 <template>
-  <Transition name="pop">
+  <Transition name="pop" appear>
     <div ref="target" class="Dropdown">
       <slot></slot>
     </div>
@@ -41,7 +41,7 @@ onClickOutside(target, (e) => {
 
 .pop-enter-from,
 .pop-leave-to {
-  translate: 100%;
+  scale: 0.2;
   opacity: 0;
 }
 </style>

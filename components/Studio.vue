@@ -322,16 +322,8 @@ const sidePanelMessage = computed(() => {
   grid-row: 1;
   z-index: 3;
   display: grid;
-  justify-content: start;
+  justify-self: start;
 }
-
-@media (orientation: portrait) {
-  .SETTINGS {
-    grid-column: 1 / span 4;
-    justify-content: center;
-  }
-}
-
 .TOOLS {
   display: grid;
   align-self: center;
@@ -341,7 +333,7 @@ const sidePanelMessage = computed(() => {
 }
 
 .BOARD {
-  grid-column: 1 / span 3;
+  grid-column: 1 / span 4;
   grid-row: 1 / span 3;
   display: grid;
   place-items: center;
@@ -417,5 +409,15 @@ const sidePanelMessage = computed(() => {
   top: 100%;
   right: 0;
   z-index: 1000;
+}
+
+@media (orientation: portrait) {
+  .SETTINGS {
+    grid-column: 1 / span 4;
+    justify-self: center;
+  }
+  .PANELS {
+    grid-row: 2;
+  }
 }
 </style>
