@@ -43,6 +43,12 @@ const sidePanelMessage = computed(() => {
   align-items: center;
   gap: var(--spaceS);
   padding: var(--spaceS);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.Settings::-webkit-scrollbar {
+  display: none;
 }
 
 .group {

@@ -326,7 +326,7 @@ const sidePanelMessage = computed(() => {
 }
 
 .SETTINGS {
-  grid-column: 1 / span 2;
+  grid-column: 1 / span 3;
   grid-row: 1;
   z-index: 3;
   display: grid;
@@ -420,10 +420,6 @@ const sidePanelMessage = computed(() => {
 }
 
 @media (orientation: portrait) {
-  .SETTINGS {
-    grid-column: 1 / span 4;
-    justify-self: center;
-  }
   .PANELS {
     grid-row: 2;
   }
