@@ -46,3 +46,9 @@ function onBrushDither(dither) {
   toggleOverlay('brush-dither')
 }
 </script>
+
+<style scoped>
+button {
+  background-color: var(--colorLayer1);
+}
+</style>

@@ -1,7 +1,9 @@
 <template>
-  <div ref="target" class="Dropdown">
-    <slot></slot>
-  </div>
+  <Transition name="pop">
+    <div ref="target" class="Dropdown">
+      <slot></slot>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -27,5 +29,19 @@ onClickOutside(target, (e) => {
   box-shadow: var(--shadowLayer);
   position: absolute;
   z-index: 1000;
+}
+
+.pop-enter-active {
+  transition: all 200ms ease-out;
+}
+
+.pop-leave-active {
+  transition: all 200ms ease-in;
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  translate: 100%;
+  opacity: 0;
 }
 </style>

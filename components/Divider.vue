@@ -1,10 +1,13 @@
 <template>
-  <div class="Divider" :class="{ vertical: vertical }"></div>
+  <div class="Divider" :class="{ vertical: vertical, transparent: transparent }"></div>
 </template>
 
 <script setup>
 const props = defineProps({
   vertical: {
+    type: Boolean
+  },
+  transparent: {
     type: Boolean
   }
 })
@@ -21,5 +24,9 @@ const props = defineProps({
   height: 100%;
   width: var(--spaceXXS);
   background: var(--colorShade);
+}
+
+.Divider.transparent {
+  background: transparent;
 }
 </style>

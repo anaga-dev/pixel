@@ -53,7 +53,7 @@ button {
   align-items: center;
   gap: var(--spaceS);
   font-weight: bold;
-  line-height: 1.5rem;
+  line-height: 24px;
   text-transform: uppercase;
   padding: var(--spaceS) var(--spaceM);
   background-color: var(--colorShade);
@@ -61,10 +61,14 @@ button {
   transition: background-color 240ms ease, transform 60ms ease;
 }
 
-button:is(.ghost, .dropdown) {
+button.ghost {
   padding: var(--spaceS);
   background-color: transparent;
   color: inherit;
+}
+
+button:is(.dropdown, .setting) {
+  background-color: var(--colorLayer1);
 }
 
 button:is(.ghost, .dropdown).active {
@@ -85,8 +89,12 @@ button:is(:not(.ghost, .dropdown, .primary, .critical)):hover {
   background-color: var(--colorHover);
 }
 
-button:is(.ghost, .dropdown):hover {
+button.ghost:hover {
   background-color: var(--colorShade);
+}
+
+button:is(.dropdown, .setting):hover {
+  background-color: var(--colorLayer2);
 }
 
 button:active {
