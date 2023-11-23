@@ -3,6 +3,11 @@ const DESCRIPTION = 'Create pixel art on any device.'
 
 export default defineNuxtConfig({
   extends: [process.env.PIXEL_LAYER || './base'],
+  runtimeConfig: {
+    public: {
+      trackerId: process.env.PIWIKPRO_ID ?? null
+    }
+  },
   app: {
     head: {
       htmlAttrs: {
@@ -61,7 +66,7 @@ export default defineNuxtConfig({
       ]
     }
   },
-  buildModules: [ '@vueuse/gesture' ],
+  buildModules: ['@vueuse/gesture'],
   modules: [
     '@nuxt/devtools',
     '@vueuse/nuxt',
