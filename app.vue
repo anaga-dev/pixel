@@ -14,8 +14,6 @@ import { useUIStore } from '@/stores/ui'
 import { useNotificationStore } from '@/stores/notification'
 import { useConfirmationStore } from '@/stores/confirmation'
 
-const config = useRuntimeConfig()
-
 const uiStore = useUIStore()
 const notificationStore = useNotificationStore()
 const confirmationStore = useConfirmationStore()
