@@ -20,4 +20,11 @@ const confirmationStore = useConfirmationStore()
 const { showDialog } = storeToRefs(confirmationStore)
 const { tooltip } = storeToRefs(uiStore)
 const { notifications } = storeToRefs(notificationStore)
+
+onMounted(() => {
+  const script = document.createElement('script')
+  script.type = 'text/javascript'
+  script.src = '/piwikpro-script.js'
+  document.head.appendChild(script)
+})
 </script>
