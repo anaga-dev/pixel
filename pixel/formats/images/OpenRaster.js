@@ -93,7 +93,7 @@ function createStack(doc) {
   let xml = '<?xml version="1.0" encoding="UTF-8" ?>'
   xml += `<image version="0.0.3" w="${doc.width}" h="${doc.height}" xres="72" yres="72">`
   xml += '<stack>'
-  for (let index = doc.layers.list.length - 1; index >= 0; --index) {
+  for (let index = 0; index < doc.layers.list.length; index++) {
     const layer = doc.layers.list[index]
     xml += `<layer name="${layer.name.value}" src="data/layer${index}.png" opacity="${layer.opacity.value}" visibility="${layer.visible.value ? 'visible': 'hidden'}" composite-op="${getCompositeOperation(layer.blendMode.value)}" x="0" y="0" />`
   }

@@ -25,6 +25,8 @@
     "mocha": "^10.0.0",
     "nuxt": "^3.6.3",
     "pinia": "^2.0.22",
+    "sortablejs": "^1.15.0",
+    "sortablejs-vue3": "^1.2.11",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

@@ -993,7 +993,9 @@ export const useDocumentStore = defineStore('document', {
       // createPattern --> fillRect
       // context.drawImage(el fondo transparente)
       const frame = this.animation.current
-      for (const layer of this.layers.list) {
+      const reverseLayers = [...this.layers.list].reverse()
+
+      for (const layer of reverseLayers) {
         if (!layer.visible.value) {
           continue
         }
@@ -1102,6 +1104,11 @@ export const useDocumentStore = defineStore('document', {
     /***************************************************************************
      * Layers
      ***************************************************************************/
+    updateLayers(list) {
+      this.layers.set(list)
+      this.redrawAll()
+    },
+
     mergeDown() {
       // TODO: We need to get all layers below the selected one and blend them together
       // in a single layer.

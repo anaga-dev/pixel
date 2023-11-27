@@ -236,7 +236,7 @@ const sidePanelMessage = computed(() => {
               </Button>
             </Tooltip>
           </template>
-          <Layers :layers="documentStore.layers"></Layers>
+          <Layers />
         </Panel>
       </section>
     </Transition>

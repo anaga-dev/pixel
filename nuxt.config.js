@@ -58,8 +58,8 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', href: 'favicon.svg' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-icon.png' },
         { rel: 'manifest', href: '/manifest.webmanifest' }
-      ],
-/*       script: [
+      ]
+      /*       script: [
         {
           children: `(function(window, document, dataLayerName, id) {
             window[dataLayerName]=window[dataLayerName]||[],window[dataLayerName].push({start:(new Date).getTime(),event:"stg.start"});var scripts=document.getElementsByTagName('script')[0],tags=document.createElement('script');
@@ -75,7 +75,6 @@ export default defineNuxtConfig({
       ] */
     }
   },
-  buildModules: ['@vueuse/gesture'],
   modules: [
     '@nuxt/devtools',
     '@vueuse/nuxt',

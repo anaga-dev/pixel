@@ -96,10 +96,10 @@ export const useLayersStore = defineStore('layers', () => {
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.value.id
     )
-    const newIndex = index + 1
+    const newIndex = index - 1
     current.value = created
-    if (newIndex === list.length) {
-      list.push(created)
+    if (newIndex === -1) {
+      list.splice(0, 0 , created)
     } else {
       list.splice(newIndex, 0, created)
     }
@@ -170,6 +170,7 @@ export const useLayersStore = defineStore('layers', () => {
 
   function set(layers) {
     list.length = 0
+    console.log('set', layers)
     layers.forEach((layer) => { add(layer) })
   }
 
