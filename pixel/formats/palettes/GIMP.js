@@ -23,8 +23,8 @@ export async function load(blob)
   if (colors.length === 0)
     throw new Error('No colors found in palette file')
 
-  const palette = colors.map((color) => {
-    const [r, g, b, hex] = color.split(/\s+/)
+  const palette = colors.map((item) => {
+    const [r, g, b, hex] = item.color.split(/\s+/)
     return `#${hex}`
   })
 

@@ -2,8 +2,7 @@
   <div
     class="PaletteColor"
     :class="{ active: active, remove: removeMode }"
-    :style="{ backgroundColor: color }"
-    :data-index="index"
+    :style="{ backgroundColor: color.color }"
     @pointerover="handleOver"
     @click="handleClick">
   </div>
@@ -15,7 +14,7 @@ const documentStore = useDocumentStore()
 
 const props = defineProps({
   color: {
-    type: String,
+    type: Object,
     required: true
   },
   active: {
@@ -35,7 +34,7 @@ const emit = defineEmits(['select', 'remove'])
 
 const handleClick = (e) => {
   if(e.ctrlKey) {
-    emit('remove', props.index)
+    emit('remove')
     return
   }
   emit('select', color)

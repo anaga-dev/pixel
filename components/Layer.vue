@@ -8,7 +8,6 @@
       top: dropTop,
       bottom: dropBottom
     }"
-    :data-index="index"
     @click.prevent="$emit('activate', layer)"
   >
     <div class="actions">

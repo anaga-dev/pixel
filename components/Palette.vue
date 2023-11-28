@@ -1,5 +1,50 @@
+<script setup>
+import { useDocumentStore } from '@/stores/document'
+import { Sortable } from 'sortablejs-vue3'
+
+const documentStore = useDocumentStore()
+
+const draggingColor = ref(false)
+
+const activeColor = ref(null)
+const removeMode = ref(false)
+const overBin = ref(false)
+const current = useColor(documentStore.color)
+
+const handleUpdatePalette = (e) => {
+  console.log('Update palette', e.oldIndex, e.newIndex)
+  documentStore.swapPaletteColors(e.oldIndex, e.newIndex)
+}
+
+const onDropToRemove = (e) => {
+  documentStore.palette.removeAt(e.oldIndex)
+}
+
+const handleSelectColor = (newStyle) => {
+  console.log('Select color', newStyle)
+  current.style.value = newStyle
+  activeColor.value = newStyle
+}
+
+const handleRemoveColor = (index) => {
+  documentStore.palette.removeAt(index)
+}
+
+const options = {
+  delay: 250,
+  delayOnTouchOnly: true
+}
+
+watch(
+  () => current.style.value,
+  (newValue) => {
+    documentStore.setColor(newValue)
+  }
+)
+</script>
+
 <template>
-  <div class="Palette" :class="{ remove: removeMode }">
+  <!--   <div class="Palette" :class="{ remove: removeMode }">
     <PaletteColor
       v-for="(color, index) in palette.colors"
       :key="index"
@@ -14,7 +59,25 @@
       @dragover="onDragOver"
       @drop="onDrop"
     />
-  </div>
+  </div> -->
+  <Sortable
+    class="Palette"
+    :class="{ remove: removeMode }"
+    itemKey="id"
+    :list="documentStore.palette.colors"
+    :options="options"
+    @end="handleUpdatePalette"
+  >
+    <template #item="{ element, index }">
+      <PaletteColor
+        :index="index"
+        :color="element"
+        :active="activeColor === element.color"
+        @select="handleSelectColor(element.color)"
+        @remove="handleRemoveColor(index)"
+      />
+    </template>
+  </Sortable>
   <div
     v-if="draggingColor"
     class="remove-area"
@@ -26,72 +89,6 @@
     {{ $t('delete') }}
   </div>
 </template>
-
-<script setup>
-import { storeToRefs } from 'pinia'
-import { useDocumentStore } from '@/stores/document'
-
-const documentStore = useDocumentStore()
-
-const { palette } = storeToRefs(documentStore)
-const draggingColor = ref(false)
-const fromIndex = ref(null)
-const fromColor = ref(null)
-
-const activeColor = ref(null)
-const removeMode = ref(false)
-const overBin = ref(false)
-const current = useColor(documentStore.color)
-
-function onDragStart(index, color) {
-  draggingColor.value = true
-  fromIndex.value = index
-  fromColor.value = color
-}
-
-function onDragOver(e) {
-  e.preventDefault()
-  if(!draggingColor.value) return
-  const ownIndex = e.currentTarget.dataset.index
-}
-
-function onDragEnd(e) {
-  draggingColor.value = false
-  console.log('Drag end')
-}
-
-function onDrop(e) {
-  if(!draggingColor.value) return
-  const destination = e.currentTarget
-  console.log('Drop', destination)
-  const toIndex = parseInt(destination.dataset.index, 10)
-  documentStore.palette.swap(fromIndex.value, toIndex)
-  draggingColor.value = false
-}
-
-function onDropToRemove(e) {
-  console.log('Drop to remove!!!')
-  documentStore.palette.removeAt(fromIndex.value)
-  draggingColor.value = false
-}
-
-function onSelectColor(newStyle) {
-  current.style.value = newStyle
-  activeColor.value = newStyle
-}
-
-function onRemoveColor(index) {
-  documentStore.palette.removeAt(index)
-  draggingColor.value = false
-}
-
-watch(
-  () => current.style.value,
-  (newValue) => {
-    documentStore.setColor(newValue)
-  }
-)
-</script>
 
 <style scoped>
 .Palette {

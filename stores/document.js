@@ -1304,6 +1304,12 @@ export const useDocumentStore = defineStore('document', {
       this.palette.clear()
     },
     /**
+     * Swap palette colors
+     */
+    swapPaletteColors(fromIndex, toIndex) {
+      this.palette.swap(fromIndex, toIndex)
+    },
+    /**
      * Add color to palette
      */
     addPaletteColor() {

@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid'
+
 export const usePaletteStore = defineStore('palette', () => {
   const colors = reactive([])
   console.log(colors)
@@ -8,7 +10,12 @@ export const usePaletteStore = defineStore('palette', () => {
    * @param {Array<string>} newColors
    */
   function set(newColors) {
-    colors.splice(0, colors.length, ...newColors)
+    console.log('set', newColors)
+    const newColorsList = newColors.map((color) => ({
+      id: uuid(),
+      color: color
+    }))
+    colors.splice(0, colors.length, ...newColorsList)
   }
 
   /**
@@ -24,11 +31,18 @@ export const usePaletteStore = defineStore('palette', () => {
    * Add color to palette
    */
   function add(color) {
-    colors.push(color)
+    colors.push({
+      id: uuid(),
+      color: color
+    })
   }
 
   function addAt(index, color) {
-    colors.splice(index, 0, color)
+    const newColor = {
+      id: uuid(),
+      color: color
+    }
+    colors.splice(index, 0, newColor)
   }
 
   /**
@@ -45,13 +59,15 @@ export const usePaletteStore = defineStore('palette', () => {
     return colors.pop()
   }
 
-  /* 
-  * Swap colors in palette
-  */
-  
+  /*
+   * Swap colors in palette
+   */
+
   function swap(fromIndex, toIndex) {
-    const [color] = colors.splice(fromIndex, 1)
-    colors.splice(toIndex, 0, color)
+    console.log('swap', fromIndex, toIndex)
+    const [fromColor] = colors.splice(fromIndex, 1)
+    console.log('fromColor', fromColor)
+    colors.splice(toIndex, 0, fromColor)
   }
 
   return { colors, set, clear, add, addAt, removeAt, removeLast, swap }
