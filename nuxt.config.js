@@ -106,62 +106,9 @@ export default defineNuxtConfig({
   pinia: {
     autoImports: ['defineStore', 'acceptHMRUpdate', 'storeToRefs']
   },
-  pwa: {
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'Anaga Pixel',
-      lang: 'en',
-      short_name: 'AnagaPixel',
-      description: 'Create pixel art on any device',
-      background_color: '#292929',
-      theme_color: '#292929',
-      homepage_url: 'https://pixel.anaga.dev/',
-      id: '/studio',
-      start_url: '/studio',
-      scope: '/studio',
-      display: 'standalone',
-      icons: [
-        {
-          src: '/icons/icon-192x192.png',
-          sizes: '192x192',
-          type: 'image/png'
-        },
-        {
-          src: '/icons/icon-256x256.png',
-          sizes: '256x256',
-          type: 'image/png'
-        },
-        {
-          src: '/icons/icon-384x384.png',
-          sizes: '384x384',
-          type: 'image/png'
-        },
-        {
-          src: '/icons/icon-512x512.png',
-          sizes: '512x512',
-          type: 'image/png'
-        }
-      ],
-      file_handlers: [
-        {
-          action: '/studio',
-          accept: {
-            'image/jpeg': ['.jpg', '.jpeg'],
-            'image/png': ['.png'],
-            'image/webp': ['.webp'],
-            'image/openraster': ['.ora']
-          }
-        }
-      ]
-    },
-    workbox: {
-      cleanupOutdatedCaches: true,
-      // navigateFallback: '/studio',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
-    },
     devOptions: {
       enabled: false,
       type: 'module'
     }
   }
-})
+)
