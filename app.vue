@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <NuxtLayout>
-      <VitePwaManifest />
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+  <VitePwaManifest />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
   <Dialog v-if="showDialog" />
   <Tooltip v-if="tooltip" />
   <Notifications v-if="notifications?.length > 0" />

@@ -142,9 +142,14 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      cleanupOutdatedCaches: true,
-      //navigateFallback: '/studio',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,json,svg,png,webp}'],
+      runtimeCaching: [
+        {
+          urlPattern: '/',
+          handler: 'NetworkFirst',
+        }
+      ]
     },
     devOptions: {
       enabled: false,
