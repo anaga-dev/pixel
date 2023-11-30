@@ -374,10 +374,9 @@ const sidePanelMessage = computed(() => {
   padding: var(--spaceM);
   background-color: var(--colorLayer1);
   box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--spaceM);
-  align-content: flex-start;
+  align-content: start;
 }
 
 .SIDEBAR {

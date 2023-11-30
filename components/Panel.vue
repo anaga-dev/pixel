@@ -10,11 +10,8 @@
           <slot name="actions"></slot>
         </div>
       </header>
-      <div v-if="expanded" class="content" :class="{ scrollable: scrollable }">
-        <div v-if="scrollable" class="scroll-wrapper">
-          <slot></slot>
-        </div>
-        <slot v-else><!-- optional fallback --></slot>
+      <div v-if="expanded" class="content">
+        <slot></slot>
       </div>
     </section>
   </Transition>
@@ -25,9 +22,6 @@ const props = defineProps({
   title: {
     type: String,
     required: false
-  },
-  scrollable: {
-    type: Boolean
   },
   expanded: {
     type: Boolean
@@ -43,14 +37,10 @@ const emit = defineEmits(['toggle'])
 
 <style scoped>
 .Panel {
-  flex: 0 0 auto;
   pointer-events: initial;
-  display: grid;
-  grid-template-rows: auto 1fr;
-}
-
-.Panel.expanded {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 header {
@@ -73,14 +63,8 @@ h2 {
   gap: var(--spaceS);
 }
 
-.scroll-wrapper {
-  position: absolute;
-  inset: 0;
-}
-
-.scrollable {
-  position: relative;
-  overflow-x: hidden;
+.content {
+  flex: 1;
   overflow-y: auto;
 }
 </style>
