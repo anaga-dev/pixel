@@ -18,8 +18,12 @@ import ACT from '@/pixel/formats/palettes/ACT'
 import PAL from '@/pixel/formats/palettes/PAL'
 import FilePicker from '@/pixel/io/FilePicker'
 
+import TGA from '@/pixel/formats/images/TGA'
+import PCX from '@/pixel/formats/images/PCX'
+import BMP from '@/pixel/formats/images/BMP'
+import Aseprite from '../pixel/formats/images/Aseprite'
 import OpenRaster from '@/pixel/formats/images/OpenRaster'
-import PNG from '@/pixel/formats/images/PNG'
+import WebImage from '@/pixel/formats/images/WebImage'
 
 import { useLayersStore } from './layers'
 import { useAnimationStore } from './animation'
@@ -36,6 +40,7 @@ import { useShapeStore } from './shape'
 import { useTransformStore } from './transform'
 import { useSelectionStore } from './selection'
 import { useMagicKeys } from '@vueuse/core'
+
 
 /**
  * This is the Document type that is used when
@@ -1267,20 +1272,21 @@ export const useDocumentStore = defineStore('document', {
      * Load palette
      */
     async loadPalette() {
-      // FIXME: Neither Firefox nor Safari support this.
-      const [fileHandle] = await window.showOpenFilePicker({
+      const file = await FilePicker.showOpen({
         types: PaletteTypes,
         excludeAcceptAllOption: true,
         multiple: false
       })
-      if (fileHandle.kind === 'file') {
-        const file = await fileHandle.getFile()
-        if (/(.*)\.gpl$/i.test(file.name)) {
-          const palette = await GIMP.load(file)
-          this.palette.set(palette)
-        }
+      if (/.*\.gpl$/i.test(file.name)) {
+        const palette = await GIMP.load(file)
+        this.palette.set(palette)
+      } else if (/.*\.pal$/i.test(file.name)) {
+        const palette = await PAL.load(file)
+        this.palette.set(palette)
+      } else if (/.*\.act$/i.test(file.name)) {
+        const palette = await ACT.load(file)
+        this.palette.set(palette)
       }
-      console.log(fileHandle)
     },
     /**
      * Save palette
@@ -1288,39 +1294,27 @@ export const useDocumentStore = defineStore('document', {
     async savePaletteAs() {
       const suggestedFileName = 'untitled'
       const fileExtension = '.gpl'
-
-      if ('showSaveFilePicker' in window) {
-        const fileHandle = await window.showSaveFilePicker({
-          suggestedName: suggestedFileName + fileExtension,
+      FilePicker.showSave(
+        (fileHandle) => {
+          const extension = fileHandle.name.slice(
+            fileHandle.name.lastIndexOf('.')
+          )
+          if (extension === '.gpl') {
+            return GIMP.save(this.palette.colors)
+          } else if (extension === '.pal') {
+            return PAL.save(this.palette.colors)
+          } else if (extension === '.act') {
+            return ACT.save(this.palette.colors)
+          } else {
+            throw new Error('Invalid extension')
+          }
+        },
+        {
+          defaultFileName: suggestedFileName + fileExtension,
           types: PaletteTypes,
           excludeAcceptAllOption: true
-        })
-        const writable = await fileHandle.createWritable()
-        const extension = fileHandle.name.slice(
-          fileHandle.name.lastIndexOf('.')
-        )
-        if (extension === '.gpl') {
-          await writable.write(await GIMP.save(this.palette.colors))
-        } else if (extension === '.pal') {
-          await writable.write(await PAL.save(this.palette.colors))
-        } /* else if (extension === '.act') {
-          await writable.write(await ACT.save(this.palette.colors))
-        } */
-        await writable.close()
-      } else {
-        let zip
-        if (extension === '.gpl') {
-          zip = await GIMP.save(this.palette.colors)
-        } else if (extension === '.pal') {
-          zip = await PAL.save(this.palette.colors)
-        } /* else if (extension === '.act') {
-          zip = await ACT.save(this.palette.colors)
-        } */
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(zip)
-        a.download = suggestedFileName + fileExtension
-        a.click()
-      }
+        }
+      )
     },
     /**
      * Clear palette
@@ -1449,59 +1443,45 @@ export const useDocumentStore = defineStore('document', {
      * Open file
      */
     async openFile() {
-      if ('showOpenFilePicker' in window) {
-        const [fileHandle] = await window.showOpenFilePicker({
-          types: ImageTypes,
-          excludeAcceptAllOption: true,
-          multiple: false
-        })
-        if (fileHandle.kind === 'file') {
-          const file = await fileHandle.getFile()
-          console.log(file)
-          let document
-          if (/(.*)\.ora$/i.test(file.name)) {
-            document = await OpenRaster.load(file)
-            console.log(document)
-          } else if (/(.*)\.png$/i.test(file.name)) {
-            document = await PNG.load(file)
-            console.log(document)
-          }
-          if (!document) {
-          }
-          this.createFromDocument(document)
-        }
-        console.log(fileHandle)
-      } else {
-        const input = document.createElement('input')
-        input.type = 'file'
-        input.accept = '.ora,.png'
-        input.multiple = false
-        input.onchange = async (e) => {}
+      const file = await FilePicker.showOpen({
+        types: ImageTypes,
+        excludeAcceptAllOption: true,
+        multiple: false
+      })
+      let document
+      if (/(.*)\.ora$/i.test(file.name)) {
+        document = await OpenRaster.load(file)
+      } else if (/(.*)\.(png|gif|jpeg|jpg|webp)$/i.test(file.name)) {
+        document = await WebImage.load(file)
       }
+      /*
+       TODO: We need to return a valid Document object.
+      else if (/(.*)\.pcx$/i.test(file.name)) {
+        document = await PCX.load(file)
+      } else if (/(.*)\.tga$/i.test(file.name)) {
+        document = await TGA.load(file)
+      } else if (/(.*)\.aseprite$/i.test(file.name)) {
+        document = await Aseprite.load(file)
+      }
+      */
+      console.log(document)
+      if (!document) {
+      }
+      this.createFromDocument(document)
     },
     /**
      * Save file
      */
     async saveFileAs() {
-      const suggestedFileName = 'untitled'
-      const fileExtension = '.ora'
-      if ('showSaveFilePicker' in window) {
-        const fileHandle = await window.showSaveFilePicker({
-          suggestedName: suggestedFileName + fileExtension,
+      await FilePicker.showSave(
+        (fileHandle) => OpenRaster.save(this),
+        {
           types: ImageTypes,
+          defaultFileName: suggestedFileName + fileExtension,
           excludeAcceptAllOption: true,
           multiple: false
-        })
-        const writable = await fileHandle.createWritable()
-        await writable.write(await OpenRaster.save(this))
-        await writable.close()
-      } else {
-        const zip = await OpenRaster.save(this)
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(zip)
-        a.download = suggestedFileName + fileExtension
-        a.click()
-      }
+        }
+      )
       this.modified = false
     },
 

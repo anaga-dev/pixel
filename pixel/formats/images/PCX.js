@@ -1,4 +1,5 @@
 import BinaryReader from '@/pixel/io/BinaryReader.js'
+import BinaryWriter from '@/pixel/io/BinaryWriter.js'
 
 const PCX_SIGNATURE = 0x0A
 
@@ -9,7 +10,7 @@ const PCX_SIGNATURE = 0x0A
  * @returns {Promise<Blob>}
  */
 export async function save(document) {
-  // const writer = BinaryWriter
+  const writer = BinaryWriter
 }
 
 /**
@@ -71,4 +72,9 @@ export async function load(blob) {
   const planes = reader.read('u1')
   const planeSize = reader.read('u2')
   const paletteSize = reader.read('u2')
+}
+
+export default {
+  save,
+  load,
 }

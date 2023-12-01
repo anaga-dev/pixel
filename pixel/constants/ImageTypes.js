@@ -2,7 +2,8 @@ export default [
   {
     description: 'Images',
     accept: {
-      '*/*': ['.ora', '.png', '.jpg', '.webp']
+      /* TODO: Aseprite is still a work in progress */
+      '*/*': ['.ora', /* '.aseprite', */ '.png', '.jpg', '.jpeg', '.webp']
     }
   }
 ]

@@ -17,10 +17,6 @@ export const BinaryType = {
 
   F4: 'f4', /* float */
   F8: 'f8', /* double */
-
-  UNSIGNED: 'u',
-  SIGNED: 's',
-  FLOAT: 'f'
 }
 
 export default BinaryType

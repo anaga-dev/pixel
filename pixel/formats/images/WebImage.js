@@ -1,18 +1,26 @@
 /**
+ * @typedef {object} LoadImageOptions
+ * @property {string} [crossOrigin='anonymous']
+ * @property {string} [decoding='sync']
+ * @property {string} [loading='eager']
+ */
+
+/**
+ * Loads an Image.
  *
  * @param {string} src
  * @param {LoadImageOptions} [options]
  * @returns {Image}
  */
-export function loadImage(src, { crossOrigin = 'anonymous', decoding = 'async', loading = 'eager' } = {}) {
+export function loadImage(src, options) {
   return new Promise((resolve, reject) => {
     const image = new Image()
-    image.onload = () => resolve(image)
+    image.onload = _ => resolve(image)
     image.onerror = (error) => reject(error)
-    image.onabort = () => reject(new Error('Abort'))
-    image.crossOrigin = crossOrigin
-    image.decoding = decoding
-    image.loading = loading
+    image.onabort = _ => reject(new Error('Abort'))
+    image.crossOrigin = options?.crossOrigin ?? 'anonymous'
+    image.decoding = options?.decoding ?? 'sync'
+    image.loading = options?.loading ?? 'eager'
     image.src = src
   })
 }
@@ -27,7 +35,7 @@ export async function getImage(blob) {
   if ('createImageBitmap' in window) {
     return createImageBitmap(blob)
   } else {
-    const url = URL.createObjectURL(file)
+    const url = URL.createObjectURL(blob)
     const image = await loadImage(url)
     // Ensure that the image has the correct dimensions.
     image.width = image.naturalWidth
@@ -38,7 +46,7 @@ export async function getImage(blob) {
 }
 
 /**
- * Loads a PNG file.
+ * Loads a WebImage (png, gif, jpeg, webp) file.
  *
  * @param {File} file
  * @returns {Promise<Document>}
@@ -69,18 +77,19 @@ export async function load(file) {
 }
 
 /**
- * Saves a PNG file.
+ * Saves a WebImage file.
  *
  * @param {Document} document
+ * @param {SaveOptions} options
  * @returns {Blob}
  */
-export async function save(document) {
+export async function save(document, options) {
   const offscreenCanvas = new OffscreenCanvas(document.width, document.height)
   const context = offscreenCanvas.getContext('2d')
   context.drawImage(document.canvas, 0, 0)
   const blob = await offscreenCanvas.convertToBlob({
-    type: 'image/png',
-    quality: 1
+    type: options?.type ?? 'image/png',
+    quality: options?.quality ?? 1
   })
   return blob
 }

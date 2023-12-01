@@ -1,12 +1,14 @@
 /**
+ * Endianness
+ *
  * @readonly
  * @enum {boolean}
  */
 export const Endianness = {
   /** Big-endian */
-  BIG: false,
+  BIG: !!0,
   /** Little-endian */
-  LITTLE: true,
+  LITTLE: !!1,
 }
 
 export default Endianness

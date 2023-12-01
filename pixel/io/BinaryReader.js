@@ -1,11 +1,10 @@
-import BinaryView from './BinaryView'
-import BinaryOperation from './BinaryOperation'
-import DataViewUtils, { BinaryTypes } from './DataViewUtils'
-import BinaryType from './BinaryType'
+import BinaryView from './BinaryView.js'
+import BinaryTypeData from './BinaryTypeData.js'
+import BinaryType from './BinaryType.js'
 
 export default class BinaryReader extends BinaryView {
   /**
-   * Gets a BinaryReader from an ArrayBuffer
+   * Gets a BinaryReader from an ArrayBuffer.
    *
    * @param {ArrayBuffer} arrayBuffer
    * @returns {Promise<BinaryReader>}
@@ -15,7 +14,7 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
-   * Gets a BinaryReader from a Blob
+   * Gets a BinaryReader from a Blob.
    *
    * @param {Blob} blob
    * @returns {Promise<BinaryReader>}
@@ -26,19 +25,22 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
-   * Reads a value
+   * Reads a value.
    *
    * @param {BinaryType} type
    * @param {Endianness} [endianness]
    * @returns {number}
    */
   read(type, endianness) {
-    const methodName = DataViewUtils.getMethodNameByType(BinaryOperation.READ, type)
+    const [size, , methodName] = BinaryTypeData[type]
     const method = this.dataView[methodName]
-    return method(this.position, endianness ?? this.endianness)
+    const value = method(this.position, endianness ?? this.endianness)
+    this.position += size
+    return value
   }
 
   /**
+   * Reads a buffer.
    *
    * @param {number} bytes
    * @returns {ArrayBuffer}
@@ -50,7 +52,7 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
-   * Reads a string
+   * Reads a string.
    *
    * @param {BinaryReaderReadStringOptions} [options]
    * @returns {string}
@@ -70,6 +72,7 @@ export default class BinaryReader extends BinaryView {
   }
 
   /**
+   * Reads a type.
    *
    * @param {BinaryTypeRegister} register
    * @param {string} type

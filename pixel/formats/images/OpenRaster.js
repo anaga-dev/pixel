@@ -11,7 +11,7 @@ import Color from '@/pixel/color/Color'
 /**
  * Turns a <canvas> or a OffscreenCanvas into a thumbnail.
  *
- * @param {*} source
+ * @param {CanvasImageSource} source
  * @returns {Promise<Blob>}
  */
 function createThumbnail(source) {
@@ -228,7 +228,6 @@ export async function load(blob) {
     console.log(error)
     throw new Error('Invalid OpenRaster stack.xml', error)
   }
-  // TODO: We need to finish this function in order to be able to load OpenRaster files.
 }
 
 export default {

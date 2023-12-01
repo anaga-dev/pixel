@@ -33,6 +33,14 @@ export default class BinaryView {
    * @param {Endianness} [endianness=Endianness.BIG]
    */
   constructor(dataView, position = 0, endianness = Endianness.BIG) {
+    if (!(dataView instanceof DataView)) {
+      throw new TypeError('DataView is not an instance of DataView')
+    }
+
+    if (!Number.isInteger(position)) {
+      throw new TypeError('Position is not an integer')
+    }
+
     this.#dataView = dataView
     this.#position = position
     this.#endianness = endianness
