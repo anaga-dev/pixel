@@ -1,26 +1,26 @@
 <template>
   <section class="Animation">
     <div class="playback">
-      <Button label="Skip to first frame" variant="ghost" :disabled="!documentStore.canGoToFirstFrame" @click="documentStore.goToFirstFrame()">
+      <Button label="Skip to first frame" variant="ghost" :disabled="!documentStore.animation.canGoFirst" @click="documentStore.goToFirstFrame()">
         <Icon i="skip-first" />
       </Button>
-      <Button label="Skip to previous frame" variant="ghost" :disabled="!documentStore.canGoToPreviousFrame" @click="documentStore.goToPreviousFrame()">
+      <Button label="Skip to previous frame" variant="ghost" :disabled="!documentStore.animation.canGoPrevious" @click="documentStore.goToPreviousFrame()">
         <Icon i="skip-previous" />
       </Button>
-      <Button :label="documentStore.isPlaying ? 'Pause' : 'Play'" variant="ghost" :disabled="!documentStore.canPlayAnimation" @click="documentStore.toggleAnimation()">
-        <Icon i="pause" v-if="documentStore.isPlaying" />
+      <Button :label="documentStore.animation.isPlaying ? 'Pause' : 'Play'" variant="ghost" :disabled="!documentStore.animation.canPlay" @click="documentStore.toggle()">
+        <Icon i="pause" v-if="documentStore.animation.isPlaying" />
         <Icon i="play" v-else />
       </Button>
-      <Button label="Skip to next frame" variant="ghost" :disabled="!documentStore.canGoToNextFrame" @click="documentStore.goToNextFrame()">
+      <Button label="Skip to next frame" variant="ghost" :disabled="!documentStore.animation.canGoNext" @click="documentStore.goToNextFrame()">
         <Icon i="skip-next" />
       </Button>
-      <Button label="Skip to last frame" variant="ghost" :disabled="!documentStore.canGoToLastFrame" @click="documentStore.goToLastFrame()">
+      <Button label="Skip to last frame" variant="ghost" :disabled="!documentStore.animation.canGoLast" @click="documentStore.goToLastFrame()">
         <Icon i="skip-last" />
       </Button>
     </div>
     <div class="actions">
       <Button label="Duplicate active frame" variant="ghost" @click="documentStore.duplicateFrame()">
-        <Icon i="duplicate-frame" />
+        <Icon i="add-item" />
       </Button>
       <Button label="Add new empty frame" variant="ghost" @click="documentStore.addFrame()">
         <Icon i="add-item" />
@@ -29,7 +29,7 @@
     <div class="frames">
       <AnimationFrame
         v-for="(frame, index) in documentStore.frames"
-        :key="index"
+        :key="frame.id"
         :frame="frame"
         :active="index === documentStore.animation.current"
         @click="documentStore.setCurrentFrame(index)"></AnimationFrame>
