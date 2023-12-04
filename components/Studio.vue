@@ -357,7 +357,6 @@ const sidePanelMessage = computed(() => {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
 }
 .BOARD.dragging {
-  background-color: red;
   cursor: url('@/assets/cursors/dragging.svg') 12 12, auto;
 }
 

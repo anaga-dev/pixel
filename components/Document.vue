@@ -35,7 +35,6 @@ onUpdated(() => documentStore.updateCanvasRect())
 
 <style>
 .paint {
-  background-image: url('@/assets/checkers.png');
   image-rendering: crisp-edges;
   image-rendering: pixelated;
   position: relative;
