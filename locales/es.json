@@ -111,6 +111,12 @@
     "save-palette": "Guardar paleta",
     "new-palette": "Nueva paleta",
     "clear-palette": "Limpiar paleta",
+    "symmetry": {
+      "title": "Simetría",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical",
+      "both": "2 ejes"
+    },
     "tooltips": {
       "pencil": "Lápiz (B)",
       "eraser": "Borrador (E)",

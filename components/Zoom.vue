@@ -13,6 +13,7 @@
     class="ZoomMenu"
     @close="toggleOverlay('zoom-settings')"
   >
+    <h3>{{ $t('studio.zoom') }}</h3>
     <Button
       :label="$t('studio.zoom-in')"
       @click="documentStore.zoom.increase()"

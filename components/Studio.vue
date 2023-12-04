@@ -62,14 +62,14 @@ useWheel(
 
 useTouch(
   (e) => {
-    if(e.type === 'touchend' || e.type === 'touchcancel') {
+    if (e.type === 'touchend' || e.type === 'touchcancel') {
       documentStore.stopMoving()
     }
     if (e.touches < MIN_TOUCHES) {
       documentStore.stopMoving()
       return
     }
-    if(e.type === 'touchstart') {
+    if (e.type === 'touchstart') {
       documentStore.startMoving()
     }
     const { x: currentX, y: currentY } = e.currentCenter
@@ -141,7 +141,9 @@ const icon = computed(() => {
 })
 
 const sidePanelMessage = computed(() => {
-  return showPanel.value ? 'studio.tooltips.collapse-side-panel' : 'studio.tooltips.expand-side-panel'
+  return showPanel.value
+    ? 'studio.tooltips.collapse-side-panel'
+    : 'studio.tooltips.expand-side-panel'
 })
 </script>
 
@@ -162,6 +164,7 @@ const sidePanelMessage = computed(() => {
             documentStore.tool === Tool.SELECT)
         "
       />
+      <PixelGrid v-if="documentStore.zoom.current >= 16" />
     </main>
     <!--
     <div class="ANIMATION">
@@ -245,16 +248,16 @@ const sidePanelMessage = computed(() => {
         <SettingsButton />
         <Divider />
         <Tooltip :message="$t(sidePanelMessage)" position="left bottom">
-          <Button
-            variant="ghost"
-            @click="togglePanel"
-          >
+          <Button variant="ghost" @click="togglePanel">
             <Icon :i="icon" />
           </Button>
         </Tooltip>
       </div>
       <div class="group">
-        <Tooltip :message="$t('studio.tooltips.symmetry')" position="left bottom">
+        <Tooltip
+          :message="$t('studio.tooltips.symmetry')"
+          position="left bottom"
+        >
           <Button
             :label="$t('studio.symmetry-aid')"
             variant="ghost"
@@ -276,25 +279,25 @@ const sidePanelMessage = computed(() => {
         <Tooltip :message="$t('studio.tooltips.zoom')" position="left bottom">
           <Zoom />
         </Tooltip>
-        <Divider class="divider" />
-            <ToolButton
-        tooltipText="studio.tooltips.undo"
-        tooltipPosition="right"
-        label="studio.undo"
-        icon="undo"
-        variant="icon"
-        :disabled="!documentStore.history.canUndo"
-        @click="documentStore.undo()"
-            />
-            <ToolButton
-        tooltipText="studio.tooltips.redo"
-        tooltipPosition="right"
-        label="studio.redo"
-        icon="redo"
-        variant="icon"
-        :disabled="!documentStore.history.canRedo"
-        @click="documentStore.redo()"
-            />
+        <Divider class="zoom-divider" />
+        <ToolButton
+          tooltipText="studio.tooltips.undo"
+          tooltipPosition="right"
+          label="studio.undo"
+          icon="undo"
+          variant="icon"
+          :disabled="!documentStore.history.canUndo"
+          @click="documentStore.undo()"
+        />
+        <ToolButton
+          tooltipText="studio.tooltips.redo"
+          tooltipPosition="right"
+          label="studio.redo"
+          icon="redo"
+          variant="icon"
+          :disabled="!documentStore.history.canRedo"
+          @click="documentStore.redo()"
+        />
       </div>
     </aside>
   </div>
@@ -416,6 +419,12 @@ const sidePanelMessage = computed(() => {
   top: 100%;
   right: 0;
   z-index: 1000;
+}
+
+@media (max-width: 1024px) {
+  .zoom-divider {
+    display: none;
+  }
 }
 
 @media (orientation: portrait) {

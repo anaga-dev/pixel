@@ -1,5 +1,5 @@
 <template>
-  <div class="selection" :class="{ active }" ref="container">
+  <div class="Selection" :class="{ active }" ref="container">
     <!-- inject canvas -->
   </div>
 </template>
@@ -62,13 +62,12 @@ function render() {
   context.clearRect(0, 0, canvas.width, canvas.height)
 
   const maskCanvas = documentStore.selection.getMaskCanvas()
-  // con esto podemos visualizar la máscara que
-  // estamos generando a partir de la selección
+  // with this we can visualize the mask that
+  // we are generating from the selection
   if (maskCanvas) {
-    // Esto dibuja cuatro veces la figura con un pixel
-    // de diferencia para poder dibujar el "camino de
-    // hormigas".
-    // TODO: Quizá podríamos cachear este dibujo.
+    // This draws the figure four times with a pixel
+    // difference to be able to draw the "ant trail".
+    // TODO: Maybe we could cache this drawing.
     context.drawImage(
       maskCanvas,
       -1, -1, canvas.width, canvas.height
@@ -85,8 +84,8 @@ function render() {
       maskCanvas,
       -1, 1, canvas.width, canvas.height
     )
-    // Esta es la parte responsable de dibujar
-    // el contorno de nuestra selección.
+    // This is the part responsible for drawing
+    // the outline of our selection.
     context.globalCompositeOperation = 'destination-out'
     context.drawImage(
       maskCanvas,
@@ -98,7 +97,7 @@ function render() {
     context.globalCompositeOperation = 'source-over'
   }
 
-  // Esto dibuja el contorno de la selección.
+  // This draws the outline of the selection.
   context.strokeStyle = documentStore.selection.getPattern().pattern
   context.stroke(documentStore.selection.getPath2D(canvas.width, canvas.height))
 }
@@ -115,7 +114,7 @@ useRequestAnimationFrame(pipeline)
 </script>
 
 <style scoped>
-.selection {
+.Selection {
   pointer-events: none;
   position: fixed;
   top: 0;

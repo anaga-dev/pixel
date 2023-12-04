@@ -992,30 +992,6 @@ export const useDocumentStore = defineStore('document', {
         context.drawImage(drawingCanvas, 0, 0)
       })
     },
-
-    drawGrid() {
-      const context = CanvasContext2D.get(this.canvas)
-      context.beginPath()
-      context.lineWidth = 1 / this.zoom // Ancho de línea en función del zoom
-      context.strokeStyle = '#ccc'
-
-      // Dibujar líneas horizontales
-      for (let y = 0; y <= context.canvas.height; y++) {
-        const yPos = y * this.zoom
-        context.moveTo(0, yPos)
-        context.lineTo(context.canvas.width, yPos)
-      }
-
-      // Dibujar líneas verticales
-      for (let x = 0; x <= context.canvas.width; x++) {
-        const xPos = x * this.zoom
-        context.moveTo(xPos, 0)
-        context.lineTo(xPos, context.canvas.height)
-      }
-
-      context.stroke()
-    },
-
     redraw() {
       const context = CanvasContext2D.get(this.canvas)
       context.clearRect(0, 0, context.canvas.width, context.canvas.height)
@@ -1045,7 +1021,6 @@ export const useDocumentStore = defineStore('document', {
       this.redraw()
       this.redrawPreview()
       this.redrawFrames()
-      this.drawGrid()
     },
     redrawFrames() {
       for (const frame of this.frames) {
