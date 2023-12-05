@@ -200,24 +200,20 @@ const sidePanelMessage = computed(() => {
                 <Icon i="more" />
               </Button>
             </Tooltip>
-            <Dropdown
-              v-if="showOverlay === 'palette-options'"
-              class="palette-menu"
-              @close="toggleOverlay('palette-options')"
-            >
-              <Button @click="loadPalette">{{
-                $t('studio.load-palette')
-              }}</Button>
-              <Button @click="savePalette">{{
-                $t('studio.save-palette')
-              }}</Button>
-              <Button @click="clearPalette">{{
-                $t('studio.clear-palette')
-              }}</Button>
-            </Dropdown>
           </template>
           <Palette />
         </Panel>
+        <Dropdown
+          v-if="showOverlay === 'palette-options'"
+          class="palette-menu"
+          @close="toggleOverlay('palette-options')"
+        >
+          <Button @click="loadPalette">{{ $t('studio.load-palette') }}</Button>
+          <Button @click="savePalette">{{ $t('studio.save-palette') }}</Button>
+          <Button @click="clearPalette">{{
+            $t('studio.clear-palette')
+          }}</Button>
+        </Dropdown>
         <Divider />
         <Panel
           scrollable
@@ -415,8 +411,8 @@ const sidePanelMessage = computed(() => {
 
 .palette-menu {
   position: absolute;
-  top: 100%;
-  right: 0;
+  top: 4.5rem;
+  right: 1rem;
   z-index: 1000;
 }
 

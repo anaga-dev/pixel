@@ -98,7 +98,7 @@ button:is(.dropdown, .setting):hover {
 }
 
 button:active {
-  transform: translate(calc(var(--spaceXS) * -1), var(--spaceXS));
+  transform: translate(0, var(--spaceXS));
 }
 
 button.disabled {
