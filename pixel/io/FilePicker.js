@@ -23,6 +23,7 @@
 async function showSave(callback, options) {
   if ('showSaveFilePicker' in window) {
     const fileHandle = await window.showSaveFilePicker({
+      suggestedName: options?.defaultFileName ?? '',
       types: options?.types,
       excludeAcceptAllOption: options?.excludeAcceptAllOption ?? true,
       multiple: options?.multiple ?? false

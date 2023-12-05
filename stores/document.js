@@ -1448,6 +1448,8 @@ export const useDocumentStore = defineStore('document', {
      * Save file
      */
     async saveFileAs() {
+      const suggestedFileName = 'untitled'
+      const fileExtension = '.ora'
       await FilePicker.showSave(
         (fileHandle) => OpenRaster.save(this),
         {

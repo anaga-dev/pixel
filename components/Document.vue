@@ -1,8 +1,6 @@
 <template>
-  <div class="paint" :style="{ width, height, transform }">
-    <div ref="container">
-      <!-- Canvas is injected here -->
-    </div>
+  <div class="paint" ref="container" :style="{ width, height, transform }">
+    <!-- aquí inyectaremos el canvas -->
   </div>
 </template>
 
@@ -10,7 +8,6 @@
 import { useDocumentStore } from '@/stores/document'
 import { useElement } from '@/composables/useElement'
 import { usePointer } from '@/composables/usePointer'
-import PixelGrid from './PixelGrid.vue';
 
 const documentStore = useDocumentStore()
 
@@ -43,5 +40,13 @@ onUpdated(() => documentStore.updateCanvasRect())
 
 .paint canvas {
   position: absolute;
+}
+
+canvas::after {
+  display: block;
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(transparent 1px, #000 1px), linear-gradient(90deg, transparent 1px, #000 1px);
 }
 </style>
