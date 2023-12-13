@@ -53,8 +53,7 @@ a:not([class]):hover {
 h1 {
   font-family: 'Silkscreen';
   font-size: var(--fontSizeXL);
-  color: var(--colorTextPrimary);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.05em;
 }
 
 h2 {

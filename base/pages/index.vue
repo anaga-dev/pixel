@@ -1,6 +1,5 @@
 <template>
   <div class="PAGE">
-    <Background class="background" />
     <header>
       <Logo class="Logo" />
       <div class="actions">
@@ -14,25 +13,27 @@
       </div>
     </header>
     <main>
-      <section class="hero">
-        <h1>{{ $t('website.hero-title') }}</h1>
-        <p>{{ $t('website.hero-description') }}</p>
-        <div class="links">
-          <NuxtLink class="button-app" to="/studio">{{
-            $t('website.start-now')
-          }}</NuxtLink>
-          <a
-            class="button-repo"
-            href="https://github.com/anaga-dev/pixel"
-            title="Go to Pixel's Github page"
-            target="_blank"
-          >
-            Github
-          </a>
-        </div>
-      </section>
-      <img src="@/assets/pixel_screenshot.png" />
-      <section class="features"></section>
+      <article>
+        <section class="hero">
+          <h1>{{ $t('website.hero-title') }}</h1>
+          <p>{{ $t('website.hero-description') }}</p>
+          <div class="links">
+            <NuxtLink class="button-app" to="/studio">{{
+              $t('website.start-now')
+            }}</NuxtLink>
+            <a
+              class="button-repo"
+              href="https://github.com/anaga-dev/pixel"
+              title="Go to Pixel's Github page"
+              target="_blank"
+            >
+              Github
+            </a>
+          </div>
+        </section>
+        <img src="@/assets/pixel_screenshot.png" />
+        <section class="features"></section>
+      </article>
     </main>
     <footer>
       <p>
@@ -96,13 +97,11 @@ onMounted(() => {
   --colorBgHome: hsl(94 66% 52%);
   --colorBgHomeAlt: hsl(94 66% 18%);
 
-  display: grid;
   min-height: 100svh;
-  margin: 0 var(--spaceL) var(--spaceL);
   position: relative;
-  background-color: var(--colorBgHome);
   overflow: hidden;
-  color: var(--colorTextPrimary);
+  padding: 0 var(--spaceL);
+  color: var(--colorLayer0);
   user-select: auto;
 }
 
@@ -119,6 +118,7 @@ onMounted(() => {
 
 header {
   background-color: var(--colorLayer0);
+  color: var(--colorTextPrimary);
   height: var(--headerHeight);
   z-index: 1;
   display: grid;
@@ -138,35 +138,37 @@ header {
 
 h1 {
   font-family: 'Silkscreen';
-  font-size: clamp(1.5rem, 10vw, 6rem);
-  color: var(--colorTextPrimary);
-  line-height: 1.25;
-  margin: 0;
+  font-size: clamp(1.5rem, 8vw, 6rem);
+  /* color: var(--colorTextPrimary); */
+  line-height: 1;
+  margin: 0 auto;
   font-weight: normal;
-  max-inline-size: 20ch;
   text-wrap: balance;
   text-shadow: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow);
 }
 
-p {
-  font-size: var(--fontSizeL);
+.hero p {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
   max-inline-size: 60ch;
-  line-height: 1.33;
+  line-height: 1.5;
+  margin: auto;
 }
 
 main {
   text-align: center;
+  padding: var(--spaceXXL) var(--spaceXL);
+  background-color: var(--colorBgHome);
+  z-index: 1;
+}
+
+article {
   max-width: 1200px;
   margin: auto;
-  padding: var(--spaceXXL) var(--spaceXL);
-  z-index: 1;
 }
 
 .hero {
   display: grid;
-  gap: var(--spaceL);
-  place-content: center;
-  justify-items: center;
+  gap: var(--spaceXL);
   margin-bottom: var(--spaceXL);
 }
 
@@ -218,14 +220,16 @@ img {
 }
 
 footer {
+  color: var(--colorTextPrimary);
   padding: var(--spaceXXL) var(--spaceXL);
-  margin: auto;
+  margin: 0 auto;
+  text-align: center;
 }
 
 a:is(:link, :visited):not([class]) {
   text-decoration: underline;
   text-decoration-style: dotted;
   text-underline-offset: 4px;
-  color: var(--colorLayer0);
+  color: var(--colorAccent);
 }
 </style>

@@ -52,7 +52,7 @@
         @click="document.duplicateLayer(layer)"
       >
         <Icon i="duplicate" />
-        {{ $t('studio.duplicate') }}
+        {{ $t('studio.duplicate-layer') }}
       </Button>
       <Button
         :label="$t('studio.delete-layer')"
