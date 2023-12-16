@@ -57,13 +57,12 @@ export const useLayersStore = defineStore('layers', () => {
     canvas: initialCanvas,
     frames: initialFrames
   }) {
-    const canvas = Canvas.duplicate(initialCanvas)
-    const context = canvas.getContext('2d')
+
     const id = uuid()
-    const name = ref(initialName)
-    const visible = ref(initialVisible)
-    const blendMode = ref(initialBlendMode)
-    const opacity = ref(initialOpacity)
+    const name = ref(`${initialName.value} (copy)`)
+    const visible = ref(initialVisible.value)
+    const blendMode = ref(initialBlendMode.value)
+    const opacity = ref(initialOpacity.value)
     const opacityPercentage = computed({
       get() {
         return opacity.value * 100
@@ -72,12 +71,23 @@ export const useLayersStore = defineStore('layers', () => {
         opacity.value = newValue / 100
       }
     })
+
+    console.log('initialCanvas', initialCanvas)
+    const canvas = Canvas.duplicate(initialCanvas)
+    const context = canvas.getContext('2d')
+
     const frames = shallowReactive(
       initialFrames.map(
         (imageData) =>
-          new ImageData(imageData.width, imageData.height, imageData.data.slice())
+          new ImageData(
+            imageData.width,
+            imageData.height,
+            imageData.data.slice()
+          )
       )
     )
+    console.log('objeto', { id, name, visible, blendMode, opacity, canvas, context, frames })
+
     return {
       id,
       name,
@@ -91,6 +101,25 @@ export const useLayersStore = defineStore('layers', () => {
     }
   }
 
+  /*   function duplicateLayer(layer) {
+    let duplicatedLayer = {}
+
+    for (let key in layer) {
+      if (layer[key] instanceof RefImpl) {
+        // Duplicar la 'ref'
+        duplicatedLayer[key] = ref(layer[key].value)
+      } else if (key === 'canvas') {
+        // Duplicar el canvas
+        const originalCanvas = layer[key]
+        duplicatedLayer[key] = duplicateCanvas(originalCanvas)
+      } else {
+        // Para otras propiedades, copiar el valor directamente
+        duplicatedLayer[key] = layer[key]
+      }
+    }
+    return duplicatedLayer
+  } */
+
   function add(options) {
     const created = shallowReactive(createLayer(options))
     const index = list.findIndex(
@@ -99,7 +128,7 @@ export const useLayersStore = defineStore('layers', () => {
     const newIndex = index - 1
     current.value = created
     if (newIndex === -1) {
-      list.splice(0, 0 , created)
+      list.splice(0, 0, created)
     } else {
       list.splice(newIndex, 0, created)
     }
@@ -132,6 +161,7 @@ export const useLayersStore = defineStore('layers', () => {
    */
   function duplicate(layer) {
     const duplicated = shallowReactive(duplicateLayer(layer))
+    console.log('duplicated', duplicated)
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.id
     )
@@ -171,7 +201,9 @@ export const useLayersStore = defineStore('layers', () => {
   function set(layers) {
     list.length = 0
     console.log('set', layers)
-    layers.forEach((layer) => { add(layer) })
+    layers.forEach((layer) => {
+      add(layer)
+    })
   }
 
   return {

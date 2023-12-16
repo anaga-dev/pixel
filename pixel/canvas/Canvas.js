@@ -133,9 +133,10 @@ export function resizeTo(canvas, width, height) {
  * @returns {HTMLCanvasElement}
  */
 export function duplicate(canvas) {
-  const duplicateCanvas = create(canvas.width, canvas.height)
-  copy(duplicateCanvas, canvas)
-  return duplicateCanvas
+  console.log('duplicate canvas', canvas.width, canvas.height)
+  const duplicatedCanvas = create(canvas.width, canvas.height)
+  copy(duplicatedCanvas, canvas)
+  return duplicatedCanvas
 }
 
 /**
