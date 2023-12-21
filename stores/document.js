@@ -41,7 +41,6 @@ import { useTransformStore } from './transform'
 import { useSelectionStore } from './selection'
 import { useMagicKeys } from '@vueuse/core'
 
-
 /**
  * This is the Document type that is used when
  * loading and saving a document.
@@ -947,7 +946,7 @@ export const useDocumentStore = defineStore('document', {
       } else if (this.tool === Tool.DROPPER && pointer.pressure > 0) {
         this.eyeDropper(pointer.current.x, pointer.current.y)
       } else if (this.tool === Tool.TRANSFORM && pointer.pressure > 0) {
-        // TODO: Esto es MUY mejorable.
+        // TODO: This has a lot of space for improvement.
         const x = pointer.relative.x
         const y = pointer.relative.y
         this.transformation(x, y)
@@ -1450,15 +1449,12 @@ export const useDocumentStore = defineStore('document', {
     async saveFileAs() {
       const suggestedFileName = 'untitled'
       const fileExtension = '.ora'
-      await FilePicker.showSave(
-        (fileHandle) => OpenRaster.save(this),
-        {
-          types: ImageTypes,
-          defaultFileName: suggestedFileName + fileExtension,
-          excludeAcceptAllOption: true,
-          multiple: false
-        }
-      )
+      await FilePicker.showSave((fileHandle) => OpenRaster.save(this), {
+        types: ImageTypes,
+        defaultFileName: suggestedFileName + fileExtension,
+        excludeAcceptAllOption: true,
+        multiple: false
+      })
       this.modified = false
     },
 

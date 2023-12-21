@@ -165,6 +165,12 @@ const sidePanelMessage = computed(() => {
         "
       />
       <PixelGrid v-if="documentStore.zoom.current >= 16" />
+      <BoundingBox
+        v-if="
+          documentStore.canvas &&
+          documentStore.tool === Tool.TRANSFORM
+        "
+      />
     </main>
     <!--
     <div class="ANIMATION">

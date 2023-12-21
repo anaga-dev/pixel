@@ -57,7 +57,6 @@ export const useLayersStore = defineStore('layers', () => {
     canvas: initialCanvas,
     frames: initialFrames
   }) {
-
     const id = uuid()
     const name = ref(`${initialName.value} (copy)`)
     const visible = ref(initialVisible.value)
@@ -72,8 +71,8 @@ export const useLayersStore = defineStore('layers', () => {
       }
     })
 
-    console.log('initialCanvas', initialCanvas)
     const canvas = Canvas.duplicate(initialCanvas)
+    console.log('duplicated canvas in layers', canvas)
     const context = canvas.getContext('2d')
 
     const frames = shallowReactive(
@@ -86,7 +85,6 @@ export const useLayersStore = defineStore('layers', () => {
           )
       )
     )
-    console.log('objeto', { id, name, visible, blendMode, opacity, canvas, context, frames })
 
     return {
       id,
@@ -101,27 +99,9 @@ export const useLayersStore = defineStore('layers', () => {
     }
   }
 
-  /*   function duplicateLayer(layer) {
-    let duplicatedLayer = {}
-
-    for (let key in layer) {
-      if (layer[key] instanceof RefImpl) {
-        // Duplicar la 'ref'
-        duplicatedLayer[key] = ref(layer[key].value)
-      } else if (key === 'canvas') {
-        // Duplicar el canvas
-        const originalCanvas = layer[key]
-        duplicatedLayer[key] = duplicateCanvas(originalCanvas)
-      } else {
-        // Para otras propiedades, copiar el valor directamente
-        duplicatedLayer[key] = layer[key]
-      }
-    }
-    return duplicatedLayer
-  } */
-
   function add(options) {
     const created = shallowReactive(createLayer(options))
+    console.log('created', created)
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.value.id
     )
@@ -161,7 +141,7 @@ export const useLayersStore = defineStore('layers', () => {
    */
   function duplicate(layer) {
     const duplicated = shallowReactive(duplicateLayer(layer))
-    console.log('duplicated', duplicated)
+    console.log('duplicated', duplicated.canvas)
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.id
     )
