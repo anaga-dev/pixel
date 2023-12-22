@@ -663,7 +663,7 @@ export const useDocumentStore = defineStore('document', {
     },
     transformation(x, y) {
       this.doLayerPaintOperation((imageData) => {
-        ImageDataUtils.translate(imageData, x, y, this.transform.mode)
+        ImageDataUtils.translate(imageData, x, y, this.transform.tiling)
       })
     },
     flipHorizontally() {

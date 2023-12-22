@@ -168,7 +168,8 @@ const sidePanelMessage = computed(() => {
       <BoundingBox
         v-if="
           documentStore.canvas &&
-          documentStore.tool === Tool.TRANSFORM
+          documentStore.tool === Tool.TRANSFORM &&
+          documentStore.transform.getLayerBoundaries() !== null
         "
       />
     </main>

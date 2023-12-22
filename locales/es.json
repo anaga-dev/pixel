@@ -111,6 +111,7 @@
     "save-palette": "Guardar paleta",
     "new-palette": "Nueva paleta",
     "clear-palette": "Limpiar paleta",
+    "tiling": "Mosaico",
     "symmetry": {
       "title": "Simetría",
       "horizontal": "Horizontal",
@@ -145,7 +146,8 @@
       "ellipse-selection": "Selección elíptica",
       "color-selection": "Selección de color",
       "add-to-selection": "Añadir a la selección",
-      "subtract-from-selection": "Restar de la selección"
+      "subtract-from-selection": "Restar de la selección",
+      "tiling": "Modo mosaico"
     }
   },
   "error": {

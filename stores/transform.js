@@ -5,7 +5,8 @@ export const useTransformStore = defineStore('transform', () => {
   const layersStore = useLayersStore()
 
   const mode = ref(TransformMode.REPEAT)
-  const boundaries = ref({})
+  const tiling = ref(false)
+  const boundaries = ref(null)
 
   function getLayerBoundaries() {
     const canvas = layersStore.current.canvas
@@ -45,10 +46,15 @@ export const useTransformStore = defineStore('transform', () => {
       return null
     }
   }
+  function toggleTiling() {
+    tiling.value = !tiling.value
+  }
 
   return {
     mode,
+    tiling,
     boundaries,
+    toggleTiling,
     getLayerBoundaries
   }
 })

@@ -112,6 +112,7 @@
     "save-palette": "Save palette",
     "new-palette": "New palette",
     "clear-palette": "Clear palette",
+    "tiling": "Tiling",
     "symmetry": {
       "title": "Symmetry",
       "horizontal": "Horizontal",
@@ -146,7 +147,8 @@
       "ellipse-selection": "Elliptical selection",
       "color-selection": "Color based selection",
       "add-to-selection": "Add to selection",
-      "subtract-from-selection": "Subtract from selection"
+      "subtract-from-selection": "Subtract from selection",
+      "tiling": "Tiling mode"
     }
   },
   "error": {

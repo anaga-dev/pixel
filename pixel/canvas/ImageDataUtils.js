@@ -714,7 +714,7 @@ export function copyToCanvas(targetImageData, canvas) {
  * @param {number} ty
  * @param {*} mode TODO: implementar
  */
-export function translate(imageData, tx, ty, mode) {
+export function translate(imageData, tx, ty, tiling) {
   let dx = tx, dy = ty
   if (!Number.isInteger(tx)) {
     dx = tx < 0 ? Math.ceil(tx) : Math.floor(tx)
