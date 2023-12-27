@@ -22,18 +22,6 @@ const rotation = 0
     :active="tiling"
     @click="toggleTiling"
   />
-  <div class="position">
-    <i class="bx bxs-shape-square"></i>
-    {{ position.join(',') }}
-  </div>
-  <div class="size">
-    <i class="bx bxs-shape-square"></i>
-    {{ size.join('x') }}
-  </div>
-  <div class="rotation">
-    <i class="bx bxs-shape-square"></i>
-    {{ rotation }}º
-  </div>
 </template>
 
 <style scoped>
