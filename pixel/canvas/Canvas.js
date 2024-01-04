@@ -9,18 +9,12 @@ import CanvasContext2D from './CanvasContext2D'
  * @returns {HTMLCanvasElement}
  */
 export function create(width, height) {
-  if (!Number.isFinite(width))
-    throw new Error('The width must be a finite number')
-
-  if (!Number.isFinite(height))
-    throw new Error('The height must be a finite number')
-
-  if (!Number.isInteger(width))
-    console.warn('The width should be an integer')
-
-  if (!Number.isInteger(height))
-    console.warn('The height should be an integer')
-
+  if (!Number.isInteger(width) || width <= 0) {
+    throw new Error('The width must be a finite integer number')
+  }
+  if (!Number.isInteger(height) || height <= 0) {
+    throw new Error('The height must be a finite integer number')
+  }
   const canvas = document.createElement('canvas')
   canvas.width = Math.floor(width)
   canvas.height = Math.floor(height)
@@ -28,16 +22,17 @@ export function create(width, height) {
 }
 
 /**
+ * Creates or returns a canvas with the specified width and height.
  *
- * @param {*} canvas
- * @param {*} width
- * @param {*} height
- * @returns
+ * @param {HTMLCanvasElement} canvas
+ * @param {number} width
+ * @param {number} height
+ * @returns {HTMLCanvasElement}
  */
 export function createOrGet(canvas, width, height) {
-  if (!canvas)
+  if (!canvas) {
     return create(width, height)
-
+  }
   resizeTo(canvas, width, height)
   return canvas
 }
@@ -57,6 +52,16 @@ export function createOffscreen(width, height) {
   return create(width, height)
 }
 
+export function createWith(width, height, props) {
+  const canvas = create(width, height)
+  if (props) {
+    for (const [key, value] of Object.entries(props)) {
+      canvas[key] = Array.isArray(value) ? value.join(' ') : value
+    }
+  }
+  return canvas
+}
+
 /**
  * Creates a new <canvas> element with the specified width,
  * height and CSS classes.
@@ -72,10 +77,20 @@ export function createWithClasses(width, height, ...classNames) {
   return canvas
 }
 
+/**
+ * Creates or returns a canvas with the specified width, height
+ * and CSS Classes.
+ *
+ * @param {HTMLCanvasElement|undefined|null} canvas
+ * @param {number} width
+ * @param {number} height
+ * @param  {...any} classNames
+ * @returns {HTMLCanvasElement}
+ */
 export function createOrGetWithClasses(canvas, width, height, ...classNames) {
-  if (!canvas)
+  if (!canvas) {
     return createWithClasses(width, height, ...classNames)
-
+  }
   resizeTo(canvas, width, height)
   classNames.forEach((className) => canvas.classList.add(className))
   return canvas
@@ -168,6 +183,7 @@ export default {
   create,
   createOrGet,
   createOffscreen,
+  createWith,
   createWithClasses,
   createOrGetWithClasses,
   resize,

@@ -7,6 +7,7 @@ export const useHistoryStore = defineStore('history', () => {
   const index = ref(-1)
   const canUndo = computed(() => index.value >= 0 && list.length > 0)
   const canRedo = computed(() => index.value < list.length - 1)
+  const last = computed(() => list[index.value])
 
   /**
    * Adds a new entry to history.

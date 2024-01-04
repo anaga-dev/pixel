@@ -106,8 +106,10 @@ useKeyShortcuts(
     [['y', 'ctrl'], () => documentStore.redo()],
     [['arrowup'], () => documentStore.moveLayerUp()],
     [['arrowdown'], () => documentStore.moveLayerDown()],
+    [['arrowleft'], () => documentStore.goToPreviousFrame()],
+    [['arrowright'], () => documentStore.goToNextFrame()],
     [['y'], () => documentStore.toggleSymmetry()],
-    [[' '], () => documentStore.toggleAnimation()],
+    [['p'], () => documentStore.toggleAnimation()],
     [['0', 'ctrl'], () => documentStore.zoom.reset()],
     [['0'], () => documentStore.zoom.reset()],
     [['+'], () => documentStore.zoom.increase()],
@@ -173,7 +175,6 @@ const sidePanelMessage = computed(() => {
         "
       />
     </main>
-    <!--
     <div class="ANIMATION">
       <button
         class="button-show"
@@ -185,7 +186,6 @@ const sidePanelMessage = computed(() => {
       </button>
       <Animation v-if="showingAnimation" />
     </div>
-    -->
     <Transition name="slide">
       <section v-if="showPanel" class="PANELS">
         <Panel

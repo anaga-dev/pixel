@@ -1,7 +1,7 @@
 import AnimationState from '@/pixel/enums/AnimationState'
 
 export const useAnimationStore = defineStore('animation', () => {
-  const total = ref(0)
+  const total = ref(1)
   const current = ref(0)
   const speed = ref(12)
   const state = ref(AnimationState.PAUSED)
@@ -18,6 +18,7 @@ export const useAnimationStore = defineStore('animation', () => {
   const canGoLast = computed(
     () => canPlay && current.value < total.value - 1 && isPaused
   )
+  const frames = ref([])
 
   let timeout = null
 
