@@ -326,7 +326,15 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
-  function doSymmetry2Operation(callback, imageData, x, y, color, dither, mask) {
+  function doSymmetry2Operation(
+    callback,
+    imageData,
+    x,
+    y,
+    color,
+    dither,
+    mask
+  ) {
     callback(imageData, x, y, color, dither, mask)
     if (symmetry.axis === null) {
       return
@@ -338,14 +346,7 @@ export const useDocumentStore = defineStore('document', () => {
     } else if (symmetry.axis === SymmetryAxis.BOTH) {
       callback(imageData, width - 1 - x, y, color, dither, mask)
       callback(imageData, x, height - 1 - y, color, dither, mask)
-      callback(
-        imageData,
-        width - 1 - x,
-        height - 1 - y,
-        color,
-        dither,
-        mask
-      )
+      callback(imageData, width - 1 - x, height - 1 - y, color, dither, mask)
     }
   }
 
@@ -442,7 +443,16 @@ export const useDocumentStore = defineStore('document', () => {
     )
   }
 
-  function line(x1, y1, x2, y2, color, isTemp = false, dither = null, mask = null) {
+  function line(
+    x1,
+    y1,
+    x2,
+    y2,
+    color,
+    isTemp = false,
+    dither = null,
+    mask = null
+  ) {
     if (isTemp) {
       doTempPaintOperation((imageData) =>
         doSymmetry4Operation(
@@ -689,11 +699,11 @@ export const useDocumentStore = defineStore('document', () => {
       (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) &&
       pointer.pressure > 0
     ) {
-      const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
+      const toolColor =
+        tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
       const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
       const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
-      const dither =
-        tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
+      const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
       console.log(toolColor, toolSize, shape)
       const mask = selection.getMaskImageData()
@@ -709,8 +719,10 @@ export const useDocumentStore = defineStore('document', () => {
           )
         } else {
           const sizeHalf = toolSize / 2
-          const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
-          const addSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+          const subSizeHalf =
+            toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+          const addSizeHalf =
+            toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
           if (shape === PencilShape.ROUND) {
             ellipse(
               pointer.current.x - sizeHalf,
@@ -1010,7 +1022,7 @@ export const useDocumentStore = defineStore('document', () => {
     context.stroke()
   }
 
-  function * reverse(list) {
+  function* reverse(list) {
     for (let index = list.length - 1; index >= 0; --index) {
       yield list[index]
     }
@@ -1107,12 +1119,7 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function createFromDocument(document) {
-    create(
-      document.width,
-      document.height,
-      document.palette,
-      document.layers
-    )
+    create(document.width, document.height, document.palette, document.layers)
     redrawAll()
   }
 
@@ -1124,12 +1131,7 @@ export const useDocumentStore = defineStore('document', () => {
    * @param {Array<Color>} palette
    * @param {Array<Layer>} layers
    */
-  function create(
-    newWidth,
-    newHeight,
-    newPalette = [],
-    newLayers = []
-  ) {
+  function create(newWidth, newHeight, newPalette = [], newLayers = []) {
     if (!Number.isInteger(width) && width < 0) {
       throw new Error('Invalid width value')
     }
@@ -1145,14 +1147,10 @@ export const useDocumentStore = defineStore('document', () => {
     }
     layers.set(newLayers)
     const id = uuid()
-    const canvas = Canvas.createWith(
-      width.value,
-      height.value,
-      {
-        id: id,
-        className: 'preview-canvas'
-      }
-    )
+    const canvas = Canvas.createWith(width.value, height.value, {
+      id: id,
+      className: 'preview-canvas'
+    })
     frames.value.push({
       id,
       canvas
@@ -1168,7 +1166,6 @@ export const useDocumentStore = defineStore('document', () => {
     layers.set(list)
     redrawAll()
   }
-
 
   function mergeDown() {
     // TODO: We need to get all layers below the selected one and blend them together
@@ -1253,10 +1250,17 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function removeLayer(layer) {
-    const { index, layer: removedLayer } = layers.remove(layer)
     if (layer === layers.current) {
-      layers.current = layers.list[index]
+      console.log('Removed layer', layer.id)
+      console.log('Current layer', layers.current.id)
+      const layerIndex = layers.list.findIndex((item) => item.id === layers.current.id)
+      console.log('layerIndex', layerIndex)
+      layers.current =
+        layerIndex === layers.list.length - 1
+          ? layers.list[layerIndex - 1]
+          : layers.list[layerIndex + 1]
     }
+    const { index, layer: removedLayer } = layers.remove(layer)
     redrawAll()
     history.add({
       type: 'removeLayer',
@@ -1429,14 +1433,10 @@ export const useDocumentStore = defineStore('document', () => {
       }
     }
     const id = uuid()
-    const canvas = Canvas.createWith(
-      width.value,
-      height.value,
-      {
-        id: id,
-        className: 'preview-canvas'
-      }
-    )
+    const canvas = Canvas.createWith(width.value, height.value, {
+      id: id,
+      className: 'preview-canvas'
+    })
     frames.value.push({
       id,
       canvas
@@ -1462,14 +1462,10 @@ export const useDocumentStore = defineStore('document', () => {
       }
     }
     const id = uuid()
-    const canvas = Canvas.createWith(
-      width.value,
-      height.value,
-      {
-        id: id,
-        className: 'preview-canvas'
-      }
-    )
+    const canvas = Canvas.createWith(width.value, height.value, {
+      id: id,
+      className: 'preview-canvas'
+    })
     frames.value.push({
       id,
       canvas
@@ -1609,18 +1605,14 @@ export const useDocumentStore = defineStore('document', () => {
    * Save file
    */
   async function saveFileAs() {
-    await FilePicker.showSave(
-      (fileHandle) => OpenRaster.save(fileHandle),
-      {
-        types: ImageTypes,
-        defaultFileName: suggestedFileName + fileExtension,
-        excludeAcceptAllOption: true,
-        multiple: false
-      }
-    )
+    await FilePicker.showSave((fileHandle) => OpenRaster.save(fileHandle), {
+      types: ImageTypes,
+      defaultFileName: suggestedFileName + fileExtension,
+      excludeAcceptAllOption: true,
+      multiple: false
+    })
     modified.value = false
   }
-
 
   /**
    * Export file
@@ -1657,7 +1649,6 @@ export const useDocumentStore = defineStore('document', () => {
     a.click()
   }
 
-
   /**
    * History
    */
@@ -1671,10 +1662,7 @@ export const useDocumentStore = defineStore('document', () => {
         palette.removeLast()
         break
       case 'removePaletteColor':
-        palette.addAt(
-          actionToUndo.payload.index,
-          actionToUndo.payload.color
-        )
+        palette.addAt(actionToUndo.payload.index, actionToUndo.payload.color)
         break
       case 'setColor':
         color = actionToUndo.payload.previousColor
@@ -1694,10 +1682,7 @@ export const useDocumentStore = defineStore('document', () => {
         layers.removeAt(actionToUndo.payload.index)
         break
       case 'removeLayer':
-        layers.addAt(
-          actionToUndo.payload.index,
-          actionToUndo.payload.layer
-        )
+        layers.addAt(actionToUndo.payload.index, actionToUndo.payload.layer)
         break
       case 'swapLayers':
         layers.swap(
@@ -1741,10 +1726,7 @@ export const useDocumentStore = defineStore('document', () => {
         break
       case 'duplicateLayer':
       case 'addLayer':
-        layers.addAt(
-          actionToRedo.payload.index,
-          actionToRedo.payload.layer
-        )
+        layers.addAt(actionToRedo.payload.index, actionToRedo.payload.layer)
         break
       case 'removeLayer':
         layers.removeAt(actionToRedo.payload.index)
@@ -1880,7 +1862,7 @@ export const useDocumentStore = defineStore('document', () => {
     unsetBoard,
     updateCanvasRect,
     updateLayers,
-    useTool,
+    useTool
   }
 })
 

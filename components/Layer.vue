@@ -99,7 +99,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
       </Button>
     </div>
     <div v-if="!editLayerName" class="name" @dblclick="onToggleLayerNameEdit">
-      {{ layer.name.value }} {{ index }}
+      {{ layer.name.value }}
     </div>
     <input
       v-else
