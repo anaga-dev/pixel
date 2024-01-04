@@ -1403,7 +1403,7 @@ export const useDocumentStore = defineStore('document', () => {
       type: 'addPaletteColor',
       payload: { color: color }
     })
-    palette.add(color)
+    palette.add(color.value)
   }
 
   /**
