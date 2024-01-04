@@ -1,61 +1,3 @@
-<template>
-  <div
-    class="Layer"
-    draggable="true"
-    :class="{
-      active: active,
-      invisible: !layer.visible.value,
-      top: dropTop,
-      bottom: dropBottom
-    }"
-    @click.prevent="$emit('activate', layer)"
-  >
-    <div class="actions">
-      <Button
-        class="action"
-        :label="$t('studio.layer-settings')"
-        :active="settings"
-        variant="ghost"
-        @click.stop="$emit('settings', layer)"
-      >
-        <Icon i="settings" />
-      </Button>
-      <Button
-        class="action"
-        :label="
-          layer.visible.value
-            ? $t('studio.hide-layer')
-            : $t('studio.show-layer')
-        "
-        variant="ghost"
-        @click.prevent="$emit('visible', layer)"
-      >
-        <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
-      </Button>
-    </div>
-    <div v-if="!editLayerName" class="name" @dblclick="onToggleLayerNameEdit">
-      {{ layer.name.value }}
-    </div>
-    <input
-      v-else
-      class="input-name"
-      ref="input"
-      type="text"
-      v-focus
-      v-model="layerName"
-      @keydown="onKeyDown"
-    />
-    <!--
-    <div class="collapse">
-      <i class="bx bx-chevron-down"></i>
-    </div>
-    -->
-    <div class="preview" ref="preview">
-      <!-- Añadimos una vista del canvas -->
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 const documentStore = useDocumentStore()
@@ -120,6 +62,64 @@ function onKeyDown(e) {
 
 onMounted(() => preview.value.appendChild(props.layer.canvas))
 </script>
+
+<template>
+  <div
+    class="Layer"
+    draggable="true"
+    :class="{
+      active: active,
+      invisible: !layer.visible.value,
+      top: dropTop,
+      bottom: dropBottom
+    }"
+    @click.prevent="$emit('activate', layer)"
+  >
+    <div class="actions">
+      <Button
+        class="action"
+        :label="$t('studio.layer-settings')"
+        :active="settings"
+        variant="ghost"
+        @click.stop="$emit('settings', layer)"
+      >
+        <Icon i="settings" />
+      </Button>
+      <Button
+        class="action"
+        :label="
+          layer.visible.value
+            ? $t('studio.hide-layer')
+            : $t('studio.show-layer')
+        "
+        variant="ghost"
+        @click.prevent="$emit('visible', layer)"
+      >
+        <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
+      </Button>
+    </div>
+    <div v-if="!editLayerName" class="name" @dblclick="onToggleLayerNameEdit">
+      {{ layer.name.value }} {{ index }}
+    </div>
+    <input
+      v-else
+      class="input-name"
+      ref="input"
+      type="text"
+      v-focus
+      v-model="layerName"
+      @keydown="onKeyDown"
+    />
+    <!--
+    <div class="collapse">
+      <i class="bx bx-chevron-down"></i>
+    </div>
+    -->
+    <div class="preview" ref="preview">
+      <!-- Añadimos una vista del canvas -->
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .Layer {

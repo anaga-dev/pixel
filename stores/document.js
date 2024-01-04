@@ -1254,6 +1254,9 @@ export const useDocumentStore = defineStore('document', () => {
 
   function removeLayer(layer) {
     const { index, layer: removedLayer } = layers.remove(layer)
+    if (layer === layers.current) {
+      layers.current = layers.list[index]
+    }
     redrawAll()
     history.add({
       type: 'removeLayer',
@@ -1869,6 +1872,7 @@ export const useDocumentStore = defineStore('document', () => {
     toggleDropperCompositeColor,
     toggleFillContiguous,
     toggleLayer,
+    hideLayerSettings,
     toggleSelectContiguous,
     toggleShapeFill,
     toggleShapeLockAspectRatio,
