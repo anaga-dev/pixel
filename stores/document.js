@@ -1755,6 +1755,24 @@ export const useDocumentStore = defineStore('document', () => {
     board = null
   }
 
+  async function getFile() {
+    const blob = await OpenRaster.save({
+      canvas: canvas.value,
+      width: width.value,
+      height: height.value,
+      palette: palette,
+      layers: layers
+    })
+    return new File([blob], 'artwork.ora', {
+      type: 'image/openraster'
+    })
+  }
+
+  async function setFile(file) {
+    const document = await OpenRaster.load(file)
+    createFromDocument(document)
+  }
+
   return {
     animation,
     board,
@@ -1866,7 +1884,13 @@ export const useDocumentStore = defineStore('document', () => {
     unsetBoard,
     updateCanvasRect,
     updateLayers,
+<<<<<<< Updated upstream
     useTool
+=======
+    useTool,
+    getFile,
+    setFile,
+>>>>>>> Stashed changes
   }
 })
 
