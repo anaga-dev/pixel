@@ -52,7 +52,7 @@ const { tooltip } = storeToRefs(uiStore)
       tooltipText="studio.tooltips.transform"
       tooltipPosition="right"
       label="studio.transform"
-      icon="pointer"
+      icon="transform"
       variant="icon"
       :active="documentStore.tool === Tool.TRANSFORM"
       @click="documentStore.setTool(Tool.TRANSFORM)"

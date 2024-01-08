@@ -6,6 +6,7 @@ import { useTransformStore } from '@/stores/transform'
 const documentStore = useDocumentStore()
 const transformStore = useTransformStore()
 
+const { flipHorizontally, flipVertically } = documentStore
 const { toggleTiling } = transformStore
 const { tiling } = storeToRefs(transformStore)
 
@@ -21,6 +22,19 @@ const rotation = 0
     icon="tiling"
     :active="tiling"
     @click="toggleTiling"
+  />
+  <Divider vertical transparent />
+  <ToolButton
+    tooltipText="studio.tooltips.flip-horizontal"
+    label="studio.flip-horizontal"
+    icon="flip-horizontal"
+    @click="flipHorizontally()"
+  />
+  <ToolButton
+    tooltipText="studio.tooltips.flip-vertical"
+    label="studio.flip-vertical"
+    icon="flip-vertical"
+    @click="flipVertically()"
   />
 </template>
 

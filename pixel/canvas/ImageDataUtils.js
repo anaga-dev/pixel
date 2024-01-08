@@ -11,8 +11,7 @@ import FillStack from './FillStack'
  * @returns {boolean}
  */
 export function isInside(imageData, x, y) {
-  return x >= 0 && x < imageData.width
-      && y >= 0 && y < imageData.height
+  return x >= 0 && x < imageData.width && y >= 0 && y < imageData.height
 }
 
 /**
@@ -53,7 +52,14 @@ export function getOffset(imageData, x, y) {
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function putColor(imageData, x, y, [r, g, b, a], dither = null, maskImageData = null) {
+export function putColor(
+  imageData,
+  x,
+  y,
+  [r, g, b, a],
+  dither = null,
+  maskImageData = null
+) {
   if (isOutside(imageData, x, y)) {
     return imageData
   }
@@ -108,7 +114,12 @@ export function getColor(imageData, x, y) {
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function replaceColor(imageData, [sr, sg, sb, sa], [tr, tg, tb, ta], mask) {
+export function replaceColor(
+  imageData,
+  [sr, sg, sb, sa],
+  [tr, tg, tb, ta],
+  mask
+) {
   for (let offset = 0; offset < imageData.data.length; offset += 4) {
     if (mask && mask.data[offset] !== 0xff) {
       continue
@@ -199,8 +210,21 @@ export function paint(target, source, x, y, callback) {
  * @param {Array<Vec2>} [directions]
  * @returns
  */
-export function fill(imageData, x, y, color, dither, maskImageData, directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
-  const VISITED_COLOR = 0xFF
+export function fill(
+  imageData,
+  x,
+  y,
+  color,
+  dither,
+  maskImageData,
+  directions = [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1]
+  ]
+) {
+  const VISITED_COLOR = 0xff
   const [r, g, b, a] = color
   const [sr, sg, sb, sa] = getColor(imageData, x, y)
   // si estamos pintando sobre el mismo color que tenemos
@@ -239,7 +263,10 @@ export function fill(imageData, x, y, color, dither, maskImageData, directions =
         }
       }
 
-      if (!visited.isInside(nx, ny) || visited.getColor(nx, ny) === VISITED_COLOR) {
+      if (
+        !visited.isInside(nx, ny) ||
+        visited.getColor(nx, ny) === VISITED_COLOR
+      ) {
         continue
       }
       fillStack.push(nx, ny)
@@ -262,7 +289,16 @@ export function fill(imageData, x, y, color, dither, maskImageData, directions =
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function line(imageData, px1, py1, px2, py2, color, dither, maskImageData) {
+export function line(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData
+) {
   let x1 = px1,
     y1 = py1,
     x2 = px2,
@@ -323,7 +359,16 @@ export function line(imageData, px1, py1, px2, py2, color, dither, maskImageData
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function fillRect(imageData, px1, py1, px2, py2, color, dither, maskImageData) {
+export function fillRect(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData
+) {
   const sx = Math.min(px1, px2)
   const ex = Math.max(px1, px2)
   const sy = Math.min(py1, py2)
@@ -349,7 +394,16 @@ export function fillRect(imageData, px1, py1, px2, py2, color, dither, maskImage
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function strokeRect(imageData, px1, py1, px2, py2, color, dither, maskImageData) {
+export function strokeRect(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData
+) {
   line(imageData, px1, py1, px2, py1, color, dither, maskImageData)
   line(imageData, px2, py1, px2, py2, color, dither, maskImageData)
   line(imageData, px2, py2, px1, py2, color, dither, maskImageData)
@@ -371,7 +425,17 @@ export function strokeRect(imageData, px1, py1, px2, py2, color, dither, maskIma
  * @param {boolean} [filled=false]
  * @returns {ImageData}
  */
-export function rect(imageData, px1, py1, px2, py2, color, dither, maskImageData, filled = false) {
+export function rect(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData,
+  filled = false
+) {
   if (filled) {
     return fillRect(imageData, px1, py1, px2, py2, color, dither, maskImageData)
   }
@@ -391,7 +455,16 @@ export function rect(imageData, px1, py1, px2, py2, color, dither, maskImageData
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function fillEllipse(imageData, px1, py1, px2, py2, color, dither, maskImageData) {
+export function fillEllipse(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData
+) {
   let a = Math.abs(px2 - px1),
     b = Math.abs(py2 - py1),
     b1 = b & 1 /* values of diameter */
@@ -454,14 +527,23 @@ export function fillEllipse(imageData, px1, py1, px2, py2, color, dither, maskIm
  * @param {ImageData} [maskImageData]
  * @returns {ImageData}
  */
-export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither, maskImageData) {
-  let a = Math.abs(px2-px1),
-      b = Math.abs(py2-py1),
-      b1 = b&1 /* values of diameter */
-  let dx = 4*(1-a)*b*b,
-      dy = 4*(b1+1)*a*a /* error increment */
-  let err = dx+dy+b1*a*a
-  let e2; /* error of 1.step */
+export function strokeEllipse(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData
+) {
+  let a = Math.abs(px2 - px1),
+    b = Math.abs(py2 - py1),
+    b1 = b & 1 /* values of diameter */
+  let dx = 4 * (1 - a) * b * b,
+    dy = 4 * (b1 + 1) * a * a /* error increment */
+  let err = dx + dy + b1 * a * a
+  let e2 /* error of 1.step */
 
   if (px1 > px2) {
     px1 = px2
@@ -470,34 +552,70 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither, mask
   if (py1 > py2) {
     py1 = py2 /* .. exchange them */
   }
-  py1 += (b+1)/2
-  py2 = py1-b1   /* starting pixel */
-  a *= 8*a
-  b1 = 8*b*b
+  py1 += (b + 1) / 2
+  py2 = py1 - b1 /* starting pixel */
+  a *= 8 * a
+  b1 = 8 * b * b
 
   do {
-    putColor(imageData, px2, py1, color, dither, maskImageData) /*   I. Quadrant */
-    putColor(imageData, px1, py1, color, dither, maskImageData) /*  II. Quadrant */
-    putColor(imageData, px1, py2, color, dither, maskImageData) /* III. Quadrant */
-    putColor(imageData, px2, py2, color, dither, maskImageData) /*  IV. Quadrant */
-    e2 = 2*err
+    putColor(
+      imageData,
+      px2,
+      py1,
+      color,
+      dither,
+      maskImageData
+    ) /*   I. Quadrant */
+    putColor(
+      imageData,
+      px1,
+      py1,
+      color,
+      dither,
+      maskImageData
+    ) /*  II. Quadrant */
+    putColor(
+      imageData,
+      px1,
+      py2,
+      color,
+      dither,
+      maskImageData
+    ) /* III. Quadrant */
+    putColor(
+      imageData,
+      px2,
+      py2,
+      color,
+      dither,
+      maskImageData
+    ) /*  IV. Quadrant */
+    e2 = 2 * err
     if (e2 <= dy) {
       py1++
       py2--
       err += dy += a
-    }  /* y step */
-    if (e2 >= dx || 2*err > dy) {
+    } /* y step */
+    if (e2 >= dx || 2 * err > dy) {
       px1++
       px2--
       err += dx += b1
     } /* x step */
   } while (px1 <= px2)
 
-  while (py1-py2 < b) {  /* too early stop of flat ellipses a=1 */
-    putColor(imageData, px1-1, py1, color, dither, maskImageData) /* -> finish tip of ellipse */
-    putColor(imageData, px2+1, py1++, color, dither, maskImageData)
-    putColor(imageData, px1-1, py2, color, dither, maskImageData)
-    putColor(imageData, px2+1, py2--, color, dither, maskImageData)
+  while (py1 - py2 < b) {
+    /* too early stop of flat ellipses a=1 */
+    putColor(
+      imageData,
+      px1 - 1,
+      py1,
+      color,
+      dither,
+      maskImageData
+    ) /* -> finish tip of ellipse */
+    putColor(imageData, px2 + 1, py1++, color, dither, maskImageData)
+    putColor(imageData, px1 - 1, py2, color, dither, maskImageData)
+    putColor(imageData, px2 + 1, py2--, color, dither, maskImageData)
   }
   return imageData
 }
@@ -516,11 +634,39 @@ export function strokeEllipse(imageData, px1, py1, px2, py2, color, dither, mask
  * @param {boolean} [filled=false]
  * @returns {ImageData}
  */
-export function ellipse(imageData, px1, py1, px2, py2, color, dither, maskImageData, filled = false) {
+export function ellipse(
+  imageData,
+  px1,
+  py1,
+  px2,
+  py2,
+  color,
+  dither,
+  maskImageData,
+  filled = false
+) {
   if (filled) {
-    return fillEllipse(imageData, px1, py1, px2, py2, color, dither, maskImageData)
+    return fillEllipse(
+      imageData,
+      px1,
+      py1,
+      px2,
+      py2,
+      color,
+      dither,
+      maskImageData
+    )
   }
-  return strokeEllipse(imageData, px1, py1, px2, py2, color, dither, maskImageData)
+  return strokeEllipse(
+    imageData,
+    px1,
+    py1,
+    px2,
+    py2,
+    color,
+    dither,
+    maskImageData
+  )
 }
 
 /**
@@ -549,7 +695,11 @@ export function equals(a, b) {
  * @returns {ImageData}
  */
 export function clone(imageData) {
-  return new ImageData(imageData.data.slice(), imageData.width, imageData.height)
+  return new ImageData(
+    imageData.data.slice(),
+    imageData.width,
+    imageData.height
+  )
 }
 
 /**
@@ -573,13 +723,22 @@ export function copy(targetImageData, sourceImageData) {
  * @param {Color} [maskColor]
  * @returns {ImageData}
  */
-export function copySelected(targetImageData, sourceImageData, [r, g, b], maskColor = null) {
-  if (sourceImageData.width !== targetImageData.width
-   || sourceImageData.height !== targetImageData.height) {
-    throw new Error('sourceImageData and targetImageData must have the same size')
+export function copySelected(
+  targetImageData,
+  sourceImageData,
+  [r, g, b],
+  maskColor = null
+) {
+  if (
+    sourceImageData.width !== targetImageData.width ||
+    sourceImageData.height !== targetImageData.height
+  ) {
+    throw new Error(
+      'sourceImageData and targetImageData must have the same size'
+    )
   }
   for (let y = 0; y < sourceImageData.height; y++) {
-    const baseOffset = (y * sourceImageData.width)
+    const baseOffset = y * sourceImageData.width
     for (let x = 0; x < sourceImageData.width; x++) {
       const index = (baseOffset + x) * 4
       const cr = sourceImageData.data[index + 0]
@@ -609,7 +768,13 @@ export function copySelected(targetImageData, sourceImageData, [r, g, b], maskCo
  * @param {Color} [maskColor]
  * @returns {ImageData}
  */
-export function copySelectedAt(targetImageData, sourceImageData, x, y, maskColor = null) {
+export function copySelectedAt(
+  targetImageData,
+  sourceImageData,
+  x,
+  y,
+  maskColor = null
+) {
   const color = getColor(sourceImageData, x, y)
   return copySelected(targetImageData, sourceImageData, color, maskColor)
 }
@@ -632,15 +797,19 @@ export function copyContiguousSelectedAt(
   y,
   maskColor = null
 ) {
-  if (sourceImageData.width !== targetImageData.width
-   || sourceImageData.height !== targetImageData.height) {
-    throw new Error('sourceImageData and targetImageData must have the same size')
+  if (
+    sourceImageData.width !== targetImageData.width ||
+    sourceImageData.height !== targetImageData.height
+  ) {
+    throw new Error(
+      'sourceImageData and targetImageData must have the same size'
+    )
   }
   const directions = [
     [-1, 0],
     [1, 0],
     [0, -1],
-    [0, 1],
+    [0, 1]
   ]
   const [r, g, b] = getColor(sourceImageData, x, y)
   const visited = IndexedImageData.fromImageData(sourceImageData)
@@ -648,7 +817,7 @@ export function copyContiguousSelectedAt(
   fillStack.push(x, y)
   while (!fillStack.isEmpty) {
     const [x, y, offset] = fillStack.pop()
-    visited.putColor(x, y, 0xFF)
+    visited.putColor(x, y, 0xff)
     const cr = sourceImageData.data[offset + 0]
     const cg = sourceImageData.data[offset + 1]
     const cb = sourceImageData.data[offset + 2]
@@ -668,7 +837,7 @@ export function copyContiguousSelectedAt(
       }
       const nx = x + dx
       const ny = y + dy
-      if (visited.isInside(nx, ny) && visited.getColor(nx, ny) !== 0xFF) {
+      if (visited.isInside(nx, ny) && visited.getColor(nx, ny) !== 0xff) {
         fillStack.push(x + dx, y + dy)
       }
     }
@@ -685,9 +854,14 @@ export function copyContiguousSelectedAt(
  */
 export function copyFromCanvas(targetImageData, canvas) {
   const context = CanvasContext2D.get(canvas, {
-    willReadFrequently: true,
+    willReadFrequently: true
   })
-  const sourceImageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height)
+  const sourceImageData = context.getImageData(
+    0,
+    0,
+    context.canvas.width,
+    context.canvas.height
+  )
   return copy(targetImageData, sourceImageData)
 }
 
@@ -745,7 +919,8 @@ export function copyToCanvas(targetImageData, canvas) {
 } */
 
 export function translate(imageData, tx, ty, tiling) {
-  let dx = tx, dy = ty
+  let dx = tx,
+    dy = ty
   if (!Number.isInteger(tx)) {
     dx = tx < 0 ? Math.ceil(tx) : Math.floor(tx)
   }
@@ -768,7 +943,10 @@ export function translate(imageData, tx, ty, tiling) {
       const sourceOffset = sy * imageData.width + sx
       const targetOffset = y * imageData.width + x
 
-      if (!tiling && (sx < 0 || sx >= imageData.width || sy < 0 || sy >= imageData.height)) {
+      if (
+        !tiling &&
+        (sx < 0 || sx >= imageData.width || sy < 0 || sy >= imageData.height)
+      ) {
         target[targetOffset] = 0 // Podrías establecer un color específico aquí.
       } else {
         target[targetOffset] = source[sourceOffset]
@@ -777,6 +955,46 @@ export function translate(imageData, tx, ty, tiling) {
   }
   // One buffer is dumped on top of the other when it's finished.
   source.set(target, 0)
+}
+
+/**
+ *
+ * @param {ImageData} imageData
+ * @returns {Object|null}
+ *
+ */
+export function getImageLimits(imageData) {
+  let minX = imageData.width
+  let maxX = 0
+  let minY = imageData.height
+  let maxY = 0
+
+  let data = imageData.data
+  for (let y = 0; y < imageData.height; y++) {
+    let rowHasPaint = false
+    for (let x = 0; x < imageData.width; x++) {
+      let alpha = data[(y * imageData.width + x) * 4 + 3]
+      if (alpha > 0) {
+        rowHasPaint = true
+        minX = Math.min(minX, x)
+        maxX = Math.max(maxX, x)
+      }
+    }
+    if (rowHasPaint) {
+      minY = Math.min(minY, y)
+      maxY = y
+    }
+  }
+
+  if (minX > maxX || minY > maxY) {
+    return null
+  }
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX + 1,
+    height: maxY - minY + 1
+  }
 }
 
 /**
@@ -804,17 +1022,24 @@ function flipGetSourceImageData(targetImageData, sourceImageData) {
  */
 export function flipHorizontally(targetImageData, sourceImageData) {
   const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
-  const halfWidth = imageData.width / 2
-  for (let x = 0; x < halfWidth; x++) {
-    const fx = imageData.width - x - 1
+  const limits = getImageLimits(imageData)
+  console.log('limits', limits)
+
+  if (limits) {
+    const { x, width } = limits
+    const minX = x
+    const maxX = x + width - 1
     for (let y = 0; y < imageData.height; y++) {
-      const leftColor = getColor(imageData, x, y)
-      const rightColor = getColor(imageData, fx, y)
-      putColor(targetImageData, x, y, rightColor)
-      putColor(targetImageData, fx, y, leftColor)
+      for (let x = minX; x <= (minX + maxX) / 2; x++) {
+        const fx = maxX - (x - minX)
+        const leftColor = getColor(imageData, x, y)
+        const rightColor = getColor(imageData, fx, y)
+
+        putColor(targetImageData, x, y, rightColor)
+        putColor(targetImageData, fx, y, leftColor)
+      }
     }
   }
-
   return targetImageData
 }
 
@@ -827,14 +1052,21 @@ export function flipHorizontally(targetImageData, sourceImageData) {
  */
 export function flipVertically(targetImageData, sourceImageData) {
   const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
-  const halfHeight = imageData.height / 2
-  for (let y = 0; y < halfHeight; y++) {
-    const fy = imageData.width - y - 1
+  const limits = getImageLimits(imageData)
+
+  if (limits) {
+    const { y, height } = limits
+    const minY = y
+    const maxY = y + height - 1
     for (let x = 0; x < imageData.width; x++) {
-      const topColor = getColor(imageData, x, y)
-      const bottomColor = getColor(imageData, x, fy)
-      putColor(targetImageData, x, y, bottomColor)
-      putColor(targetImageData, x, fy, topColor)
+      for (let y = minY; y <= (minY + maxY) / 2; y++) {
+        const fy = maxY - (y - minY)
+        const topColor = getColor(imageData, x, y)
+        const bottomColor = getColor(imageData, x, fy)
+
+        putColor(targetImageData, x, y, bottomColor)
+        putColor(targetImageData, x, fy, topColor)
+      }
     }
   }
   return targetImageData
@@ -889,5 +1121,5 @@ export default {
   alphaFunc,
   alphaFloor,
   alphaCeil,
-  alphaRound,
+  alphaRound
 }
