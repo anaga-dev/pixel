@@ -51,6 +51,7 @@ onMounted(() => {
 .BoundingBox {
   position: absolute;
   border: 2px solid var(--colorAccent);
+  pointer-events: none;
 }
 
 .corner {

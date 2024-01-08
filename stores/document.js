@@ -662,7 +662,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function transformation(x, y) {
     doLayerPaintOperation((imageData) => {
-      ImageDataUtils.translate(imageData, x, y, transform.mode)
+      ImageDataUtils.translate(imageData, x, y, transform.tiling)
     })
   }
 

@@ -46,6 +46,7 @@ export const useTransformStore = defineStore('transform', () => {
       return null
     }
   }
+
   function toggleTiling() {
     tiling.value = !tiling.value
   }
