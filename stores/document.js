@@ -1567,7 +1567,7 @@ export const useDocumentStore = defineStore('document', () => {
    * FILES
    ******************************************************************/
   function newFile() {
-    canvas = null
+    canvas.value = null
   }
 
   /**
@@ -1605,6 +1605,8 @@ export const useDocumentStore = defineStore('document', () => {
    * Save file
    */
   async function saveFileAs() {
+    const suggestedFileName = 'untitled'
+    const fileExtension = '.ora'
     await FilePicker.showSave((fileHandle) => OpenRaster.save(fileHandle), {
       types: ImageTypes,
       defaultFileName: suggestedFileName + fileExtension,
@@ -1815,6 +1817,8 @@ export const useDocumentStore = defineStore('document', () => {
     moveLayerDown,
     moveLayerUp,
     moveTo,
+    newFile,
+    openFile,
     pause,
     play,
     redo,
