@@ -1884,13 +1884,9 @@ export const useDocumentStore = defineStore('document', () => {
     unsetBoard,
     updateCanvasRect,
     updateLayers,
-<<<<<<< Updated upstream
-    useTool
-=======
     useTool,
     getFile,
     setFile,
->>>>>>> Stashed changes
   }
 })
 
