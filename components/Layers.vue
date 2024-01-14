@@ -9,7 +9,6 @@ const handleSettings = (layer) => {
 }
 
 const handleUpdateLayers = (e) => {
-  console.log('Update layers', e)
   documentStore.swapLayers(e.oldIndex, e.newIndex)
 }
 

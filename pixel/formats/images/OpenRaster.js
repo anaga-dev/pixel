@@ -114,11 +114,8 @@ function createPalette(doc) {
   xml += '<colors>'
   for (let index = 0; index < doc.palette.colors.length; index++) {
     const color = doc.palette.colors[index]
-    console.log('color', color)
     const [r, g, b] = Color.parse(color.color)
-    // console.log(r, g, b)
     xml += `<color name="color-${index}"><sRGB r="${r.toFixed(4)}" g="${g.toFixed(4)}" b="${b.toFixed(4)}" /></color>`
-    // xml += `<color value="${color}" />`
   }
   xml += '</colors>'
   return xml
@@ -175,7 +172,6 @@ export async function load(blob) {
     const parser = new DOMParser()
     const xmlDoc = parser.parseFromString(stack, 'text/xml')
     const xmlPalette = parser.parseFromString(paletteFile, 'text/xml')
-    console.log('palette', xmlPalette)
     const image = xmlDoc.querySelector('image')
     const width = parseInt(image.getAttribute('w'), 10)
     const height = parseInt(image.getAttribute('h'), 10)

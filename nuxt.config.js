@@ -81,7 +81,6 @@ export default defineNuxtConfig({
       redirectOn: 'root'
     },
     strategy: 'prefix_and_default',
-    debug: true
   },
   css: [
     '/styles/reset.css',

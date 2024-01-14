@@ -150,7 +150,6 @@ export function resizeTo(canvas, width, height) {
 export function duplicate(canvas) {
   const duplicatedCanvas = create(canvas.width, canvas.height)
   copy(duplicatedCanvas, canvas)
-  console.log('duplicatedCanvas', duplicatedCanvas)
   return duplicatedCanvas
 }
 

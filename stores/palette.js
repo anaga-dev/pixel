@@ -2,7 +2,6 @@ import { v4 as uuid } from 'uuid'
 
 export const usePaletteStore = defineStore('palette', () => {
   const colors = reactive([])
-  console.log(colors)
 
   /**
    * Set palette colors
@@ -10,7 +9,6 @@ export const usePaletteStore = defineStore('palette', () => {
    * @param {Array<string>} newColors
    */
   function set(newColors) {
-    console.log('set', newColors)
     const newColorsList = newColors.map((color) => ({
       id: uuid(),
       color: color
@@ -64,9 +62,7 @@ export const usePaletteStore = defineStore('palette', () => {
    */
 
   function swap(fromIndex, toIndex) {
-    console.log('swap', fromIndex, toIndex)
     const [fromColor] = colors.splice(fromIndex, 1)
-    console.log('fromColor', fromColor)
     colors.splice(toIndex, 0, fromColor)
   }
 

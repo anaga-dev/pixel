@@ -257,7 +257,6 @@ export const useDocumentStore = defineStore('document', () => {
     const previousColor = color
     const nextColor = sampledColor
 
-    console.log('eyeDropper', nextColor)
     history.add({
       type: 'setColor',
       payload: {
@@ -679,17 +678,13 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function useTool(e, pointer) {
-    // console.log(e, e.buttons, pointer)
     // TODO: All behavior can be vastly improved.
     if (moving.value) {
-      console.log('moving')
       return
     }
     modified.value = true
     if (e.buttons === 4 || keys.current.has(' ')) {
-      console.log(e.buttons, keys.current)
       if (pointer.pressure > 0) {
-        console.log(pointer.pressure)
         moveBy(e.movementX, e.movementY)
       }
       return
@@ -705,7 +700,6 @@ export const useDocumentStore = defineStore('document', () => {
       const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
       const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
-      console.log(toolColor, toolSize, shape)
       const mask = selection.getMaskImageData()
 
       if (e.type === 'pointerdown') {
@@ -1251,10 +1245,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function removeLayer(layer) {
     if (layer === layers.current) {
-      console.log('Removed layer', layer.id)
-      console.log('Current layer', layers.current.id)
       const layerIndex = layers.list.findIndex((item) => item.id === layers.current.id)
-      console.log('layerIndex', layerIndex)
       layers.current =
         layerIndex === layers.list.length - 1
           ? layers.list[layerIndex - 1]
@@ -1303,7 +1294,6 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function moveBy(x, y) {
-    console.log(x, y, zoom.current, x / zoom.current, y / zoom.current)
     position.add(x / zoom.current, y / zoom.current)
   }
 
@@ -1595,7 +1585,6 @@ export const useDocumentStore = defineStore('document', () => {
       document = await Aseprite.load(file)
     }
     */
-    console.log(document)
     if (!document) {
     }
     createFromDocument(document)
@@ -1747,12 +1736,12 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
-  function setBoard(board) {
-    board = board
+  function setBoard(newBoard) {
+    board.value = newBoard
   }
 
   function unsetBoard() {
-    board = null
+    board.value = null
   }
 
   async function getFile() {

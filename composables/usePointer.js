@@ -71,16 +71,6 @@ export function usePointer(element, callback, { receiver = null, mode = 'down' }
     offset.x = e.offsetX
     offset.y = e.offsetY
 
-    /*
-    {
-      const domTarget = isRef(element) ? element.value : element
-      const { left, top, width, height } = domTarget.getBoundingClientRect()
-      rel.x = e.clientX - left
-      rel.y = e.clientY - top
-      console.log(rel.x, rel.y)
-    }
-    */
-
     if (e.type === 'pointermove' || e.type === 'pointerup') {
       previous.x = current.x
       previous.y = current.y

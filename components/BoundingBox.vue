@@ -17,7 +17,6 @@ const { getLayerBoundaries } = transformStore
 const updateSizeAndPosition = () => {
   boundaries.value = getLayerBoundaries()
   const { width, height, x, y } = transformStore.boundaries
-  console.log('updateSizeAndPosition', width, height, x, y)
   box.value.style.width = `${zoomStore.current * width}px`
   box.value.style.height = `${zoomStore.current * height}px`
 

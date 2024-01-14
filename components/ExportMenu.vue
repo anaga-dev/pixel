@@ -46,7 +46,6 @@ const scale = ref(1)
 const quality = ref(90)
 
 function handleExport() {
-  console.log('exporting')
   documentStore.exportFileAs(
     title.value,
     format.value,

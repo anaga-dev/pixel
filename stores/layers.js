@@ -72,7 +72,6 @@ export const useLayersStore = defineStore('layers', () => {
     })
 
     const canvas = Canvas.duplicate(initialCanvas)
-    console.log('duplicated canvas in layers', canvas)
     const context = canvas.getContext('2d')
 
     const frames = shallowReactive(
@@ -101,7 +100,6 @@ export const useLayersStore = defineStore('layers', () => {
 
   function add(options) {
     const created = shallowReactive(createLayer(options))
-    console.log('created', created)
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.value.id
     )
@@ -141,7 +139,6 @@ export const useLayersStore = defineStore('layers', () => {
    */
   function duplicate(layer) {
     const duplicated = shallowReactive(duplicateLayer(layer))
-    console.log('duplicated', duplicated.canvas)
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.id
     )
@@ -180,7 +177,6 @@ export const useLayersStore = defineStore('layers', () => {
 
   function set(layers) {
     list.length = 0
-    console.log('set', layers)
     layers.forEach((layer) => {
       add(layer)
     })

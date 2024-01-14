@@ -31,7 +31,6 @@ export async function load(blob) {
     const r = reader.read('u1')
     const g = reader.read('u1')
     const b = reader.read('u1')
-    console.log(r, g, b)
   }
 }
 

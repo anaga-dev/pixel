@@ -1023,7 +1023,6 @@ function flipGetSourceImageData(targetImageData, sourceImageData) {
 export function flipHorizontally(targetImageData, sourceImageData) {
   const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
   const limits = getImageLimits(imageData)
-  console.log('limits', limits)
 
   if (limits) {
     const { x, width } = limits
