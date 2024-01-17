@@ -68,7 +68,7 @@ button.ghost {
 }
 
 button:is(.dropdown, .setting) {
-  background-color: var(--colorLayer1);
+  background-color: transparent;
 }
 
 button:is(.ghost, .dropdown).active {
