@@ -669,6 +669,89 @@ export function ellipse(
   )
 }
 
+const brushImageDataList = []
+
+export function createImageFromURL(url, options) {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = (error) => reject(error)
+    image.onabort = _ => reject(new Error('Abort'))
+    image.src = url
+    image.crossOrigin = options?.crossOrigin ?? ''
+    image.decoding = options?.decoding ?? 'sync'
+    image.loading = options?.loading ?? 'eager'
+  })
+}
+
+export function createImageDataFromImage(image) {
+  const canvas = new OffscreenCanvas(image.width, image.height)
+  const context = canvas.getContext('2d')
+  context.drawImage(image, 0, 0)
+  return context.getImageData(0, 0, image.width, image.height)
+}
+
+export function createImageDataListFromImage(image, itemWidth, itemHeight) {
+  const canvas = new OffscreenCanvas(image.width, image.height)
+  const context = canvas.getContext('2d')
+  context.drawImage(image, 0, 0)
+  const cols = Math.floor(image.width / itemWidth)
+  const rows = Math.floor(image.height / itemHeight)
+  const imageDataList = []
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      imageDataList.push(context.getImageData(col * itemWidth, row * itemHeight, itemWidth, itemHeight))
+    }
+  }
+  return imageDataList
+}
+
+export async function createImageDataListFromURL(url, itemWidth, itemHeight, options) {
+  const image = await createImageFromURL(url, options)
+  return createImageDataListFromImage(image, itemWidth, itemHeight)
+
+}
+
+export async function createImageDataFromURL(url, options) {
+  const image = await createImageFromURL(url, options)
+  return createImageDataFromImage(image)
+}
+
+export function isPrecomputedCircleInitialized() {
+  return brushImageDataList.length > 0
+}
+
+export async function initializePrecomputedCircle() {
+  brushImageDataList.length = 0
+  brushImageDataList.push(...await createImageDataListFromURL('/brushes/rounded.png', 32, 32))
+}
+
+/**
+ *
+ * @param {ImageData} imageData
+ * @param {number} x
+ * @param {number} y
+ * @param {number} radius
+ * @param {Color} color
+ * @param {Dither} dither
+ * @param {ImageData} [maskImageData]
+ */
+export function precomputedCircle(imageData, x, y, radius, color, dither, maskImageData) {
+  const brushIndex = Math.max(1, Math.min(32, radius)) - 1
+  const brushImageData = brushImageDataList[brushIndex]
+  const ccx = -Math.floor(radius / 2)
+  const ccy = -Math.floor(radius / 2)
+  for (let cy = 0; cy < brushImageData.height; cy++) {
+    for (let cx = 0; cx < brushImageData.width; cx++) {
+      const offset = (cy * brushImageData.width + cx) * 4
+      if (brushImageData.data[offset] === 0x00) {
+        continue
+      }
+      putColor(imageData, x + cx + ccx, y + cy + ccy, color, dither, maskImageData)
+    }
+  }
+}
+
 /**
  * Compares two ImageData and returns true if the are equals.
  *
@@ -1091,6 +1174,9 @@ export function alphaRound(imageData) {
 }
 
 export default {
+  isPrecomputedCircleInitialized,
+  initializePrecomputedCircle,
+  precomputedCircle,
   getOffset,
   putColor,
   getColor,

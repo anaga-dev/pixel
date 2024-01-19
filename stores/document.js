@@ -95,6 +95,11 @@ export const useDocumentStore = defineStore('document', () => {
   // Frames that will be shown in the animation preview.
   const frames = ref([])
 
+  // FIXME: I don't like this approach.
+  if (!ImageDataUtils.isPrecomputedCircleInitialized()) {
+    ImageDataUtils.initializePrecomputedCircle()
+  }
+
   /*
   const frames = computed(() => {
     const frames = []
@@ -659,6 +664,36 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  function precomputedCircle(
+    x,
+    y,
+    radius,
+    color,
+    dither = null,
+    mask = null
+  ) {
+    doLayerPaintOperation((imageData) =>
+      doSymmetry2Operation(
+        (imageData, x, y, color, dither, mask) =>
+          ImageDataUtils.precomputedCircle(
+            imageData,
+            x,
+            y,
+            radius,
+            Color.toUint8(color),
+            dither,
+            mask
+          ),
+        imageData,
+        x,
+        y,
+        color,
+        dither,
+        mask
+      )
+    )
+  }
+
   function transformation(x, y) {
     doLayerPaintOperation((imageData) => {
       ImageDataUtils.translate(imageData, x, y, transform.tiling)
@@ -718,15 +753,11 @@ export const useDocumentStore = defineStore('document', () => {
           const addSizeHalf =
             toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
           if (shape === PencilShape.ROUND) {
-            ellipse(
-              pointer.current.x - sizeHalf,
-              pointer.current.y - sizeHalf,
-              pointer.current.x + sizeHalf,
-              pointer.current.y + sizeHalf,
+            precomputedCircle(
+              pointer.current.x,
+              pointer.current.y,
+              toolSize,
               toolColor,
-              false,
-              true,
-              false,
               null,
               mask
             )
@@ -790,15 +821,11 @@ export const useDocumentStore = defineStore('document', () => {
               pointer.current.y
             )
             if (shape === PencilShape.ROUND) {
-              ellipse(
-                x - sizeHalf,
-                y - sizeHalf,
-                x + sizeHalf,
-                y + sizeHalf,
+              precomputedCircle(
+                x,
+                y,
+                toolSize,
                 toolColor,
-                false,
-                true,
-                false,
                 null,
                 mask
               )
@@ -1016,7 +1043,7 @@ export const useDocumentStore = defineStore('document', () => {
     context.stroke()
   }
 
-  function* reverse(list) {
+  function * reverse(list) {
     for (let index = list.length - 1; index >= 0; --index) {
       yield list[index]
     }
