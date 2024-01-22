@@ -15,24 +15,24 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.11",
-    "@vueuse/core": "^10.5.0",
-    "@vueuse/nuxt": "^10.2.1",
-    "boxicons": "^2.1.2",
-    "chai": "^4.3.6",
-    "defu": "^6.1.2",
+    "@pinia/nuxt": "^0.5.1",
+    "@vueuse/core": "^10.7.2",
+    "@vueuse/nuxt": "^10.7.2",
+    "boxicons": "^2.1.4",
+    "chai": "^5.0.0",
+    "defu": "^6.1.4",
     "jszip": "^3.10.1",
-    "mocha": "^10.0.0",
-    "nuxt": "^3.6.3",
-    "pinia": "^2.0.22",
-    "sortablejs": "^1.15.0",
+    "mocha": "^10.2.0",
+    "nuxt": "^3.9.3",
+    "pinia": "^2.1.7",
+    "sortablejs": "^1.15.2",
     "sortablejs-vue3": "^1.2.11",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^0.6.7",
-    "@nuxtjs/i18n": "8.0.0-rc.4",
-    "@vite-pwa/nuxt": "^0.1.0",
-    "nw-builder": "^4.4.1"
+    "@nuxt/devtools": "^1.0.8",
+    "@nuxtjs/i18n": "8.0.0",
+    "@vite-pwa/nuxt": "^0.4.0",
+    "nw-builder": "^4.5.3"
   }
 }

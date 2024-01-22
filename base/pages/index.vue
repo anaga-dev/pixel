@@ -1,3 +1,47 @@
+<script setup>
+const router = useRouter()
+
+// This Promise is resolved when user clicks on install button.
+let installPrompt = null
+const installable = ref(false)
+
+/**
+ * Handle install button click.
+ */
+async function handleInstallClick() {
+  if (!installPrompt) return
+
+  const result = await installPrompt.prompt()
+  if (result.outcome === 'accepted') {
+    router.replace('/studio')
+  }
+
+  installable.value = false
+  installPrompt = null
+}
+
+onMounted(() => {
+  // We make sure that we're not in standalone mode. If we are, we redirect to studio.
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    installable.value = false
+    installPrompt = null
+    router.replace('/studio')
+  }
+
+  // We listen to the event beforeinstallprompt if the browser supports it
+  // in order to display the install button.
+  window.addEventListener(
+    'beforeinstallprompt',
+    (event) => {
+      event.preventDefault()
+      installPrompt = event
+      installable.value = true
+    },
+    { once: true }
+  )
+})
+</script>
+
 <template>
   <div class="PAGE">
     <header>
@@ -46,50 +90,6 @@
     </footer>
   </div>
 </template>
-
-<script setup>
-const router = useRouter()
-
-// This Promise is resolved when user clicks on install button.
-let installPrompt = null
-const installable = ref(false)
-
-/**
- * Handle install button click.
- */
-async function handleInstallClick() {
-  if (!installPrompt) return
-
-  const result = await installPrompt.prompt()
-  if (result.outcome === 'accepted') {
-    router.replace('/studio')
-  }
-
-  installable.value = false
-  installPrompt = null
-}
-
-onMounted(() => {
-  // We make sure that we're not in standalone mode. If we are, we redirect to studio.
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    installable.value = false
-    installPrompt = null
-    router.replace('/studio')
-  }
-
-  // We listen to the event beforeinstallprompt if the browser supports it
-  // in order to display the install button.
-  window.addEventListener(
-    'beforeinstallprompt',
-    (event) => {
-      event.preventDefault()
-      installPrompt = event
-      installable.value = true
-    },
-    { once: true }
-  )
-})
-</script>
 
 <style scoped>
 .PAGE {
@@ -187,7 +187,13 @@ img {
   place-content: center;
 }
 
-[class^='button'] {
+.button-install {
+  color: var(--colorAccent);
+  border: 4px solid currentColor;
+  height: 3rem;
+}
+
+.links > * {
   display: grid;
   place-content: center;
   font-family: 'Silkscreen';
@@ -195,28 +201,19 @@ img {
   padding: 0 var(--spaceM);
   text-decoration: none;
   cursor: pointer;
-}
-
-.button-install {
-  color: var(--colorAccent);
-  border: 4px solid currentColor;
-  height: 3rem;
-}
-
-.button-app {
-  justify-self: auto;
-  background-color: var(--colorLayer0);
-  color: var(--colorTextPrimary);
   min-width: 16rem;
   height: 5rem;
 }
 
+.button-app {
+  background-color: var(--colorLayer0);
+  color: var(--colorTextPrimary);
+}
+
 .button-repo {
-  justify-self: auto;
   background-color: transparent;
   border: 4px solid currentColor;
   color: var(--colorLayer0);
-  height: 5rem;
 }
 
 footer {
