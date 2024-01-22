@@ -5,6 +5,7 @@ export const useUIStore = defineStore('ui', () => {
     width: 0,
     height: 0
   })
+
   const showOverlay = ref(null)
   const showPanel = ref(true)
   const showColorPicker = ref(false)

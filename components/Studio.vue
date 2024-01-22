@@ -9,9 +9,9 @@ import Tool from '@/pixel/enums/Tool'
 import { onKeyDown, onKeyUp } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 
+const route = useRoute()
 const board = ref(null)
 const showingAnimation = ref(false)
-const consolin = ref(null)
 
 const MIN_TOUCHES = 2
 
@@ -29,6 +29,8 @@ const {
   showExportMenu
 } = storeToRefs(uiStore)
 
+const { state } = storeToRefs(documentStore)
+
 const {
   togglePanel,
   togglePalette,
@@ -38,7 +40,10 @@ const {
   toggleExportMenu
 } = uiStore
 
-onMounted(() => documentStore.setBoard(board))
+onMounted(() => {
+  state.value = route.params.id ? 'loading' : 'creating'
+  documentStore.setBoard(board)
+})
 onUnmounted(() => documentStore.unsetBoard())
 
 useBeforeUnload(
@@ -166,7 +171,7 @@ const sidePanelMessage = computed(() => {
             documentStore.tool === Tool.SELECT)
         "
       />
-      <PixelGrid v-if="documentStore.zoom.current >= 16" />
+      <PixelGrid v-if="documentStore.zoom.current >= 8" />
       <BoundingBox
         v-if="
           documentStore.canvas &&
@@ -180,8 +185,11 @@ const sidePanelMessage = computed(() => {
         class="button-show"
         :class="{ expanded: showingAnimation }"
         type="button"
-        :aria-label="showingAnimation ? 'Hide animation panel' : 'Show animation panel'"
-        @click="toggleShowAnimation">
+        :aria-label="
+          showingAnimation ? 'Hide animation panel' : 'Show animation panel'
+        "
+        @click="toggleShowAnimation"
+      >
         <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
       </button>
       <Animation v-if="showingAnimation" />
@@ -309,7 +317,7 @@ const sidePanelMessage = computed(() => {
     :layer="documentStore.layers.settings"
   />
   <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
-  <DocumentCreate v-if="!documentStore.canvas" />
+  <DocumentCreate v-if="state === 'creating'" />
   <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
   <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
 </template>

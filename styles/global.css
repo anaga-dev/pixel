@@ -32,18 +32,20 @@ option {
   line-height: 1;
 }
 
-p, small {
+p,
+small {
   line-height: 1.5;
 }
 
 a:not([class]) {
-  color: var(--colorText);
-  text-decoration: none;
+  color: var(--colorTextPrimary);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
 }
 
 a:not([class]):hover {
-  color: var(--colorTextPrimary);
-  text-decoration: underline;
+  color: var(--colorAccent);
 }
 
 *::-webkit-scrollbar {
@@ -81,7 +83,13 @@ button {
   text-align: center;
 }
 
-input:is([type=text], [type=number], [type=date], [type=email], [type=password]),
+input:is(
+    [type='text'],
+    [type='number'],
+    [type='date'],
+    [type='email'],
+    [type='password']
+  ),
 select {
   font-weight: bold;
   appearance: none;
