@@ -15,6 +15,9 @@ const updateSizeAndPosition = () => {
   grid.value.style.top = `${Math.floor(documentStore.canvasRect.top)}px`
 }
 
+/**
+ * Draws the grid.
+ */
 const drawGrid = () => {
   const canvas = grid.value
   const context = grid.value.getContext('2d')

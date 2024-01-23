@@ -1181,6 +1181,28 @@ export const useDocumentStore = defineStore('document', () => {
     init()
   }
 
+  /**
+   * Destroys everything and allows the resources to be
+   * garbage collected.
+   */
+  function destroy() {
+    width.value = 0
+    height.value = 0
+    palette.clear()
+    symmetry.position.set(0, 0)
+    layers.clear()
+    frames.value.splice(0, frames.value.length)
+    tool.value = Tool.PENCIL
+    drawing.value = false
+    drawingCanvas.value = null
+    drawingImageData.value = null
+    copyCanvas.value = null
+    copyImageData.value = null
+    previewCanvas.value = null
+    canvas.value = null
+    canvasRect.value = null
+  }
+
   /***************************************************************************
    * Layers
    ***************************************************************************/
@@ -1787,8 +1809,12 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   async function setFile(file) {
-    const document = await OpenRaster.load(file)
-    createFromDocument(document)
+    if (file === null) {
+      destroy()
+    } else {
+      const document = await OpenRaster.load(file)
+      createFromDocument(document)
+    }
   }
 
   return {
