@@ -1,5 +1,6 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+import { useNotificationStore } from '@/stores/notification'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
@@ -9,14 +10,20 @@ import Tool from '@/pixel/enums/Tool'
 import { onKeyDown, onKeyUp } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 
+const notificationStore = useNotificationStore()
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
+
 const route = useRoute()
 const board = ref(null)
 const showingAnimation = ref(false)
+const { offlineNotification } = storeToRefs(notificationStore)
 
 const MIN_TOUCHES = 2
 
-const documentStore = useDocumentStore()
-const uiStore = useUIStore()
+const props = defineProps({
+  offline: Boolean
+})
 
 const {
   showPanel,
@@ -263,6 +270,13 @@ const sidePanelMessage = computed(() => {
             <Icon :i="icon" />
           </Button>
         </Tooltip>
+        <Tooltip
+          v-if="offline"
+          :message="$t('studio.tooltips.offline')"
+          position="left bottom"
+        >
+          <Icon class="badge-offline" i="offline" />
+        </Tooltip>
       </div>
       <div class="group">
         <Tooltip
@@ -406,6 +420,12 @@ const sidePanelMessage = computed(() => {
 .group {
   display: grid;
   gap: var(--spaceS);
+  justify-content: center;
+}
+
+.badge-offline {
+  color: var(--colorCritical);
+  margin: var(--spaceS) auto 0;
 }
 
 .button-show {

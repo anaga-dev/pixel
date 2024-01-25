@@ -5,7 +5,7 @@
   </NuxtLayout>
   <Dialog v-if="showDialog" />
   <Tooltip v-if="tooltip" />
-  <Notifications v-if="notifications?.length > 0" />
+  <Notifications />
 </template>
 
 <script setup>

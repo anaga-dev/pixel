@@ -1,21 +1,23 @@
 export const useNotificationStore = defineStore('notification', () => {
-  const notifications = ref(null)
+  const notifications = reactive([])
   const resolve = ref([])
+  const systemNotification = ref(null)
 
-  const pushNotification = (msg) => {
-    notifications.value.push({ message: msg })
+  const pushNotification = (msg, dsmss) => {
+    notifications.push({ message: msg, dismissable: dsmss })
     return new Promise((rslv) => {
       resolve.value = rslv
     })
   }
 
   const dismissNotification = (index) => {
-    notifications.value.splice(index, 1)
+    notifications.splice(index, 1)
   }
 
   return {
     notifications,
     resolve,
+    systemNotification,
     pushNotification,
     dismissNotification
   }
