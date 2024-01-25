@@ -7,7 +7,7 @@
       :class="[variant, { active: active }, { disabled: disabled }]"
     >
       <slot></slot>
-      <IconDropdown v-if="variant === 'dropdown'" />
+      <IconDropdown v-if="variant === 'dropdown' || variant === 'account'" />
     </button>
   </div>
 </template>
@@ -91,6 +91,14 @@ button:is(:not(.ghost, .dropdown, .primary, .critical)):hover {
 
 button.ghost:hover {
   background-color: var(--colorShade);
+}
+
+button.account {
+  background-color: transparent;
+}
+
+button:is(.dropdown, .setting) {
+  background-color: var(--colorLayer1);
 }
 
 button:is(.dropdown, .setting):hover {
