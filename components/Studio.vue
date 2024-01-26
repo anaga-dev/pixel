@@ -1,6 +1,5 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import { useNotificationStore } from '@/stores/notification'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
@@ -10,14 +9,14 @@ import Tool from '@/pixel/enums/Tool'
 import { onKeyDown, onKeyUp } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 
-const notificationStore = useNotificationStore()
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
 const route = useRoute()
 const board = ref(null)
 const showingAnimation = ref(false)
-const { offlineNotification } = storeToRefs(notificationStore)
+
+const { showDocumentCreation } = storeToRefs(uiStore)
 
 const MIN_TOUCHES = 2
 
@@ -36,8 +35,6 @@ const {
   showExportMenu
 } = storeToRefs(uiStore)
 
-const { state } = storeToRefs(documentStore)
-
 const {
   togglePanel,
   togglePalette,
@@ -48,7 +45,9 @@ const {
 } = uiStore
 
 onMounted(() => {
-  state.value = route.params.id ? 'loading' : 'creating'
+  if(!route.params.id) {
+    showDocumentCreation.value = true
+  }
   documentStore.setBoard(board)
 })
 onUnmounted(() => documentStore.unsetBoard())
@@ -331,7 +330,7 @@ const sidePanelMessage = computed(() => {
     :layer="documentStore.layers.settings"
   />
   <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
-  <DocumentCreate v-if="state === 'creating'" />
+  <DocumentCreate v-if="showDocumentCreation" @created="showDocumentCreation = false" />
   <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
   <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
 </template>

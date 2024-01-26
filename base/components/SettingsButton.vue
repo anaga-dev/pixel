@@ -10,6 +10,7 @@ const overlay = 'general-settings'
 const uiStore = useUIStore()
 
 const { showOverlay } = storeToRefs(uiStore)
+const { showDocumentCreation } = storeToRefs(uiStore)
 
 const documentStore = useDocumentStore()
 const confirmationStore = useConfirmationStore()
@@ -22,6 +23,7 @@ async function newFile(params) {
     )
     if (confirmation) {
       documentStore.newFile()
+      showDocumentCreation.value = true
     }
   }
 }

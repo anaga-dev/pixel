@@ -7,6 +7,7 @@ export const useUIStore = defineStore('ui', () => {
   })
 
   const showOverlay = ref(null)
+  const showDocumentCreation = ref(false)
   const showPanel = ref(true)
   const showColorPicker = ref(false)
   const showPalette = ref(true)
@@ -36,7 +37,7 @@ export const useUIStore = defineStore('ui', () => {
   const togglePalette = () => {
     showPalette.value = !showPalette.value
   }
- 
+
   const toggleColorPicker = () => {
     showColorPicker.value = !showColorPicker.value
   }
@@ -45,12 +46,13 @@ export const useUIStore = defineStore('ui', () => {
     showExportMenu.value = !showExportMenu.value
   }
 
-  const showTooltip  = (rect, message) => {
+  const showTooltip = (rect, message) => {
     tooltip.value.rect = rect
     tooltip.value.message = message
   }
 
   return {
+    showDocumentCreation,
     emitterBox,
     showOverlay,
     showPanel,

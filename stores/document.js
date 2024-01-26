@@ -54,6 +54,7 @@ import { useSelectionStore } from './selection'
 
 export const useDocumentStore = defineStore('document', () => {
   const state = ref('pending')
+  const title = ref('Untitled')
   const board = ref(null)
   const keys = useMagicKeys()
   const width = ref(0)
@@ -1788,7 +1789,6 @@ export const useDocumentStore = defineStore('document', () => {
 
   function setBoard(newBoard) {
     board.value = newBoard
-    state.value = 'ready'
   }
 
   function unsetBoard() {
@@ -1819,6 +1819,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   return {
     state,
+    title,
     animation,
     board,
     canvas,

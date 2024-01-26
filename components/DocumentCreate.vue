@@ -1,3 +1,53 @@
+<script setup>
+import { useDocumentStore } from '@/stores/document'
+
+const document = useDocumentStore()
+
+const emit = defineEmits(['created'])
+
+const title = ref('new document')
+const preset = ref('custom')
+const palette = ref('palettes/edg77.json')
+const width = ref(32)
+const height = ref(32)
+const linked = ref(false)
+
+watch(preset, (value) => {
+  if (value !== 'custom') {
+    const [w, h] = value.split('x')
+    linked.value = false
+    width.value = parseInt(w, 10)
+    height.value = parseInt(h, 10)
+  }
+})
+
+watch(width, (value) => {
+  if (linked.value) {
+    height.value = value
+  }
+})
+
+function onLink() {
+  linked.value = !linked.value
+  if (linked.value) {
+    height.value = width.value
+  }
+}
+
+// TODO: Show we move this to the document store?
+async function loadPalette(url) {
+  const baseURL = import.meta.env.BASE_URL
+  const response = await fetch(`${baseURL}${url}`)
+  return response.json()
+}
+
+async function onSubmit() {
+  const paletteData = await loadPalette(palette.value)
+  document.create(width.value, height.value, paletteData)
+  emit('created')
+}
+</script>
+
 <template>
   <Modal :title="$t('create-new-document')" nondismissable>
     <form class="form" @submit.prevent="onSubmit">
@@ -20,6 +70,9 @@
         640x360
 
       -->
+      <Field :label="$t('title')" for="title">
+        <input id="title" type="text" v-model="title" />
+      </Field>
       <Field :label="$t('studio.preset')" for="preset">
         <Select id="preset" v-model="preset">
           <option value="custom">{{ $t('custom') }}</option>
@@ -84,52 +137,6 @@
     </form>
   </Modal>
 </template>
-
-<script setup>
-import { useDocumentStore } from '@/stores/document'
-
-const document = useDocumentStore()
-
-const preset = ref('custom')
-const palette = ref('palettes/edg77.json')
-const width = ref(32)
-const height = ref(32)
-const linked = ref(false)
-
-watch(preset, (value) => {
-  if (value !== 'custom') {
-    const [w, h] = value.split('x')
-    linked.value = false
-    width.value = parseInt(w, 10)
-    height.value = parseInt(h, 10)
-  }
-})
-
-watch(width, (value) => {
-  if (linked.value) {
-    height.value = value
-  }
-})
-
-function onLink() {
-  linked.value = !linked.value
-  if (linked.value) {
-    height.value = width.value
-  }
-}
-
-// TODO: Show we move this to the document store?
-async function loadPalette(url) {
-  const baseURL = import.meta.env.BASE_URL
-  const response = await fetch(`${baseURL}${url}`)
-  return response.json()
-}
-
-async function onSubmit() {
-  const paletteData = await loadPalette(palette.value)
-  document.create(width.value, height.value, paletteData)
-}
-</script>
 
 <style scoped>
 form {
