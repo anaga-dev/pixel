@@ -45,7 +45,8 @@ const {
 } = uiStore
 
 onMounted(() => {
-  if(!route.params.id) {
+  const paramsId = route.params.id
+  if (!paramsId) {
     showDocumentCreation.value = true
   }
   documentStore.setBoard(board)
@@ -330,7 +331,10 @@ const sidePanelMessage = computed(() => {
     :layer="documentStore.layers.settings"
   />
   <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
-  <DocumentCreate v-if="showDocumentCreation" @created="showDocumentCreation = false" />
+  <DocumentCreate
+    v-if="showDocumentCreation"
+    @created="showDocumentCreation = false"
+  />
   <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
   <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
 </template>

@@ -1,11 +1,11 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 
-const document = useDocumentStore()
+const documentStore = useDocumentStore()
 
 const emit = defineEmits(['created'])
 
-const title = ref('new document')
+const name = ref('Untitled')
 const preset = ref('custom')
 const palette = ref('palettes/edg77.json')
 const width = ref(32)
@@ -43,13 +43,18 @@ async function loadPalette(url) {
 
 async function onSubmit() {
   const paletteData = await loadPalette(palette.value)
-  document.create(width.value, height.value, paletteData)
+  documentStore.create({
+    width: width.value,
+    height: height.value,
+    palette: paletteData,
+    name: name.value
+  })
   emit('created')
 }
 </script>
 
 <template>
-  <Modal :title="$t('create-new-document')" nondismissable>
+  <Modal :name="$t('create-new-document')" nondismissable>
     <form class="form" @submit.prevent="onSubmit">
       <!--
 
@@ -70,8 +75,8 @@ async function onSubmit() {
         640x360
 
       -->
-      <Field :label="$t('title')" for="title">
-        <input id="title" type="text" v-model="title" />
+      <Field :label="$t('name')" for="name">
+        <input id="name" type="text" v-model="name" />
       </Field>
       <Field :label="$t('studio.preset')" for="preset">
         <Select id="preset" v-model="preset">

@@ -54,7 +54,7 @@ import { useSelectionStore } from './selection'
 
 export const useDocumentStore = defineStore('document', () => {
   const state = ref('pending')
-  const title = ref('Untitled')
+  const name = ref(null)
   const board = ref(null)
   const keys = useMagicKeys()
   const width = ref(0)
@@ -666,14 +666,7 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
-  function precomputedCircle(
-    x,
-    y,
-    radius,
-    color,
-    dither = null,
-    mask = null
-  ) {
+  function precomputedCircle(x, y, radius, color, dither = null, mask = null) {
     doLayerPaintOperation((imageData) =>
       doSymmetry2Operation(
         (imageData, x, y, color, dither, mask) =>
@@ -823,14 +816,7 @@ export const useDocumentStore = defineStore('document', () => {
               pointer.current.y
             )
             if (shape === PencilShape.ROUND) {
-              precomputedCircle(
-                x,
-                y,
-                toolSize,
-                toolColor,
-                null,
-                mask
-              )
+              precomputedCircle(x, y, toolSize, toolColor, null, mask)
             } else if (shape === PencilShape.SQUARE) {
               rectangle(
                 x - sizeHalf,
@@ -1045,7 +1031,7 @@ export const useDocumentStore = defineStore('document', () => {
     context.stroke()
   }
 
-  function * reverse(list) {
+  function* reverse(list) {
     for (let index = list.length - 1; index >= 0; --index) {
       yield list[index]
     }
@@ -1142,32 +1128,38 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function createFromDocument(document) {
-    create(document.width, document.height, document.palette, document.layers)
+    create({
+      name: document.name,
+      width: document.width,
+      height: document.height,
+      palette: document.palette,
+      layers: document.layers
+    })
     redrawAll()
+  }
+
+  function isValidSize(size) {
+    return Number.isInteger(size) && size > 0
   }
 
   /**
    * Creates a new document.
    *
-   * @param {number} width
-   * @param {number} height
-   * @param {Array<Color>} palette
-   * @param {Array<Layer>} layers
+   * @param {Object} options
    */
-  function create(newWidth, newHeight, newPalette = [], newLayers = []) {
-    if (!Number.isInteger(width) && width < 0) {
-      throw new Error('Invalid width value')
+  function create(
+    options
+  ) {
+    if (!isValidSize(options.width) || !isValidSize(options.height)) {
+      throw new Error('Invalid size')
     }
-    if (!Number.isInteger(height) && height < 0) {
-      throw new Error('Invalid width value')
-    }
-    width.value = newWidth
-    height.value = newHeight
-    palette.set(newPalette)
-    symmetry.position.set(unref(newWidth) / 2, unref(newHeight) / 2)
-    if (newLayers.length === 0) {
-      newLayers.push({ name: 'Background', width: newWidth, height: newHeight })
-    }
+    name.value = options.name
+    width.value = options.width
+    height.value = options.height
+    palette.set(options.palette)
+    symmetry.position.set(unref(width.value) / 2, unref(height.value) / 2)
+
+    const newLayers = options.layers ?? [{ name: 'Background', width: width.value, height: height.value }]
     layers.set(newLayers)
     const id = uuid()
     const canvas = Canvas.createWith(width.value, height.value, {
@@ -1187,6 +1179,7 @@ export const useDocumentStore = defineStore('document', () => {
    * garbage collected.
    */
   function destroy() {
+    name.value = ''
     width.value = 0
     height.value = 0
     palette.clear()
@@ -1296,7 +1289,9 @@ export const useDocumentStore = defineStore('document', () => {
 
   function removeLayer(layer) {
     if (layer === layers.current) {
-      const layerIndex = layers.list.findIndex((item) => item.id === layers.current.id)
+      const layerIndex = layers.list.findIndex(
+        (item) => item.id === layers.current.id
+      )
       layers.current =
         layerIndex === layers.list.length - 1
           ? layers.list[layerIndex - 1]
@@ -1645,7 +1640,7 @@ export const useDocumentStore = defineStore('document', () => {
    * Save file
    */
   async function saveFileAs() {
-    const suggestedFileName = 'untitled'
+    const suggestedFileName = title.value
     const fileExtension = '.ora'
     await FilePicker.showSave((fileHandle) => OpenRaster.save(fileHandle), {
       types: ImageTypes,
@@ -1819,7 +1814,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   return {
     state,
-    title,
+    name,
     animation,
     board,
     canvas,
@@ -1932,7 +1927,7 @@ export const useDocumentStore = defineStore('document', () => {
     updateLayers,
     useTool,
     getFile,
-    setFile,
+    setFile
   }
 })
 
