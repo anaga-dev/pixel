@@ -255,7 +255,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function eyeDropper(x, y) {
     if (x < 0 || x > width || y < 0 || y > height) return
-    const context = getLayerContext(dropper.selectCompositeColor)
+    const context = getLayerContext(dropper.value.selectCompositeColor)
     const sampledColor = CanvasContext2D.getColor(context, x, y)
 
     const alpha = parseFloat(sampledColor.match(/(\d+\.\d+|\d+)/g)[3])
@@ -275,7 +275,7 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function toggleDropperCompositeColor() {
-    dropper.selectCompositeColor = !dropper.selectCompositeColor
+    dropper.value.selectCompositeColor = !dropper.value.selectCompositeColor
   }
 
   function doTempPaintOperation(callback) {

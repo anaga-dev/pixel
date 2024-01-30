@@ -1,15 +1,15 @@
+<script setup>
+import { useDocumentStore } from '@/stores/document'
+
+const documentStore = useDocumentStore()
+</script>
+
 <template>
   <ToolButton
     tooltipText="studio.tooltips.all-layers"
     label="studio.composite"
     icon="composite"
-    :active="document.dropper.selectCompositeColor"
-    @click="document.toggleDropperCompositeColor()"
+    :active="documentStore.dropper.selectCompositeColor"
+    @click="documentStore.toggleDropperCompositeColor()"
   />
 </template>
-
-<script setup>
-import { useDocumentStore } from '@/stores/document'
-
-const document = useDocumentStore()
-</script>
