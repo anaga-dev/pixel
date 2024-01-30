@@ -61,6 +61,9 @@ export default defineNuxtConfig({
       ]
     }
   },
+  plugins: [
+    '~/plugins/directives.client',
+  ],
   modules: [
     '@nuxt/devtools',
     '@vueuse/nuxt',

@@ -31,12 +31,6 @@ const blendModes = readonly([
   ['luminosity', 'Luminosity']
 ])
 
-const vFocus = {
-  mounted(el) {
-    el.focus()
-  }
-}
-
 function onToggleLayerNameEdit() {
   editLayerName.value = true
 }

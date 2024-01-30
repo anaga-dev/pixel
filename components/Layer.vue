@@ -34,12 +34,6 @@ const input = ref(null)
 const editLayerName = ref()
 const layerName = ref(unref(props.layer.name))
 
-const vFocus = {
-  mounted(el) {
-    el.focus()
-  }
-}
-
 onClickOutside(input, (e) => {
   e.stopPropagation()
   editLayerName.value = false
