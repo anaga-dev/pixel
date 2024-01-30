@@ -1,5 +1,6 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+
 const documentStore = useDocumentStore()
 
 const grid = ref(null)
@@ -7,7 +8,11 @@ const grid = ref(null)
 /**
  * Updates the size and position of the canvas.
  */
-const updateSizeAndPosition = () => {
+function updateSizeAndPosition() {
+  if (!grid.value) {
+    return
+  }
+
   grid.value.width = Math.floor(documentStore.canvasRect.width)
   grid.value.height = Math.floor(documentStore.canvasRect.height)
 
@@ -18,7 +23,11 @@ const updateSizeAndPosition = () => {
 /**
  * Draws the grid.
  */
-const drawGrid = () => {
+function drawGrid() {
+  if (!grid.value) {
+    return
+  }
+
   const canvas = grid.value
   const context = grid.value.getContext('2d')
 

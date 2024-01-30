@@ -46,7 +46,7 @@ export function createOrGet(canvas, width, height) {
  * @returns {HTMLCanvasElement|OffscreenCanvas}
  */
 export function createOffscreen(width, height) {
-  if ('OffscreenCanvas' in window) {
+  if (window && 'OffscreenCanvas' in window) {
     return new OffscreenCanvas(width, height)
   }
   return create(width, height)
