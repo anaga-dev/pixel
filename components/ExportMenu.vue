@@ -1,6 +1,9 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+import { storeToRefs } from 'pinia'
 const documentStore = useDocumentStore()
+
+const { name } = storeToRefs(documentStore)
 
 const formats = [
   {
@@ -40,7 +43,7 @@ const scales = [
   }
 ]
 
-const title = ref('Untitled')
+const title = ref(name.value || 'untitled')
 const format = ref('png')
 const scale = ref(1)
 const quality = ref(90)
