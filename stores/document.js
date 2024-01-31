@@ -346,13 +346,13 @@ export const useDocumentStore = defineStore('document', () => {
       return
     }
     if (symmetry.axis === SymmetryAxis.HORIZONTAL) {
-      callback(imageData, width - 1 - x, y, color, dither, mask)
+      callback(imageData, width.value - 1 - x, y, color, dither, mask)
     } else if (symmetry.axis === SymmetryAxis.VERTICAL) {
-      callback(imageData, x, height - 1 - y, color, dither, mask)
+      callback(imageData, x, height.value - 1 - y, color, dither, mask)
     } else if (symmetry.axis === SymmetryAxis.BOTH) {
-      callback(imageData, width - 1 - x, y, color, dither, mask)
-      callback(imageData, x, height - 1 - y, color, dither, mask)
-      callback(imageData, width - 1 - x, height - 1 - y, color, dither, mask)
+      callback(imageData, width.value - 1 - x, y, color, dither, mask)
+      callback(imageData, x, height.value - 1 - y, color, dither, mask)
+      callback(imageData, width.value - 1 - x, height.value - 1 - y, color, dither, mask)
     }
   }
 
@@ -374,9 +374,9 @@ export const useDocumentStore = defineStore('document', () => {
     if (symmetry.axis === SymmetryAxis.HORIZONTAL) {
       callback(
         imageData,
-        width - 1 - x1,
+        width.value - 1 - x1,
         y1,
-        width - 1 - x2,
+        width.value - 1 - x2,
         y2,
         color,
         dither,
@@ -386,9 +386,9 @@ export const useDocumentStore = defineStore('document', () => {
       callback(
         imageData,
         x1,
-        height - 1 - y1,
+        height.value - 1 - y1,
         x2,
-        height - 1 - y2,
+        height.value - 1 - y2,
         color,
         dither,
         mask
@@ -396,9 +396,9 @@ export const useDocumentStore = defineStore('document', () => {
     } else if (symmetry.axis === SymmetryAxis.BOTH) {
       callback(
         imageData,
-        width - 1 - x1,
+        width.value - 1 - x1,
         y1,
-        width - 1 - x2,
+        width.value - 1 - x2,
         y2,
         color,
         dither,
@@ -407,19 +407,19 @@ export const useDocumentStore = defineStore('document', () => {
       callback(
         imageData,
         x1,
-        height - 1 - y1,
+        height.value - 1 - y1,
         x2,
-        height - 1 - y2,
+        height.value - 1 - y2,
         color,
         dither,
         mask
       )
       callback(
         imageData,
-        width - 1 - x1,
-        height - 1 - y1,
-        width - 1 - x2,
-        height - 1 - y2,
+        width.value - 1 - x1,
+        height.value - 1 - y1,
+        width.value - 1 - x2,
+        height.value - 1 - y2,
         color,
         dither,
         mask
