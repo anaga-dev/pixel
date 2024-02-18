@@ -210,6 +210,26 @@ export function toUint8(color) {
   return asUint8(parse(color))
 }
 
+// We create this offscreen canvas and context to parse
+// colors to Uint8Arrays.
+const offscreenCanvas = new OffscreenCanvas(1,1)
+const offscreenContext = offscreenCanvas.getContext('2d')
+
+/**
+ * Parses a CSS string color and returns a Uint8Array
+ * with the r, g, b, a components.
+ *
+ * @param {string} color
+ * @returns {Uint8Array}
+ */
+export function parseAsUint8(color) {
+  offscreenContext.clearRect(0, 0, 1, 1)
+  offscreenContext.fillStyle = color
+  offscreenContext.fillRect(0, 0, 1, 1)
+  const imageData = offscreenContext.getImageData(0, 0, 1, 1)
+  return imageData.data
+}
+
 export function equals(a, b) {
   if (a === b) {
     return true

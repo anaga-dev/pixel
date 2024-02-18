@@ -86,35 +86,35 @@ export function getColor(context, x, y) {
 
 export function putColor(context, x, y, color) {
   return replaceImageData(context, (imageData) =>
-    ImageDataUtils.putColor(imageData, x, y, Color.asUint8(Color.parse(color)))
+    ImageDataUtils.putColor(imageData, x, y, Color.parseAsUint8(color))
   )
 }
 
 export function fill(context, x, y, color, contiguous = true) {
   return replaceImageData(context, (imageData) => {
     if (contiguous) {
-      ImageDataUtils.fill(imageData, x, y, Color.asUint8(Color.parse(color)))
+      ImageDataUtils.fill(imageData, x, y, Color.parseAsUint8(color))
     } else {
-      ImageDataUtils.replaceColorAt(imageData, x, y, Color.asUint8(Color.parse(color)))
+      ImageDataUtils.replaceColorAt(imageData, x, y, Color.parseAsUint8(color))
     }
   })
 }
 
 export function line(context, x1, y1, x2, y2, color) {
   return replaceImageData(context, (imageData) => {
-    ImageDataUtils.line(imageData, x1, y1, x2, y2, Color.asUint8(Color.parse(color)))
+    ImageDataUtils.line(imageData, x1, y1, x2, y2, Color.parseAsUint8(color))
   })
 }
 
 export function rectangle(context, x1, y1, x2, y2, color, filled) {
   return replaceImageData(context, (imageData) => {
-    ImageDataUtils.rect(imageData, x1, y1, x2, y2, Color.asUint8(Color.parse(color)), filled)
+    ImageDataUtils.rect(imageData, x1, y1, x2, y2, Color.parseAsUint8(color), filled)
   })
 }
 
 export function ellipse(context, x1, y1, x2, y2, color, filled) {
   return replaceImageData(context, (imageData) => {
-    ImageDataUtils.ellipse(imageData, x1, y1, x2, y2, Color.asUint8(Color.parse(color)), filled)
+    ImageDataUtils.ellipse(imageData, x1, y1, x2, y2, Color.parseAsUint8(color), filled)
   })
 }
 
