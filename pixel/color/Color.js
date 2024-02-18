@@ -1,4 +1,3 @@
-import { parse } from './ColorParser.js'
 import { stringify } from './ColorStringifier.js'
 
 /**
@@ -201,15 +200,6 @@ export function asUint8([r, g, b, a]) {
   return new Uint8Array([r * 0xFF, g * 0xFF, b * 0xFF, a * 0xFF])
 }
 
-/**
- *
- * @param {string} color
- * @returns {Uint8Array}
- */
-export function toUint8(color) {
-  return asUint8(parse(color))
-}
-
 // We create this offscreen canvas and context to parse
 // colors to Uint8Arrays.
 const offscreenCanvas = new OffscreenCanvas(1,1)
@@ -258,8 +248,7 @@ export default {
   saturationHSV,
   saturation,
   asUint8,
-  toUint8,
-  parse,
+  parseAsUint8,
   stringify,
   equals
 }

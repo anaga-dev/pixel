@@ -312,7 +312,7 @@ export const useDocumentStore = defineStore('document', () => {
           imageData,
           x,
           y,
-          Color.toUint8(color),
+          Color.parseAsUint8(color),
           mask
         )
       )
@@ -320,7 +320,7 @@ export const useDocumentStore = defineStore('document', () => {
       doLayerPaintOperation((imageData) =>
         doSymmetry2Operation(
           (imageData, x, y, color, dither) =>
-            ImageDataUtils.fill(imageData, x, y, Color.toUint8(color), mask),
+            ImageDataUtils.fill(imageData, x, y, Color.parseAsUint8(color), mask),
           imageData,
           x,
           y,
@@ -435,7 +435,7 @@ export const useDocumentStore = defineStore('document', () => {
             imageData,
             x,
             y,
-            Color.toUint8(color),
+            Color.parseAsUint8(color),
             dither,
             mask
           ),
@@ -469,7 +469,7 @@ export const useDocumentStore = defineStore('document', () => {
               y1,
               x2,
               y2,
-              Color.toUint8(color),
+              Color.parseAsUint8(color),
               dither,
               mask
             ),
@@ -493,7 +493,7 @@ export const useDocumentStore = defineStore('document', () => {
               y1,
               x2,
               y2,
-              Color.toUint8(color),
+              Color.parseAsUint8(color),
               dither,
               mask
             ),
@@ -545,7 +545,7 @@ export const useDocumentStore = defineStore('document', () => {
               y1,
               x2,
               y2,
-              Color.toUint8(color),
+              Color.parseAsUint8(color),
               dither,
               mask,
               isFilled
@@ -570,7 +570,7 @@ export const useDocumentStore = defineStore('document', () => {
               y1,
               x2,
               y2,
-              Color.toUint8(color),
+              Color.parseAsUint8(color),
               dither,
               mask,
               isFilled
@@ -623,7 +623,7 @@ export const useDocumentStore = defineStore('document', () => {
               y1,
               x2,
               y2,
-              Color.toUint8(color),
+              Color.parseAsUint8(color),
               dither,
               mask,
               isFilled
@@ -648,7 +648,7 @@ export const useDocumentStore = defineStore('document', () => {
               y1,
               x2,
               y2,
-              Color.toUint8(color),
+              Color.parseAsUint8(color),
               dither,
               mask,
               isFilled
@@ -675,7 +675,7 @@ export const useDocumentStore = defineStore('document', () => {
             x,
             y,
             radius,
-            Color.toUint8(color),
+            Color.parseAsUint8(color),
             dither,
             mask
           ),
@@ -1642,7 +1642,13 @@ export const useDocumentStore = defineStore('document', () => {
   async function saveFileAs() {
     const suggestedFileName = name.value
     const fileExtension = '.ora'
-    await FilePicker.showSave((fileHandle) => OpenRaster.save(fileHandle), {
+    await FilePicker.showSave(() => OpenRaster.save({
+      canvas: canvas.value,
+      width: width.value,
+      height: height.value,
+      palette: palette,
+      layers: layers
+    }), {
       types: ImageTypes,
       defaultFileName: suggestedFileName + fileExtension,
       excludeAcceptAllOption: true,

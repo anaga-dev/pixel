@@ -1,5 +1,4 @@
 import Color from '@/pixel/color/Color'
-import ColorParser from '@/pixel/color/ColorParser'
 
 /**
  * Loads a GIMP palette file
@@ -44,8 +43,8 @@ export async function save(palette)
   text += '#Description:\n'
   text += `#Colors: ${palette.length}\n`
   text += palette.map((serializedColor) => {
-    const [r, g, b] = ColorParser.parse(serializedColor)
-    return `${~~(r * 0xFF)} ${~~(g * 0xFF)} ${~~(b * 0xFF)} ${serializedColor.slice(1)}`
+    const [r, g, b] = Color.parseAsUint8(serializedColor)
+    return `${r} ${g} ${b} ${serializedColor.slice(1)}`
   }).join('\n')
   return text
 }

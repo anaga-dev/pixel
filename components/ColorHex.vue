@@ -1,3 +1,64 @@
+<script setup>
+import { useDocumentStore } from '@/stores/document'
+
+function rgbToHex(r, g, b) {
+  const hexR = r.toString(16).padStart(2, '0')
+  const hexG = g.toString(16).padStart(2, '0')
+  const hexB = b.toString(16).padStart(2, '0')
+
+  return `${hexR}${hexG}${hexB}`
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(0, 2), 16)
+  const g = parseInt(hex.slice(2, 4), 16)
+  const b = parseInt(hex.slice(4, 6), 16)
+  return {
+    red: r,
+    green: g,
+    blue: b
+  }
+}
+
+
+const props = defineProps({
+  color: {
+    type: Object,
+    required: true
+  }
+})
+
+const emit = defineEmits(['update'])
+
+const hexColor = computed(() => rgbToHex(red.value, green.value, blue.value))
+const isTouch = computed(() => navigator.maxTouchPoints > 0)
+const { red, green, blue } = props.color
+
+onMounted(() => {
+  if (!isTouch) {
+    hex.value.focus()
+  }
+})
+
+function onInput(e) {
+  const hexRegex = /^#?([0-9A-Fa-f]{6})$/
+  if (hexRegex.test(e.target.value)) {
+    emit('update', hexToRgb(e.target.value))
+  }
+}
+
+let index = 0
+function onKeyButton(key) {
+  const hex = hexColor.value
+  const newHex = hex.slice(0, index) + key + hex.slice(index + 1)
+  index++
+  if (index > 5) {
+    index = 0
+  }
+  emit('update', hexToRgb(newHex))
+}
+</script>
+
 <template>
   <div class="ColorHex">
     <div class="hex-input">
@@ -45,48 +106,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { useDocumentStore } from '@/stores/document'
-import { rgbToHex, hexToRgb } from '@/pixel/color/ColorConverter'
-
-const props = defineProps({
-  color: {
-    type: Object,
-    required: true
-  }
-})
-
-const emit = defineEmits(['update'])
-
-const hexColor = computed(() => rgbToHex(red.value, green.value, blue.value))
-const isTouch = computed(() => navigator.maxTouchPoints > 0)
-const { red, green, blue } = props.color
-
-onMounted(() => {
-  if (!isTouch) {
-    hex.value.focus()
-  }
-})
-
-function onInput(e) {
-  const hexRegex = /^#?([0-9A-Fa-f]{6})$/
-  if (hexRegex.test(e.target.value)) {
-    emit('update', hexToRgb(e.target.value))
-  }
-}
-
-let index = 0
-function onKeyButton(key) {
-  const hex = hexColor.value
-  const newHex = hex.slice(0, index) + key + hex.slice(index + 1)
-  index++
-  if (index > 5) {
-    index = 0
-  }
-  emit('update', hexToRgb(newHex))
-}
-</script>
 
 <style scoped>
 .hex-input {
