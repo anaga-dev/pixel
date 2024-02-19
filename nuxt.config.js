@@ -69,7 +69,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@pinia/nuxt',
     '@vite-pwa/nuxt',
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
+    '@nuxt/image'
   ],
   i18n: {
     locales: [

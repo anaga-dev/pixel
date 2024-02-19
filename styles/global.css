@@ -27,7 +27,7 @@ button,
 textarea,
 select,
 option {
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Chakra Petch', sans-serif;
   font-size: 1rem;
   line-height: 1;
 }
@@ -53,14 +53,11 @@ a:not([class]):hover {
 }
 
 h1 {
-  font-family: 'Silkscreen';
   font-size: var(--fontSizeXL);
-  letter-spacing: -0.05em;
 }
 
 h2 {
   font-size: var(--fontSizeL);
-  text-transform: uppercase;
   color: var(--colorTextSecondary);
 }
 

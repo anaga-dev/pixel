@@ -1,10 +1,3 @@
-<template>
-  <div class="Field">
-    <label :for="for">{{ label }}</label>
-    <slot></slot>
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   label: {
@@ -18,15 +11,17 @@ const props = defineProps({
 })
 </script>
 
+<template>
+  <div class="Field">
+    <label :for="for">{{ label }}</label>
+    <slot></slot>
+  </div>
+</template>
+
 <style scoped>
 .Field {
   display: grid;
   grid-auto-flow: row;
   gap: var(--spaceS);
-}
-
-label {
-  text-transform: uppercase;
-  font-weight: bold;
 }
 </style>

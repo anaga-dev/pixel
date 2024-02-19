@@ -54,7 +54,6 @@ button {
   gap: var(--spaceS);
   font-weight: bold;
   line-height: 24px;
-  text-transform: uppercase;
   padding: var(--spaceS) var(--spaceM);
   background-color: var(--colorShade);
   clip-path: var(--pixelCorners);
