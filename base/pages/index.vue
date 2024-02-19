@@ -57,13 +57,17 @@ onMounted(() => {
       </div>
     </header>
     <main>
-      <article>
-        <section class="hero">
-          <h1>{{ $t('website.hero-title') }}</h1>
-          <p>{{ $t('website.hero-description') }}</p>
+      <section id="hero">
+        <div class="content-wrapper">
+          <h1>
+            <div v-for="line in $tm('homepage.hero.title')">
+              {{ $rt(line) }}
+            </div>
+          </h1>
+          <p>{{ $t('homepage.hero.description') }}</p>
           <div class="links">
             <NuxtLink class="button-app" to="/studio">{{
-              $t('website.start-now')
+              $t('homepage.start-now')
             }}</NuxtLink>
             <a
               class="button-repo"
@@ -74,19 +78,23 @@ onMounted(() => {
               Github
             </a>
           </div>
-        </section>
-        <img src="@/assets/pixel_screenshot.png" />
-        <section class="features"></section>
-      </article>
+          <img src="@/assets/pixel_screenshot.png" />
+        </div>
+      </section>
     </main>
     <footer>
-      <p>
-        {{ $t('website.made-by') }}
-        <a href="https://anaga.dev" title="Go to Anaga website" target="_blank"
-          >Anaga</a
-        >
-        {{ $t('website.in-madrid') }} -- 2023
-      </p>
+      <div class="content-wrapper">
+        <p>
+          {{ $t('homepage.made-by') }}
+          <a
+            href="https://anaga.dev"
+            title="Go to Anaga website"
+            target="_blank"
+            >Anaga</a
+          >
+          {{ $t('homepage.in-madrid') }} -- 2024
+        </p>
+      </div>
     </footer>
   </div>
 </template>
@@ -96,29 +104,21 @@ onMounted(() => {
   --headerHeight: 6rem;
   --colorBgHome: hsl(94 66% 52%);
   --colorBgHomeAlt: hsl(94 66% 18%);
+  --spaceL: 2.5rem;
+  --spaceXL: 4rem;
+  --spaceXXL: 6rem;
 
   min-height: 100svh;
   position: relative;
   overflow: hidden;
-  padding: 0 var(--spaceL);
   color: var(--colorLayer0);
   user-select: auto;
 }
 
-.background {
-  position: absolute;
-  left: 0;
-  top: var(--headerHeight);
-  width: 100%;
-  height: auto;
-  z-index: 0;
-  fill: var(--colorBgHomeAlt);
-  opacity: 0.3;
-}
-
 header {
-  background-color: var(--colorLayer0);
+  background-color: var(--colorBgHome);
   color: var(--colorTextPrimary);
+  padding: 0 var(--spaceL);
   height: var(--headerHeight);
   z-index: 1;
   display: grid;
@@ -128,6 +128,7 @@ header {
 }
 
 .Logo {
+  fill: var(--colorLayer0);
   width: 3rem;
 }
 
@@ -138,46 +139,55 @@ header {
 
 h1 {
   font-family: 'Silkscreen';
-  font-size: clamp(1.5rem, 8vw, 6rem);
-  /* color: var(--colorTextPrimary); */
-  line-height: 1;
-  margin: 0 auto;
-  font-weight: normal;
-  text-wrap: balance;
-  text-shadow: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow);
+  font-size: clamp(2rem, 6vw, 4rem);
+  color: var(--colorLayer0);
+  line-height: 1.1;
+  margin: 0;
+  max-inline-size: 20ch;
 }
 
-.hero p {
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
-  max-inline-size: 60ch;
-  line-height: 1.5;
+h1 div {
+  white-space: nowrap;
+  font-weight: normal;
+}
+
+#hero {
+  background-color: var(--colorBgHome);
+  padding: var(--spaceXL) var(--spaceXL) 0;
+}
+
+.content-wrapper {
+  display: grid;
+  justify-items: center;
+  gap: var(--spaceL);
+  max-width: 1280px;
   margin: auto;
+}
+
+p {
+  font-size: var(--fontSizeL);
+  font-weight: normal;
+  max-inline-size: 60ch;
 }
 
 main {
   text-align: center;
-  padding: var(--spaceXXL) var(--spaceXL);
-  background-color: var(--colorBgHome);
   z-index: 1;
 }
 
-article {
-  max-width: 1200px;
-  margin: auto;
-}
-
-.hero {
+section {
   display: grid;
-  gap: var(--spaceXL);
-  margin-bottom: var(--spaceXL);
+  justify-items: center;
+  gap: var(--spaceL);
 }
 
-img {
+#hero img {
   background-color: black;
-  width: 100%;
   max-width: 1200px;
   height: auto;
   box-shadow: var(--shadowLayer);
+  margin: 0 auto;
+  translate: 0 var(--spaceXL);
 }
 
 .links {
@@ -196,7 +206,8 @@ img {
 .links > * {
   display: grid;
   place-content: center;
-  font-family: 'Silkscreen';
+  background-color: var(--colorLayer0);
+  color: var(--colorTextPrimary);
   font-size: var(--fontSizeL);
   padding: 0 var(--spaceM);
   text-decoration: none;
@@ -218,7 +229,7 @@ img {
 
 footer {
   color: var(--colorTextPrimary);
-  padding: var(--spaceXXL) var(--spaceXL);
+  padding: calc(var(--spaceXXL) * 2) var(--spaceXL) var(--spaceXL);
   margin: 0 auto;
   text-align: center;
 }
