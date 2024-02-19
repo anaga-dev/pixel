@@ -183,6 +183,7 @@ section {
 
 #hero img {
   background-color: black;
+  width: 100%;
   max-width: 1200px;
   height: auto;
   box-shadow: var(--shadowLayer);
@@ -209,10 +210,9 @@ section {
   background-color: var(--colorLayer0);
   color: var(--colorTextPrimary);
   font-size: var(--fontSizeL);
-  padding: 0 var(--spaceM);
+  padding: 0 var(--spaceL);
   text-decoration: none;
   cursor: pointer;
-  min-width: 16rem;
   height: 5rem;
 }
 
@@ -240,4 +240,11 @@ a:is(:link, :visited):not([class]) {
   text-underline-offset: 4px;
   color: var(--colorAccent);
 }
+
+@media (min-width: 1024px) {
+  .links > * {
+    min-width: 16rem;
+  }
+}
+
 </style>
