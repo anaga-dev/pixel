@@ -153,7 +153,7 @@ h1 div {
 
 #hero {
   background-color: var(--colorBgHome);
-  padding: var(--spaceXL) var(--spaceXL) 0;
+  padding: var(--spaceXL) var(--spaceL) 0;
 }
 
 .content-wrapper {
