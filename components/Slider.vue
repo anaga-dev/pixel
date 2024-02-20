@@ -113,6 +113,7 @@ input[type="range"]::before {
   content: '';
   position: absolute;
   width: var(--percent, 100%);
+  max-width: 100%;
   height: var(--spaceS);
   background: var(--colorAccent);
   pointer-events: none;
