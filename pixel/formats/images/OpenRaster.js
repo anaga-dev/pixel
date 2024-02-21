@@ -114,7 +114,7 @@ function createPalette(doc) {
   xml += '<colors>'
   for (let index = 0; index < doc.palette.colors.length; index++) {
     const color = doc.palette.colors[index]
-    const [r, g, b] = Color.parseAsUint8(color.color)
+    const [r, g, b] = Color.parseAsFloat32(color.color)
     xml += `<color name="color-${index}"><sRGB r="${r.toFixed(4)}" g="${g.toFixed(4)}" b="${b.toFixed(4)}" /></color>`
   }
   xml += '</colors>'

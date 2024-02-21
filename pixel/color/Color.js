@@ -1,5 +1,7 @@
 import { stringify } from './ColorStringifier.js'
 
+const BYTE = 0xFF
+
 /**
  *
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
@@ -14,11 +16,13 @@ import { stringify } from './ColorStringifier.js'
  */
 
 /**
+ * Returns a new Color from HSLA values.
  *
  * @param {number} h Hue [0,360]
  * @param {number} s Saturation [0,100]
- * @param {number} l Saturation [0,100]
- * @param {number}
+ * @param {number} l Lightness [0,100]
+ * @param {number} a Alpha [0,1]
+ * @returns {Color}
  */
 export function fromHSLA(h, s, l, a) {
   const û = Math.min(1, Math.max(0, l / 100)) // converts from [0, 100] to [0,1]
@@ -50,10 +54,10 @@ export function fromHSLA(h, s, l, a) {
  * @param {number} g
  * @param {number} b
  * @param {number} a
- * @returns
+ * @returns {Color}
  */
-export function fromRGBA(r = 0, g = 0, b = 0, a = 255) {
-  return create(r / 255, g / 255, b / 255, a / 255)
+export function fromRGBA(r = 0, g = 0, b = 0, a = BYTE) {
+  return create(r / BYTE, g / BYTE, b / BYTE, a / BYTE)
 }
 
 /**
@@ -86,26 +90,64 @@ export function set(out, r, g, b, a) {
   return out
 }
 
+/**
+ * Resets a color to its default values [0, 0, 0, 1]
+ *
+ * @param {Color} out
+ * @returns {Color}
+ */
 export function reset(out) {
   return set(out, 0, 0, 0, 1)
 }
 
+/**
+ * Copies color components into another.
+ *
+ * @param {Color} out
+ * @param {Color} src
+ * @returns {Color}
+ */
 export function copy(out, [r, g, b, a]) {
-  return set(out, r, g, ba)
+  return set(out, r, g, b, a)
 }
 
+/**
+ * Clones a color.
+ *
+ * @param {Color} src
+ * @returns {Color}
+ */
 export function clone([r, g, b, a]) {
   return create(r, g, b, a)
 }
 
+/**
+ * Returns the maximum color component value.
+ *
+ * @param {Color} color
+ * @returns {number}
+ */
 export function max([r, g, b]) {
   return Math.max(r, g, b)
 }
 
+/**
+ * Returns the minimum color component value.
+ *
+ * @param {Color} color
+ * @returns {number}
+ */
 export function min([r, g, b]) {
   return Math.min(r, g, b)
 }
 
+/**
+ * Returns the average value from all
+ * color components.
+ *
+ * @param {Color} color
+ * @returns {number}
+ */
 export function mid(color) {
   return (max(color) + min(color)) / 2
 }
@@ -197,7 +239,7 @@ export function saturation(color) {
  * @returns {Uint8Array}
  */
 export function asUint8([r, g, b, a]) {
-  return new Uint8Array([r * 0xFF, g * 0xFF, b * 0xFF, a * 0xFF])
+  return new Uint8Array([r * BYTE, g * BYTE, b * BYTE, a * BYTE])
 }
 
 // We create this offscreen canvas and context to parse
@@ -210,7 +252,7 @@ const offscreenContext = offscreenCanvas.getContext('2d')
  * with the r, g, b, a components.
  *
  * @param {string} color
- * @returns {Uint8Array}
+ * @returns {Uint8ClampedArray}
  */
 export function parseAsUint8(color) {
   offscreenContext.clearRect(0, 0, 1, 1)
@@ -220,13 +262,54 @@ export function parseAsUint8(color) {
   return imageData.data
 }
 
+/**
+ * Parses a CSS string color and returns a Uint32Array
+ * with the r, g, b, a components as uint32.
+ *
+ * @param {string} color
+ * @returns {Uint32Array}
+ */
+export function parseAsUint32(color) {
+  const typedArray = parseAsUint8(color)
+  return new Uint32Array(typedArray.buffer)
+}
+
+/**
+ * Parses a CSS string color and returns a Float32Array
+ * with the r, g, b, a components.
+ *
+ * @param {string} color
+ * @returns {Float32Array}
+ */
+export function parseAsFloat32(color) {
+  const [r, g, b, a] = parseAsUint8(color)
+  return new Float32Array([r / BYTE, g / BYTE, b / BYTE, a / BYTE])
+}
+
+/**
+ * Converts a CSS string to a Float32Array.
+ *
+ * @alias parseAsFloat32
+ */
+export const parse = parseAsFloat32
+
+/**
+ * Returns if two colors are equal.
+ *
+ * @param {string} a
+ * @param {string} b
+ * @returns {boolean}
+ */
 export function equals(a, b) {
   if (a === b) {
     return true
   }
-  const [ar, ag, ab, aa] = parse(a)
-  const [br, bg, bb, ba] = parse(b)
-  return ar === br && ag === bg && ab === bb && aa === ba
+  const [ar, ag, ab, aa] = parseAsUint8(a)
+  const [br, bg, bb, ba] = parseAsUint8(b)
+  return ar === br
+      && ag === bg
+      && ab === bb
+      && aa === ba
 }
 
 export default {
@@ -249,6 +332,9 @@ export default {
   saturation,
   asUint8,
   parseAsUint8,
+  parseAsUint32,
+  parseAsFloat32,
+  parse,
   stringify,
   equals
 }

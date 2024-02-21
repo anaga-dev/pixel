@@ -1377,14 +1377,14 @@ export const useDocumentStore = defineStore('document', () => {
       multiple: false
     })
     if (/.*\.gpl$/i.test(file.name)) {
-      const palette = await GIMP.load(file)
-      palette.set(palette)
+      const newPalette = await GIMP.load(file)
+      palette.set(newPalette)
     } else if (/.*\.pal$/i.test(file.name)) {
-      const palette = await PAL.load(file)
-      palette.set(palette)
+      const newPalette = await PAL.load(file)
+      palette.set(newPalette)
     } else if (/.*\.act$/i.test(file.name)) {
-      const palette = await ACT.load(file)
-      palette.set(palette)
+      const newPalette = await ACT.load(file)
+      palette.set(newPalette)
     }
   }
 

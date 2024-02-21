@@ -42,9 +42,9 @@ export function useColor(string) {
   })
 
   function setFromRGB(r, g, b) {
-    rgb.r = r / 0xFF
-    rgb.g = g / 0xFF
-    rgb.b = b / 0xFF
+    rgb.r = r
+    rgb.g = g
+    rgb.b = b
     updateFromRGB(r, g, b)
   }
 
@@ -86,7 +86,7 @@ export function useColor(string) {
     rgb.b = b + m
   }
 
-  setFromRGB(...Color.parseAsUint8(string))
+  setFromRGB(...Color.parseAsFloat32(string))
 
   const red = computed({
     set(value) {
@@ -148,7 +148,7 @@ export function useColor(string) {
 
   const style = computed({
     set(value) {
-      setFromRGB(...Color.parseAsUint8(value))
+      setFromRGB(...Color.parseAsFloat32(value))
     },
     get() {
       return `rgb(${red.value}, ${green.value}, ${blue.value})`
