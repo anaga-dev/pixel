@@ -1,6 +1,6 @@
 <template>
   <ul class="TabMenu">
-    <slot></slot>
+    <slot />
   </ul>
 </template>
 

@@ -1,5 +1,14 @@
 import { v4 as uuid } from 'uuid'
 
+/**
+ * @typedef {object} PaletteColor
+ * @property {string} id
+ * @property {string} color
+ */
+
+/**
+ * Palette store
+ */
 export const usePaletteStore = defineStore('palette', () => {
   const colors = reactive([])
 
@@ -35,6 +44,12 @@ export const usePaletteStore = defineStore('palette', () => {
     })
   }
 
+  /**
+   * Add color to palette at index.
+   *
+   * @param {number} index
+   * @param {string} color
+   */
   function addAt(index, color) {
     const newColor = {
       id: uuid(),
@@ -44,7 +59,7 @@ export const usePaletteStore = defineStore('palette', () => {
   }
 
   /**
-   * Remove color from palette
+   * Remove color from palette.
    *
    * @param {number} index
    */
@@ -53,14 +68,21 @@ export const usePaletteStore = defineStore('palette', () => {
     return removed
   }
 
+  /**
+   * Removes last color.
+   *
+   * @returns {string}
+   */
   function removeLast() {
     return colors.pop()
   }
 
-  /*
-   * Swap colors in palette
+  /**
+   * Swap colors in palette.
+   *
+   * @param {number} fromIndex
+   * @param {number} toIndex
    */
-
   function swap(fromIndex, toIndex) {
     const [fromColor] = colors.splice(fromIndex, 1)
     colors.splice(toIndex, 0, fromColor)

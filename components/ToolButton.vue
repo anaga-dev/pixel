@@ -1,17 +1,3 @@
-<template>
-  <Tooltip :message="tooltipText" :position="tooltipPosition">
-    <Button
-      :variant="variant === 'icon' ? 'ghost' : 'setting'"
-      :label="label"
-      :active="active"
-      :disabled="disabled"
-    >
-      <Icon v-if="icon" :i="icon" />
-      <span v-if="variant !== 'icon'">{{ $t(label) }}</span>
-    </Button>
-  </Tooltip>
-</template>
-
 <script setup>
 const props = defineProps({
   active: {
@@ -19,8 +5,8 @@ const props = defineProps({
     default: false
   },
   label: {
-    type: String,
-    required: false
+    type: [null, String],
+    default: null
   },
   tooltipText: {
     type: String,
@@ -35,15 +21,35 @@ const props = defineProps({
     default: false
   },
   icon: {
-    type: String,
-    required: false
+    type: [null, String],
+    default: null
   },
   variant: {
-    type: String,
-    required: false
+    type: [null, String],
+    default: null
   }
 })
 </script>
+
+<template>
+  <Tooltip
+    :message="props.tooltipText"
+    :position="props.tooltipPosition"
+  >
+    <Button
+      :variant="props.variant === 'icon' ? 'ghost' : 'setting'"
+      :label="props.label"
+      :active="props.active"
+      :disabled="props.disabled"
+    >
+      <Icon
+        v-if="props.icon"
+        :i="props.icon"
+      />
+      <span v-if="props.variant !== 'icon'">{{ $t(props.label) }}</span>
+    </Button>
+  </Tooltip>
+</template>
 
 <style scoped>
 button {

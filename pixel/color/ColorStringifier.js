@@ -1,28 +1,80 @@
-import { hue } from './Color.js'
+import { hue, saturation, lightness } from './Color.js'
+import isFractionDigits from '@/pixel/validation/isFractionDigits.js'
 
+/**
+ * Stringifies a channel as a hexadecimal string.
+ *
+ * @param {number} channel
+ * @returns {string}
+ */
 export function stringifyHexChannel(channel) {
   return Math.round(channel * 0xFF).toString(16).padStart(2, 0)
 }
 
-export function stringifyPercentageChannel(channel) {
-  return `${(channel * 100).toFixed(2)}%`
+/**
+ * Stringifies a channel as a percentage string.
+ *
+ * @param {number} channel
+ * @param {number} [fractionDigits]
+ * @returns {string}
+ */
+export function stringifyPercentageChannel(channel, fractionDigits) {
+  if (isFractionDigits(fractionDigits)) {
+    return `${(channel * 100).toFixed(fractionDigits)}%`
+  }
+  return `${(channel * 100)}%`
 }
 
-export function stringifyByteChannel(channel) {
-  return (channel * 0xFF).toFixed(2)
+/**
+ * Stringifies a channel as a byte string.
+ *
+ * @param {number} channel
+ * @param {number} [fractionDigits]
+ * @returns {string}
+ */
+export function stringifyByteChannel(channel, fractionDigits) {
+  if (isFractionDigits(fractionDigits)) {
+    return (channel * 0xFF).toFixed(fractionDigits)
+  }
+  return (channel * 0xFF)
 }
 
-export function stringifyChannel(channel) {
-  return channel.toFixed(2)
+/**
+ * Stringifies a channel as a string.
+ *
+ * @param {number} channel
+ * @param {number} [fractionDigits]
+ * @returns {string}
+ */
+export function stringifyChannel(channel, fractionDigits) {
+  if (isFractionDigits(fractionDigits)) {
+    return channel.toFixed(fractionDigits)
+  }
+  return channel.toString()
 }
 
+/**
+ * Map function that stringifies a channel as a string.
+ *
+ * @param {number} channel
+ * @param {number} index
+ * @returns {string}
+ */
 export function stringifyRGBAChannel(channel, index) {
-  if (index < 4) {
+  if (index < 3) {
     return stringifyByteChannel(channel)
   }
   return stringifyChannel(channel)
 }
 
+/**
+ * Map function that stringifies a channel as a string.
+ *
+ * @param {number} channel
+ * @param {number} index
+ * @param {Color} color
+ * @returns {string}
+ */
 export function stringifyHSLAChannel(channel, index, color) {
   if (index === 0) {
     return stringifyChannel(hue(color))
@@ -34,28 +86,65 @@ export function stringifyHSLAChannel(channel, index, color) {
   return stringifyChannel(channel)
 }
 
+/**
+ * Stringifies a color as a CSS hexadecimal string.
+ *
+ * @param {Color} color
+ * @returns {string}
+ */
 export function stringifyHex(color) {
   return '#' + color.map(stringifyHexChannel).join('')
 }
 
+/**
+ * Stringifies a color as a CSS rgba string.
+ *
+ * @param {Color} color
+ * @returns {string}
+ */
 export function stringifyRGBA(color) {
-  return `rgba(${color.map(stringifyRGBAChannel).join(',')})`
+  return `rgba(${color.map(stringifyRGBAChannel).join(', ')})`
 }
 
+/**
+ * Stringifies a color as a CSS rgb string.
+ *
+ * @param {Color} color
+ * @returns {string}
+ */
 export function stringifyRGB(color) {
-  return `rgb(${color.slice(0, 3).map(stringifyRGBAChannel).join(',')})`
+  return `rgb(${color.slice(0, 3).map(stringifyRGBAChannel).join(', ')})`
 }
 
+/**
+ * Stringifies a color as a CSS hsla string.
+ *
+ * @param {Color} color
+ * @returns {string}
+ */
 export function stringifyHSLA(color) {
-  return `hsla(${color.map(stringifyHSLAChannel).join(',')})`
+  return `hsla(${color.map(stringifyHSLAChannel).join(', ')})`
 }
 
+/**
+ * Stringifies a color as a CSS hsl string.
+ *
+ * @param {Color} color
+ * @returns {string}
+ */
 export function stringifyHSL(color) {
-  return `hsla(${color.slice(0, 3).map(stringifyHSLAChannel).join(',')})`
+  return `hsl(${color.slice(0, 3).map(stringifyHSLAChannel).join(', ')})`
 }
 
-export function stringify(color, model = 'hex') {
-  switch (model) {
+/**
+ * Stringifies a color as a CSS string.
+ *
+ * @param {Color} color
+ * @param {ColorFormat} [format='hex']
+ * @returns {string}
+ */
+export function stringify(color, format = 'hex') {
+  switch (format) {
     default:
     case 'rgba':
       return stringifyRGBA(color)

@@ -9,12 +9,12 @@
  */
 export function useEventListener(target, type, callback, options) {
   onMounted(() => {
-    const domTarget = isRef(target) ? target.value : target
-    domTarget.addEventListener(type, callback, options)
+    const domTarget = unref(target)
+    domTarget?.addEventListener(type, callback, options)
   })
   onBeforeUnmount(() => {
-    const domTarget = isRef(target) ? target.value : target
-    domTarget.removeEventListener(type, callback)
+    const domTarget = unref(target)
+    domTarget?.removeEventListener(type, callback)
   })
 }
 

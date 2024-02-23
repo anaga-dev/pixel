@@ -1,27 +1,27 @@
 <template>
   <ToolButton
-    tooltipText="studio.tooltips.freehand-selection"
+    tooltip-text="studio.tooltips.freehand-selection"
     label="studio.freehand"
     icon="freehand"
     :active="documentStore.selection.type === SelectType.FREEHAND"
     @click="documentStore.setSelectType(SelectType.FREEHAND)"
   />
   <ToolButton
-    tooltipText="studio.tooltips.rectangle-selection"
+    tooltip-text="studio.tooltips.rectangle-selection"
     label="studio.rectangle"
     icon="selection"
     :active="documentStore.selection.type === SelectType.RECTANGLE"
     @click="documentStore.setSelectType(SelectType.RECTANGLE)"
   />
   <ToolButton
-    tooltipText="studio.tooltips.ellipse-selection"
+    tooltip-text="studio.tooltips.ellipse-selection"
     label="studio.ellipse"
     icon="selection-ellipse"
     :active="documentStore.selection.type === SelectType.ELLIPSE"
     @click="documentStore.setSelectType(SelectType.ELLIPSE)"
   />
   <ToolButton
-    tooltipText="studio.tooltips.color-selection"
+    tooltip-text="studio.tooltips.color-selection"
     label="studio.color"
     icon="palette"
     :active="documentStore.selection.type === SelectType.COLOR"
@@ -29,22 +29,25 @@
   />
   <ToolButton
     v-if="documentStore.selection.type === SelectType.COLOR"
-    tooltipText="studio.tooltips.contiguous"
+    tooltip-text="studio.tooltips.contiguous"
     label="studio.contiguous"
     icon="contiguous"
     :active="documentStore.selection.contiguous"
     @click="documentStore.toggleSelectContiguous()"
   />
-  <Divider vertical transparent />
+  <Divider
+    vertical
+    transparent
+  />
   <ToolButton
-    tooltipText="studio.tooltips.add-to-selection"
+    tooltip-text="studio.tooltips.add-to-selection"
     label="studio.add-to-selection"
     icon="selection-add"
     :active="documentStore.selection.mode === SelectMode.ADD"
     @click="documentStore.setSelectMode(SelectMode.ADD)"
   />
   <ToolButton
-    tooltipText="studio.tooltips.subtract-from-selection"
+    tooltip-text="studio.tooltips.subtract-from-selection"
     label="studio.subtract-from-selection"
     icon="selection-substract"
     :active="documentStore.selection.mode === SelectMode.SUBTRACT"

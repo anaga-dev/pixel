@@ -1,10 +1,12 @@
 <script setup>
 const props = defineProps({
   title: {
-    type: String
+    type: String,
+    default: ''
   },
-  nondismissable: {
-    type: Boolean
+  nonDismissable: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -15,14 +17,19 @@ const emit = defineEmits(['close'])
   <Overlay />
   <div class="wrapper">
     <div class="Modal">
-      <header v-if="title || !nondismissable">
-        <h2>{{ title }}</h2>
-        <Button :label="$t('close')" v-if="!nondismissable" variant="ghost" @click="emit('close')">
+      <header v-if="props.title || !props.nonDismissable">
+        <h2>{{ props.title }}</h2>
+        <Button
+          v-if="!props.nonDismissable"
+          :label="$t('close')"
+          variant="ghost"
+          @click="emit('close')"
+        >
           <Icon i="close" />
         </Button>
       </header>
       <div class="body">
-        <slot></slot>
+        <slot />
       </div>
     </div>
   </div>

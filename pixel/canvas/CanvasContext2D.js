@@ -1,16 +1,5 @@
 import CanvasContext from './CanvasContext'
-import ImageDataUtils from './ImageDataUtils'
-import Color from '../color/Color'
-
-/**
- * @typedef {Object} Layer
- * @property {string} id
- * @property {boolean} visible
- * @property {number} opacity
- * @property {string} blendMode
- * @property {string} type
- * @property {HTMLCanvasElement} canvas
- */
+import Color from '@/pixel/color/Color'
 
 /**
  * Sets the canvas image smoothing
@@ -44,6 +33,21 @@ export function create(width, height, contextAttributes, imageSmoothingEnabled =
 }
 
 /**
+ * Creates a new OffscreenCanvas (if available) element with the specified width,
+ *
+ * @param {number} width
+ * @param {number} height
+ * @param {CanvasRenderingContext2DSettings} [contextAttributes]
+ * @param {boolean} [imageSmoothingEnabled=false]
+ * @param {'low'|'medium'|'high'} [imageSmoothingQuality='low']
+ * @returns {CanvasRenderingContext2D}
+ */
+export function createOffscreen(width, height, contextAttributes, imageSmoothingEnabled = false, imageSmoothingQuality = 'low') {
+  const context = CanvasContext.createOffscreen(width, height, '2d', contextAttributes)
+  return setImageSmoothing(context, imageSmoothingEnabled, imageSmoothingQuality)
+}
+
+/**
  * Returns a canvas context.
  *
  * @param {HTMLCanvasElement|OffscreenCanvas} canvas
@@ -61,80 +65,41 @@ export function get(canvas, contextAttributes, imageSmoothingEnabled = false, im
   )
 }
 
-export function replaceImageData(context, callback) {
-  const imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height)
-  callback(imageData)
-  context.putImageData(imageData, 0, 0)
-  return context
-}
-
-export function copyImageData(targetContext, sourceContext) {
-  const imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height)
-  targetContext.putImageData(imageData, 0, 0)
-}
-
-export function putImage(context, image) {
-  context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-  context.drawImage(image, 0, 0)
-}
-
+/**
+ * Returns the color of an specified context and pixel coordinates
+ * as a CSS color string.
+ *
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} x
+ * @param {number} y
+ * @returns {string}
+ */
 export function getColor(context, x, y) {
-  const imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height)
-  const color = ImageDataUtils.getColor(imageData, x, y).map(value => value / 255)
+  const imageData = context.getImageData(x, y, 1, 1)
+  const color = Color.fromUint8Array(imageData.data)
   return Color.stringify(color, 'rgba')
 }
 
-export function putColor(context, x, y, color) {
-  return replaceImageData(context, (imageData) =>
-    ImageDataUtils.putColor(imageData, x, y, Color.parseAsUint8(color))
+/**
+ * Copies the image data from one context to another.
+ *
+ * @param {CanvasRenderingContext2D} targetContext
+ * @param {CanvasRenderingContext2D} sourceContext
+ */
+export function copyImageData(targetContext, sourceContext) {
+  const imageData = sourceContext.getImageData(
+    0,
+    0,
+    sourceContext.canvas.width,
+    sourceContext.canvas.height
   )
-}
-
-export function fill(context, x, y, color, contiguous = true) {
-  return replaceImageData(context, (imageData) => {
-    if (contiguous) {
-      ImageDataUtils.fill(imageData, x, y, Color.parseAsUint8(color))
-    } else {
-      ImageDataUtils.replaceColorAt(imageData, x, y, Color.parseAsUint8(color))
-    }
-  })
-}
-
-export function line(context, x1, y1, x2, y2, color) {
-  return replaceImageData(context, (imageData) => {
-    ImageDataUtils.line(imageData, x1, y1, x2, y2, Color.parseAsUint8(color))
-  })
-}
-
-export function rectangle(context, x1, y1, x2, y2, color, filled) {
-  return replaceImageData(context, (imageData) => {
-    ImageDataUtils.rect(imageData, x1, y1, x2, y2, Color.parseAsUint8(color), filled)
-  })
-}
-
-export function ellipse(context, x1, y1, x2, y2, color, filled) {
-  return replaceImageData(context, (imageData) => {
-    ImageDataUtils.ellipse(imageData, x1, y1, x2, y2, Color.parseAsUint8(color), filled)
-  })
-}
-
-export function translate(context, x, y, mode) {
-  return replaceImageData(context, (imageData) => {
-    ImageDataUtils.translate(imageData, x, y, mode)
-  })
+  targetContext.putImageData(imageData, 0, 0)
 }
 
 export default {
   create,
+  createOffscreen,
   get,
-  replaceImageData,
-  copyImageData,
-  putImage,
   getColor,
-  putColor,
-  fill,
-  line,
-  rectangle,
-  ellipse,
-  translate
+  copyImageData,
 }

@@ -1,5 +1,8 @@
 <template>
-  <div class="Slider" :style="style">
+  <div
+    class="Slider"
+    :style="style"
+  >
     <input
       :id="$attrs.id"
       type="range"
@@ -7,7 +10,8 @@
       :step="step"
       :max="max"
       :value="modelValue"
-      @input="updateValue" />
+      @input="updateValue"
+    >
     <input
       :id="`${$attrs.id}-number`"
       type="number"
@@ -15,7 +19,8 @@
       :min="min"
       :max="max"
       :value="modelValue"
-      @input="updateValue" />
+      @input="updateValue"
+    >
   </div>
 </template>
 
@@ -53,7 +58,7 @@ function updateValue(e) {
 
 watch(() => props.data, (newValue) => {
   percent.value['--percent'] = `${Range.from(newValue, props.min, props.max) * 100}%`
-});
+})
 </script>
 
 <style scoped>

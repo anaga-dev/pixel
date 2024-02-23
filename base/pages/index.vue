@@ -21,14 +21,15 @@ async function handleInstallClick() {
 }
 
 onMounted(() => {
-  // We make sure that we're not in standalone mode. If we are, we redirect to studio.
+  // We make sure that we're not in standalone mode.
+  // If we are, we redirect to studio.
   if (window.matchMedia('(display-mode: standalone)').matches) {
     installable.value = false
     installPrompt = null
     router.replace('/studio')
   }
 
-  // We listen to the event beforeinstallprompt if the browser supports it
+  // We listen to the event `beforeinstallprompt` if the browser supports it
   // in order to display the install button.
   window.addEventListener(
     'beforeinstallprompt',
@@ -60,15 +61,21 @@ onMounted(() => {
       <section id="hero">
         <div class="content-wrapper">
           <h1>
-            <div v-for="line in $tm('homepage.hero.title')">
+            <div
+              v-for="line of $tm('homepage.hero.title')"
+              :key="line"
+            >
               {{ $rt(line) }}
             </div>
           </h1>
           <p>{{ $t('homepage.hero.description') }}</p>
           <div class="links">
-            <NuxtLink class="button-app" to="/studio">{{
-              $t('homepage.start-now')
-            }}</NuxtLink>
+            <NuxtLink
+              class="button-app"
+              to="/studio"
+            >
+              {{ $t('homepage.start-now') }}
+            </NuxtLink>
             <a
               class="button-repo"
               href="https://github.com/anaga-dev/pixel"
@@ -78,7 +85,7 @@ onMounted(() => {
               Github
             </a>
           </div>
-          <img src="@/assets/pixel_screenshot.png" />
+          <img src="@/assets/pixel_screenshot.png">
         </div>
       </section>
     </main>
@@ -90,8 +97,7 @@ onMounted(() => {
             href="https://anaga.dev"
             title="Go to Anaga website"
             target="_blank"
-            >Anaga</a
-          >
+          >Anaga</a>
           {{ $t('homepage.in-madrid') }} -- 2024
         </p>
       </div>

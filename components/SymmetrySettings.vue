@@ -1,15 +1,30 @@
 <template>
-  <Dropdown class="SymmetrySettings" @close="toggleOverlay('symmetry-settings')">
+  <Dropdown
+    class="SymmetrySettings"
+    @close="toggleOverlay('symmetry-settings')"
+  >
     <h3>{{ $t('studio.symmetry.title') }}</h3>
-    <Button label="Horizontal symmetry" :active="axis === 'horizontal'" @click="onClick('horizontal')">
+    <Button
+      label="Horizontal symmetry"
+      :active="axis === 'horizontal'"
+      @click="onClick('horizontal')"
+    >
       <Icon i="symmetry-horizontal" />
       {{ $t('studio.symmetry.horizontal') }}
     </Button>
-    <Button label="Vertical symmetry" :active="axis === 'vertical'" @click="onClick('vertical')">
+    <Button
+      label="Vertical symmetry"
+      :active="axis === 'vertical'"
+      @click="onClick('vertical')"
+    >
       <Icon i="symmetry-vertical" />
       {{ $t('studio.symmetry.vertical') }}
     </Button>
-    <Button label="Two axis symmetry" :active="axis === 'both'" @click="onClick('both')">
+    <Button
+      label="Two axis symmetry"
+      :active="axis === 'both'"
+      @click="onClick('both')"
+    >
       <Icon i="symmetry-two-axis" />
       {{ $t('studio.symmetry.both') }}
     </Button>

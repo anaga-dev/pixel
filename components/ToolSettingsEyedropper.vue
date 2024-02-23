@@ -6,7 +6,7 @@ const documentStore = useDocumentStore()
 
 <template>
   <ToolButton
-    tooltipText="studio.tooltips.all-layers"
+    tooltip-text="studio.tooltips.all-layers"
     label="studio.composite"
     icon="composite"
     :active="documentStore.dropper.selectCompositeColor"

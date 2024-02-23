@@ -1,14 +1,18 @@
 <template>
-  <div ref="container" class="HuePicker" @pointerdown="startDragging">
+  <div
+    ref="container"
+    class="HuePicker"
+    @pointerdown="startDragging"
+  >
     <!-- Picker -->
-    <div class="bar" :style="{ left: `${((hue / 360) * 100)}%` }">
-    </div>
+    <div
+      class="bar"
+      :style="{ left: `${((hue / 360) * 100)}%` }"
+    />
   </div>
 </template>
 
 <script setup>
-import { useColor } from '@/composables/useColor'
-
 const props = defineProps({
   color: {
     type: Object,
@@ -34,7 +38,7 @@ function updateHue(e) {
   hue.value = Math.max(0, Math.min(360, Math.round(e.offsetX / width * 360)))
 }
 
-function stopDragging(e) {
+function stopDragging() {
   window.removeEventListener('pointermove', updateHue)
   window.removeEventListener('pointerup', stopDragging)
   container.removeEventListener('pointerleave', stopDragging)

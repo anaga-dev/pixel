@@ -62,20 +62,34 @@ function handleExport() {
   <Modal :title="$t('export-artwork')">
     <div class="ExportMenu">
       <Field :label="$t('title')">
-        <input type="text" v-model="title" />
+        <input
+          v-model="title"
+          type="text"
+        >
       </Field>
       <Field :label="$t('format')">
-        <ButtonSelect :data="formats" v-model="format" />
+        <ButtonSelect
+          v-model="format"
+          :data="formats"
+        />
       </Field>
       <Field :label="$t('scale')">
-        <ButtonSelect :data="scales" v-model="scale" />
+        <ButtonSelect
+          v-model="scale"
+          :data="scales"
+        />
       </Field>
       <Field :label="$t('quality')">
         <Slider v-model="quality" />
       </Field>
-      <Button variant="primary" @click="handleExport">{{
-        $t('export-file')
-      }}</Button>
+      <Button
+        variant="primary"
+        @click="handleExport"
+      >
+        {{
+          $t('export-file')
+        }}
+      </Button>
     </div>
   </Modal>
 </template>

@@ -135,6 +135,8 @@
     "more-options": "More options",
     "show-palette": "Show palette",
     "show-layers": "Show layers",
+    "show-animation": "Show animation panel",
+    "hide-animation": "Hide animation panel",
     "symmetry": {
       "title": "Symmetry",
       "horizontal": "Horizontal",
@@ -150,7 +152,6 @@
       "flip-horizontal": "Flip horizontally",
       "flip-vertical": "Flip vertically",
       "contiguous": "Only contiguous pixels",
-      "shapes": "Shapes (S)",
       "transform": "Transform (V)",
       "selection": "Selection (M)",
       "color-picker": "Color picker (C)",
@@ -176,7 +177,15 @@
       "tiling": "Tiling mode",
       "toggle-palette": "Show/hide palette",
       "toggle-layers": "Show/hide layers",
-      "more-options": "More options"
+      "more-options": "More options",
+      "shapes": {
+        "shapes": "Shapes (S)",
+        "line": "Line",
+        "rectangle": "Rectangle",
+        "ellipse": "Ellipse",
+        "fill": "Fill",
+        "lock-aspect-ratio": "Lock aspect ratio"
+      }
     }
   },
   "error": {

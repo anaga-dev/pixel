@@ -1,4 +1,7 @@
+import { useDocumentStore } from "./document.js"
+
 export const useUIStore = defineStore('ui', () => {
+  const documentStore = useDocumentStore()
   const emitterBox = ref({
     x: 0,
     y: 0,
@@ -6,8 +9,9 @@ export const useUIStore = defineStore('ui', () => {
     height: 0
   })
 
+  const showAnimation = ref(false)
   const showOverlay = ref(null)
-  const showDocumentCreation = ref(false)
+  const showDocumentCreation = computed(() => !documentStore.canvas)
   const showSidePanel = ref(true)
   const showPanel = ref(null)
   const showColorPicker = ref(false)
@@ -21,7 +25,7 @@ export const useUIStore = defineStore('ui', () => {
   const ctrlDown = ref(false)
   const spaceDown = ref(false)
 
-  const toggleOverlay = (el) => {
+  function toggleOverlay(el) {
     if (showOverlay.value !== el) {
       showOverlay.value = el
     } else if (showOverlay.value === el) {
@@ -29,11 +33,11 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  const toggleSidePanel = () => {
+  function toggleSidePanel() {
     showSidePanel.value = !showSidePanel.value
   }
 
-  const togglePanel = (panel) => {
+  function togglePanel(panel) {
     if (showPanel.value !== null) {
       showPanel.value = null
     } else {
@@ -41,29 +45,38 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  const toggleLayers = () => {
+  function toggleLayers() {
     showLayers.value = !showLayers.value
   }
-  const togglePalette = () => {
+  function togglePalette() {
     showPalette.value = !showPalette.value
   }
 
-  const toggleColorPicker = () => {
+  function toggleColorPicker() {
     showColorPicker.value = !showColorPicker.value
   }
 
-  const toggleExportMenu = () => {
+  function toggleExportMenu() {
     showExportMenu.value = !showExportMenu.value
   }
 
-  const showTooltip = (rect, message) => {
+  function showTooltip(rect, message) {
     tooltip.value.rect = rect
     tooltip.value.message = message
+  }
+
+  function toggleAnimation() {
+    showAnimation.value = !showAnimation.value
+  }
+
+  function showDocumentCreationModal() {
+    showDocumentCreation.value = true
   }
 
   return {
     showDocumentCreation,
     emitterBox,
+    showAnimation,
     showOverlay,
     showPanel,
     showSidePanel,
@@ -76,6 +89,7 @@ export const useUIStore = defineStore('ui', () => {
     expandedSidebar,
     ctrlDown,
     spaceDown,
+    toggleAnimation,
     toggleOverlay,
     toggleLayers,
     togglePalette,
@@ -83,11 +97,11 @@ export const useUIStore = defineStore('ui', () => {
     togglePanel,
     toggleColorPicker,
     toggleExportMenu,
-    showTooltip
+    showTooltip,
+    showDocumentCreationModal
   }
 })
 
-/* if (import.meta.hot) {
+if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useUIStore, import.meta.hot))
 }
- */

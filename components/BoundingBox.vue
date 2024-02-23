@@ -2,10 +2,9 @@
 import { storeToRefs } from 'pinia'
 import { useTransformStore } from '@/stores/transform'
 import { useDocumentStore } from '@/stores/document'
-import { useZoomStore } from '@/stores/zoom'
+
 const transformStore = useTransformStore()
 const documentStore = useDocumentStore()
-const zoomStore = useZoomStore()
 
 const box = ref(null)
 const { boundaries } = storeToRefs(transformStore)
@@ -17,14 +16,14 @@ const { getLayerBoundaries } = transformStore
 const updateSizeAndPosition = () => {
   boundaries.value = getLayerBoundaries()
   const { width, height, x, y } = transformStore.boundaries
-  box.value.style.width = `${zoomStore.current * width}px`
-  box.value.style.height = `${zoomStore.current * height}px`
+  box.value.style.width = `${documentStore.zoom.current.value * width}px`
+  box.value.style.height = `${documentStore.zoom.current.value * height}px`
 
   box.value.style.left = `${
-    documentStore.canvasRect.x + x * zoomStore.current
+    documentStore.canvasRect.x + x * documentStore.zoom.current.value
   }px`
   box.value.style.top = `${
-    documentStore.canvasRect.y + y * zoomStore.current
+    documentStore.canvasRect.y + y * documentStore.zoom.current.value
   }px`
 }
 
@@ -38,11 +37,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="BoundingBox" ref="box">
-    <div class="corner left top"></div>
-    <div class="corner right top"></div>
-    <div class="corner right bottom"></div>
-    <div class="corner left bottom"></div>
+  <div
+    ref="box"
+    class="BoundingBox"
+  >
+    <div class="corner left top" />
+    <div class="corner right top" />
+    <div class="corner right bottom" />
+    <div class="corner left bottom" />
   </div>
 </template>
 

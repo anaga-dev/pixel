@@ -1,4 +1,4 @@
-import Endianness from './Endianness';
+import Endianness from './Endianness.js'
 
 /**
  * Binary view.

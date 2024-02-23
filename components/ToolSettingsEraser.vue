@@ -13,10 +13,13 @@
   >
     {{ documentStore.eraser.size }}px
   </Button>
-  <Divider vertical v-if="documentStore.eraser.shape === 'dither'" />
-  <Button
-    variant="dropdown"
+  <Divider
     v-if="documentStore.eraser.shape === 'dither'"
+    vertical
+  />
+  <Button
+    v-if="documentStore.eraser.shape === 'dither'"
+    variant="dropdown"
     label="Eraser dither"
     @click.stop="toggleOverlay('eraser-dither')"
   >

@@ -3,7 +3,7 @@ import Color from '@/pixel/color/Color'
 import ColorMode from '@/pixel/enums/ColorMode'
 import Canvas from '@/pixel/canvas/Canvas'
 import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
-import ImageDataUtils from '@/pixel/canvas/ImageDataUtils'
+import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils'
 import SymmetryAxis from '@/pixel/enums/SymmetryAxis'
 import Tool from '@/pixel/enums/Tool'
 import PencilShape from '@/pixel/enums/PencilShape'
@@ -13,26 +13,32 @@ import PaletteTypes from '@/pixel/constants/PaletteTypes'
 import ImageTypes from '@/pixel/constants/ImageTypes'
 import Interpolation from '@/pixel/math/Interpolation'
 
+import FilePicker from '@/pixel/io/FilePicker'
+
 import GIMP from '@/pixel/formats/palettes/GIMP'
 import ACT from '@/pixel/formats/palettes/ACT'
 import PAL from '@/pixel/formats/palettes/PAL'
-import FilePicker from '@/pixel/io/FilePicker'
 
-import TGA from '@/pixel/formats/images/TGA.js'
-import PCX from '@/pixel/formats/images/PCX.js'
-import BMP from '@/pixel/formats/images/BMP.js'
-import Aseprite from '../pixel/formats/images/Aseprite.js'
+// import TGA from '@/pixel/formats/images/TGA.js'
+// import PCX from '@/pixel/formats/images/PCX.js'
+// import BMP from '@/pixel/formats/images/BMP.js'
+// import Aseprite from '../pixel/formats/images/Aseprite.js'
 import OpenRaster from '@/pixel/formats/images/OpenRaster.js'
 import WebImage from '@/pixel/formats/images/WebImage.js'
 
+import { reverse } from '@/pixel/generators/reverse'
+
 import { usePoint } from '@/composables/usePoint'
+import { useRect } from '@/composables/useRect'
+import { useDrawingRect } from '../composables/useDrawingRect'
+import { useDrawingPointer } from '../composables/useDrawingPointer'
+import { useZoom } from '@/composables/useZoom'
 import { useMagicKeys } from '@vueuse/core'
 import { useLayersStore } from './layers'
 import { useAnimationStore } from './animation'
 import { useHistoryStore } from './history'
 import { useEraserStore } from './eraser'
 import { usePencilStore } from './pencil'
-import { useZoomStore } from './zoom'
 import { useFillStore } from './fill'
 import { usePaletteStore } from './palette'
 import { useGridStore } from './grid'
@@ -60,8 +66,7 @@ export const useDocumentStore = defineStore('document', () => {
   const width = ref(0)
   const height = ref(0)
   const position = usePoint()
-  const zoom = useZoomStore()
-  const zoomPreview = ref(false)
+  const zoom = useZoom()
   const canvas = ref(null)
   const canvasRect = ref(null)
   const tool = ref(Tool.PENCIL)
@@ -93,6 +98,22 @@ export const useDocumentStore = defineStore('document', () => {
   const layers = useLayersStore()
   const palette = usePaletteStore()
   const animation = useAnimationStore()
+  const pointer = usePointer()
+  const drawingRect = useDrawingRect(board, position, zoom, width, height)
+  const drawingPointer = useDrawingPointer(
+    pointer,
+    drawingRect,
+    width,
+    height
+  )
+
+  // TODO: Meter toda esta lógica de redrawing
+  // en una función o algo así y que el watcher
+  // se añada también a otras acciones que
+  // ahora mismo se llaman de forma no reactiva.
+  watch(position.x, () => redrawAll())
+  watch(position.y, () => redrawAll())
+  watch(zoom.current, () => redrawAll())
 
   // Frames that will be shown in the animation preview.
   const frames = ref([])
@@ -101,39 +122,6 @@ export const useDocumentStore = defineStore('document', () => {
   if (!ImageDataUtils.isPrecomputedCircleInitialized()) {
     ImageDataUtils.initializePrecomputedCircle()
   }
-
-  /*
-  const frames = computed(() => {
-    const frames = []
-    for (let frame = 0; frame < animation.total.value; frame++) {
-      const frameCanvas = Canvas.createWithClasses(
-        width.value,
-        height.value,
-        'preview-canvas'
-      )
-      const frameContext = CanvasContext2D.get(frameCanvas)
-      frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
-      for (const layer of layers.list) {
-        if (!layer.visible.value) {
-          continue
-        }
-        frameContext.save()
-        frameContext.globalAlpha = layer.opacity.value
-        frameContext.globalCompositeOperation = layer.blendMode.value
-        layer.context.putImageData(layer.frames[frame], 0, 0)
-        frameContext.drawImage(layer.canvas, 0, 0)
-        frameContext.restore()
-      }
-      // TODO: We should be able to render the selected frame
-      //  in the <canvas> element.
-      frames.push({
-        frame,
-        canvas: frameCanvas
-      })
-    }
-    return frames
-  })
-  */
 
   const layer = computed(() => layers.current)
   const imageData = computed(() => {
@@ -209,7 +197,7 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setFillType(type) {
-    fill.type = type
+    fill.type.value = type
   }
 
   function toggleFillContiguous() {
@@ -217,14 +205,17 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setShapeType(type) {
-    shape.type = type
+    shape.setType(type)
   }
+
   function toggleShapeFill() {
-    shape.filled = !shape.filled
+    shape.toggleFill()
   }
+
   function toggleShapeLockAspectRatio() {
-    shape.lockAspectRatio = !shape.lockAspectRatio
+    shape.toggleLockAspectRatio()
   }
+
   function setSymmetrySettings(axis) {
     if (symmetry.axis === axis) {
       symmetry.axis = null
@@ -281,7 +272,10 @@ export const useDocumentStore = defineStore('document', () => {
   function doTempPaintOperation(callback) {
     ImageDataUtils.clear(drawingImageData.value, [0, 0, 0, 0])
     callback(drawingImageData.value)
-    drawDrawingBuffer()
+    const drawingContext = CanvasContext2D.get(drawingCanvas.value, {
+      willReadFrequently: true
+    })
+    drawingContext.putImageData(drawingImageData.value, 0, 0)
   }
 
   function doLayerPaintOperation(callback) {
@@ -303,6 +297,14 @@ export const useDocumentStore = defineStore('document', () => {
     redrawAll()
   }
 
+  function doPaintOperation(callback, isTemp) {
+    if (isTemp) {
+      doTempPaintOperation(callback)
+    } else {
+      doLayerPaintOperation(callback)
+    }
+  }
+
   function fillColor(color, x, y, mask) {
     // FIXME: Cuando el color es el inicial #000 por algún motivo
     // no pinta bien el alpha.
@@ -319,6 +321,7 @@ export const useDocumentStore = defineStore('document', () => {
     } else {
       doLayerPaintOperation((imageData) =>
         doSymmetry2Operation(
+          // eslint-disable-next-line no-unused-vars
           (imageData, x, y, color, dither) =>
             ImageDataUtils.fill(
               imageData,
@@ -472,55 +475,30 @@ export const useDocumentStore = defineStore('document', () => {
     dither = null,
     mask = null
   ) {
-    if (isTemp) {
-      doTempPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.line(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    } else {
-      doLayerPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.line(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    }
+    doPaintOperation((imageData) =>
+      doSymmetry4Operation(
+        (imageData, x1, y1, x2, y2, color, dither, mask) =>
+          ImageDataUtils.line(
+            imageData,
+            x1,
+            y1,
+            x2,
+            y2,
+            Color.parseAsUint8(color),
+            dither,
+            mask
+          ),
+        imageData,
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        dither,
+        mask
+      ),
+      isTemp
+    )
   }
 
   function rectangle(
@@ -548,57 +526,31 @@ export const useDocumentStore = defineStore('document', () => {
         x2 = x1 + absHeight * Math.sign(width)
       }
     }
-    if (isTemp) {
-      doTempPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.rect(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    } else {
-      doLayerPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.rect(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    }
+    doPaintOperation((imageData) =>
+      doSymmetry4Operation(
+        (imageData, x1, y1, x2, y2, color, dither, mask) =>
+          ImageDataUtils.rect(
+            imageData,
+            x1,
+            y1,
+            x2,
+            y2,
+            Color.parseAsUint8(color),
+            dither,
+            mask,
+            isFilled
+          ),
+        imageData,
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        dither,
+        mask
+      ),
+      isTemp
+    )
   }
 
   function ellipse(
@@ -626,57 +578,31 @@ export const useDocumentStore = defineStore('document', () => {
         x2 = x1 + absHeight * Math.sign(width)
       }
     }
-    if (isTemp) {
-      doTempPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.ellipse(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    } else {
-      doLayerPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.ellipse(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    }
+    doPaintOperation((imageData) =>
+      doSymmetry4Operation(
+        (imageData, x1, y1, x2, y2, color, dither, mask) =>
+          ImageDataUtils.ellipse(
+            imageData,
+            x1,
+            y1,
+            x2,
+            y2,
+            Color.parseAsUint8(color),
+            dither,
+            mask,
+            isFilled
+          ),
+        imageData,
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        dither,
+        mask
+      ),
+      isTemp
+    )
   }
 
   function precomputedCircle(x, y, radius, color, dither = null, mask = null) {
@@ -720,68 +646,153 @@ export const useDocumentStore = defineStore('document', () => {
     })
   }
 
-  function useTool(e, pointer) {
-    // TODO: All behavior can be vastly improved.
-    if (moving.value) {
-      return
-    }
-    modified.value = true
-    if (e.buttons === 4 || keys.current.has(' ')) {
-      if (pointer.pressure > 0) {
-        moveBy(e.movementX, e.movementY)
-      }
-      return
-    }
+  function useToolPencilShadow(e, pointer) {
+    // TODO: Esta función debe ser la responsable de pintar la silueta
+    // de la herramienta que se está utilizando.
+    return
+    /* eslint-disable no-unreachable */
+    const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
+    const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
+    const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
+    const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
-    if (
-      (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) &&
-      pointer.pressure > 0
-    ) {
-      const toolColor =
-        tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
-      const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
+    const mask = selection.getMaskImageData()
+
+    if (pencil.size === 1) {
+      putColor(drawingPointer.current.x.value, drawingPointer.current.y.value, toolColor, dither, mask)
+    } else {
       const sizeHalf = toolSize / 2
-      const isSizeEven = toolSize % 2 === 0
+      const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+      const addSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+      if (shape === PencilShape.ROUND) {
+        precomputedCircle(
+          drawingPointer.current.x.value,
+          drawingPointer.current.y.value,
+          toolSize,
+          toolColor,
+          null,
+          mask
+        )
+      } else if (shape === PencilShape.SQUARE) {
+        rectangle(
+          drawingPointer.current.x.value - subSizeHalf,
+          drawingPointer.current.y.value - subSizeHalf,
+          drawingPointer.current.x.value + addSizeHalf,
+          drawingPointer.current.y.value + addSizeHalf,
+          toolColor,
+          true,
+          true,
+          false,
+          null,
+          mask
+        )
+      } else if (shape === PencilShape.DITHER) {
+        rectangle(
+          drawingPointer.current.x.value - subSizeHalf,
+          drawingPointer.current.y.value - subSizeHalf,
+          drawingPointer.current.x.value + addSizeHalf,
+          drawingPointer.current.y.value + addSizeHalf,
+          toolColor,
+          true,
+          true,
+          false,
+          dither
+        )
+      }
+    }
+  }
 
-      const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
-      const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
+  function useToolPencil(e) {
+    const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
+    const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
+    const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
+    const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
-      const mask = selection.getMaskImageData()
+    const mask = selection.getMaskImageData()
 
-      if (e.type === 'pointerdown') {
-        console.log('Current pointer', pointer.current.x, pointer.current.y)
-
-        if (pencil.size === 1) {
-          putColor(
-            Math.floor(pointer.current.x),
-            Math.floor(pointer.current.y),
+    if (e.type === 'pointerdown') {
+      if (pencil.size === 1) {
+        putColor(drawingPointer.current.x.value, drawingPointer.current.y.value, toolColor, dither, mask)
+      } else {
+        const sizeHalf = toolSize / 2
+        const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+        const addSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+        if (shape === PencilShape.ROUND) {
+          precomputedCircle(
+            drawingPointer.current.x.value,
+            drawingPointer.current.y.value,
+            toolSize,
             toolColor,
-            dither,
+            null,
             mask
           )
-        } else {
-          const ix = isSizeEven
-            ? Math.round(pointer.current.x) - Math.floor(sizeHalf)
-            : Math.floor(pointer.current.x) - Math.floor(sizeHalf)
-          const iy = isSizeEven
-            ? Math.round(pointer.current.y) - Math.floor(sizeHalf)
-            : Math.floor(pointer.current.y) - Math.floor(sizeHalf)
+        } else if (shape === PencilShape.SQUARE) {
+          rectangle(
+            drawingPointer.current.x.value - subSizeHalf,
+            drawingPointer.current.y.value - subSizeHalf,
+            drawingPointer.current.x.value + addSizeHalf,
+            drawingPointer.current.y.value + addSizeHalf,
+            toolColor,
+            false,
+            true,
+            false,
+            null,
+            mask
+          )
+        } else if (shape === PencilShape.DITHER) {
+          rectangle(
+            drawingPointer.current.x.value - subSizeHalf,
+            drawingPointer.current.y.value - subSizeHalf,
+            drawingPointer.current.x.value + addSizeHalf,
+            drawingPointer.current.y.value + addSizeHalf,
+            toolColor,
+            false,
+            true,
+            false,
+            dither
+          )
+        }
+      }
+    } else if (e.type === 'pointermove' && pointer.pressure.value > 0) {
+      if (toolSize === 1) {
+        line(
+          drawingPointer.current.x.value,
+          drawingPointer.current.y.value,
+          drawingPointer.previous.x.value,
+          drawingPointer.previous.y.value,
+          toolColor,
+          false,
+          dither,
+          mask
+        )
+      } else {
+        const sizeHalf = toolSize / 2
 
+        const steps = Math.hypot(
+          drawingPointer.current.x.value - drawingPointer.previous.x.value,
+          drawingPointer.current.y.value - drawingPointer.previous.y.value
+        )
+
+        for (let step = 0; step < steps; step++) {
+          const p = step / steps
+          const x = Interpolation.linear(
+            p,
+            drawingPointer.previous.x.value,
+            drawingPointer.current.x.value
+          )
+          const y = Interpolation.linear(
+            p,
+            drawingPointer.previous.y.value,
+            drawingPointer.current.y.value
+          )
           if (shape === PencilShape.ROUND) {
-            precomputedCircle(
-              pointer.current.x,
-              pointer.current.y,
-              toolSize,
-              toolColor,
-              null,
-              mask
-            )
+            precomputedCircle(x, y, toolSize, toolColor, null, mask)
           } else if (shape === PencilShape.SQUARE) {
             rectangle(
-              ix,
-              iy,
-              ix + toolSize - 1,
-              iy + toolSize - 1,
+              x - sizeHalf,
+              y - sizeHalf,
+              x + sizeHalf,
+              y + sizeHalf,
               toolColor,
               false,
               true,
@@ -791,202 +802,187 @@ export const useDocumentStore = defineStore('document', () => {
             )
           } else if (shape === PencilShape.DITHER) {
             rectangle(
-              ix,
-              iy,
-              ix + toolSize - 1,
-              iy + toolSize - 1,
+              x - sizeHalf,
+              y - sizeHalf,
+              x + sizeHalf,
+              y + sizeHalf,
               toolColor,
               false,
               true,
               false,
-              dither
+              dither,
+              mask
             )
           }
         }
-      } else if (e.type === 'pointermove') {
-        if (toolSize === 1) {
-          line(
-            Math.floor(pointer.current.x),
-            Math.floor(pointer.current.y),
-            Math.floor(pointer.previous.x),
-            Math.floor(pointer.previous.y),
-            toolColor,
-            false,
-            dither,
-            mask
-          )
-        } else {
-          const steps = Math.hypot(
-            Math.round(pointer.current.x) - Math.round(pointer.previous.x),
-            Math.round(pointer.current.y) - Math.round(pointer.previous.y)
-          )
+      }
+    }
+  }
 
-          for (let step = 0; step < steps; step++) {
-            const p = step / steps
-            const x = Interpolation.linear(
-              p,
-              Math.round(pointer.previous.x),
-              Math.round(pointer.current.x)
-            )
-            const y = Interpolation.linear(
-              p,
-              Math.round(pointer.previous.y),
-              Math.round(pointer.current.y)
-            )
-            if (shape === PencilShape.ROUND) {
-              precomputedCircle(x, y, toolSize, toolColor, null, mask)
-            } else if (shape === PencilShape.SQUARE) {
-              rectangle(
-                x - sizeHalf,
-                y - sizeHalf,
-                x + sizeHalf - 1,
-                y + sizeHalf - 1,
-                toolColor,
-                false,
-                true,
-                false,
-                null,
-                mask
-              )
-            } else if (shape === PencilShape.DITHER) {
-              rectangle(
-                x - sizeHalf,
-                y - sizeHalf,
-                x + sizeHalf - 1,
-                y + sizeHalf - 1,
-                toolColor,
-                false,
-                true,
-                false,
-                dither,
-                mask
-              )
-            }
-          }
-        }
-      }
-    } else if (tool.value === Tool.FILL && pointer.pressure > 0) {
-      if (fill.type === FillType.ERASE) {
-        fillColor(
-          'rgba(0,0,0,0)',
-          pointer.current.x,
-          pointer.current.y,
-          selection.getMaskImageData()
-        )
-      } else if (fill.type === FillType.FILL) {
-        fillColor(
+  function useToolFill(e) {
+    if (fill.type === FillType.ERASE) {
+      fillColor(
+        'rgba(0,0,0,0)',
+        drawingPointer.current.x.value,
+        drawingPointer.current.y.value,
+        selection.getMaskImageData()
+      )
+    } else if (fill.type === FillType.FILL) {
+      fillColor(
+        color.value,
+        drawingPointer.current.x.value,
+        drawingPointer.current.y.value,
+        selection.getMaskImageData()
+      )
+    }
+  }
+
+  function useToolShape(e) {
+    if (shape.type === ShapeType.LINE) {
+      if (
+        e.type === 'pointerdown' ||
+        (e.type === 'pointermove' && pointer.pressure.value > 0)
+      ) {
+        line(
+          drawingPointer.start.x.value,
+          drawingPointer.start.y.value,
+          drawingPointer.current.x.value,
+          drawingPointer.current.y.value,
           color.value,
-          pointer.current.x,
-          pointer.current.y,
+          'temp',
+          null,
+          selection.getMaskImageData()
+        )
+      } else if (e.type === 'pointerup') {
+        line(
+          drawingPointer.start.x.value,
+          drawingPointer.start.y.value,
+          drawingPointer.end.x.value,
+          drawingPointer.end.y.value,
+          color.value,
+          null,
+          null,
           selection.getMaskImageData()
         )
       }
+    } else if (shape.type === ShapeType.RECTANGLE) {
+      if (
+        e.type === 'pointerdown' ||
+        (e.type === 'pointermove' && pointer.pressure.value > 0)
+      ) {
+        rectangle(
+          drawingPointer.start.x.value,
+          drawingPointer.start.y.value,
+          drawingPointer.current.x.value,
+          drawingPointer.current.y.value,
+          color.value,
+          'temp',
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      } else if (e.type === 'pointerup') {
+        rectangle(
+          drawingPointer.start.x.value,
+          drawingPointer.start.y.value,
+          drawingPointer.end.x.value,
+          drawingPointer.end.y.value,
+          color.value,
+          null,
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      }
+    } else if (shape.type === ShapeType.ELLIPSE) {
+      if (
+        e.type === 'pointerdown' ||
+        (e.type === 'pointermove' && pointer.pressure.value > 0)
+      ) {
+        ellipse(
+          drawingPointer.start.x.value,
+          drawingPointer.start.y.value,
+          drawingPointer.current.x.value,
+          drawingPointer.current.y.value,
+          color.value,
+          'temp',
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      } else if (e.type === 'pointerup') {
+        ellipse(
+          drawingPointer.start.x.value,
+          drawingPointer.start.y.value,
+          drawingPointer.end.x.value,
+          drawingPointer.end.y.value,
+          color.value,
+          null,
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      }
+    }
+  }
+
+  function useToolEyedropper(e, pointer) {
+    eyeDropper(drawingPointer.current.x.value, drawingPointer.current.y.value)
+  }
+
+  function useToolTransform(e, pointer) {
+    // TODO: Esto es MUY mejorable.
+    const x = pointer.relative.x
+    const y = pointer.relative.y
+    transformation(x, y)
+  }
+
+  function useTool(e) {
+    if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
+      useToolPencilShadow(e, pointer)
+    }
+
+    // We need to check if we're moving
+    // the canvas.
+    if (moving.value || pointer.buttons.value === 4) {
+      moveBy(
+        pointer.movement.x.value,
+        pointer.movement.y.value
+      )
+      return
+    }
+
+    // We need to set the modified flag to true
+    // to track changes.
+    modified.value = true
+
+    // We need to check if the current layer is visible.
+    // If it's not visible we should not allow any drawing.
+    if (layers.current.visible.value === false) {
+      return
+    }
+
+    console.log(e.type)
+
+    if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
+      useToolPencil(e)
+    } else if (tool.value === Tool.FILL) {
+      useToolFill(e)
     } else if (tool.value === Tool.SHAPE) {
-      if (e.type === 'pointerdown') {
-        saveCopyBuffer()
-      }
-      if (shape.type === ShapeType.LINE) {
-        if (
-          e.type === 'pointerdown' ||
-          (e.type === 'pointermove' && pointer.pressure > 0)
-        ) {
-          line(
-            Math.floor(pointer.start.x),
-            Math.floor(pointer.start.y),
-            Math.floor(pointer.current.x),
-            Math.floor(pointer.current.y),
-            color.value,
-            'temp',
-            null,
-            selection.getMaskImageData()
-          )
-        } else if (e.type === 'pointerup') {
-          line(
-            Math.floor(pointer.start.x),
-            Math.floor(pointer.start.y),
-            Math.floor(pointer.end.x),
-            Math.floor(pointer.end.y),
-            color.value,
-            null,
-            null,
-            selection.getMaskImageData()
-          )
-        }
-      } else if (shape.type === ShapeType.RECTANGLE) {
-        if (
-          e.type === 'pointerdown' ||
-          (e.type === 'pointermove' && pointer.pressure > 0)
-        ) {
-          rectangle(
-            Math.floor(pointer.start.x),
-            Math.floor(pointer.start.y),
-            Math.floor(pointer.current.x),
-            Math.floor(pointer.current.y),
-            color.value,
-            'temp',
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        } else if (e.type === 'pointerup') {
-          rectangle(
-            Math.floor(pointer.start.x),
-            Math.floor(pointer.start.y),
-            Math.floor(pointer.end.x),
-            Math.floor(pointer.end.y),
-            color.value,
-            null,
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        }
-      } else if (shape.type === ShapeType.ELLIPSE) {
-        if (
-          e.type === 'pointerdown' ||
-          (e.type === 'pointermove' && pointer.pressure > 0)
-        ) {
-          ellipse(
-            Math.floor(pointer.start.x),
-            Math.floor(pointer.start.y),
-            Math.floor(pointer.current.x),
-            Math.floor(pointer.current.y),
-            color.value,
-            'temp',
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        } else if (e.type === 'pointerup') {
-          ellipse(
-            Math.floor(pointer.start.x),
-            Math.floor(pointer.start.y),
-            Math.floor(pointer.end.x),
-            Math.floor(pointer.end.y),
-            color.value,
-            null,
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        }
-      }
-    } else if (tool.value === Tool.DROPPER && pointer.pressure > 0) {
-      eyeDropper(pointer.current.x, pointer.current.y)
-    } else if (tool.value === Tool.TRANSFORM && pointer.pressure > 0) {
-      // TODO: Esto es MUY mejorable.
-      const x = pointer.relative.x
-      const y = pointer.relative.y
-      transformation(x, y)
+      useToolShape(e)
+    } else if (tool.value === Tool.EYEDROPPER) {
+      useToolEyedropper(e)
+    } else if (tool.value === Tool.TRANSFORM) {
+      useToolTransform(e)
     }
     /*
     else if (tool.value === Tool.SELECT && pointer.pressure > 0) {
-      const x = pointer.current.x
-      const y = pointer.current.y
+      const x = drawingPointer.current.x.value
+      const y = drawingPointer.current.y.value
       ImageDataUtils.putColor(
         selection.getMaskImageData(),
         x,
@@ -995,67 +991,10 @@ export const useDocumentStore = defineStore('document', () => {
       )
     }
     */
+   redrawAll()
   }
 
-  /**
-   * Copies main <canvas> content to a secondary <canvas> (copyCanvas) used as a copy.
-   */
-  function saveCopyBuffer() {
-    Canvas.copy(copyCanvas.value, canvas.value)
-    ImageDataUtils.copyFromCanvas(copyImageData.value, canvas.value)
-  }
-
-  /**
-   * Draws the secondary canvas (copyCanvas) content into the main canvas.
-   */
-  function restoreCopyBuffer() {
-    Canvas.copy(canvas.value, copyCanvas.value)
-    ImageDataUtils.copyToCanvas(copyImageData.value, canvas.value)
-  }
-
-  /**
-   * Draws the drawing <canvas> (drawingCanvas) content into the main canvas.
-   */
-  function drawDrawingBuffer() {
-    requestAnimationFrame(() => {
-      restoreCopyBuffer()
-      const context = CanvasContext2D.get(canvas.value)
-      const drawingContext = CanvasContext2D.get(drawingCanvas.value)
-      drawingContext.putImageData(drawingImageData.value, 0, 0)
-      context.drawImage(drawingCanvas.value, 0, 0)
-    })
-  }
-
-  function drawGrid() {
-    const context = CanvasContext2D.get(canvas.value)
-    context.beginPath()
-    context.lineWidth = 1 / zoom // Ancho de línea en función del zoom
-    context.strokeStyle = '#ccc'
-
-    // Dibujar líneas horizontales
-    for (let y = 0; y <= context.canvas.height; y++) {
-      const yPos = y * zoom
-      context.moveTo(0, yPos)
-      context.lineTo(context.canvas.width, yPos)
-    }
-
-    // Dibujar líneas verticales
-    for (let x = 0; x <= context.canvas.width; x++) {
-      const xPos = x * zoom
-      context.moveTo(xPos, 0)
-      context.lineTo(xPos, context.canvas.height)
-    }
-
-    context.stroke()
-  }
-
-  function* reverse(list) {
-    for (let index = list.length - 1; index >= 0; --index) {
-      yield list[index]
-    }
-  }
-
-  function drawTransparentBackground() {
+  function redrawTransparentBackground() {
     const context = CanvasContext2D.get(canvas.value)
     const tileSize = 8 // Adjust the size of each tile as needed
     const numTilesX = Math.ceil(context.canvas.width / tileSize)
@@ -1067,6 +1006,7 @@ export const useDocumentStore = defineStore('document', () => {
         const tileX = i * tileSize
         const tileY = j * tileSize
 
+        // Meter esto en algún lugar que sea configurable.
         context.fillStyle = isEvenTile ? '#cccccc' : '#999999'
         context.fillRect(tileX, tileY, tileSize, tileSize)
       }
@@ -1077,7 +1017,7 @@ export const useDocumentStore = defineStore('document', () => {
     const context = CanvasContext2D.get(canvas.value)
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     const frame = animation.current
-    drawTransparentBackground()
+    redrawTransparentBackground()
     for (const layer of reverse(layers.list)) {
       if (!layer.visible.value) {
         continue
@@ -1095,13 +1035,6 @@ export const useDocumentStore = defineStore('document', () => {
     const context = CanvasContext2D.get(previewCanvas.value)
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     context.drawImage(canvas.value, 0, 0)
-  }
-
-  function redrawAll() {
-    redraw()
-    redrawPreview()
-    redrawFrames()
-    drawGrid()
   }
 
   /**
@@ -1122,6 +1055,71 @@ export const useDocumentStore = defineStore('document', () => {
         context.restore()
       }
     }
+  }
+
+  /**
+   * Redraws everything.
+   */
+  function redrawAll() {
+    resizeBoard()
+    redraw()
+    redrawPreview()
+    redrawFrames()
+
+    if (!board.value) {
+      console.log('Board not set')
+      return
+    }
+    const context = CanvasContext2D.get(board.value, '2d')
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+    context.save()
+    context.translate(context.canvas.width / 2, context.canvas.height / 2)
+    context.scale(zoom.current.value, zoom.current.value)
+    context.translate(position.x.value, position.y.value)
+    context.drawImage(canvas.value, 0, 0)
+    context.drawImage(drawingCanvas.value, 0, 0)
+    context.restore()
+
+    // Draw the grid and other similar elements that are
+    // drawn OVER the pixel artwork.
+    context.save()
+    context.translate(context.canvas.width / 2, context.canvas.height / 2)
+    context.translate(position.x.value * zoom.current.value, position.y.value *zoom.current.value)
+
+    // TODO: Convertir esto en una constante o en un parámetro
+    // configurable.
+    if (zoom.current.value > 12) {
+      context.beginPath()
+      for (let x = 0; x < width.value; x++) {
+        context.moveTo(x * zoom.current.value, 0)
+        context.lineTo(x * zoom.current.value, height.value * zoom.current.value)
+      }
+      for (let y = 0; y < height.value; y++) {
+        context.moveTo(0, y * zoom.current.value)
+        context.lineTo(width.value * zoom.current.value, y * zoom.current.value)
+      }
+      // TODO: Meter esto en algún lugar donde se pueda configurar.
+      context.strokeStyle = '#333'
+      context.stroke()
+    }
+
+    context.restore()
+
+    context.strokeStyle = '#f0f'
+    context.strokeRect(
+      drawingRect.x.value,
+      drawingRect.y.value,
+      drawingRect.width.value,
+      drawingRect.height.value
+    )
+
+    context.strokeStyle = '#0ff'
+    context.fillRect(
+      drawingPointer.current.x.value / width.value * drawingRect.width.value + drawingRect.x.value,
+      drawingPointer.current.y.value / height.value * drawingRect.height.value + drawingRect.y.value,
+      drawingRect.width.value / width.value,
+      drawingRect.height.value / height.value
+    )
   }
 
   /**
@@ -1160,6 +1158,7 @@ export const useDocumentStore = defineStore('document', () => {
 
     // Selection
     selection.init(canvas.value, width.value, height.value)
+    redrawAll()
   }
 
   function createFromDocument(document) {
@@ -1201,6 +1200,8 @@ export const useDocumentStore = defineStore('document', () => {
       id: id,
       className: 'preview-canvas'
     })
+    position.x.value = -width.value / 2
+    position.y.value = -height.value / 2
     frames.value.push({
       id,
       canvas
@@ -1240,6 +1241,7 @@ export const useDocumentStore = defineStore('document', () => {
     redrawAll()
   }
 
+  /*
   function mergeDown() {
     // TODO: We need to get all layers below the selected one and blend them together
     // in a single layer.
@@ -1260,6 +1262,7 @@ export const useDocumentStore = defineStore('document', () => {
     // TODO: We have to get all the layers and blend them into a single one
     // using only visible layers.
   }
+  */
 
   function setLayer(layer) {
     layers.current = layer
@@ -1375,12 +1378,18 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function moveBy(x, y) {
-    position.add(x / zoom.current, y / zoom.current)
+    position.add(x / zoom.current.value, y / zoom.current.value)
   }
 
   /***************************************************************************
    * Color
    ***************************************************************************/
+
+  /**
+   * Sets a new color.
+   *
+   * @param {string} newColor CSS Color string
+   */
   function setColor(newColor) {
     history.add({
       type: 'setColor',
@@ -1395,6 +1404,11 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  /**
+   * Sets the current color mode.
+   *
+   * @param {ColorMode} newColorMode
+   */
   function setColorMode(newColorMode) {
     colorMode.value = newColorMode
   }
@@ -1553,11 +1567,13 @@ export const useDocumentStore = defineStore('document', () => {
     for (const layer of layers) {
       if (!layer.isStatic) {
         const [removedFrame] = layer.frames.splice(frame, 1)
+        return removedFrame
       }
     }
     const [removedFrame] = frames.value.splice(frame, 1)
     animation.remove()
     redrawAll()
+    return removedFrame
   }
 
   /**
@@ -1667,6 +1683,8 @@ export const useDocumentStore = defineStore('document', () => {
     }
     */
     if (!document) {
+      // TODO: We should show an error.
+      // showError('Invalid file')
     }
     createFromDocument(document)
   }
@@ -1747,10 +1765,10 @@ export const useDocumentStore = defineStore('document', () => {
         palette.addAt(actionToUndo.payload.index, actionToUndo.payload.color)
         break
       case 'setColor':
-        color = actionToUndo.payload.previousColor
+        color.value = actionToUndo.payload.previousColor
         break
       case 'setTool':
-        tool = actionToUndo.payload.previousTool
+        tool.value = actionToUndo.payload.previousTool
         break
       case 'paintOperation':
         ImageDataUtils.copy(
@@ -1794,10 +1812,10 @@ export const useDocumentStore = defineStore('document', () => {
         palette.removeAt(actionToRedo.payload.index)
         break
       case 'setColor':
-        color = actionToRedo.payload.color
+        color.value = actionToRedo.payload.color
         break
       case 'setTool':
-        tool = actionToRedo.payload.tool
+        tool.value = actionToRedo.payload.tool
         break
       case 'paintOperation':
         ImageDataUtils.copy(
@@ -1827,12 +1845,19 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  function resizeBoard() {
+    if (!board.value) return
+    Canvas.resize(board.value)
+  }
+
   function setBoard(newBoard) {
     board.value = newBoard
+    pointer.listen(useTool, board.value)
   }
 
   function unsetBoard() {
     board.value = null
+    pointer.unlisten()
   }
 
   async function getFile() {
@@ -1895,7 +1920,6 @@ export const useDocumentStore = defineStore('document', () => {
     transform,
     width,
     zoom,
-    zoomPreview,
     addFrame,
     addLayer,
     addPaletteColor,
@@ -1914,8 +1938,8 @@ export const useDocumentStore = defineStore('document', () => {
     goToNextFrame,
     goToPreviousFrame,
     loadPalette,
-    mergeBy,
-    mergeDown,
+    // mergeBy,
+    // mergeDown,
     moveAndZoom,
     moveBy,
     moveLayerDown,
@@ -1930,6 +1954,7 @@ export const useDocumentStore = defineStore('document', () => {
     removeFrame,
     removeLayer,
     removePaletteColor,
+    resizeBoard,
     saveFileAs,
     savePaletteAs,
     setBoard,

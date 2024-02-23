@@ -1,5 +1,6 @@
 <script setup>
 import { useNotificationStore } from '@/stores/notification'
+
 const notificationStore = useNotificationStore()
 const { dismissNotification } = notificationStore
 const { notifications, systemNotification } = storeToRefs(notificationStore)

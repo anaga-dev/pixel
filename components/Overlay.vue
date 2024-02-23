@@ -1,6 +1,5 @@
 <template>
-  <div class="Overlay">
-  </div>
+  <div class="Overlay" />
 </template>
 
 <style scoped>

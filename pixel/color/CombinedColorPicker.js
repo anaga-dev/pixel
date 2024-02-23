@@ -1,4 +1,4 @@
-import Canvas from '../canvas/Canvas.js'
+import Canvas from '@/pixel/canvas/Canvas.js'
 
 /**
  * Draws a color picker on an offscreen canvas.

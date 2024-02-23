@@ -1,8 +1,9 @@
 <template>
   <div
+    ref="preview"
     class="Frame"
     :class="{ active: props.active }"
-    ref="preview">
+  >
     <!-- Inyectamos el fotograma -->
   </div>
 </template>

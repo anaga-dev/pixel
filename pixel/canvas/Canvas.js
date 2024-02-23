@@ -52,6 +52,15 @@ export function createOffscreen(width, height) {
   return create(width, height)
 }
 
+/**
+ * Creates a new <canvas> element with the specified width,
+ * height and properties.
+ *
+ * @param {number} width
+ * @param {number} height
+ * @param {CreateWithProps} [props]
+ * @returns {HTMLCanvasElement}
+ */
 export function createWith(width, height, props) {
   const canvas = create(width, height)
   if (props) {
@@ -91,31 +100,9 @@ export function createOrGetWithClasses(canvas, width, height, ...classNames) {
   if (!canvas) {
     return createWithClasses(width, height, ...classNames)
   }
-  resizeTo(canvas, width, height)
+  resizeTo(canvas, Math.floor(width), Math.floor(height))
   classNames.forEach((className) => canvas.classList.add(className))
   return canvas
-}
-
-/**
- * Resizes the canvas to match the size of its ClientRect
- *
- * @param {HTMLCanvasElement} canvas
- * @param {number} multiplier
- * @returns {boolean}
- */
-export function resize(canvas, multiplier = 1) {
-  let resized = false
-  const expectedWidth = Math.floor(canvas.clientWidth * multiplier)
-  if (canvas.width !== expectedWidth) {
-    canvas.width = expectedWidth
-    resized = true
-  }
-  const expectedHeight = Math.floor(canvas.clientHeight * multiplier)
-  if (canvas.height !== expectedHeight) {
-    canvas.height = expectedHeight
-    resized = true
-  }
-  return resized
 }
 
 /**
@@ -128,17 +115,30 @@ export function resize(canvas, multiplier = 1) {
  */
 export function resizeTo(canvas, width, height) {
   let resized = false
-  const expectedWidth = Math.floor(width)
-  if (canvas.width !== expectedWidth) {
-    canvas.width = expectedWidth
+  if (canvas.width !== width) {
+    canvas.width = width
     resized = true
   }
-  const expectedHeight = Math.floor(height)
-  if (canvas.height !== expectedHeight) {
-    canvas.height = expectedHeight
+  if (canvas.height !== height) {
+    canvas.height = height
     resized = true
   }
   return resized
+}
+
+/**
+ * Resizes the canvas to match the size of its ClientRect
+ *
+ * @param {HTMLCanvasElement} canvas
+ * @param {number} multiplier
+ * @returns {boolean}
+ */
+export function resize(canvas, multiplier = 1) {
+  return resizeTo(
+    canvas,
+    Math.floor(canvas.clientWidth * multiplier),
+    Math.floor(canvas.clientHeight * multiplier)
+  )
 }
 
 /**
@@ -167,6 +167,16 @@ export function copy(target, source) {
 }
 
 /**
+ * Clones a canvas.
+ *
+ * @param {HTMLCanvasElement|OffscreenCanvas} source
+ * @returns {HTMLCanvasElement|OffscreenCanvas}
+ */
+export function clone(source) {
+  return copy(create(source.width, source.height), source)
+}
+
+/**
  * Creates a new canvas with the specified width and height
  *
  * @param {HTMLCanvasElement} canvas
@@ -189,5 +199,6 @@ export default {
   resizeTo,
   duplicate,
   copy,
+  clone,
   createBlob
 }

@@ -1,3 +1,5 @@
+import Canvas from './Canvas.js'
+
 /**
  * Returns a canvas context.
  *
@@ -27,7 +29,22 @@ export function create(width, height, contextId, contextAttributes) {
   return get(Canvas.create(width, height), contextId, contextAttributes)
 }
 
+/**
+ * Creates a canvas context (if OffscreenCanvas is available, it will be an
+ * offscreen canvas).
+ *
+ * @param {number} width
+ * @param {number} height
+ * @param {'2d'|'webgl'|'webgl2'|'experimental-webgl'|'experimental-webgl2'} contextId
+ * @param {CanvasRenderingContext2DSettings|WebGLContextAttributes} contextAttributes
+ * @returns {CanvasRenderingContext2D|WebGLRenderingContext|WebGL2RenderingContext|OffscreenCanvasRenderingContext2D|OffscreenCanvasRenderingContextWebGL|OffscreenCanvasRenderingContextWebGL2}
+ */
+export function createOffscreen(width, height, contextId, contextAttributes) {
+  return get(Canvas.createOffscreen(width, height), contextId, contextAttributes)
+}
+
 export default {
   get,
-  create
+  create,
+  createOffscreen,
 }

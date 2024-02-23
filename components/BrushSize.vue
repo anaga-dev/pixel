@@ -1,16 +1,3 @@
-<template>
-  <Dropdown class="BrushSize">
-    <Field :label="$t('studio.brush-size')" for="brush-size">
-      <Slider
-        id="brush-size"
-        :min="1"
-        :max="32"
-        :modelValue="size"
-        @update:modelValue="onUpdated" />
-    </Field>
-  </Dropdown>
-</template>
-
 <script setup>
 const props = defineProps({
   size: {
@@ -27,6 +14,23 @@ function onUpdated(payload) {
   emit('update', payload)
 }
 </script>
+
+<template>
+  <Dropdown class="BrushSize">
+    <Field
+      :label="$t('studio.brush-size')"
+      for="brush-size"
+    >
+      <Slider
+        id="brush-size"
+        :min="1"
+        :max="32"
+        :model-value="props.size"
+        @update:model-value="onUpdated"
+      />
+    </Field>
+  </Dropdown>
+</template>
 
 <style scoped>
 .BrushSize {

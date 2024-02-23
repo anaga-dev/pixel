@@ -13,8 +13,8 @@ const props = defineProps({
 
 <template>
   <div class="Field">
-    <label :for="for">{{ label }}</label>
-    <slot></slot>
+    <label :for="props.for">{{ props.label }}</label>
+    <slot />
   </div>
 </template>
 

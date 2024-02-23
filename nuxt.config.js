@@ -65,6 +65,7 @@ export default defineNuxtConfig({
     '~/plugins/directives.client',
   ],
   modules: [
+    // '@nuxtjs/eslint-module',
     '@nuxt/devtools',
     '@vueuse/nuxt',
     '@pinia/nuxt',
@@ -72,6 +73,9 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/image'
   ],
+  eslint: {
+    lintOnStart: false,
+  },
   i18n: {
     locales: [
       { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },

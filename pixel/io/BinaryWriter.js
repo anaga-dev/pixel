@@ -1,6 +1,5 @@
-import BinaryView from './BinaryView'
-import BinaryTypeData from './BinaryTypeData'
-import Endianness from './Endianness'
+import BinaryView from './BinaryView.js'
+import BinaryTypeData from './BinaryTypeData.js'
 
 export default class BinaryWriter extends BinaryView {
   /**
@@ -63,7 +62,8 @@ export default class BinaryWriter extends BinaryView {
     }
     const encoder = new TextEncoder(encoding)
     const buffer = encoder.encode(value)
-    return this.writeBuffer(buffer, bytes)
+    this.writeBuffer(buffer, bytes)
+    this.write(end)
   }
 
   /**
@@ -74,6 +74,6 @@ export default class BinaryWriter extends BinaryView {
    * @param {Endianness} [endianness]
    */
   writeType(type, value, endianness) {
-
+    type; value; endianness;
   }
 }

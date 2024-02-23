@@ -1,27 +1,8 @@
-<template>
-  <Transition appear name="slide">
-    <section class="Panel" :class="{ expanded: expanded }">
-      <header>
-        <Button variant="ghost" @click="emit('toggle')"
-          ><Icon :i="icon"
-        /></Button>
-        <h2>{{ title }}</h2>
-        <div class="actions">
-          <slot name="actions"></slot>
-        </div>
-      </header>
-      <div v-if="expanded" class="content">
-        <slot></slot>
-      </div>
-    </section>
-  </Transition>
-</template>
-
 <script setup>
 const props = defineProps({
   title: {
     type: String,
-    required: false
+    default: ''
   },
   expanded: {
     type: Boolean
@@ -34,6 +15,37 @@ const icon = computed(() => {
 
 const emit = defineEmits(['toggle'])
 </script>
+
+<template>
+  <Transition
+    appear
+    name="slide"
+  >
+    <section
+      class="Panel"
+      :class="{ expanded: expanded }"
+    >
+      <header>
+        <Button
+          variant="ghost"
+          @click="emit('toggle')"
+        >
+          <Icon :i="icon" />
+        </Button>
+        <h2>{{ title }}</h2>
+        <div class="actions">
+          <slot name="actions" />
+        </div>
+      </header>
+      <div
+        v-if="expanded"
+        class="content"
+      >
+        <slot />
+      </div>
+    </section>
+  </Transition>
+</template>
 
 <style scoped>
 .Panel {

@@ -16,8 +16,9 @@ const emit = defineEmits(['update:modelValue'])
 <template>
   <div class="ButtonSelect">
     <button
-      v-for="item in data"
-      :class="{ selected: modelValue === item.value }"
+      v-for="item of props.data"
+      :key="item.value"
+      :class="{ selected: props.modelValue === item.value }"
       @click.stop="emit('update:modelValue', item.value)"
     >
       {{ item.label }}
