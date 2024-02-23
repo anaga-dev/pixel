@@ -3,7 +3,7 @@ import Color from '@/pixel/color/Color'
 import ColorMode from '@/pixel/enums/ColorMode'
 import Canvas from '@/pixel/canvas/Canvas'
 import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
-import ImageDataUtils from '@/pixel/canvas/ImageDataUtils'
+import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils'
 import SymmetryAxis from '@/pixel/enums/SymmetryAxis'
 import Tool from '@/pixel/enums/Tool'
 import PencilShape from '@/pixel/enums/PencilShape'
@@ -13,10 +13,11 @@ import PaletteTypes from '@/pixel/constants/PaletteTypes'
 import ImageTypes from '@/pixel/constants/ImageTypes'
 import Interpolation from '@/pixel/math/Interpolation'
 
+import FilePicker from '@/pixel/io/FilePicker'
+
 import GIMP from '@/pixel/formats/palettes/GIMP'
 import ACT from '@/pixel/formats/palettes/ACT'
 import PAL from '@/pixel/formats/palettes/PAL'
-import FilePicker from '@/pixel/io/FilePicker'
 
 import TGA from '@/pixel/formats/images/TGA.js'
 import PCX from '@/pixel/formats/images/PCX.js'
@@ -25,14 +26,16 @@ import Aseprite from '../pixel/formats/images/Aseprite.js'
 import OpenRaster from '@/pixel/formats/images/OpenRaster.js'
 import WebImage from '@/pixel/formats/images/WebImage.js'
 
+import { reverse } from '@/pixel/generators/reverse'
+
 import { usePoint } from '@/composables/usePoint'
+import { useZoom } from '@/composables/useZoom'
 import { useMagicKeys } from '@vueuse/core'
 import { useLayersStore } from './layers'
 import { useAnimationStore } from './animation'
 import { useHistoryStore } from './history'
 import { useEraserStore } from './eraser'
 import { usePencilStore } from './pencil'
-import { useZoomStore } from './zoom'
 import { useFillStore } from './fill'
 import { usePaletteStore } from './palette'
 import { useGridStore } from './grid'
@@ -60,8 +63,7 @@ export const useDocumentStore = defineStore('document', () => {
   const width = ref(0)
   const height = ref(0)
   const position = usePoint()
-  const zoom = useZoomStore()
-  const zoomPreview = ref(false)
+  const zoom = useZoom()
   const canvas = ref(null)
   const canvasRect = ref(null)
   const tool = ref(Tool.PENCIL)
@@ -1031,12 +1033,6 @@ export const useDocumentStore = defineStore('document', () => {
     context.stroke()
   }
 
-  function* reverse(list) {
-    for (let index = list.length - 1; index >= 0; --index) {
-      yield list[index]
-    }
-  }
-
   function redraw() {
     const context = CanvasContext2D.get(canvas.value)
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
@@ -1340,12 +1336,18 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function moveBy(x, y) {
-    position.add(x / zoom.current, y / zoom.current)
+    position.add(x / zoom.current.value, y / zoom.current.value)
   }
 
   /***************************************************************************
    * Color
    ***************************************************************************/
+
+  /**
+   * Sets a new color.
+   *
+   * @param {string} newColor CSS Color string
+   */
   function setColor(newColor) {
     history.add({
       type: 'setColor',
@@ -1360,6 +1362,11 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  /**
+   * Sets the current color mode.
+   *
+   * @param {ColorMode} newColorMode
+   */
   function setColorMode(newColorMode) {
     colorMode.value = newColorMode
   }
@@ -1856,7 +1863,6 @@ export const useDocumentStore = defineStore('document', () => {
     transform,
     width,
     zoom,
-    zoomPreview,
     addFrame,
     addLayer,
     addPaletteColor,

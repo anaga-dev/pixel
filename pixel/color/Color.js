@@ -234,6 +234,16 @@ export function saturation(color) {
 }
 
 /**
+ * Returns the color from a Uint8Array.
+ *
+ * @param {Uint8Array} array
+ * @returns {Color}
+ */
+export function fromUint8Array([r, g, b, a]) {
+  return create(r / BYTE, g / BYTE, b / BYTE, a / BYTE)
+}
+
+/**
  *
  * @param {Color} color
  * @returns {Uint8Array}
@@ -243,9 +253,9 @@ export function asUint8([r, g, b, a]) {
 }
 
 // We create this offscreen canvas and context to parse
-// colors to Uint8Arrays.
-const offscreenCanvas = new OffscreenCanvas(1,1)
-const offscreenContext = offscreenCanvas.getContext('2d')
+// colors to Uint8Arrays. This are lazy initialized.
+let offscreenCanvas = null
+let offscreenContext = null
 
 /**
  * Parses a CSS string color and returns a Uint8Array
@@ -255,6 +265,10 @@ const offscreenContext = offscreenCanvas.getContext('2d')
  * @returns {Uint8ClampedArray}
  */
 export function parseAsUint8(color) {
+  if (!offscreenCanvas) {
+    offscreenCanvas = new OffscreenCanvas(1, 1)
+    offscreenContext = offscreenCanvas.getContext('2d')
+  }
   offscreenContext.clearRect(0, 0, 1, 1)
   offscreenContext.fillStyle = color
   offscreenContext.fillRect(0, 0, 1, 1)
@@ -331,6 +345,7 @@ export default {
   saturationHSV,
   saturation,
   asUint8,
+  fromUint8Array,
   parseAsUint8,
   parseAsUint32,
   parseAsFloat32,

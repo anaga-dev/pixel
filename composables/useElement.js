@@ -1,8 +1,8 @@
 /**
  * Uses an element as a child of another element when the component is mounted.
  *
- * @param {Ref<Element>} parent
- * @param {*} child
+ * @param {Ref<HTMLElement>} parent
+ * @param {Ref<HTMLElement>|HTMLElement} child
  */
 export function useElement(parent, child) {
   if  (!isRef(parent)) {
@@ -10,8 +10,7 @@ export function useElement(parent, child) {
   }
 
   onMounted(() => {
-    const element = isRef(child) ? child.value : child
-    parent.value.appendChild(element)
+    parent.value.appendChild(unref(child))
   })
 }
 

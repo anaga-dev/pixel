@@ -2,6 +2,9 @@ export function usePoint(initialX = 0, initialY = 0) {
   const x = ref(initialX)
   const y = ref(initialY)
 
+  const angle = computed(() => Math.atan2(y.value, x.value))
+  const length = computed(() => Math.hypot(x.value, y.value))
+
   function set(newX, newY) {
     x.value = newX
     y.value = newY
@@ -18,10 +21,7 @@ export function usePoint(initialX = 0, initialY = 0) {
   }
 
   function clone() {
-    return {
-      x: ref(x.value),
-      y: ref(y.value)
-    }
+    return usePoint(x.value, y.value)
   }
 
   function add(ax, ay) {
@@ -95,11 +95,32 @@ export function usePoint(initialX = 0, initialY = 0) {
   }
 
   function clamp(minx, miny, maxx, maxy) {
-    x.value = Range.clamp(x, minx, maxx)
-    y.value = Range.clamp(y, miny, maxy)
+    x.value = Math.max(minx, Math.min(x.value, maxx))
+    y.value = Math.max(miny, Math.min(y.value, maxy))
   }
 
   return {
-    x, y, set, reset, copy, clone, add, subtract, multiply, divide, scale, perpLeft, perpRight, rotate, floor, ceil, round, normalize, negate, clamp
+    x,
+    y,
+    angle,
+    length,
+    set,
+    reset,
+    copy,
+    clone,
+    add,
+    subtract,
+    multiply,
+    divide,
+    scale,
+    perpLeft,
+    perpRight,
+    rotate,
+    floor,
+    ceil,
+    round,
+    normalize,
+    negate,
+    clamp
   }
 }

@@ -12,7 +12,7 @@
 <script setup>
 import Canvas from '@/pixel/canvas/Canvas'
 import Color from '@/pixel/color/Color'
-import CombinedColorPicker from '@/pixel/canvas/CombinedColorPicker'
+import CombinedColorPicker from '@/pixel/color/CombinedColorPicker'
 
 const emit = defineEmits(['update'])
 

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { patterns, ONE } from '@/pixel/canvas/Dither'
+import { patterns, ONE } from '@/pixel/paint/Dither'
 
 const props = defineProps({
   level: {

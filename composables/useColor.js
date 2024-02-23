@@ -1,9 +1,23 @@
 import Color from '@/pixel/color/Color'
 
 /**
+ * @typedef {Object} ColorComposable
+ * @property {Ref<string>} style
+ * @property {Ref<number>} red
+ * @property {Ref<number>} green
+ * @property {Ref<number>} blue
+ * @property {Ref<number>} value
+ * @property {Ref<number>} valueSaturation
+ * @property {Ref<number>} hue
+ * @property {Ref<number>} saturation
+ * @property {Ref<number>} lightness
+ */
+
+/**
+ * Color composable
  *
- * @param {string} string
- * @returns {Color}
+ * @param {string} color CSS color string
+ * @returns {ColorComposable}
  */
 export function useColor(string) {
   const PERCENTAGE = 100

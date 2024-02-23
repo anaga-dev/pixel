@@ -21,6 +21,8 @@ export default class FillStack {
   }
 
   /**
+   * Returns if the stack is empty.
+   *
    * @readonly
    * @type {boolean}
    */
@@ -29,6 +31,8 @@ export default class FillStack {
   }
 
   /**
+   * Returns if the stack is full.
+   *
    * @readonly
    * @type {boolean}
    */
