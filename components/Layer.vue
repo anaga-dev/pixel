@@ -29,6 +29,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['activate', 'settings', 'visible'])
+
 const preview = ref()
 const input = ref(null)
 const editLayerName = ref()
@@ -67,7 +69,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
       top: dropTop,
       bottom: dropBottom
     }"
-    @click.prevent="$emit('activate', layer)"
+    @click.prevent="emit('activate', layer)"
   >
     <div class="actions">
       <Button
@@ -75,7 +77,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
         :label="$t('studio.layer-settings')"
         :active="settings"
         variant="ghost"
-        @click.stop="$emit('settings', layer)"
+        @click.stop="emit('settings', layer)"
       >
         <Icon i="settings" />
       </Button>
@@ -87,29 +89,36 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
             : $t('studio.show-layer')
         "
         variant="ghost"
-        @click.prevent="$emit('visible', layer)"
+        @click.prevent="emit('visible', layer)"
       >
         <Icon :i="layer.visible.value ? 'visible' : 'hidden'" />
       </Button>
     </div>
-    <div v-if="!editLayerName" class="name" @dblclick="onToggleLayerNameEdit">
+    <div
+      v-if="!editLayerName"
+      class="name"
+      @dblclick="onToggleLayerNameEdit"
+    >
       {{ layer.name.value }}
     </div>
     <input
       v-else
-      class="input-name"
       ref="input"
-      type="text"
-      v-focus
       v-model="layerName"
+      v-focus
+      class="input-name"
+      type="text"
       @keydown="onKeyDown"
-    />
+    >
     <!--
     <div class="collapse">
       <i class="bx bx-chevron-down"></i>
     </div>
     -->
-    <div class="preview" ref="preview">
+    <div
+      ref="preview"
+      class="preview"
+    >
       <!-- Añadimos una vista del canvas -->
     </div>
   </div>

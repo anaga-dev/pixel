@@ -1,7 +1,4 @@
 <script setup>
-import { useUIStore } from '@/stores/ui'
-const uiStore = useUIStore()
-
 const props = defineProps({
   message: {
     type: String,
@@ -17,8 +14,13 @@ const props = defineProps({
 
 <template>
   <div class="tooltip-container">
-    <div class="Tooltip" :class="[position]">{{ $t(message) }}</div>
-    <slot></slot>
+    <div
+      class="Tooltip"
+      :class="[props.position]"
+    >
+      {{ $t(props.message) }}
+    </div>
+    <slot />
   </div>
 </template>
 
@@ -26,6 +28,7 @@ const props = defineProps({
 .tooltip-container {
   position: relative;
 }
+
 .Tooltip {
   position: absolute;
   padding: var(--spaceM) var(--spaceL);

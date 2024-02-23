@@ -1,11 +1,18 @@
 <template>
   <!-- <svg :width="width" :height="height" :viewBox="viewBox"> -->
-  <rect v-for="rect of rects" :x="rect.x" :y="rect.y" :width="rect.width" :height="rect.height" />
+  <rect
+    v-for="rect of rects"
+    :key="`${rect.x}-${rect.y}`"
+    :x="rect.x"
+    :y="rect.y"
+    :width="rect.width"
+    :height="rect.height"
+  />
   <!-- </svg> -->
 </template>
 
 <script setup>
-import { patterns, ONE } from '@/pixel/canvas/Dither'
+import { patterns, ONE } from '@/pixel/paint/Dither'
 
 const props = defineProps({
   level: {
@@ -15,14 +22,6 @@ const props = defineProps({
 })
 
 const viewSize = 48
-const viewWidth = computed(() => viewSize)
-const viewHeight = computed(() => viewSize)
-const viewBox = computed(() => `0 0 ${viewWidth} ${viewHeight}`)
-
-const svgSize = 24
-const width = computed(() => svgSize)
-const height = computed(() => svgSize)
-
 const size = 8
 
 const rects = computed(() => {

@@ -1,5 +1,4 @@
 import Canvas from '@/pixel/canvas/Canvas'
-import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
 import SelectionType from '@/pixel/selection/SelectionType'
 import Selection from '@/pixel/selection/Selection'
 
@@ -36,13 +35,11 @@ export const useSelectionStore = defineStore('selection', () => {
   const visible = ref(false)
 
   let canvas = null
-  let context = null
 
   function init(target, width, height) {
     selection.setup(width, height)
 
     canvas = Canvas.createOrGet(canvas, width, height)
-    context = CanvasContext2D.get(canvas)
 
     const onPointer = (e) => {
       // Set the selection as visible

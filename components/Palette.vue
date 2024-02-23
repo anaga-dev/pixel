@@ -11,45 +11,45 @@ const removeMode = ref(false)
 const overBin = ref(false)
 const current = useColor(documentStore.color)
 
-const handleUpdatePalette = (e) => {
-  console.log('Update palette', e.oldIndex, e.newIndex)
-  documentStore.swapPaletteColors(e.oldIndex, e.newIndex)
-}
-
-const onDropToRemove = (e) => {
-  documentStore.palette.removeAt(e.oldIndex)
-}
-
-const handleSelectColor = (newStyle) => {
-  console.log('Select color', newStyle)
-  current.style.value = newStyle
-  activeColor.value = newStyle
-}
-
-const handleRemoveColor = (index) => {
-  documentStore.palette.removeAt(index)
-}
-
 const options = {
   delay: 250,
   delayOnTouchOnly: true
 }
 
-const onPointerOver = (e) => {
+function handleUpdatePalette(e) {
+  console.log('Update palette', e.oldIndex, e.newIndex)
+  documentStore.swapPaletteColors(e.oldIndex, e.newIndex)
+}
+
+function onDropToRemove(e) {
+  documentStore.palette.removeAt(e.oldIndex)
+}
+
+function handleSelectColor(newStyle) {
+  console.log('Select color', newStyle)
+  current.style.value = newStyle
+  activeColor.value = newStyle
+}
+
+function handleRemoveColor(index) {
+  documentStore.palette.removeAt(index)
+}
+
+function onPointerOver(e) {
   addEventListener('keydown', handleKeyDown)
   addEventListener('keyup', handleKeyUp)
 }
 
-const onPointerOut = (e) => {
+function onPointerOut(e) {
   removeEventListener('keydown', handleKeyDown)
   removeEventListener('keyup', handleKeyUp)
 }
 
-const handleKeyDown = (e) => {
+function handleKeyDown(e) {
   removeMode.value = documentStore.keys.current.has('control')
 }
 
-const handleKeyUp = (e) => {
+function handleKeyUp(e) {
   removeMode.value = false
 }
 
@@ -65,7 +65,7 @@ watch(
   <Sortable
     class="Palette"
     :class="{ remove: removeMode }"
-    itemKey="id"
+    item-key="id"
     :list="documentStore.palette.colors"
     :options="options"
     @end="handleUpdatePalette"

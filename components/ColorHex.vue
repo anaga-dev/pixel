@@ -1,6 +1,4 @@
 <script setup>
-import { useDocumentStore } from '@/stores/document'
-
 function rgbToHex(r, g, b) {
   const hexR = r.toString(16).padStart(2, '0')
   const hexG = g.toString(16).padStart(2, '0')
@@ -72,14 +70,17 @@ function onKeyButton(key) {
         maxlength="6"
         :value="hexColor"
         @input="onInput"
-      />
-      <div class="hex" v-else>
+      >
+      <div
+        v-else
+        class="hex"
+      >
         {{ hexColor }}
       </div>
     </div>
     <div class="key-buttons">
       <Button
-        v-for="key in [
+        v-for="key of [
           0,
           1,
           2,
@@ -97,8 +98,8 @@ function onKeyButton(key) {
           'E',
           'F'
         ]"
-        :label="`${$t('studio.key')} ${key}`"
         :key="key"
+        :label="`${$t('studio.key')} ${key}`"
         @click="onKeyButton(key)"
       >
         {{ key }}

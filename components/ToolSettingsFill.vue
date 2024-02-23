@@ -1,21 +1,24 @@
 <template>
   <ToolButton
-    tooltipText="studio.tooltips.fill-fill"
+    tooltip-text="studio.tooltips.fill-fill"
     label="studio.fill"
     icon="droplet"
     :active="document.fill.type === 'fill'"
     @click="document.setFillType('fill')"
   />
   <ToolButton
-    tooltipText="studio.tooltips.fill-erase"
+    tooltip-text="studio.tooltips.fill-erase"
     label="studio.erase"
     icon="eraser"
     :active="document.fill.type === 'erase'"
     @click="document.setFillType('erase')"
   />
-  <Divider vertical transparent />
+  <Divider
+    vertical
+    transparent
+  />
   <ToolButton
-    tooltipText="studio.tooltips.contiguous"
+    tooltip-text="studio.tooltips.contiguous"
     label="studio.contiguous"
     icon="contiguous"
     :active="document.fill.contiguous"

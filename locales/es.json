@@ -149,7 +149,6 @@
       "flip-horizontal": "Voltear horizontalmente",
       "flip-vertical": "Voltear verticalmente",
       "contiguous": "Solo píxeles contiguos",
-      "shapes": "Formas (S)",
       "transform": "Transformar (V)",
       "selection": "Seleccionar (M)",
       "color-picker": "Selector de color (C)",
@@ -175,7 +174,15 @@
       "tiling": "Modo mosaico",
       "toggle-palette": "Mostrar/ocultar paleta",
       "toggle-layers": "Mostrar/ocultar capas",
-      "more-options": "Más opciones"
+      "more-options": "Más opciones",
+      "shapes": {
+        "shapes": "Shapes (S)",
+        "line": "Line",
+        "rectangle": "Rectangle",
+        "ellipse": "Ellipse",
+        "fill": "Fill",
+        "lock-aspect-ratio": "Lock aspect ratio"
+      }
     }
   },
   "error": {

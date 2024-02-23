@@ -1,7 +1,13 @@
 <template>
-  <Transition name="pop" appear>
-    <div ref="target" class="Dropdown">
-      <slot></slot>
+  <Transition
+    name="pop"
+    appear
+  >
+    <div
+      ref="target"
+      class="Dropdown"
+    >
+      <slot />
     </div>
   </Transition>
 </template>

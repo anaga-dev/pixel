@@ -21,22 +21,26 @@ const props = defineProps({
 const emit = defineEmits(['select', 'remove'])
 
 const handleClick = (e) => {
-  if(e.ctrlKey) {
+  if (e.ctrlKey) {
     emit('remove')
     return
   }
   emit('select', color)
+}
+
+const handleOver = () => {
+  removeMode.value = documentStore.keys.current.has('control')
 }
 </script>
 
 <template>
   <div
     class="PaletteColor"
-    :class="{ active: active }"
-    :style="{ backgroundColor: color.color }"
+    :class="{ active: props.active, remove: removeMode }"
+    :style="{ backgroundColor: props.color.color }"
     @pointerover="handleOver"
-    @pointerdown="handleClick">
-  </div>
+    @click="handleClick"
+  />
 </template>
 
 <style scoped>

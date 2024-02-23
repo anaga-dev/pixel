@@ -1,3 +1,14 @@
+<script setup>
+import DitherPattern from './DitherPattern.vue'
+
+const props = defineProps({
+  i: {
+    type: String,
+    required: true
+  }
+})
+</script>
+
 <template>
   <svg
     width="24"
@@ -6,7 +17,7 @@
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
   >
-    <use :xlink:href="`#${i}`" />
+    <use :xlink:href="`#${props.i}`" />
     <defs>
       <g id="add-item">
         <path
@@ -164,7 +175,12 @@
         />
       </g>
       <g id="color">
-        <rect x="8" y="8" width="32" height="32" />
+        <rect
+          x="8"
+          y="8"
+          width="32"
+          height="32"
+        />
       </g>
       <g id="color-outline">
         <path
@@ -571,17 +587,6 @@
     </defs>
   </svg>
 </template>
-
-<script setup>
-import DitherPattern from './DitherPattern.vue'
-
-const props = defineProps({
-  i: {
-    type: String,
-    required: true
-  }
-})
-</script>
 
 <style scoped>
 svg {

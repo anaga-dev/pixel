@@ -1,6 +1,5 @@
 import BinaryView from './BinaryView.js'
 import BinaryTypeData from './BinaryTypeData.js'
-import BinaryType from './BinaryType.js'
 
 export default class BinaryReader extends BinaryView {
   /**
@@ -39,6 +38,17 @@ export default class BinaryReader extends BinaryView {
     return value
   }
 
+  readUntil(end) {
+    let start = this.position
+    while (this.position < this.dataView.byteLength) {
+      if (this.dataView.getUint8(this.position) === end) {
+        break
+      }
+      this.position++
+    }
+    return this.dataView.buffer.slice(start, this.position)
+  }
+
   /**
    * Reads a buffer.
    *
@@ -65,7 +75,7 @@ export default class BinaryReader extends BinaryView {
     if (typeof bytes === 'number' && Number.isInteger(bytes)) {
       return decoder.decode(this.readBuffer(bytes))
     } else if (bytes === undefined) {
-      // TODO: See how this can be implemented
+      return decoder.decode(this.readUntil(end))
     } else {
       throw new TypeError(`Invalid bytes value "${bytes}"`)
     }

@@ -1,20 +1,30 @@
+<script setup>
+const props = defineProps({
+  modelValue: {
+    type: String,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['update:modelValue'])
+</script>
+
 <template>
   <div class="Select">
     <select
-      :name="$attrs.id"
       :id="$attrs.id"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)">
-      <slot></slot>
+      :name="$attrs.id"
+      :value="props.modelValue"
+      @input="emit('update:modelValue', $event.target.value)"
+    >
+      <slot />
     </select>
-    <Icon i="arrow-down" class="icon" />
+    <Icon
+      i="arrow-down"
+      class="icon"
+    />
   </div>
 </template>
-
-<script setup>
-const props = defineProps(['modelValue'])
-defineEmits(['update:modelValue'])
-</script>
 
 <style scoped>
 .Select {

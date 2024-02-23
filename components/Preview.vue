@@ -1,5 +1,8 @@
 <template>
-  <section class="Preview" ref="preview">
+  <section
+    ref="preview"
+    class="Preview"
+  >
     <!-- inyectamos el canvas -->
   </section>
 </template>

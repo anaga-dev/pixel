@@ -1,9 +1,16 @@
 <template>
-  <Modal nondismissable>
+  <Modal :non-dismissable="true">
     <p>{{ $t(message) }}</p>
     <footer>
-      <Button variant="primary" @click="confirm">{{ $t('confirm') }}</Button>
-      <Button @click="cancel">{{ $t('cancel') }}</Button>
+      <Button
+        variant="primary"
+        @click="confirm"
+      >
+        {{ $t('confirm') }}
+      </Button>
+      <Button @click="cancel">
+        {{ $t('cancel') }}
+      </Button>
     </footer>
   </Modal>
 </template>
@@ -13,7 +20,7 @@ import { useConfirmationStore } from '@/stores/confirmation'
 import { storeToRefs } from 'pinia'
 const confirmationStore = useConfirmationStore()
 
-const { showDialog, message, resolve } = storeToRefs(confirmationStore)
+const { showDialog, message } = storeToRefs(confirmationStore)
 
 const confirm = () => {
   confirmationStore.resolve(true)

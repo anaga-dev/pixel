@@ -1,5 +1,9 @@
 <template>
-  <div class="Selection" :class="{ active }" ref="container">
+  <div
+    ref="container"
+    class="Selection"
+    :class="{ active }"
+  >
     <!-- inject canvas -->
   </div>
 </template>

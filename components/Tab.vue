@@ -1,9 +1,3 @@
-<template>
-  <li class="Tab">
-    <button :class="{ active: active }" type="button"><slot></slot></button>
-  </li>
-</template>
-
 <script setup>
 const props = defineProps({
   active: {
@@ -11,6 +5,17 @@ const props = defineProps({
   }
 })
 </script>
+
+<template>
+  <li class="Tab">
+    <button
+      :class="{ active: props.active }"
+      type="button"
+    >
+      <slot />
+    </button>
+  </li>
+</template>
 
 <style scoped>
 .Tab {

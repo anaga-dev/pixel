@@ -5,55 +5,24 @@ import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
-import Tool from '@/pixel/enums/Tool'
 import { onKeyDown, onKeyUp } from '@vueuse/core'
-import { storeToRefs } from 'pinia'
+import Tool from '@/pixel/enums/Tool'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
-const route = useRoute()
 const board = ref(null)
-const showingAnimation = ref(false)
 
 const MIN_TOUCHES = 2
 
 const props = defineProps({
-  offline: Boolean
-})
-
-const { moving } = storeToRefs(documentStore)
-const { startMoving, stopMoving } = documentStore
-
-const {
-  showPanel,
-  showSidePanel,
-  ctrlDown,
-  showPalette,
-  showLayers,
-  showOverlay,
-  showColorPicker,
-  showDocumentCreation,
-  showExportMenu
-} = storeToRefs(uiStore)
-
-const {
-  toggleSidePanel,
-  togglePanel,
-  togglePalette,
-  toggleOverlay,
-  toggleLayers,
-  toggleColorPicker,
-  toggleExportMenu
-} = uiStore
-
-onMounted(() => {
-  const paramsId = route.params.id
-  if (!paramsId) {
-    showDocumentCreation.value = true
+  offline: {
+    type: Boolean,
+    default: false
   }
-  documentStore.setBoard(board)
 })
+
+onMounted(() => documentStore.setBoard(board.value))
 onUnmounted(() => documentStore.unsetBoard())
 
 useBeforeUnload(
@@ -61,31 +30,24 @@ useBeforeUnload(
   () => 'Are you sure you want to leave? Your changes will be lost.'
 )
 
-// TODO: this will show/hide the animation panel
-function toggleShowAnimation() {
-  showingAnimation.value = !showingAnimation.value
-}
-
 useResizeObserver(board, () => documentStore.updateCanvasRect())
 
 useWheel(
-  (e) => {
-    documentStore.zoom.fromEvent(e)
-  },
+  (e) => documentStore.zoom.fromEvent(e),
   { domTarget: board, passive: true }
 )
 
 useTouch(
   (e) => {
     if (e.type === 'touchend' || e.type === 'touchcancel') {
-      moving.value = false
+      documentStore.moving.value = false
     }
     if (e.touches < MIN_TOUCHES) {
-      moving.value = false
+      documentStore.moving.value = false
       return
     }
     if (e.type === 'touchstart') {
-      moving.value = true
+      documentStore.moving.value = true
     }
     const { x: currentX, y: currentY } = e.currentCenter
     const { x: previousX, y: previousY } = e.previousCenter
@@ -131,23 +93,15 @@ useKeyShortcuts(
     [['='], () => documentStore.zoom.increase()],
     [['z'], () => documentStore.zoom.increase()],
     [['-'], () => documentStore.zoom.decrease()],
-    [['x'], () => documentStore.zoom.decrease()]
+    [['x'], () => documentStore.zoom.decrease()],
   ])
 )
 
 onKeyDown('Control', () => (ctrlDown.value = true))
 onKeyUp('Control', () => (ctrlDown.value = false))
 
-onKeyDown(' ', () => {
-  startMoving()
-})
-onKeyUp(' ', () => stopMoving())
-
-usePointer(board, (e) => {
-  if (e.type === 'pointermove' && moving.value) {
-    documentStore.moveBy(e.movementX, e.movementY)
-  }
-})
+onKeyDown(' ', () => documentStore.startMoving())
+onKeyUp(' ', () => documentStore.stopMoving())
 
 function loadPalette() {
   documentStore.loadPalette()
@@ -165,11 +119,11 @@ function clearPalette() {
 }
 
 const icon = computed(() => {
-  return showSidePanel.value ? 'collapse-side-panel' : 'expand-side-panel'
+  return uiStore.showSidePanel.value ? 'collapse-side-panel' : 'expand-side-panel'
 })
 
 const sidePanelMessage = computed(() => {
-  return showSidePanel.value
+  return uiStore.showSidePanel.value
     ? 'studio.tooltips.collapse-side-panel'
     : 'studio.tooltips.expand-side-panel'
 })
@@ -183,45 +137,34 @@ const sidePanelMessage = computed(() => {
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="board" :class="{ dragging: moving }">
-      <Document v-if="documentStore.canvas" />
-      <Selection
-        v-if="
-          documentStore.canvas &&
-          (documentStore.selection.visible ||
-            documentStore.tool === Tool.SELECT)
-        "
-      />
-      <PixelGrid v-if="documentStore.zoom.current >= 8" />
-      <BoundingBox
-        v-if="
-          documentStore.canvas &&
-          documentStore.tool === Tool.TRANSFORM &&
-          documentStore.transform.getLayerBoundaries() !== null
-        "
-      />
-    </main>
-    <!--     <div class="ANIMATION">
+    <!-- UI Canvas -->
+    <canvas
+      ref="board"
+      class="BOARD"
+    ></canvas>
+    <!-- / UI Canvas -->
+    <div class="ANIMATION">
       <button
         class="button-show"
-        :class="{ expanded: showingAnimation }"
         type="button"
-        :aria-label="
-          showingAnimation ? 'Hide animation panel' : 'Show animation panel'
-        "
-        @click="toggleShowAnimation"
+        :class="{ expanded: uiStore.showAnimation }"
+        :aria-label="uiStore.showAnimation ? $('studio.anim') : 'Show animation panel'"
+        @click="uiStore.toggleAnimation"
       >
-        <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
+        <Icon :i="uiStore.showAnimation ? 'arrow-down' : 'arrow-up'" />
       </button>
-      <Animation v-if="showingAnimation" />
-    </div> -->
+      <Animation v-if="uiStore.showAnimation" />
+    </div>
     <Transition name="slide">
-      <section v-if="showSidePanel" class="PANELS">
+      <section
+        v-if="uiStore.showPanel"
+        class="PANELS"
+      >
         <Panel
-          scrollable
           :title="$t('palette')"
-          :expanded="showPalette"
-          @toggle="togglePalette"
+          :expanded="uiStore.showPalette"
+          scrollable
+          @toggle="uiStore.togglePalette"
         >
           <template #actions>
             <Tooltip
@@ -231,7 +174,7 @@ const sidePanelMessage = computed(() => {
               <Button
                 :label="$t('studio.more-options')"
                 variant="ghost"
-                @click="toggleOverlay('palette-options')"
+                @click="uiStore.toggleOverlay('palette-options')"
               >
                 <Icon i="more" />
               </Button>
@@ -240,21 +183,25 @@ const sidePanelMessage = computed(() => {
           <Palette />
         </Panel>
         <Dropdown
-          v-if="showOverlay === 'palette-options'"
+          v-if="uiStore.showOverlay === 'palette-options'"
           class="palette-menu"
-          @close="toggleOverlay('palette-options')"
+          @close="uiStore.toggleOverlay('palette-options')"
         >
-          <Button @click="loadPalette">{{ $t('studio.load-palette') }}</Button>
-          <Button @click="savePalette">{{ $t('studio.save-palette') }}</Button>
-          <Button @click="clearPalette">{{
-            $t('studio.clear-palette')
-          }}</Button>
+          <Button @click="loadPalette">
+            {{ $t('studio.load-palette') }}
+          </Button>
+          <Button @click="savePalette">
+            {{ $t('studio.save-palette') }}
+          </Button>
+          <Button @click="clearPalette">
+            {{ $t('studio.clear-palette') }}
+          </Button>
         </Dropdown>
         <Divider />
         <Panel
-          scrollable
           :title="$t('studio.layers')"
           :expanded="showLayers"
+          scrollable
           @toggle="toggleLayers"
         >
           <template #actions>
@@ -285,46 +232,65 @@ const sidePanelMessage = computed(() => {
           <Icon i="menu" />
         </Button>
         <Divider />
-        <Tooltip :message="sidePanelMessage" position="left bottom">
-          <Button variant="ghost" @click="toggleSidePanel">
+        <Tooltip
+          :message="sidePanelMessage"
+          position="left bottom"
+        >
+          <Button
+            variant="ghost"
+            @click="uiStore.togglePanel"
+          >
             <Icon :i="icon" />
           </Button>
         </Tooltip>
         <Tooltip
-          v-if="offline"
-          message="studio.tooltips.offline"
+          v-if="props.offline"
           position="left bottom"
           class="badge-offline"
+          message="studio.tooltips.offline"
         >
-          :message="$t('studio.tooltips.offline')" position="left bottom" >
-          <Icon class="badge-offline" i="offline" />
+          <Icon
+            class="badge-offline"
+            i="offline"
+          />
         </Tooltip>
       </div>
       <div class="group">
-        <Tooltip message="studio.tooltips.symmetry" position="left bottom">
+        <Tooltip
+          message="studio.tooltips.symmetry"
+          position="left bottom"
+        >
           <Button
-            :label="$t('studio.symmetry-aid')"
             variant="ghost"
+            :label="$t('studio.symmetry-aid')"
             :active="documentStore.symmetry.axis !== null"
-            @click="toggleOverlay('symmetry-settings')"
+            @click="uiStore.toggleOverlay('symmetry-settings')"
           >
             <Icon
-              i="symmetry-vertical"
               v-if="documentStore.symmetry.axis === 'vertical'"
+              i="symmetry-vertical"
             />
             <Icon
-              i="symmetry-two-axis"
               v-else-if="documentStore.symmetry.axis === 'both'"
+              i="symmetry-two-axis"
             />
-            <Icon i="symmetry-horizontal" v-else />
+            <Icon
+              v-else
+              i="symmetry-horizontal"
+            />
           </Button>
         </Tooltip>
         <Divider />
-        <Zoom class="zoom-button" />
+        <Tooltip
+          message="studio.tooltips.zoom"
+          position="left bottom"
+        >
+          <Zoom />
+        </Tooltip>
         <Divider class="zoom-divider" />
         <ToolButton
-          tooltipText="studio.tooltips.undo"
-          tooltipPosition="right"
+          tooltip-text="studio.tooltips.undo"
+          tooltip-position="right"
           label="studio.undo"
           icon="undo"
           variant="icon"
@@ -332,8 +298,8 @@ const sidePanelMessage = computed(() => {
           @click="documentStore.undo()"
         />
         <ToolButton
-          tooltipText="studio.tooltips.redo"
-          tooltipPosition="right"
+          tooltip-text="studio.tooltips.redo"
+          tooltip-position="right"
           label="studio.redo"
           icon="redo"
           variant="icon"
@@ -359,30 +325,39 @@ const sidePanelMessage = computed(() => {
           position="bottom"
           class="badge-offline"
         >
-          <Icon class="badge-offline" i="offline" />
+          <Icon
+            class="badge-offline"
+            i="offline"
+          />
         </Tooltip>
-        <Tooltip message="studio.tooltips.symmetry" position="bottom">
+        <Tooltip
+          message="studio.tooltips.symmetry"
+          position="bottom"
+        >
           <Button
-            :label="$t('studio.symmetry-aid')"
             variant="ghost"
+            :label="$t('studio.symmetry-aid')"
             :active="documentStore.symmetry.axis !== null"
-            @click="toggleOverlay('symmetry-settings')"
+            @click="uiStore.toggleOverlay('symmetry-settings')"
           >
             <Icon
-              i="symmetry-vertical"
               v-if="documentStore.symmetry.axis === 'vertical'"
+              i="symmetry-vertical"
             />
             <Icon
-              i="symmetry-two-axis"
               v-else-if="documentStore.symmetry.axis === 'both'"
+              i="symmetry-two-axis"
             />
-            <Icon i="symmetry-horizontal" v-else />
+            <Icon
+              v-else
+              i="symmetry-horizontal"
+            />
           </Button>
         </Tooltip>
         <Divider vertical />
         <ToolButton
-          tooltipText="studio.tooltips.undo"
-          tooltipPosition="bottom"
+          tooltip-text="studio.tooltips.undo"
+          tooltip-position="bottom"
           label="studio.undo"
           icon="undo"
           variant="icon"
@@ -390,8 +365,8 @@ const sidePanelMessage = computed(() => {
           @click="documentStore.undo()"
         />
         <ToolButton
-          tooltipText="studio.tooltips.redo"
-          tooltipPosition="bottom"
+          tooltip-text="studio.tooltips.redo"
+          tooltip-position="bottom"
           label="studio.redo"
           icon="redo"
           variant="icon"
@@ -404,20 +379,23 @@ const sidePanelMessage = computed(() => {
           position="left bottom"
         >
           <Button
-            :label="$t('studio.show-palette')"
             variant="ghost"
-            :active="showPanel === 'palette'"
-            @click="togglePanel('palette')"
+            :label="$t('studio.show-palette')"
+            :active="uiStore.showPanel === 'palette'"
+            @click="uiStore.togglePanel('palette')"
           >
             <Icon i="palette" />
           </Button>
         </Tooltip>
-        <Tooltip message="studio.tooltips.toggle-layers" position="left bottom">
+        <Tooltip
+          message="studio.tooltips.toggle-layers"
+          position="left bottom"
+        >
           <Button
             :label="$t('studio.show-layers')"
             variant="ghost"
-            :active="showPanel === 'layers'"
-            @click="togglePanel('layers')"
+            :active="uiStore.showPanel === 'layers'"
+            @click="uiStore.togglePanel('layers')"
           >
             <Icon i="layers" />
           </Button>
@@ -425,36 +403,39 @@ const sidePanelMessage = computed(() => {
       </div>
     </aside>
   </div>
-  <SettingsMenu class="settings-menu" v-if="showOverlay === 'settings-menu'" />
+  <SettingsMenu
+    v-if="uiStore.showOverlay === 'settings-menu'"
+    class="settings-menu"
+  />
   <LayerSettings
     v-if="documentStore.layers.settings"
-    class="layer-settings"
     :layer="documentStore.layers.settings"
+    class="layer-settings"
   />
   <SymmetrySettings
-    v-if="showOverlay === 'symmetry-settings'"
+    v-if="uiStore.showOverlay === 'symmetry-settings'"
     class="symmetry-settings"
   />
-  <DocumentCreate
-    v-if="showDocumentCreation"
-    @created="showDocumentCreation = false"
+  <DocumentCreate v-if="uiStore.showDocumentCreation" />
+  <ColorPicker
+    v-if="uiStore.showColorPicker"
+    @close="uiStore.toggleColorPicker()"
   />
-  <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
   <FloatingPanel
-    v-if="showPanel === 'palette'"
+    v-if="uiStore.showPanel === 'palette'"
     :title="$t('palette')"
     class="single-panel-palette"
-    @close="showPanel = null"
+    @close="uiStore.showPanel = null"
   >
     <template #actions>
       <Tooltip
-        :message="$t('studio.tooltips.more-options')"
+        message="studio.tooltips.more-options"
         position="bottom left"
       >
         <Button
           :label="$t('studio.more-options')"
           variant="ghost"
-          @click="toggleOverlay('palette-options')"
+          @click="uiStore.toggleOverlay('palette-options')"
         >
           <Icon i="more" />
         </Button>
@@ -463,14 +444,14 @@ const sidePanelMessage = computed(() => {
     <Palette />
   </FloatingPanel>
   <FloatingPanel
-    v-if="showPanel === 'layers'"
+    v-if="uiStore.showPanel === 'layers'"
     :title="$t('studio.layers')"
     class="single-panel-layers"
-    @close="showPanel = null"
+    @close="uiStore.showPanel = null"
   >
     <template #actions>
       <Tooltip
-        :message="$t('studio.tooltips.new-layer')"
+        message="studio.tooltips.new-layer"
         position="bottom left"
       >
         <Button
@@ -484,7 +465,10 @@ const sidePanelMessage = computed(() => {
     </template>
     <Layers />
   </FloatingPanel>
-  <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
+  <ExportMenu
+    v-if="uiStore.showExportMenu"
+    @close="toggleExportMenu()"
+  />
 </template>
 
 <style scoped>
@@ -511,6 +495,7 @@ aside {
   display: grid;
   justify-self: start;
 }
+
 .TOOLS {
   display: grid;
   align-self: center;
@@ -520,6 +505,15 @@ aside {
 }
 
 .BOARD {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+.BOARD {
   grid-column: 1 / span 4;
   grid-row: 1 / span 3;
   display: grid;
@@ -528,6 +522,7 @@ aside {
   background-color: var(--colorLayer0);
   z-index: 0;
 }
+*/
 
 .BOARD:not(.dragging) {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;

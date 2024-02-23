@@ -4,7 +4,6 @@ import { useDocumentStore } from '@/stores/document'
 import { useConfirmationStore } from '@/stores/confirmation'
 import { storeToRefs } from 'pinia'
 
-const router = useRouter()
 const overlay = 'general-settings'
 
 const uiStore = useUIStore()
@@ -15,7 +14,7 @@ const { showDocumentCreation } = storeToRefs(uiStore)
 const documentStore = useDocumentStore()
 const confirmationStore = useConfirmationStore()
 
-async function newFile(params) {
+async function newFile() {
   showOverlay.value = null
   if (documentStore.modified) {
     const confirmation = await confirmationStore.openDialog(

@@ -21,7 +21,7 @@ const options = {
 <template>
   <Sortable
     class="Layers"
-    itemKey="id"
+    item-key="id"
     :list="documentStore.layers.list"
     :options="options"
     @end="handleUpdateLayers"

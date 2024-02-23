@@ -1,20 +1,15 @@
 <script setup>
 import Tool from '@/pixel/enums/Tool'
 import { useDocumentStore } from '@/stores/document'
-import { useUIStore } from '@/stores/ui'
 
 const documentStore = useDocumentStore()
-const uiStore = useUIStore()
-
-const { showTooltip } = uiStore
-const { tooltip } = storeToRefs(uiStore)
 </script>
 
 <template>
   <div class="Tools">
     <ToolButton
-      tooltipText="studio.tooltips.pencil"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.pencil"
+      tooltip-position="right"
       label="studio.pencil"
       icon="pencil"
       variant="icon"
@@ -22,8 +17,8 @@ const { tooltip } = storeToRefs(uiStore)
       @click="documentStore.setTool(Tool.PENCIL)"
     />
     <ToolButton
-      tooltipText="studio.tooltips.eraser"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.eraser"
+      tooltip-position="right"
       label="studio.eraser"
       icon="eraser"
       variant="icon"
@@ -31,8 +26,8 @@ const { tooltip } = storeToRefs(uiStore)
       @click="documentStore.setTool(Tool.ERASER)"
     />
     <ToolButton
-      tooltipText="studio.tooltips.fill"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.fill"
+      tooltip-position="right"
       label="studio.fill"
       icon="fill"
       variant="icon"
@@ -40,8 +35,8 @@ const { tooltip } = storeToRefs(uiStore)
       @click="documentStore.setTool(Tool.FILL)"
     />
     <ToolButton
-      tooltipText="studio.tooltips.shapes"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.shapes.shapes"
+      tooltip-position="right"
       label="studio.shapes"
       icon="shapes"
       variant="icon"
@@ -49,8 +44,8 @@ const { tooltip } = storeToRefs(uiStore)
       @click="documentStore.setTool(Tool.SHAPE)"
     />
     <ToolButton
-      tooltipText="studio.tooltips.transform"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.transform"
+      tooltip-position="right"
       label="studio.transform"
       icon="transform"
       variant="icon"
@@ -58,20 +53,23 @@ const { tooltip } = storeToRefs(uiStore)
       @click="documentStore.setTool(Tool.TRANSFORM)"
     />
     <ToolButton
-      tooltipText="studio.tooltips.selection"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.selection"
+      tooltip-position="right"
       label="studio.selection"
       icon="selection"
       variant="icon"
       :active="documentStore.tool === Tool.SELECT"
       @click="documentStore.setTool(Tool.SELECT)"
     />
-    <Tooltip message="studio.tooltips.color-picker" position="right">
+    <Tooltip
+      message="studio.tooltips.color-picker"
+      position="right"
+    >
       <ToolColor :color="documentStore.color" />
     </Tooltip>
     <ToolButton
-      tooltipText="studio.tooltips.eyedropper"
-      tooltipPosition="right"
+      tooltip-text="studio.tooltips.eyedropper"
+      tooltip-position="right"
       label="studio.eyedropper"
       icon="eyedropper"
       variant="icon"

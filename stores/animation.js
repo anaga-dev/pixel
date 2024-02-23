@@ -10,15 +10,14 @@ export const useAnimationStore = defineStore('animation', () => {
   const isPaused = computed(() => state.value === AnimationState.PAUSED)
   const isPlaying = computed(() => state.value === AnimationState.PLAYING)
   const canPlay = computed(() => total.value > 1)
-  const canGoPrevious = computed(() => canPlay && current.value > 0 && isPaused)
+  const canGoPrevious = computed(() => canPlay && current.value > 0 && isPaused.value)
   const canGoNext = computed(
-    () => canPlay && current.value < total.value - 1 && isPaused
+    () => canPlay && current.value < total.value - 1 && isPaused.value
   )
-  const canGoFirst = computed(() => canPlay && current.value > 0 && isPaused)
+  const canGoFirst = computed(() => canPlay && current.value > 0 && isPaused.value)
   const canGoLast = computed(
-    () => canPlay && current.value < total.value - 1 && isPaused
+    () => canPlay && current.value < total.value - 1 && isPaused.value
   )
-  const frames = ref([])
 
   let timeout = null
 

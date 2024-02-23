@@ -6,14 +6,21 @@
           <div
             class="sample previous"
             :style="{ backgroundColor: previous }"
-          ></div>
+          />
           <div
             class="sample current"
             :style="{ backgroundColor: current.style.value }"
-          ></div>
+          />
         </div>
-        <Tooltip message="studio.tooltips.add-to-palette" position="right">
-          <Button :label="$t('studio.add-to-palette')" variant="ghost" @click="documentStore.addPaletteColor()">
+        <Tooltip
+          message="studio.tooltips.add-to-palette"
+          position="right"
+        >
+          <Button
+            :label="$t('studio.add-to-palette')"
+            variant="ghost"
+            @click="documentStore.addPaletteColor()"
+          >
             <Icon i="add-to-palette" />
           </Button>
         </Tooltip>
@@ -26,18 +33,21 @@
         <Tab
           :active="documentStore.colorMode === ColorMode.HEX"
           @click="documentStore.setColorMode(ColorMode.HEX)"
-          >Hex</Tab
         >
+          Hex
+        </Tab>
         <Tab
           :active="documentStore.colorMode === ColorMode.HSL"
           @click="documentStore.setColorMode(ColorMode.HSL)"
-          >HSL</Tab
         >
+          HSL
+        </Tab>
         <Tab
           :active="documentStore.colorMode === ColorMode.RGB"
           @click="documentStore.setColorMode(ColorMode.RGB)"
-          >RGB</Tab
         >
+          RGB
+        </Tab>
       </TabMenu>
       <ColorHex
         v-if="documentStore.colorMode === ColorMode.HEX"
@@ -58,12 +68,10 @@
 
 <script setup>
 import { useDocumentStore } from '@/stores/document'
-import { usePaletteStore } from '@/stores/palette'
 import { useColor } from '@/composables/useColor'
 import ColorMode from '@/pixel/enums/ColorMode'
 
 const documentStore = useDocumentStore()
-const paletteStore = usePaletteStore()
 
 const previous = readonly(ref(documentStore.color))
 const current = useColor(documentStore.color)
@@ -72,10 +80,6 @@ function onUpdateHex(color) {
   current.red.value = color.red
   current.green.value = color.green
   current.blue.value = color.blue
-}
-
-function addColorToPalette() {
-  paletteStore.add(current.style.value)
 }
 
 watch(

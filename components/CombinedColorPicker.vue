@@ -2,19 +2,20 @@
   <div class="CombinedColorPicker">
     <canvas
       ref="canvas"
-      @pointerdown="startDragging"
       draggable="false"
-    ></canvas>
-    <div class="sample" :style="style"></div>
+      @pointerdown="startDragging"
+    />
+    <div
+      class="sample"
+      :style="style"
+    />
   </div>
 </template>
 
 <script setup>
 import Canvas from '@/pixel/canvas/Canvas'
 import Color from '@/pixel/color/Color'
-import CombinedColorPicker from '@/pixel/canvas/CombinedColorPicker'
-
-const emit = defineEmits(['update'])
+import CombinedColorPicker from '@/pixel/color/CombinedColorPicker'
 
 const props = defineProps({
   color: {
@@ -59,7 +60,7 @@ function updateFromPixel(x, y) {
 
 const boundingClientRect = computed(() => canvas.value.getBoundingClientRect())
 
-function getOffsetCoordinates(event, element) {
+function getOffsetCoordinates(event) {
   // const source = element ?? event.currentTarget
   const { left, top, width, height } = boundingClientRect.value // source.getBoundingClientRect()
   const x = Math.max(0, Math.min(width - 1, event.clientX - left))
@@ -83,7 +84,7 @@ function updateColor(e) {
   updateFromPixel(x, y)
 }
 
-function stopDragging(e) {
+function stopDragging() {
   window.removeEventListener('pointermove', updateColor)
   window.removeEventListener('pointerup', stopDragging)
   window.removeEventListener('pointerleave', stopDragging)

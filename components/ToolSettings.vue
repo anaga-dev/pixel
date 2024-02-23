@@ -1,15 +1,3 @@
-<template>
-  <div class="ToolSettings">
-    <ToolSettingsPencil v-if="tool === Tool.PENCIL" />
-    <ToolSettingsEraser v-else-if="tool === Tool.ERASER" />
-    <ToolSettingsFill v-else-if="tool === Tool.FILL" />
-    <ToolSettingsShape v-else-if="tool === Tool.SHAPE" />
-    <ToolSettingsTransform v-else-if="tool === Tool.TRANSFORM" />
-    <ToolSettingsSelect v-else-if="tool === Tool.SELECT" />
-    <ToolSettingsEyedropper v-else-if="tool === Tool.DROPPER" />
-  </div>
-</template>
-
 <script setup>
 import Tool from '@/pixel/enums/Tool'
 
@@ -20,6 +8,18 @@ const props = defineProps({
   }
 })
 </script>
+
+<template>
+  <div class="ToolSettings">
+    <ToolSettingsPencil v-if="props.tool === Tool.PENCIL" />
+    <ToolSettingsEraser v-else-if="props.tool === Tool.ERASER" />
+    <ToolSettingsFill v-else-if="props.tool === Tool.FILL" />
+    <ToolSettingsShape v-else-if="props.tool === Tool.SHAPE" />
+    <ToolSettingsTransform v-else-if="props.tool === Tool.TRANSFORM" />
+    <ToolSettingsSelect v-else-if="props.tool === Tool.SELECT" />
+    <ToolSettingsEyedropper v-else-if="props.tool === Tool.DROPPER" />
+  </div>
+</template>
 
 <style scoped>
 .ToolSettings {

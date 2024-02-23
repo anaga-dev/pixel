@@ -1,17 +1,3 @@
-<template>
-  <div :class="{ 'button-wrap': variant !== 'ghost' }">
-    <button
-      :type="type"
-      :aria-label="label"
-      :aria-selected="active === true"
-      :class="[variant, { active: active }, { disabled: disabled }]"
-    >
-      <slot></slot>
-      <IconDropdown v-if="variant === 'dropdown' || variant === 'account'" />
-    </button>
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   type: {
@@ -21,12 +7,13 @@ const props = defineProps({
   },
   label: {
     type: String,
-    required: false
+    required: false,
+    default: '',
   },
   variant: {
     type: String,
     required: false,
-    default: ''
+    default: '',
   },
   active: {
     type: Boolean
@@ -36,6 +23,20 @@ const props = defineProps({
   }
 })
 </script>
+
+<template>
+  <div :class="{ 'button-wrap': props.variant !== 'ghost' }">
+    <button
+      :type="props.type"
+      :aria-label="props.label"
+      :aria-selected="props.active === true"
+      :class="[props.variant, { active: props.active }, { disabled: props.disabled }]"
+    >
+      <slot />
+      <IconDropdown v-if="props.variant === 'dropdown' || props.variant === 'account'" />
+    </button>
+  </div>
+</template>
 
 <style scoped>
 .button-wrap {

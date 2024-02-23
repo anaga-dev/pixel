@@ -3,8 +3,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     mounted(el) {
       el.focus()
     },
-    getSSRProps(binding, vnode) {
-      // you can provide SSR-specific props here
+    // you can provide SSR-specific logic here
+    // getSSRProps(binding, vnode)
+    getSSRProps() {
       return {}
     }
   })

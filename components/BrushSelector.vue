@@ -1,16 +1,26 @@
+<script setup>
+const emit = defineEmits(['select'])
+</script>
+
 <template>
   <Dropdown class="BrushSelector">
-    <Button :label="$t('studio.round')" @click="$emit('select', 'round')">
+    <Button
+      :label="$t('studio.round')"
+      @click="emit('select', 'round')"
+    >
       <Icon i="brush-round" />
       {{ $t('studio.round') }}
     </Button>
-    <Button :label="$t('studio.square')" @click="$emit('select', 'square')">
+    <Button
+      :label="$t('studio.square')"
+      @click="emit('select', 'square')"
+    >
       <Icon i="brush-square" />
       {{ $t('studio.square') }}
     </Button>
     <Button
       :label="$t('studio.dither')"
-      @click="$emit('select', 'dither')"
+      @click="emit('select', 'dither')"
     >
       <Icon i="brush-dither" />
       {{ $t('studio.dither') }}

@@ -1,7 +1,3 @@
-<template>
-  <div class="Divider" :class="{ vertical: vertical, transparent: transparent }"></div>
-</template>
-
 <script setup>
 const props = defineProps({
   vertical: {
@@ -12,6 +8,13 @@ const props = defineProps({
   }
 })
 </script>
+
+<template>
+  <div
+    class="Divider"
+    :class="{ vertical: props.vertical, transparent: props.transparent }"
+  />
+</template>
 
 <style scoped>
 .Divider {

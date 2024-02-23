@@ -1,3 +1,15 @@
+<script setup>
+import { useDocumentStore } from '@/stores/document'
+import { useUIStore } from '@/stores/ui'
+import { storeToRefs } from 'pinia'
+
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
+
+const { showOverlay } = storeToRefs(uiStore)
+const { toggleOverlay } = uiStore
+</script>
+
 <template>
   <section class="Zoom">
     <Tooltip message="studio.tooltips.zoom" position="left bottom">
@@ -39,18 +51,6 @@
     </Dropdown>
   </section>
 </template>
-
-<script setup>
-import { useDocumentStore } from '@/stores/document'
-import { useUIStore } from '@/stores/ui'
-import { storeToRefs } from 'pinia'
-
-const documentStore = useDocumentStore()
-const uiStore = useUIStore()
-
-const { showOverlay } = storeToRefs(uiStore)
-const { toggleOverlay } = uiStore
-</script>
 
 <style scoped>
 .Zoom {

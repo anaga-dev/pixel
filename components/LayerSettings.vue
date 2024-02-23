@@ -52,27 +52,38 @@ function onDelete(layer) {
 </script>
 
 <template>
-  <Dropdown class="LayerSettings" @close="documentStore.hideLayerSettings()">
-    <div v-if="!editLayerName" class="name" @click="onToggleLayerNameEdit">
+  <Dropdown
+    class="LayerSettings"
+    @close="documentStore.hideLayerSettings()"
+  >
+    <div
+      v-if="!editLayerName"
+      class="name"
+      @click="onToggleLayerNameEdit"
+    >
       {{ layer.name.value }}
     </div>
     <input
       v-else
-      type="text"
-      v-focus
       v-model="layerName"
+      v-focus
+      type="text"
       @keydown="onKeyDown"
-    />
+    >
     <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
-    <Field :label="$t('opacity')" for="opacity" class="opacity">
+    <Field
+      :label="$t('opacity')"
+      for="opacity"
+      class="opacity"
+    >
       <div class="layer-visibility">
         <Slider
           id="opacity"
           :min="0"
           :max="100"
           :step="1"
-          :modelValue="layer.opacityPercentage.value"
-          @update:modelValue="documentStore.setLayerOpacity(layer, $event)"
+          :model-value="layer.opacityPercentage.value"
+          @update:model-value="documentStore.setLayerOpacity(layer, $event)"
         />
         <Button
           :label="
@@ -88,13 +99,20 @@ function onDelete(layer) {
       </div>
     </Field>
     <!-- TODO: Many of these elements need to make a call to `redrawAll` -->
-    <Field :label="$t('blend-mode')" for="blend-mode">
+    <Field
+      :label="$t('blend-mode')"
+      for="blend-mode"
+    >
       <Select
         id="blend-mode"
-        :modelValue="layer.blendMode.value"
-        @update:modelValue="documentStore.setLayerBlendMode(layer, $event)"
+        :model-value="layer.blendMode.value"
+        @update:model-value="documentStore.setLayerBlendMode(layer, $event)"
       >
-        <option v-for="[value, text] in blendModes" :key="value" :value="value">
+        <option
+          v-for="[value, text] of blendModes"
+          :key="value"
+          :value="value"
+        >
           {{ text }}
         </option>
       </Select>

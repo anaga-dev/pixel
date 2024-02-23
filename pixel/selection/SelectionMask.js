@@ -1,6 +1,6 @@
 import Canvas from '@/pixel/canvas/Canvas'
 import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
-import ImageDataUtils from '@/pixel/canvas/ImageDataUtils'
+import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils'
 import SelectionMaskRasterizeMode from './SelectionMaskRasterizeMode'
 import SelectionMode from './SelectionMode'
 
@@ -22,14 +22,23 @@ export class SelectionMask {
     })
   }
 
+  /**
+   * @type {OffscreenCanvas|HTMLCanvasElement}
+   */
   get canvas() {
     return this.#canvas
   }
 
+  /**
+   * @type {CanvasRenderingContext2D}
+   */
   get context() {
     return this.#context
   }
 
+  /**
+   * @type {ImageData}
+   */
   get imageData() {
     return this.#imageData
   }
