@@ -6,7 +6,7 @@ import useEventListeners from './useEventListeners'
  *
  * @param {Element|Ref<Element>} element
  */
-export function usePointer(element, callback, { receiver = null, mode = 'down' } = { }) {
+export function usePointer(element, callback, { receiver = null, mode = 'whatever' } = { }) {
   const page = { x: 0, y: 0 }
   const client = { x: 0, y: 0 }
   const offset = { x: 0, y: 0 }

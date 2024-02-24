@@ -1,11 +1,11 @@
 import AnimationState from '@/pixel/enums/AnimationState'
 
 export const useAnimationStore = defineStore('animation', () => {
-  const total = ref(1)
-  const current = ref(0)
-  const speed = ref(12)
-  const state = ref(AnimationState.PAUSED)
-  const loop = ref(true)
+  const total = shallowRef(1)
+  const current = shallowRef(0)
+  const speed = shallowRef(12)
+  const state = shallowRef(AnimationState.PAUSED)
+  const loop = shallowRef(true)
 
   const isPaused = computed(() => state.value === AnimationState.PAUSED)
   const isPlaying = computed(() => state.value === AnimationState.PLAYING)
@@ -18,7 +18,6 @@ export const useAnimationStore = defineStore('animation', () => {
   const canGoLast = computed(
     () => canPlay && current.value < total.value - 1 && isPaused
   )
-  const frames = ref([])
 
   let timeout = null
 

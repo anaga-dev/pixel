@@ -320,5 +320,5 @@ export function load(blob) {
 
 export default {
   save,
-  load
+  load,
 }

@@ -167,6 +167,16 @@ export function copy(target, source) {
 }
 
 /**
+ * Clones a canvas.
+ *
+ * @param {HTMLCanvasElement|OffscreenCanvas} source
+ * @returns {HTMLCanvasElement|OffscreenCanvas}
+ */
+export function clone(source) {
+  return copy(create(source.width, source.height), source)
+}
+
+/**
  * Creates a new canvas with the specified width and height
  *
  * @param {HTMLCanvasElement} canvas
@@ -189,5 +199,6 @@ export default {
   resizeTo,
   duplicate,
   copy,
+  clone,
   createBlob
 }

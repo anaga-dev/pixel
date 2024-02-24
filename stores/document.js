@@ -19,10 +19,10 @@ import GIMP from '@/pixel/formats/palettes/GIMP'
 import ACT from '@/pixel/formats/palettes/ACT'
 import PAL from '@/pixel/formats/palettes/PAL'
 
-import TGA from '@/pixel/formats/images/TGA.js'
-import PCX from '@/pixel/formats/images/PCX.js'
-import BMP from '@/pixel/formats/images/BMP.js'
-import Aseprite from '../pixel/formats/images/Aseprite.js'
+// import TGA from '@/pixel/formats/images/TGA.js'
+// import PCX from '@/pixel/formats/images/PCX.js'
+// import BMP from '@/pixel/formats/images/BMP.js'
+// import Aseprite from '../pixel/formats/images/Aseprite.js'
 import OpenRaster from '@/pixel/formats/images/OpenRaster.js'
 import WebImage from '@/pixel/formats/images/WebImage.js'
 
@@ -103,39 +103,6 @@ export const useDocumentStore = defineStore('document', () => {
   if (!ImageDataUtils.isPrecomputedCircleInitialized()) {
     ImageDataUtils.initializePrecomputedCircle()
   }
-
-  /*
-  const frames = computed(() => {
-    const frames = []
-    for (let frame = 0; frame < animation.total.value; frame++) {
-      const frameCanvas = Canvas.createWithClasses(
-        width.value,
-        height.value,
-        'preview-canvas'
-      )
-      const frameContext = CanvasContext2D.get(frameCanvas)
-      frameContext.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
-      for (const layer of layers.list) {
-        if (!layer.visible.value) {
-          continue
-        }
-        frameContext.save()
-        frameContext.globalAlpha = layer.opacity.value
-        frameContext.globalCompositeOperation = layer.blendMode.value
-        layer.context.putImageData(layer.frames[frame], 0, 0)
-        frameContext.drawImage(layer.canvas, 0, 0)
-        frameContext.restore()
-      }
-      // TODO: We should be able to render the selected frame
-      //  in the <canvas> element.
-      frames.push({
-        frame,
-        canvas: frameCanvas
-      })
-    }
-    return frames
-  })
-  */
 
   const layer = computed(() => layers.current)
   const imageData = computed(() => {
@@ -305,6 +272,14 @@ export const useDocumentStore = defineStore('document', () => {
     redrawAll()
   }
 
+  function doPaintOperation(callback, isTemp) {
+    if (isTemp) {
+      doTempPaintOperation(callback)
+    } else {
+      doLayerPaintOperation(callback)
+    }
+  }
+
   function fillColor(color, x, y, mask) {
     // FIXME: Cuando el color es el inicial #000 por algún motivo
     // no pinta bien el alpha.
@@ -321,8 +296,15 @@ export const useDocumentStore = defineStore('document', () => {
     } else {
       doLayerPaintOperation((imageData) =>
         doSymmetry2Operation(
+          // eslint-disable-next-line no-unused-vars
           (imageData, x, y, color, dither) =>
-            ImageDataUtils.fill(imageData, x, y, Color.parseAsUint8(color), mask),
+            ImageDataUtils.fill(
+              imageData,
+              x,
+              y,
+              Color.parseAsUint8(color),
+              mask
+            ),
           imageData,
           x,
           y,
@@ -354,7 +336,14 @@ export const useDocumentStore = defineStore('document', () => {
     } else if (symmetry.axis === SymmetryAxis.BOTH) {
       callback(imageData, width.value - 1 - x, y, color, dither, mask)
       callback(imageData, x, height.value - 1 - y, color, dither, mask)
-      callback(imageData, width.value - 1 - x, height.value - 1 - y, color, dither, mask)
+      callback(
+        imageData,
+        width.value - 1 - x,
+        height.value - 1 - y,
+        color,
+        dither,
+        mask
+      )
     }
   }
 
@@ -461,55 +450,30 @@ export const useDocumentStore = defineStore('document', () => {
     dither = null,
     mask = null
   ) {
-    if (isTemp) {
-      doTempPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.line(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    } else {
-      doLayerPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.line(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    }
+    doPaintOperation((imageData) =>
+      doSymmetry4Operation(
+        (imageData, x1, y1, x2, y2, color, dither, mask) =>
+          ImageDataUtils.line(
+            imageData,
+            x1,
+            y1,
+            x2,
+            y2,
+            Color.parseAsUint8(color),
+            dither,
+            mask
+          ),
+        imageData,
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        dither,
+        mask
+      ),
+      isTemp
+    )
   }
 
   function rectangle(
@@ -537,57 +501,31 @@ export const useDocumentStore = defineStore('document', () => {
         x2 = x1 + absHeight * Math.sign(width)
       }
     }
-    if (isTemp) {
-      doTempPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.rect(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    } else {
-      doLayerPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.rect(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    }
+    doPaintOperation((imageData) =>
+      doSymmetry4Operation(
+        (imageData, x1, y1, x2, y2, color, dither, mask) =>
+          ImageDataUtils.rect(
+            imageData,
+            x1,
+            y1,
+            x2,
+            y2,
+            Color.parseAsUint8(color),
+            dither,
+            mask,
+            isFilled
+          ),
+        imageData,
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        dither,
+        mask
+      ),
+      isTemp
+    )
   }
 
   function ellipse(
@@ -615,57 +553,31 @@ export const useDocumentStore = defineStore('document', () => {
         x2 = x1 + absHeight * Math.sign(width)
       }
     }
-    if (isTemp) {
-      doTempPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.ellipse(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    } else {
-      doLayerPaintOperation((imageData) =>
-        doSymmetry4Operation(
-          (imageData, x1, y1, x2, y2, color, dither, mask) =>
-            ImageDataUtils.ellipse(
-              imageData,
-              x1,
-              y1,
-              x2,
-              y2,
-              Color.parseAsUint8(color),
-              dither,
-              mask,
-              isFilled
-            ),
-          imageData,
-          x1,
-          y1,
-          x2,
-          y2,
-          color,
-          dither,
-          mask
-        )
-      )
-    }
+    doPaintOperation((imageData) =>
+      doSymmetry4Operation(
+        (imageData, x1, y1, x2, y2, color, dither, mask) =>
+          ImageDataUtils.ellipse(
+            imageData,
+            x1,
+            y1,
+            x2,
+            y2,
+            Color.parseAsUint8(color),
+            dither,
+            mask,
+            isFilled
+          ),
+        imageData,
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        dither,
+        mask
+      ),
+      isTemp
+    )
   }
 
   function precomputedCircle(x, y, radius, color, dither = null, mask = null) {
@@ -709,61 +621,149 @@ export const useDocumentStore = defineStore('document', () => {
     })
   }
 
-  function useTool(e, pointer) {
-    // TODO: All behavior can be vastly improved.
-    if (moving.value) {
-      return
-    }
-    modified.value = true
-    if (e.buttons === 4 || keys.current.has(' ')) {
-      if (pointer.pressure > 0) {
-        moveBy(e.movementX, e.movementY)
+  function useToolPencilShadow(e, pointer) {
+    const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
+    const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
+    const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
+    const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
+
+    const mask = selection.getMaskImageData()
+
+    if (pencil.size === 1) {
+      putColor(pointer.current.x, pointer.current.y, toolColor, dither, mask)
+    } else {
+      const sizeHalf = toolSize / 2
+      const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+      const addSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+      if (shape === PencilShape.ROUND) {
+        precomputedCircle(
+          pointer.current.x,
+          pointer.current.y,
+          toolSize,
+          toolColor,
+          null,
+          mask
+        )
+      } else if (shape === PencilShape.SQUARE) {
+        rectangle(
+          pointer.current.x - subSizeHalf,
+          pointer.current.y - subSizeHalf,
+          pointer.current.x + addSizeHalf,
+          pointer.current.y + addSizeHalf,
+          toolColor,
+          true,
+          true,
+          false,
+          null,
+          mask
+        )
+      } else if (shape === PencilShape.DITHER) {
+        rectangle(
+          pointer.current.x - subSizeHalf,
+          pointer.current.y - subSizeHalf,
+          pointer.current.x + addSizeHalf,
+          pointer.current.y + addSizeHalf,
+          toolColor,
+          true,
+          true,
+          false,
+          dither
+        )
       }
-      return
     }
+  }
 
-    if (
-      (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) &&
-      pointer.pressure > 0
-    ) {
-      const toolColor =
-        tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
-      const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
-      const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
-      const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
+  function useToolPencil(e, pointer) {
+    const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
+    const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
+    const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
+    const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
-      const mask = selection.getMaskImageData()
+    const mask = selection.getMaskImageData()
 
-      if (e.type === 'pointerdown') {
-        if (pencil.size === 1) {
-          putColor(
+    if (e.type === 'pointerdown') {
+      if (pencil.size === 1) {
+        putColor(pointer.current.x, pointer.current.y, toolColor, dither, mask)
+      } else {
+        const sizeHalf = toolSize / 2
+        const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+        const addSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+        if (shape === PencilShape.ROUND) {
+          precomputedCircle(
             pointer.current.x,
             pointer.current.y,
+            toolSize,
             toolColor,
-            dither,
+            null,
             mask
           )
-        } else {
-          const sizeHalf = toolSize / 2
-          const subSizeHalf =
-            toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
-          const addSizeHalf =
-            toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+        } else if (shape === PencilShape.SQUARE) {
+          rectangle(
+            pointer.current.x - subSizeHalf,
+            pointer.current.y - subSizeHalf,
+            pointer.current.x + addSizeHalf,
+            pointer.current.y + addSizeHalf,
+            toolColor,
+            false,
+            true,
+            false,
+            null,
+            mask
+          )
+        } else if (shape === PencilShape.DITHER) {
+          rectangle(
+            pointer.current.x - subSizeHalf,
+            pointer.current.y - subSizeHalf,
+            pointer.current.x + addSizeHalf,
+            pointer.current.y + addSizeHalf,
+            toolColor,
+            false,
+            true,
+            false,
+            dither
+          )
+        }
+      }
+    } else if (e.type === 'pointermove') {
+      if (toolSize === 1) {
+        line(
+          pointer.current.x,
+          pointer.current.y,
+          pointer.previous.x,
+          pointer.previous.y,
+          toolColor,
+          false,
+          dither,
+          mask
+        )
+      } else {
+        const sizeHalf = toolSize / 2
+
+        const steps = Math.hypot(
+          pointer.current.x - pointer.previous.x,
+          pointer.current.y - pointer.previous.y
+        )
+
+        for (let step = 0; step < steps; step++) {
+          const p = step / steps
+          const x = Interpolation.linear(
+            p,
+            pointer.previous.x,
+            pointer.current.x
+          )
+          const y = Interpolation.linear(
+            p,
+            pointer.previous.y,
+            pointer.current.y
+          )
           if (shape === PencilShape.ROUND) {
-            precomputedCircle(
-              pointer.current.x,
-              pointer.current.y,
-              toolSize,
-              toolColor,
-              null,
-              mask
-            )
+            precomputedCircle(x, y, toolSize, toolColor, null, mask)
           } else if (shape === PencilShape.SQUARE) {
             rectangle(
-              pointer.current.x - subSizeHalf,
-              pointer.current.y - subSizeHalf,
-              pointer.current.x + addSizeHalf,
-              pointer.current.y + addSizeHalf,
+              x - sizeHalf,
+              y - sizeHalf,
+              x + sizeHalf,
+              y + sizeHalf,
               toolColor,
               false,
               true,
@@ -773,199 +773,191 @@ export const useDocumentStore = defineStore('document', () => {
             )
           } else if (shape === PencilShape.DITHER) {
             rectangle(
-              pointer.current.x - subSizeHalf,
-              pointer.current.y - subSizeHalf,
-              pointer.current.x + addSizeHalf,
-              pointer.current.y + addSizeHalf,
+              x - sizeHalf,
+              y - sizeHalf,
+              x + sizeHalf,
+              y + sizeHalf,
               toolColor,
               false,
               true,
               false,
-              dither
+              dither,
+              mask
             )
-          }
-        }
-      } else if (e.type === 'pointermove') {
-        if (toolSize === 1) {
-          line(
-            pointer.current.x,
-            pointer.current.y,
-            pointer.previous.x,
-            pointer.previous.y,
-            toolColor,
-            false,
-            dither,
-            mask
-          )
-        } else {
-          const sizeHalf = toolSize / 2
-
-          const steps = Math.hypot(
-            pointer.current.x - pointer.previous.x,
-            pointer.current.y - pointer.previous.y
-          )
-
-          for (let step = 0; step < steps; step++) {
-            const p = step / steps
-            const x = Interpolation.linear(
-              p,
-              pointer.previous.x,
-              pointer.current.x
-            )
-            const y = Interpolation.linear(
-              p,
-              pointer.previous.y,
-              pointer.current.y
-            )
-            if (shape === PencilShape.ROUND) {
-              precomputedCircle(x, y, toolSize, toolColor, null, mask)
-            } else if (shape === PencilShape.SQUARE) {
-              rectangle(
-                x - sizeHalf,
-                y - sizeHalf,
-                x + sizeHalf,
-                y + sizeHalf,
-                toolColor,
-                false,
-                true,
-                false,
-                null,
-                mask
-              )
-            } else if (shape === PencilShape.DITHER) {
-              rectangle(
-                x - sizeHalf,
-                y - sizeHalf,
-                x + sizeHalf,
-                y + sizeHalf,
-                toolColor,
-                false,
-                true,
-                false,
-                dither,
-                mask
-              )
-            }
           }
         }
       }
-    } else if (tool.value === Tool.FILL && pointer.pressure > 0) {
-      if (fill.type === FillType.ERASE) {
-        fillColor(
-          'rgba(0,0,0,0)',
+    }
+  }
+
+  function useToolFill(e, pointer) {
+    if (fill.type === FillType.ERASE) {
+      fillColor(
+        'rgba(0,0,0,0)',
+        pointer.current.x,
+        pointer.current.y,
+        selection.getMaskImageData()
+      )
+    } else if (fill.type === FillType.FILL) {
+      fillColor(
+        color.value,
+        pointer.current.x,
+        pointer.current.y,
+        selection.getMaskImageData()
+      )
+    }
+  }
+
+  function useToolShape(e, pointer) {
+    if (e.type === 'pointerdown') {
+      saveCopyBuffer()
+    }
+    if (shape.type === ShapeType.LINE) {
+      if (
+        e.type === 'pointerdown' ||
+        (e.type === 'pointermove' && pointer.pressure > 0)
+      ) {
+        line(
+          pointer.start.x,
+          pointer.start.y,
           pointer.current.x,
           pointer.current.y,
-          selection.getMaskImageData()
-        )
-      } else if (fill.type === FillType.FILL) {
-        fillColor(
           color.value,
-          pointer.current.x,
-          pointer.current.y,
+          'temp',
+          null,
+          selection.getMaskImageData()
+        )
+      } else if (e.type === 'pointerup') {
+        line(
+          pointer.start.x,
+          pointer.start.y,
+          pointer.end.x,
+          pointer.end.y,
+          color.value,
+          null,
+          null,
           selection.getMaskImageData()
         )
       }
+    } else if (shape.type === ShapeType.RECTANGLE) {
+      if (
+        e.type === 'pointerdown' ||
+        (e.type === 'pointermove' && pointer.pressure > 0)
+      ) {
+        rectangle(
+          pointer.start.x,
+          pointer.start.y,
+          pointer.current.x,
+          pointer.current.y,
+          color.value,
+          'temp',
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      } else if (e.type === 'pointerup') {
+        rectangle(
+          pointer.start.x,
+          pointer.start.y,
+          pointer.end.x,
+          pointer.end.y,
+          color.value,
+          null,
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      }
+    } else if (shape.type === ShapeType.ELLIPSE) {
+      if (
+        e.type === 'pointerdown' ||
+        (e.type === 'pointermove' && pointer.pressure > 0)
+      ) {
+        ellipse(
+          pointer.start.x,
+          pointer.start.y,
+          pointer.current.x,
+          pointer.current.y,
+          color.value,
+          'temp',
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      } else if (e.type === 'pointerup') {
+        ellipse(
+          pointer.start.x,
+          pointer.start.y,
+          pointer.end.x,
+          pointer.end.y,
+          color.value,
+          null,
+          shape.filled,
+          shape.lockAspectRatio,
+          null,
+          selection.getMaskImageData()
+        )
+      }
+    }
+  }
+
+  function useToolEyedropper(e, pointer) {
+    eyeDropper(pointer.current.x, pointer.current.y)
+  }
+
+  function useToolTransform(e, pointer) {
+    // TODO: Esto es MUY mejorable.
+    const x = pointer.relative.x
+    const y = pointer.relative.y
+    transformation(x, y)
+  }
+
+  function useTool(e, pointer) {
+    if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
+      useToolPencilShadow(e, pointer)
+    }
+
+    // TODO: All behavior can be vastly improved.
+    if (moving.value) {
+      return
+    }
+
+    // We need to set the modified flag to true
+    // to track changes.
+    modified.value = true
+
+    // We need to check if we're moving
+    // the canvas.
+    if (e.buttons === 4 || keys.current.has(' ')) {
+      if (pointer.pressure > 0) {
+        moveBy(e.movementX, e.movementY)
+      }
+      return
+    }
+
+    // We need to check if the current layer is visible.
+    // If it's not visible we should not allow any drawing.
+    if (layers.current.visible.value === false) {
+      return
+    }
+
+    if (pointer.pressure.value === 0) {
+      return
+    }
+
+    if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
+      useToolPencil(e, pointer)
+    } else if (tool.value === Tool.FILL) {
+      useToolFill(e, pointer)
     } else if (tool.value === Tool.SHAPE) {
-      if (e.type === 'pointerdown') {
-        saveCopyBuffer()
-      }
-      if (shape.type === ShapeType.LINE) {
-        if (
-          e.type === 'pointerdown' ||
-          (e.type === 'pointermove' && pointer.pressure > 0)
-        ) {
-          line(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.current.x,
-            pointer.current.y,
-            color.value,
-            'temp',
-            null,
-            selection.getMaskImageData()
-          )
-        } else if (e.type === 'pointerup') {
-          line(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.end.x,
-            pointer.end.y,
-            color.value,
-            null,
-            null,
-            selection.getMaskImageData()
-          )
-        }
-      } else if (shape.type === ShapeType.RECTANGLE) {
-        if (
-          e.type === 'pointerdown' ||
-          (e.type === 'pointermove' && pointer.pressure > 0)
-        ) {
-          rectangle(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.current.x,
-            pointer.current.y,
-            color.value,
-            'temp',
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        } else if (e.type === 'pointerup') {
-          rectangle(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.end.x,
-            pointer.end.y,
-            color.value,
-            null,
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        }
-      } else if (shape.type === ShapeType.ELLIPSE) {
-        if (
-          e.type === 'pointerdown' ||
-          (e.type === 'pointermove' && pointer.pressure > 0)
-        ) {
-          ellipse(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.current.x,
-            pointer.current.y,
-            color.value,
-            'temp',
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        } else if (e.type === 'pointerup') {
-          ellipse(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.end.x,
-            pointer.end.y,
-            color.value,
-            null,
-            shape.filled,
-            shape.lockAspectRatio,
-            null,
-            selection.getMaskImageData()
-          )
-        }
-      }
-    } else if (tool.value === Tool.DROPPER && pointer.pressure > 0) {
-      eyeDropper(pointer.current.x, pointer.current.y)
-    } else if (tool.value === Tool.TRANSFORM && pointer.pressure > 0) {
-      // TODO: Esto es MUY mejorable.
-      const x = pointer.relative.x
-      const y = pointer.relative.y
-      transformation(x, y)
+      useToolShape(e, pointer)
+    } else if (tool.value === Tool.EYEDROPPER) {
+      useToolEyedropper(e, pointer)
+    } else if (tool.value === Tool.TRANSFORM) {
+      useToolTransform(e, pointer)
     }
     /*
     else if (tool.value === Tool.SELECT && pointer.pressure > 0) {
@@ -1058,13 +1050,6 @@ export const useDocumentStore = defineStore('document', () => {
     context.drawImage(canvas.value, 0, 0)
   }
 
-  function redrawAll() {
-    redraw()
-    redrawPreview()
-    redrawFrames()
-    drawGrid()
-  }
-
   /**
    * Redraws all the frames in the animation preview.
    */
@@ -1083,6 +1068,16 @@ export const useDocumentStore = defineStore('document', () => {
         context.restore()
       }
     }
+  }
+
+  /**
+   * Redraws everything.
+   */
+  function redrawAll() {
+    redraw()
+    redrawPreview()
+    redrawFrames()
+    drawGrid()
   }
 
   /**
@@ -1143,9 +1138,7 @@ export const useDocumentStore = defineStore('document', () => {
    *
    * @param {Object} options
    */
-  function create(
-    options
-  ) {
+  function create(options) {
     if (!isValidSize(options.width) || !isValidSize(options.height)) {
       throw new Error('Invalid size')
     }
@@ -1155,7 +1148,9 @@ export const useDocumentStore = defineStore('document', () => {
     palette.set(options.palette)
     symmetry.position.set(unref(width.value) / 2, unref(height.value) / 2)
 
-    const newLayers = options.layers ?? [{ name: 'Background', width: width.value, height: height.value }]
+    const newLayers = options.layers ?? [
+      { name: 'Background', width: width.value, height: height.value }
+    ]
     layers.set(newLayers)
     const id = uuid()
     const canvas = Canvas.createWith(width.value, height.value, {
@@ -1201,6 +1196,7 @@ export const useDocumentStore = defineStore('document', () => {
     redrawAll()
   }
 
+  /*
   function mergeDown() {
     // TODO: We need to get all layers below the selected one and blend them together
     // in a single layer.
@@ -1221,6 +1217,7 @@ export const useDocumentStore = defineStore('document', () => {
     // TODO: We have to get all the layers and blend them into a single one
     // using only visible layers.
   }
+  */
 
   function setLayer(layer) {
     layers.current = layer
@@ -1639,6 +1636,8 @@ export const useDocumentStore = defineStore('document', () => {
     }
     */
     if (!document) {
+      // TODO: We should show an error.
+      // showError('Invalid file')
     }
     createFromDocument(document)
   }
@@ -1649,18 +1648,22 @@ export const useDocumentStore = defineStore('document', () => {
   async function saveFileAs() {
     const suggestedFileName = name.value
     const fileExtension = '.ora'
-    await FilePicker.showSave(() => OpenRaster.save({
-      canvas: canvas.value,
-      width: width.value,
-      height: height.value,
-      palette: palette,
-      layers: layers
-    }), {
-      types: ImageTypes,
-      defaultFileName: suggestedFileName + fileExtension,
-      excludeAcceptAllOption: true,
-      multiple: false
-    })
+    await FilePicker.showSave(
+      () =>
+        OpenRaster.save({
+          canvas: canvas.value,
+          width: width.value,
+          height: height.value,
+          palette: palette,
+          layers: layers
+        }),
+      {
+        types: ImageTypes,
+        defaultFileName: suggestedFileName + fileExtension,
+        excludeAcceptAllOption: true,
+        multiple: false
+      }
+    )
     modified.value = false
   }
 
@@ -1715,10 +1718,10 @@ export const useDocumentStore = defineStore('document', () => {
         palette.addAt(actionToUndo.payload.index, actionToUndo.payload.color)
         break
       case 'setColor':
-        color = actionToUndo.payload.previousColor
+        color.value = actionToUndo.payload.previousColor
         break
       case 'setTool':
-        tool = actionToUndo.payload.previousTool
+        tool.value = actionToUndo.payload.previousTool
         break
       case 'paintOperation':
         ImageDataUtils.copy(
@@ -1762,10 +1765,10 @@ export const useDocumentStore = defineStore('document', () => {
         palette.removeAt(actionToRedo.payload.index)
         break
       case 'setColor':
-        color = actionToRedo.payload.color
+        color.value = actionToRedo.payload.color
         break
       case 'setTool':
-        tool = actionToRedo.payload.tool
+        tool.value = actionToRedo.payload.tool
         break
       case 'paintOperation':
         ImageDataUtils.copy(
@@ -1881,8 +1884,8 @@ export const useDocumentStore = defineStore('document', () => {
     goToNextFrame,
     goToPreviousFrame,
     loadPalette,
-    mergeBy,
-    mergeDown,
+    // mergeBy,
+    // mergeDown,
     moveAndZoom,
     moveBy,
     moveLayerDown,

@@ -17,6 +17,7 @@ export async function save(palette) {
     writer.write('u1', g)
     writer.write('u1', b)
   }
+  return writer.toBlob()
 }
 
 /**
@@ -27,11 +28,19 @@ export async function save(palette) {
  */
 export async function load(blob) {
   const reader = BinaryReader.fromBlob(blob)
+  const palette = []
   for (let i = 0; i < 256; i++) {
     const r = reader.read('u1')
     const g = reader.read('u1')
     const b = reader.read('u1')
+    palette.push(
+      '#'
+      + r.toString(16).padStart(2, '0')
+      + g.toString(16).padStart(2, '0')
+      + b.toString(16).padStart(2, '0')
+    )
   }
+  return palette
 }
 
 export default {

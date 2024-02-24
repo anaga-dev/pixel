@@ -1,102 +1,86 @@
 import { v4 as uuid } from 'uuid'
 import BlendMode from '@/pixel/enums/BlendMode.js'
 import Canvas from '@/pixel/canvas/Canvas.js'
+import isSize from '../pixel/validation/isSize'
+
+/**
+ * Creates a Layer
+ *
+ * @param {CreateLayerOptions} options
+ * @returns {Layer}
+ */
+export function createLayer(options) {
+  const id = uuid()
+  const width = options.width
+  const height = options.height
+  if (!isSize(width)
+   || !isSize(height)) {
+    throw new Error('Invalid layer size')
+  }
+  const name = shallowRef(options?.name ?? 'Layer')
+  const visible = shallowRef(options?.visible ?? true)
+  const blendMode = shallowRef(options?.blendMode ?? BlendMode.NORMAL)
+  const opacity = shallowRef(options?.opacity ?? 1)
+  const opacityPercentage = computed({
+    get() {
+      return Math.round(opacity.value * 100)
+    },
+    set(newValue) {
+      opacity.value = newValue / 100
+    }
+  })
+  const frames = shallowReactive(
+    options?.frames ?? [markRaw(new ImageData(width, height))]
+  )
+  const canvas = markRaw(options?.canvas ?? Canvas.create(width, height))
+  const context = markRaw(canvas.getContext('2d'))
+
+  const newLayer = {
+    id,
+    name,
+    visible,
+    blendMode,
+    opacity,
+    opacityPercentage,
+    frames,
+    canvas,
+    context
+  }
+
+  return newLayer
+}
+
+/**
+ * Duplicates a layer.
+ *
+ * @param {Layer} layer
+ * @returns {Layer}
+ */
+export function duplicateLayer(layer) {
+  return createLayer({
+    width: layer.canvas.width,
+    height: layer.canvas.height,
+    name: `${unref(layer.name)} (copy)`,
+    visible: unref(layer.visible),
+    blendMode: unref(layer.blendMode),
+    opacity: unref(layer.opacity),
+    canvas: Canvas.clone(layer.canvas),
+    frames: unref(layer.frames).map(
+      imageData => markRaw(
+        new ImageData(
+          imageData.data.slice(),
+          imageData.width,
+          imageData.height
+        )
+      )
+    )
+  })
+}
 
 export const useLayersStore = defineStore('layers', () => {
   const current = ref(null)
   const list = reactive([])
   const settings = ref(null)
-
-  function createLayer({
-    name: initialName = 'Unnamed',
-    visible: initialVisible = true,
-    blendMode: initialBlendMode = BlendMode.NORMAL,
-    opacity: initialOpacity = 1.0,
-    canvas: initialCanvas = null,
-    context: initialContext = null,
-    frames: initialFrames = null,
-    width,
-    height
-  } = {}) {
-    const id = uuid()
-    const name = ref(initialName)
-    const visible = ref(initialVisible)
-    const blendMode = ref(initialBlendMode)
-    const opacity = ref(initialOpacity)
-    const opacityPercentage = computed({
-      get() {
-        return Math.round(opacity.value * 100)
-      },
-      set(newValue) {
-        opacity.value = newValue / 100
-      }
-    })
-    const frames = shallowReactive(
-      initialFrames ?? [markRaw(new ImageData(width, height))]
-    )
-    const canvas = markRaw(initialCanvas ?? Canvas.create(width, height))
-    const context = markRaw(initialContext ?? canvas.getContext('2d'))
-    return {
-      id,
-      name,
-      visible,
-      blendMode,
-      opacity,
-      opacityPercentage,
-      frames,
-      canvas,
-      context
-    }
-  }
-
-  function duplicateLayer({
-    name: initialName,
-    visible: initialVisible,
-    blendMode: initialBlendMode,
-    opacity: initialOpacity,
-    canvas: initialCanvas,
-    frames: initialFrames
-  }) {
-    const id = uuid()
-    const name = ref(`${initialName.value} (copy)`)
-    const visible = ref(initialVisible.value)
-    const blendMode = ref(initialBlendMode.value)
-    const opacity = ref(initialOpacity.value)
-    const opacityPercentage = computed({
-      get() {
-        return opacity.value * 100
-      },
-      set(newValue) {
-        opacity.value = newValue / 100
-      }
-    })
-
-    const canvas = markRaw(Canvas.duplicate(initialCanvas))
-    const context = markRaw(canvas.getContext('2d'))
-
-    const frames = shallowReactive(
-      initialFrames.map(
-        (imageData) =>
-          markRaw(new ImageData(
-            imageData.width,
-            imageData.height,
-            imageData.data.slice()
-          ))
-      )
-    )
-
-    return {
-      id,
-      name,
-      visible,
-      blendMode,
-      opacity,
-      opacityPercentage,
-      frames,
-      canvas,
-      context
-    }
-  }
 
   function add(options) {
     const created = shallowReactive(createLayer(options))
@@ -138,7 +122,7 @@ export const useLayersStore = defineStore('layers', () => {
    * @param {*} layer
    */
   function duplicate(layer) {
-    const duplicated = duplicateLayer(layer)
+    const duplicated = shallowReactive(duplicateLayer(layer))
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.id
     )
