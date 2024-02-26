@@ -76,8 +76,8 @@ export function usePointer(element, callback, { receiver = null, mode = 'down' }
       previous.y = current.y
       current.x = Math.floor(offset.x)
       current.y = Math.floor(offset.y)
-      relative.x = Math.floor(current.x - previous.x)
-      relative.y = Math.floor(current.y - previous.y)
+      relative.x = Math.round(current.x - previous.x)
+      relative.y = Math.round(current.y - previous.y)
       if (e.type === 'pointerup') {
         end.x = current.x
         end.y = current.y

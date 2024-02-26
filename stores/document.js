@@ -320,7 +320,13 @@ export const useDocumentStore = defineStore('document', () => {
       doLayerPaintOperation((imageData) =>
         doSymmetry2Operation(
           (imageData, x, y, color, dither) =>
-            ImageDataUtils.fill(imageData, x, y, Color.parseAsUint8(color), mask),
+            ImageDataUtils.fill(
+              imageData,
+              x,
+              y,
+              Color.parseAsUint8(color),
+              mask
+            ),
           imageData,
           x,
           y,
@@ -352,7 +358,14 @@ export const useDocumentStore = defineStore('document', () => {
     } else if (symmetry.axis === SymmetryAxis.BOTH) {
       callback(imageData, width.value - 1 - x, y, color, dither, mask)
       callback(imageData, x, height.value - 1 - y, color, dither, mask)
-      callback(imageData, width.value - 1 - x, height.value - 1 - y, color, dither, mask)
+      callback(
+        imageData,
+        width.value - 1 - x,
+        height.value - 1 - y,
+        color,
+        dither,
+        mask
+      )
     }
   }
 
@@ -733,6 +746,8 @@ export const useDocumentStore = defineStore('document', () => {
       const mask = selection.getMaskImageData()
 
       if (e.type === 'pointerdown') {
+        console.log('Current pointer', pointer.current.x, pointer.current.y)
+        console.log('Offset', pointer.offset.x, pointer.offset.y)
         if (pencil.size === 1) {
           putColor(
             pointer.current.x,
@@ -749,8 +764,8 @@ export const useDocumentStore = defineStore('document', () => {
             toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
           if (shape === PencilShape.ROUND) {
             precomputedCircle(
-              pointer.current.x,
-              pointer.current.y,
+              pointer.offset.x,
+              pointer.offset.y,
               toolSize,
               toolColor,
               null,
@@ -1147,9 +1162,7 @@ export const useDocumentStore = defineStore('document', () => {
    *
    * @param {Object} options
    */
-  function create(
-    options
-  ) {
+  function create(options) {
     if (!isValidSize(options.width) || !isValidSize(options.height)) {
       throw new Error('Invalid size')
     }
@@ -1159,7 +1172,9 @@ export const useDocumentStore = defineStore('document', () => {
     palette.set(options.palette)
     symmetry.position.set(unref(width.value) / 2, unref(height.value) / 2)
 
-    const newLayers = options.layers ?? [{ name: 'Background', width: width.value, height: height.value }]
+    const newLayers = options.layers ?? [
+      { name: 'Background', width: width.value, height: height.value }
+    ]
     layers.set(newLayers)
     const id = uuid()
     const canvas = Canvas.createWith(width.value, height.value, {
@@ -1642,18 +1657,22 @@ export const useDocumentStore = defineStore('document', () => {
   async function saveFileAs() {
     const suggestedFileName = name.value
     const fileExtension = '.ora'
-    await FilePicker.showSave(() => OpenRaster.save({
-      canvas: canvas.value,
-      width: width.value,
-      height: height.value,
-      palette: palette,
-      layers: layers
-    }), {
-      types: ImageTypes,
-      defaultFileName: suggestedFileName + fileExtension,
-      excludeAcceptAllOption: true,
-      multiple: false
-    })
+    await FilePicker.showSave(
+      () =>
+        OpenRaster.save({
+          canvas: canvas.value,
+          width: width.value,
+          height: height.value,
+          palette: palette,
+          layers: layers
+        }),
+      {
+        types: ImageTypes,
+        defaultFileName: suggestedFileName + fileExtension,
+        excludeAcceptAllOption: true,
+        multiple: false
+      }
+    )
     modified.value = false
   }
 

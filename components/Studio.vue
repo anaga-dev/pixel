@@ -211,7 +211,7 @@ const sidePanelMessage = computed(() => {
         >
           <template #actions>
             <Tooltip
-              :message="$t('studio.tooltips.palette-options')"
+              :message="$t('studio.tooltips.new-layer')"
               position="bottom left"
             >
               <Button
@@ -274,7 +274,9 @@ const sidePanelMessage = computed(() => {
           v-if="offline"
           :message="$t('studio.tooltips.offline')"
           position="left bottom"
+          class="badge-offline"
         >
+          :message="$t('studio.tooltips.offline')" position="left bottom" >
           <Icon class="badge-offline" i="offline" />
         </Tooltip>
       </div>
@@ -380,13 +382,14 @@ const sidePanelMessage = computed(() => {
   background-color: var(--colorLayer0);
   z-index: 0;
 }
-
+/*
 .BOARD:not(.dragging) {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
 }
 .BOARD.dragging {
   cursor: url('@/assets/cursors/dragging.svg') 12 12, auto;
 }
+*/
 
 .ANIMATION {
   grid-column: 1 / span 3;

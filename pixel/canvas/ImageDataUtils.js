@@ -676,7 +676,7 @@ export function createImageFromURL(url, options) {
     const image = new Image()
     image.onload = () => resolve(image)
     image.onerror = (error) => reject(error)
-    image.onabort = _ => reject(new Error('Abort'))
+    image.onabort = (_) => reject(new Error('Abort'))
     image.src = url
     image.crossOrigin = options?.crossOrigin ?? ''
     image.decoding = options?.decoding ?? 'sync'
@@ -700,16 +700,27 @@ export function createImageDataListFromImage(image, itemWidth, itemHeight) {
   const imageDataList = []
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      imageDataList.push(context.getImageData(col * itemWidth, row * itemHeight, itemWidth, itemHeight))
+      imageDataList.push(
+        context.getImageData(
+          col * itemWidth,
+          row * itemHeight,
+          itemWidth,
+          itemHeight
+        )
+      )
     }
   }
   return imageDataList
 }
 
-export async function createImageDataListFromURL(url, itemWidth, itemHeight, options) {
+export async function createImageDataListFromURL(
+  url,
+  itemWidth,
+  itemHeight,
+  options
+) {
   const image = await createImageFromURL(url, options)
   return createImageDataListFromImage(image, itemWidth, itemHeight)
-
 }
 
 export async function createImageDataFromURL(url, options) {
@@ -723,7 +734,9 @@ export function isPrecomputedCircleInitialized() {
 
 export async function initializePrecomputedCircle() {
   brushImageDataList.length = 0
-  brushImageDataList.push(...await createImageDataListFromURL('/brushes/rounded.png', 32, 32))
+  brushImageDataList.push(
+    ...(await createImageDataListFromURL('/brushes/rounded.png', 32, 32))
+  )
 }
 
 /**
@@ -736,18 +749,38 @@ export async function initializePrecomputedCircle() {
  * @param {Dither} dither
  * @param {ImageData} [maskImageData]
  */
-export function precomputedCircle(imageData, x, y, radius, color, dither, maskImageData) {
+export function precomputedCircle(
+  imageData,
+  x,
+  y,
+  radius,
+  color,
+  dither,
+  maskImageData
+) {
   const brushIndex = Math.max(1, Math.min(32, radius)) - 1
   const brushImageData = brushImageDataList[brushIndex]
-  const ccx = -Math.floor(radius / 2)
-  const ccy = -Math.floor(radius / 2)
+  const isRadiusEven = radius % 2 === 0
+
+  const ix = isRadiusEven ? x : Math.floor(x)
+  const iy = isRadiusEven ? y : Math.floor(y)
+  const ccx = isRadiusEven ? (radius / 2 - Math.round(x - Math.floor(x))) : (radius / 2) - 1
+  const ccy =  isRadiusEven ? (radius / 2 - Math.round(y - Math.floor(y))) : (radius / 2) - 1
+
   for (let cy = 0; cy < brushImageData.height; cy++) {
     for (let cx = 0; cx < brushImageData.width; cx++) {
       const offset = (cy * brushImageData.width + cx) * 4
       if (brushImageData.data[offset] === 0x00) {
         continue
       }
-      putColor(imageData, x + cx + ccx, y + cy + ccy, color, dither, maskImageData)
+      putColor(
+        imageData,
+        ix + cx - ccx,
+        iy + cy - ccy,
+        color,
+        dither,
+        maskImageData
+      )
     }
   }
 }
