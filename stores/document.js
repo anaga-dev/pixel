@@ -757,11 +757,20 @@ export const useDocumentStore = defineStore('document', () => {
             mask
           )
         } else {
+          const isSizeEven = toolSize % 2 === 0
           const sizeHalf = toolSize / 2
-          const subSizeHalf =
-            toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
-          const addSizeHalf =
-            toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+
+          const ix = isSizeEven
+            ? pointer.current.x +
+              Math.round(pointer.offset.x - pointer.current.x) -
+              Math.floor(sizeHalf)
+            : pointer.current.x - Math.floor(sizeHalf)
+          const iy = isSizeEven
+            ? pointer.current.y +
+              Math.round(pointer.offset.y - pointer.current.y) -
+              Math.floor(sizeHalf)
+            : pointer.current.y - Math.floor(sizeHalf)
+
           if (shape === PencilShape.ROUND) {
             precomputedCircle(
               pointer.offset.x,
@@ -773,10 +782,10 @@ export const useDocumentStore = defineStore('document', () => {
             )
           } else if (shape === PencilShape.SQUARE) {
             rectangle(
-              pointer.current.x - subSizeHalf,
-              pointer.current.y - subSizeHalf,
-              pointer.current.x + addSizeHalf,
-              pointer.current.y + addSizeHalf,
+              ix,
+              iy,
+              ix + toolSize - 1,
+              iy + toolSize - 1,
               toolColor,
               false,
               true,
@@ -786,10 +795,10 @@ export const useDocumentStore = defineStore('document', () => {
             )
           } else if (shape === PencilShape.DITHER) {
             rectangle(
-              pointer.current.x - subSizeHalf,
-              pointer.current.y - subSizeHalf,
-              pointer.current.x + addSizeHalf,
-              pointer.current.y + addSizeHalf,
+              ix,
+              iy,
+              ix + toolSize - 1,
+              iy + toolSize - 1,
               toolColor,
               false,
               true,
