@@ -66,7 +66,6 @@ export function useTouch(callback, options) {
     touches: 0,
     currentAngle: 0,
     previousAngle: 0,
-    currentAngle: 0,
     startAngle: 0,
     endAngle: 0,
     angle: 0,

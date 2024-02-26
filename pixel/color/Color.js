@@ -152,8 +152,14 @@ export function mid(color) {
   return (max(color) + min(color)) / 2
 }
 
+/**
+ * Returns the saturation from a color in HSV
+ * color space.
+ *
+ * @param {Color} color
+ * @returns {number}
+ */
 export function saturationHSV(color) {
-  const [r, g, b] = color
   return 1 - (min(color) / max(color))
 }
 

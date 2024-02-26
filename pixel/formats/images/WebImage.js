@@ -15,9 +15,9 @@
 export function loadImage(src, options) {
   return new Promise((resolve, reject) => {
     const image = new Image()
-    image.onload = _ => resolve(image)
+    image.onload = () => resolve(image)
     image.onerror = (error) => reject(error)
-    image.onabort = _ => reject(new Error('Abort'))
+    image.onabort = () => reject(new Error('Abort'))
     image.crossOrigin = options?.crossOrigin ?? 'anonymous'
     image.decoding = options?.decoding ?? 'sync'
     image.loading = options?.loading ?? 'eager'

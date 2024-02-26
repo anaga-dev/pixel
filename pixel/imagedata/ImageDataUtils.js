@@ -676,7 +676,7 @@ export function createImageFromURL(url, options) {
     const image = new Image()
     image.onload = () => resolve(image)
     image.onerror = (error) => reject(error)
-    image.onabort = _ => reject(new Error('Abort'))
+    image.onabort = () => reject(new Error('Abort'))
     image.src = url
     image.crossOrigin = options?.crossOrigin ?? ''
     image.decoding = options?.decoding ?? 'sync'
