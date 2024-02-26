@@ -740,6 +740,9 @@ export const useDocumentStore = defineStore('document', () => {
       const toolColor =
         tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
       const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
+      const sizeHalf = toolSize / 2
+      const isSizeEven = toolSize % 2 === 0
+
       const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
       const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
@@ -747,34 +750,27 @@ export const useDocumentStore = defineStore('document', () => {
 
       if (e.type === 'pointerdown') {
         console.log('Current pointer', pointer.current.x, pointer.current.y)
-        console.log('Offset', pointer.offset.x, pointer.offset.y)
+
         if (pencil.size === 1) {
           putColor(
-            pointer.current.x,
-            pointer.current.y,
+            Math.floor(pointer.current.x),
+            Math.floor(pointer.current.y),
             toolColor,
             dither,
             mask
           )
         } else {
-          const isSizeEven = toolSize % 2 === 0
-          const sizeHalf = toolSize / 2
-
           const ix = isSizeEven
-            ? pointer.current.x +
-              Math.round(pointer.offset.x - pointer.current.x) -
-              Math.floor(sizeHalf)
-            : pointer.current.x - Math.floor(sizeHalf)
+            ? Math.round(pointer.current.x) - Math.floor(sizeHalf)
+            : Math.floor(pointer.current.x) - Math.floor(sizeHalf)
           const iy = isSizeEven
-            ? pointer.current.y +
-              Math.round(pointer.offset.y - pointer.current.y) -
-              Math.floor(sizeHalf)
-            : pointer.current.y - Math.floor(sizeHalf)
+            ? Math.round(pointer.current.y) - Math.floor(sizeHalf)
+            : Math.floor(pointer.current.y) - Math.floor(sizeHalf)
 
           if (shape === PencilShape.ROUND) {
             precomputedCircle(
-              pointer.offset.x,
-              pointer.offset.y,
+              pointer.current.x,
+              pointer.current.y,
               toolSize,
               toolColor,
               null,
@@ -810,34 +806,32 @@ export const useDocumentStore = defineStore('document', () => {
       } else if (e.type === 'pointermove') {
         if (toolSize === 1) {
           line(
-            pointer.current.x,
-            pointer.current.y,
-            pointer.previous.x,
-            pointer.previous.y,
+            Math.floor(pointer.current.x),
+            Math.floor(pointer.current.y),
+            Math.floor(pointer.previous.x),
+            Math.floor(pointer.previous.y),
             toolColor,
             false,
             dither,
             mask
           )
         } else {
-          const sizeHalf = toolSize / 2
-
           const steps = Math.hypot(
-            pointer.current.x - pointer.previous.x,
-            pointer.current.y - pointer.previous.y
+            Math.round(pointer.current.x) - Math.round(pointer.previous.x),
+            Math.round(pointer.current.y) - Math.round(pointer.previous.y)
           )
 
           for (let step = 0; step < steps; step++) {
             const p = step / steps
             const x = Interpolation.linear(
               p,
-              pointer.previous.x,
-              pointer.current.x
+              Math.round(pointer.previous.x),
+              Math.round(pointer.current.x)
             )
             const y = Interpolation.linear(
               p,
-              pointer.previous.y,
-              pointer.current.y
+              Math.round(pointer.previous.y),
+              Math.round(pointer.current.y)
             )
             if (shape === PencilShape.ROUND) {
               precomputedCircle(x, y, toolSize, toolColor, null, mask)
@@ -845,8 +839,8 @@ export const useDocumentStore = defineStore('document', () => {
               rectangle(
                 x - sizeHalf,
                 y - sizeHalf,
-                x + sizeHalf,
-                y + sizeHalf,
+                x + sizeHalf - 1 ,
+                y + sizeHalf - 1,
                 toolColor,
                 false,
                 true,
@@ -858,8 +852,8 @@ export const useDocumentStore = defineStore('document', () => {
               rectangle(
                 x - sizeHalf,
                 y - sizeHalf,
-                x + sizeHalf,
-                y + sizeHalf,
+                x + sizeHalf - 1,
+                y + sizeHalf - 1,
                 toolColor,
                 false,
                 true,

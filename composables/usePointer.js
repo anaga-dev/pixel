@@ -74,10 +74,10 @@ export function usePointer(element, callback, { receiver = null, mode = 'down' }
     if (e.type === 'pointermove' || e.type === 'pointerup') {
       previous.x = current.x
       previous.y = current.y
-      current.x = Math.floor(offset.x)
-      current.y = Math.floor(offset.y)
-      relative.x = Math.round(current.x - previous.x)
-      relative.y = Math.round(current.y - previous.y)
+      current.x = offset.x
+      current.y = offset.y
+      relative.x = current.x - previous.x
+      relative.y = current.y - previous.y
       if (e.type === 'pointerup') {
         end.x = current.x
         end.y = current.y
@@ -85,10 +85,10 @@ export function usePointer(element, callback, { receiver = null, mode = 'down' }
         domTarget.releasePointerCapture(e.pointerId)
       }
     } else if (e.type === 'pointerdown') {
-      start.x = Math.floor(offset.x)
-      start.y = Math.floor(offset.y)
-      previous.x = current.x = Math.floor(offset.x)
-      previous.y = current.y = Math.floor(offset.y)
+      start.x = offset.x
+      start.y = offset.y
+      previous.x = current.x = offset.x
+      previous.y = current.y = offset.y
       relative.x = 0
       relative.y = 0
       const domTarget = isRef(element) ? element.value : element
