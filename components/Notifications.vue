@@ -10,16 +10,21 @@ const { notifications, systemNotification } = storeToRefs(notificationStore)
   <ul v-if="notifications?.length > 0 || systemNotification">
     <TransitionGroup name="list">
       <li
-        v-if="notifications && notifications.length > 0"
         v-for="(notification, index) in notifications"
         :key="index"
       >
         {{ notification.message }}
-        <Button variant="ghost" @click="dismissNotification(index)"
-          ><Icon i="close"
-        /></Button>
+        <Button
+          variant="ghost"
+          @click="dismissNotification(index)"
+        >
+          <Icon i="close" />
+        </Button>
       </li>
-      <li v-if="systemNotification" key="system">
+      <li
+        v-if="systemNotification"
+        key="system"
+      >
         {{ $t(systemNotification) }}
       </li>
     </TransitionGroup>
