@@ -382,14 +382,13 @@ const sidePanelMessage = computed(() => {
   background-color: var(--colorLayer0);
   z-index: 0;
 }
-/*
+
 .BOARD:not(.dragging) {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
 }
 .BOARD.dragging {
   cursor: url('@/assets/cursors/dragging.svg') 12 12, auto;
 }
-*/
 
 .ANIMATION {
   grid-column: 1 / span 3;
