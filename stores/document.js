@@ -891,10 +891,10 @@ export const useDocumentStore = defineStore('document', () => {
           (e.type === 'pointermove' && pointer.pressure > 0)
         ) {
           line(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.current.x,
-            pointer.current.y,
+            Math.floor(pointer.start.x),
+            Math.floor(pointer.start.y),
+            Math.floor(pointer.current.x),
+            Math.floor(pointer.current.y),
             color.value,
             'temp',
             null,
@@ -902,10 +902,10 @@ export const useDocumentStore = defineStore('document', () => {
           )
         } else if (e.type === 'pointerup') {
           line(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.end.x,
-            pointer.end.y,
+            Math.floor(pointer.start.x),
+            Math.floor(pointer.start.y),
+            Math.floor(pointer.end.x),
+            Math.floor(pointer.end.y),
             color.value,
             null,
             null,
@@ -918,10 +918,10 @@ export const useDocumentStore = defineStore('document', () => {
           (e.type === 'pointermove' && pointer.pressure > 0)
         ) {
           rectangle(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.current.x,
-            pointer.current.y,
+            Math.floor(pointer.start.x),
+            Math.floor(pointer.start.y),
+            Math.floor(pointer.current.x),
+            Math.floor(pointer.current.y),
             color.value,
             'temp',
             shape.filled,
@@ -931,10 +931,10 @@ export const useDocumentStore = defineStore('document', () => {
           )
         } else if (e.type === 'pointerup') {
           rectangle(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.end.x,
-            pointer.end.y,
+            Math.floor(pointer.start.x),
+            Math.floor(pointer.start.y),
+            Math.floor(pointer.end.x),
+            Math.floor(pointer.end.y),
             color.value,
             null,
             shape.filled,
@@ -949,10 +949,10 @@ export const useDocumentStore = defineStore('document', () => {
           (e.type === 'pointermove' && pointer.pressure > 0)
         ) {
           ellipse(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.current.x,
-            pointer.current.y,
+            Math.floor(pointer.start.x),
+            Math.floor(pointer.start.y),
+            Math.floor(pointer.current.x),
+            Math.floor(pointer.current.y),
             color.value,
             'temp',
             shape.filled,
@@ -962,10 +962,10 @@ export const useDocumentStore = defineStore('document', () => {
           )
         } else if (e.type === 'pointerup') {
           ellipse(
-            pointer.start.x,
-            pointer.start.y,
-            pointer.end.x,
-            pointer.end.y,
+            Math.floor(pointer.start.x),
+            Math.floor(pointer.start.y),
+            Math.floor(pointer.end.x),
+            Math.floor(pointer.end.y),
             color.value,
             null,
             shape.filled,
