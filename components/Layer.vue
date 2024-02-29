@@ -183,5 +183,6 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
 canvas {
   width: 100%;
   height: auto;
+  object-fit: contain;
 }
 </style>
