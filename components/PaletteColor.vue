@@ -4,7 +4,7 @@
     :class="{ active: active, remove: removeMode }"
     :style="{ backgroundColor: color.color }"
     @pointerover="handleOver"
-    @click="handleClick">
+    @pointerdown="handleClick">
   </div>
 </template>
 

@@ -172,7 +172,8 @@
       "subtract-from-selection": "Subtract from selection",
       "tiling": "Tiling mode",
       "toggle-palette": "Show/hide palette",
-      "toggle-layers": "Show/hide layers"
+      "toggle-layers": "Show/hide layers",
+      "more-options": "More options"
     }
   },
   "error": {

@@ -348,7 +348,7 @@ const sidePanelMessage = computed(() => {
         <Tooltip
           v-if="offline"
           :message="$t('studio.tooltips.offline')"
-          position="left bottom"
+          position="bottom"
           class="badge-offline"
         >
           :message="$t('studio.tooltips.offline')" position="left bottom" >
@@ -356,7 +356,7 @@ const sidePanelMessage = computed(() => {
         </Tooltip>
         <Tooltip
           :message="$t('studio.tooltips.symmetry')"
-          position="left bottom"
+          position="bottom"
         >
           <Button
             :label="$t('studio.symmetry-aid')"
@@ -378,7 +378,7 @@ const sidePanelMessage = computed(() => {
         <Divider vertical />
         <ToolButton
           tooltipText="studio.tooltips.undo"
-          tooltipPosition="right"
+          tooltipPosition="bottom"
           label="studio.undo"
           icon="undo"
           variant="icon"
@@ -387,7 +387,7 @@ const sidePanelMessage = computed(() => {
         />
         <ToolButton
           tooltipText="studio.tooltips.redo"
-          tooltipPosition="right"
+          tooltipPosition="bottom"
           label="studio.redo"
           icon="redo"
           variant="icon"
@@ -395,7 +395,7 @@ const sidePanelMessage = computed(() => {
           @click="documentStore.redo()"
         />
         <Divider vertical />
-        <Tooltip :message="$t('studio.tooltips.toggle-palette')" position="top">
+        <Tooltip :message="$t('studio.tooltips.toggle-palette')" position="left bottom">
           <Button
             :label="$t('studio.show-palette')"
             variant="ghost"
@@ -405,7 +405,7 @@ const sidePanelMessage = computed(() => {
             <Icon i="palette" />
           </Button>
         </Tooltip>
-        <Tooltip :message="$t('studio.tooltips.toggle-layers')" position="top">
+        <Tooltip :message="$t('studio.tooltips.toggle-layers')" position="left bottom">
           <Button
             :label="$t('studio.show-layers')"
             variant="ghost"
@@ -424,7 +424,7 @@ const sidePanelMessage = computed(() => {
     class="layer-settings"
     :layer="documentStore.layers.settings"
   />
-  <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
+  <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" class="symmetry-settings" />
   <DocumentCreate
     v-if="showDocumentCreation"
     @created="showDocumentCreation = false"
@@ -658,6 +658,11 @@ aside {
 
   .layer-settings {
     right: calc(var(--widthSidebar) + var(--spaceS) * 2);
+  }
+  .symmetry-settings {
+    top: 4.5rem;
+    bottom: auto;
+    right: var(--spaceXXL);
   }
 }
 

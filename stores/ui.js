@@ -9,7 +9,7 @@ export const useUIStore = defineStore('ui', () => {
   const showOverlay = ref(null)
   const showDocumentCreation = ref(false)
   const showSidePanel = ref(true)
-  const showPanel = ref(true)
+  const showPanel = ref(null)
   const showColorPicker = ref(false)
   const showPalette = ref(true)
   const showLayers = ref(true)
@@ -34,7 +34,6 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   const togglePanel = (panel) => {
-    console.log('Panel', panel)
     if (showPanel.value !== null) {
       showPanel.value = null
     } else {

@@ -171,7 +171,8 @@
       "subtract-from-selection": "Restar de la selección",
       "tiling": "Modo mosaico",
       "toggle-palette": "Mostrar/ocultar paleta",
-      "toggle-layers": "Mostrar/ocultar capas"
+      "toggle-layers": "Mostrar/ocultar capas",
+      "more-options": "Más opciones"
     }
   },
   "error": {
