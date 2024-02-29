@@ -67,10 +67,4 @@ const { toggleOverlay } = uiStore
   bottom: 0;
   right: var(--widthToolbar);
 }
-
-@media (max-width: 1024px) {
-  .Zoom {
-    display: none;
-  }
-}
 </style>

@@ -8,6 +8,7 @@ export const useUIStore = defineStore('ui', () => {
 
   const showOverlay = ref(null)
   const showDocumentCreation = ref(false)
+  const showSidePanel = ref(true)
   const showPanel = ref(true)
   const showColorPicker = ref(false)
   const showPalette = ref(true)
@@ -28,9 +29,19 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  const togglePanel = () => {
-    showPanel.value = !showPanel.value
+  const toggleSidePanel = () => {
+    showSidePanel.value = !showSidePanel.value
   }
+
+  const togglePanel = (panel) => {
+    console.log('Panel', panel)
+    if (showPanel.value !== null) {
+      showPanel.value = null
+    } else {
+      showPanel.value = panel
+    }
+  }
+
   const toggleLayers = () => {
     showLayers.value = !showLayers.value
   }
@@ -56,6 +67,7 @@ export const useUIStore = defineStore('ui', () => {
     emitterBox,
     showOverlay,
     showPanel,
+    showSidePanel,
     showColorPicker,
     showPalette,
     showLayers,
@@ -68,6 +80,7 @@ export const useUIStore = defineStore('ui', () => {
     toggleOverlay,
     toggleLayers,
     togglePalette,
+    toggleSidePanel,
     togglePanel,
     toggleColorPicker,
     toggleExportMenu,

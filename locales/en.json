@@ -14,6 +14,7 @@
   "forgot-password": "Forgot password?",
   "enter-email-to-reset-password": "Enter your email to reset your password",
   "settings": "Settings",
+  "open-settings": "Open settings menu",
   "account": "Account",
   "confirm": "Confirm",
   "cancel": "Cancel",
@@ -169,7 +170,9 @@
       "color-selection": "Color based selection",
       "add-to-selection": "Add to selection",
       "subtract-from-selection": "Subtract from selection",
-      "tiling": "Tiling mode"
+      "tiling": "Tiling mode",
+      "toggle-palette": "Show/hide palette",
+      "toggle-layers": "Show/hide layers"
     }
   },
   "error": {

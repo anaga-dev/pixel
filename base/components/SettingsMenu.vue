@@ -45,18 +45,7 @@ function exportFile() {
 </script>
 
 <template>
-  <Button
-    label="Settings menu"
-    variant="ghost"
-    @click.stop="uiStore.toggleOverlay(overlay)"
-  >
-    <Icon i="menu" />
-  </Button>
-  <Dropdown
-    v-if="uiStore.showOverlay === overlay"
-    class="menu"
-    @close="uiStore.toggleOverlay(overlay)"
-  >
+  <Dropdown @close="showOverlay = null">
     <Button @click="newFile">
       {{ $t('new-artwork') }}
     </Button>
@@ -71,10 +60,3 @@ function exportFile() {
     </Button>
   </Dropdown>
 </template>
-
-<style scoped>
-.menu {
-  top: var(--spaceS);
-  right: calc(var(--widthToolbar) + var(--spaceS));
-}
-</style>

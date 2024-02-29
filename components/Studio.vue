@@ -16,8 +16,6 @@ const route = useRoute()
 const board = ref(null)
 const showingAnimation = ref(false)
 
-const { showDocumentCreation } = storeToRefs(uiStore)
-
 const MIN_TOUCHES = 2
 
 const props = defineProps({
@@ -26,16 +24,19 @@ const props = defineProps({
 
 const {
   showPanel,
+  showSidePanel,
   ctrlDown,
   spaceDown,
   showPalette,
   showLayers,
   showOverlay,
   showColorPicker,
+  showDocumentCreation,
   showExportMenu
 } = storeToRefs(uiStore)
 
 const {
+  toggleSidePanel,
   togglePanel,
   togglePalette,
   toggleOverlay,
@@ -151,11 +152,11 @@ function clearPalette() {
 }
 
 const icon = computed(() => {
-  return showPanel.value ? 'collapse-side-panel' : 'expand-side-panel'
+  return showSidePanel.value ? 'collapse-side-panel' : 'expand-side-panel'
 })
 
 const sidePanelMessage = computed(() => {
-  return showPanel.value
+  return showSidePanel.value
     ? 'studio.tooltips.collapse-side-panel'
     : 'studio.tooltips.expand-side-panel'
 })
@@ -187,7 +188,7 @@ const sidePanelMessage = computed(() => {
         "
       />
     </main>
-    <div class="ANIMATION">
+    <!--     <div class="ANIMATION">
       <button
         class="button-show"
         :class="{ expanded: showingAnimation }"
@@ -200,9 +201,9 @@ const sidePanelMessage = computed(() => {
         <Icon :i="showingAnimation ? 'arrow-down' : 'arrow-up'" />
       </button>
       <Animation v-if="showingAnimation" />
-    </div>
+    </div> -->
     <Transition name="slide">
-      <section v-if="showPanel" class="PANELS">
+      <section v-if="showSidePanel" class="PANELS">
         <Panel
           scrollable
           :title="$t('palette')"
@@ -211,11 +212,11 @@ const sidePanelMessage = computed(() => {
         >
           <template #actions>
             <Tooltip
-              :message="$t('studio.tooltips.new-layer')"
+              :message="$t('studio.tooltips.more-options')"
               position="bottom left"
             >
               <Button
-                :label="$t('studio.add-layer')"
+                :label="$t('studio.more-options')"
                 variant="ghost"
                 @click="toggleOverlay('palette-options')"
               >
@@ -261,12 +262,18 @@ const sidePanelMessage = computed(() => {
         </Panel>
       </section>
     </Transition>
-    <aside class="SIDEBAR">
+    <aside class="SIDEBAR-DESKTOP">
       <div class="group">
-        <SettingsButton />
+        <Button
+          :label="$t('settings')"
+          variant="ghost"
+          @click.stop="uiStore.toggleOverlay('settings-menu')"
+        >
+          <Icon i="menu" />
+        </Button>
         <Divider />
         <Tooltip :message="$t(sidePanelMessage)" position="left bottom">
-          <Button variant="ghost" @click="togglePanel">
+          <Button variant="ghost" @click="toggleSidePanel">
             <Icon :i="icon" />
           </Button>
         </Tooltip>
@@ -304,7 +311,7 @@ const sidePanelMessage = computed(() => {
         </Tooltip>
         <Divider />
         <Tooltip :message="$t('studio.tooltips.zoom')" position="left bottom">
-          <Zoom />
+          <Zoom class="zoom-button" />
         </Tooltip>
         <Divider class="zoom-divider" />
         <ToolButton
@@ -327,9 +334,94 @@ const sidePanelMessage = computed(() => {
         />
       </div>
     </aside>
+    <aside class="SIDEBAR-MOBILE">
+      <div class="group">
+        <Button
+          :label="$t('settings')"
+          variant="ghost"
+          @click.stop="uiStore.toggleOverlay('settings-menu')"
+        >
+          <Icon i="menu" />
+        </Button>
+      </div>
+      <div class="group">
+        <Tooltip
+          v-if="offline"
+          :message="$t('studio.tooltips.offline')"
+          position="left bottom"
+          class="badge-offline"
+        >
+          :message="$t('studio.tooltips.offline')" position="left bottom" >
+          <Icon class="badge-offline" i="offline" />
+        </Tooltip>
+        <Tooltip
+          :message="$t('studio.tooltips.symmetry')"
+          position="left bottom"
+        >
+          <Button
+            :label="$t('studio.symmetry-aid')"
+            variant="ghost"
+            :active="documentStore.symmetry.axis !== null"
+            @click="toggleOverlay('symmetry-settings')"
+          >
+            <Icon
+              i="symmetry-vertical"
+              v-if="documentStore.symmetry.axis === 'vertical'"
+            />
+            <Icon
+              i="symmetry-two-axis"
+              v-else-if="documentStore.symmetry.axis === 'both'"
+            />
+            <Icon i="symmetry-horizontal" v-else />
+          </Button>
+        </Tooltip>
+        <Divider vertical />
+        <ToolButton
+          tooltipText="studio.tooltips.undo"
+          tooltipPosition="right"
+          label="studio.undo"
+          icon="undo"
+          variant="icon"
+          :disabled="!documentStore.history.canUndo"
+          @click="documentStore.undo()"
+        />
+        <ToolButton
+          tooltipText="studio.tooltips.redo"
+          tooltipPosition="right"
+          label="studio.redo"
+          icon="redo"
+          variant="icon"
+          :disabled="!documentStore.history.canRedo"
+          @click="documentStore.redo()"
+        />
+        <Divider vertical />
+        <Tooltip :message="$t('studio.tooltips.toggle-palette')" position="top">
+          <Button
+            :label="$t('studio.show-palette')"
+            variant="ghost"
+            :active="showPanel === 'palette'"
+            @click="togglePanel('palette')"
+          >
+            <Icon i="palette" />
+          </Button>
+        </Tooltip>
+        <Tooltip :message="$t('studio.tooltips.toggle-layers')" position="top">
+          <Button
+            :label="$t('studio.show-layers')"
+            variant="ghost"
+            :active="showPanel === 'layers'"
+            @click="togglePanel('layers')"
+          >
+            <Icon i="layers" />
+          </Button>
+        </Tooltip>
+      </div>
+    </aside>
   </div>
+  <SettingsMenu class="settings-menu" v-if="showOverlay === 'settings-menu'" />
   <LayerSettings
     v-if="documentStore.layers.settings"
+    class="layer-settings"
     :layer="documentStore.layers.settings"
   />
   <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" />
@@ -338,6 +430,50 @@ const sidePanelMessage = computed(() => {
     @created="showDocumentCreation = false"
   />
   <ColorPicker v-if="showColorPicker" @close="toggleColorPicker()" />
+  <FloatingPanel
+    v-if="showPanel === 'palette'"
+    :title="$t('palette')"
+    class="single-panel-palette"
+    @close="showPanel = null"
+  >
+    <template #actions>
+      <Tooltip
+        :message="$t('studio.tooltips.more-options')"
+        position="bottom left"
+      >
+        <Button
+          :label="$t('studio.more-options')"
+          variant="ghost"
+          @click="toggleOverlay('palette-options')"
+        >
+          <Icon i="more" />
+        </Button>
+      </Tooltip>
+    </template>
+    <Palette />
+  </FloatingPanel>
+  <FloatingPanel
+    v-if="showPanel === 'layers'"
+    :title="$t('studio.layers')"
+    class="single-panel-layers"
+    @close="showPanel = null"
+  >
+    <template #actions>
+      <Tooltip
+        :message="$t('studio.tooltips.new-layer')"
+        position="bottom left"
+      >
+        <Button
+          :label="$t('studio.add-layer')"
+          variant="ghost"
+          @click="documentStore.addLayer"
+        >
+          <Icon i="add-item" />
+        </Button>
+      </Tooltip>
+    </template>
+    <Layers />
+  </FloatingPanel>
   <ExportMenu v-if="showExportMenu" @close="toggleExportMenu()" />
 </template>
 
@@ -354,7 +490,7 @@ const sidePanelMessage = computed(() => {
 
 .TOOLS,
 .ANIMATION,
-.SIDEBAR {
+aside {
   background-color: var(--colorLayer1);
 }
 
@@ -411,15 +547,22 @@ const sidePanelMessage = computed(() => {
   align-content: start;
 }
 
-.SIDEBAR {
-  grid-column: 4;
-  grid-row: 1 / span 2;
+aside {
   z-index: 5;
   display: grid;
   padding: var(--spaceS);
   box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
   gap: var(--spaceS);
   align-content: space-between;
+}
+.SIDEBAR-DESKTOP {
+  grid-column: 4;
+  grid-row: 1 / span 2;
+}
+
+.layer-settings {
+  top: calc(var(--widthToolbar) + var(--spaceS));
+  right: calc(var(--widthSidebar) + var(--widthToolbar) + var(--spaceS));
 }
 
 .group {
@@ -456,15 +599,78 @@ const sidePanelMessage = computed(() => {
   z-index: 1000;
 }
 
-@media (max-width: 1024px) {
+.SIDEBAR-MOBILE {
+  display: none;
+  grid-auto-flow: column;
+  grid-column: 1 / span 3;
+  grid-row: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.SIDEBAR-MOBILE .group {
+  grid-auto-flow: column;
+}
+
+.settings-menu {
+  top: var(--spaceS);
+  right: calc(var(--spaceXL) + var(--spaceM));
+}
+
+.single-panel-layers,
+.single-panel-palette {
+  top: 4.5rem;
+  right: var(--spaceS);
+  display: none;
+}
+
+@media (orientation: portrait) {
+  .CONTAINER {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+  .SETTINGS {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+  }
+  .TOOLS {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .SIDEBAR-DESKTOP {
+    display: none;
+  }
+  .SIDEBAR-MOBILE {
+    display: grid;
+  }
+  .PANELS {
+    display: none;
+  }
+  .settings-menu {
+    top: 4.5rem;
+    right: auto;
+    left: var(--spaceS);
+  }
+  .single-panel-palette,
+  .single-panel-layers {
+    display: flex;
+  }
+
+  .layer-settings {
+    right: calc(var(--widthSidebar) + var(--spaceS) * 2);
+  }
+}
+
+@media (max-width: 1023px) {
+  .zoom-button,
   .zoom-divider {
     display: none;
   }
 }
 
-@media (orientation: portrait) {
+/* @media (orientation: portrait) {
   .PANELS {
     grid-row: 2;
   }
-}
+} */
 </style>
