@@ -839,7 +839,7 @@ export const useDocumentStore = defineStore('document', () => {
               rectangle(
                 x - sizeHalf,
                 y - sizeHalf,
-                x + sizeHalf - 1 ,
+                x + sizeHalf - 1,
                 y + sizeHalf - 1,
                 toolColor,
                 false,
@@ -1055,12 +1055,29 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  function drawTransparentBackground() {
+    const context = CanvasContext2D.get(canvas.value)
+    const tileSize = 8 // Adjust the size of each tile as needed
+    const numTilesX = Math.ceil(context.canvas.width / tileSize)
+    const numTilesY = Math.ceil(context.canvas.height / tileSize)
+
+    for (let i = 0; i < numTilesX; i++) {
+      for (let j = 0; j < numTilesY; j++) {
+        const isEvenTile = (i + j) % 2 === 0
+        const tileX = i * tileSize
+        const tileY = j * tileSize
+
+        context.fillStyle = isEvenTile ? '#cccccc' : '#999999'
+        context.fillRect(tileX, tileY, tileSize, tileSize)
+      }
+    }
+  }
+
   function redraw() {
     const context = CanvasContext2D.get(canvas.value)
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-    // createPattern --> fillRect
-    // context.drawImage(el fondo transparente)
     const frame = animation.current
+    drawTransparentBackground()
     for (const layer of reverse(layers.list)) {
       if (!layer.visible.value) {
         continue

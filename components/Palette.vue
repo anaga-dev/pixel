@@ -100,6 +100,7 @@ watch(
   grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
   gap: 2px;
   padding: 2px;
+  background-color: var(--colorLayer1);
 }
 
 .remove-area {
