@@ -35,6 +35,24 @@ const options = {
   delayOnTouchOnly: true
 }
 
+const onPointerOver = (e) => {
+  addEventListener('keydown', handleKeyDown)
+  addEventListener('keyup', handleKeyUp)
+}
+
+const onPointerOut = (e) => {
+  removeEventListener('keydown', handleKeyDown)
+  removeEventListener('keyup', handleKeyUp)
+}
+
+const handleKeyDown = (e) => {
+  removeMode.value = documentStore.keys.current.has('control')
+}
+
+const handleKeyUp = (e) => {
+  removeMode.value = false
+}
+
 watch(
   () => current.style.value,
   (newValue) => {
@@ -44,22 +62,6 @@ watch(
 </script>
 
 <template>
-  <!--   <div class="Palette" :class="{ remove: removeMode }">
-    <PaletteColor
-      v-for="(color, index) in palette.colors"
-      :key="index"
-      :index="index"
-      :color="color"
-      :active="activeColor === color"
-      @select="onSelectColor(color)"
-      @remove="onRemoveColor(index)"
-      draggable="true"
-      @dragstart="onDragStart(index, color)"
-      @dragend="onDragEnd"
-      @dragover="onDragOver"
-      @drop="onDrop"
-    />
-  </div> -->
   <Sortable
     class="Palette"
     :class="{ remove: removeMode }"
@@ -67,6 +69,8 @@ watch(
     :list="documentStore.palette.colors"
     :options="options"
     @end="handleUpdatePalette"
+    @pointerover="onPointerOver"
+    @pointerout="onPointerOut"
   >
     <template #item="{ element, index }">
       <PaletteColor
@@ -110,5 +114,9 @@ watch(
 .remove-area.over {
   background-color: var(--colorShade);
   color: var(--colorTextPrimary);
+}
+
+.remove {
+  cursor: url('@/assets/cursors/delete.svg') 12 12, auto;
 }
 </style>
