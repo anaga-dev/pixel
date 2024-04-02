@@ -22,11 +22,13 @@ const props = defineProps({
   offline: Boolean
 })
 
+const { moving } = storeToRefs(documentStore)
+const { startMoving, stopMoving } = documentStore
+
 const {
   showPanel,
   showSidePanel,
   ctrlDown,
-  spaceDown,
   showPalette,
   showLayers,
   showOverlay,
@@ -76,14 +78,14 @@ useWheel(
 useTouch(
   (e) => {
     if (e.type === 'touchend' || e.type === 'touchcancel') {
-      documentStore.stopMoving()
+      moving.value = false
     }
     if (e.touches < MIN_TOUCHES) {
-      documentStore.stopMoving()
+      moving.value = false
       return
     }
     if (e.type === 'touchstart') {
-      documentStore.startMoving()
+      moving.value = true
     }
     const { x: currentX, y: currentY } = e.currentCenter
     const { x: previousX, y: previousY } = e.previousCenter
@@ -136,6 +138,17 @@ useKeyShortcuts(
 onKeyDown('Control', () => (ctrlDown.value = true))
 onKeyUp('Control', () => (ctrlDown.value = false))
 
+onKeyDown(' ', () => {
+  startMoving()
+})
+onKeyUp(' ', () => stopMoving())
+
+usePointer(board, (e) => {
+  if (e.type === 'pointermove' && moving.value) {
+    documentStore.moveBy(e.movementX, e.movementY)
+  }
+})
+
 function loadPalette() {
   documentStore.loadPalette()
   uiStore.showOverlay = null
@@ -170,7 +183,7 @@ const sidePanelMessage = computed(() => {
     <div class="TOOLS">
       <Tools />
     </div>
-    <main class="BOARD" ref="board" :class="{ dragging: spaceDown }">
+    <main class="BOARD" ref="board" :class="{ dragging: moving }">
       <Document v-if="documentStore.canvas" />
       <Selection
         v-if="
@@ -212,7 +225,7 @@ const sidePanelMessage = computed(() => {
         >
           <template #actions>
             <Tooltip
-              :message="$t('studio.tooltips.more-options')"
+              message="studio.tooltips.more-options"
               position="bottom left"
             >
               <Button
@@ -246,7 +259,7 @@ const sidePanelMessage = computed(() => {
         >
           <template #actions>
             <Tooltip
-              :message="$t('studio.tooltips.new-layer')"
+              message="studio.tooltips.new-layer"
               position="bottom left"
             >
               <Button
@@ -272,14 +285,14 @@ const sidePanelMessage = computed(() => {
           <Icon i="menu" />
         </Button>
         <Divider />
-        <Tooltip :message="$t(sidePanelMessage)" position="left bottom">
+        <Tooltip :message="sidePanelMessage" position="left bottom">
           <Button variant="ghost" @click="toggleSidePanel">
             <Icon :i="icon" />
           </Button>
         </Tooltip>
         <Tooltip
           v-if="offline"
-          :message="$t('studio.tooltips.offline')"
+          message="studio.tooltips.offline"
           position="left bottom"
           class="badge-offline"
         >
@@ -288,10 +301,7 @@ const sidePanelMessage = computed(() => {
         </Tooltip>
       </div>
       <div class="group">
-        <Tooltip
-          :message="$t('studio.tooltips.symmetry')"
-          position="left bottom"
-        >
+        <Tooltip message="studio.tooltips.symmetry" position="left bottom">
           <Button
             :label="$t('studio.symmetry-aid')"
             variant="ghost"
@@ -310,9 +320,7 @@ const sidePanelMessage = computed(() => {
           </Button>
         </Tooltip>
         <Divider />
-        <Tooltip :message="$t('studio.tooltips.zoom')" position="left bottom">
-          <Zoom class="zoom-button" />
-        </Tooltip>
+        <Zoom class="zoom-button" />
         <Divider class="zoom-divider" />
         <ToolButton
           tooltipText="studio.tooltips.undo"
@@ -347,17 +355,13 @@ const sidePanelMessage = computed(() => {
       <div class="group">
         <Tooltip
           v-if="offline"
-          :message="$t('studio.tooltips.offline')"
+          message="studio.tooltips.offline"
           position="bottom"
           class="badge-offline"
         >
-          :message="$t('studio.tooltips.offline')" position="left bottom" >
           <Icon class="badge-offline" i="offline" />
         </Tooltip>
-        <Tooltip
-          :message="$t('studio.tooltips.symmetry')"
-          position="bottom"
-        >
+        <Tooltip message="studio.tooltips.symmetry" position="bottom">
           <Button
             :label="$t('studio.symmetry-aid')"
             variant="ghost"
@@ -395,7 +399,10 @@ const sidePanelMessage = computed(() => {
           @click="documentStore.redo()"
         />
         <Divider vertical />
-        <Tooltip :message="$t('studio.tooltips.toggle-palette')" position="left bottom">
+        <Tooltip
+          message="studio.tooltips.toggle-palette"
+          position="left bottom"
+        >
           <Button
             :label="$t('studio.show-palette')"
             variant="ghost"
@@ -405,7 +412,7 @@ const sidePanelMessage = computed(() => {
             <Icon i="palette" />
           </Button>
         </Tooltip>
-        <Tooltip :message="$t('studio.tooltips.toggle-layers')" position="left bottom">
+        <Tooltip message="studio.tooltips.toggle-layers" position="left bottom">
           <Button
             :label="$t('studio.show-layers')"
             variant="ghost"
@@ -424,7 +431,10 @@ const sidePanelMessage = computed(() => {
     class="layer-settings"
     :layer="documentStore.layers.settings"
   />
-  <SymmetrySettings v-if="showOverlay === 'symmetry-settings'" class="symmetry-settings" />
+  <SymmetrySettings
+    v-if="showOverlay === 'symmetry-settings'"
+    class="symmetry-settings"
+  />
   <DocumentCreate
     v-if="showDocumentCreation"
     @created="showDocumentCreation = false"

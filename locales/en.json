@@ -132,6 +132,9 @@
     "new-palette": "New palette",
     "clear-palette": "Clear palette",
     "tiling": "Tiling",
+    "more-options": "More options",
+    "show-palette": "Show palette",
+    "show-layers": "Show layers",
     "symmetry": {
       "title": "Symmetry",
       "horizontal": "Horizontal",

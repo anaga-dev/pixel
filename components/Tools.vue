@@ -66,7 +66,7 @@ const { tooltip } = storeToRefs(uiStore)
       :active="documentStore.tool === Tool.SELECT"
       @click="documentStore.setTool(Tool.SELECT)"
     />
-    <Tooltip :message="$t('studio.tooltips.color-picker')" position="right">
+    <Tooltip message="studio.tooltips.color-picker" position="right">
       <ToolColor :color="documentStore.color" />
     </Tooltip>
     <ToolButton

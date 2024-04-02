@@ -12,7 +12,7 @@
             :style="{ backgroundColor: current.style.value }"
           ></div>
         </div>
-        <Tooltip :message="$t('studio.tooltips.add-to-palette')" position="right">
+        <Tooltip message="studio.tooltips.add-to-palette" position="right">
           <Button :label="$t('studio.add-to-palette')" variant="ghost" @click="documentStore.addPaletteColor()">
             <Icon i="add-to-palette" />
           </Button>

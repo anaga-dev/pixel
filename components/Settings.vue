@@ -22,7 +22,7 @@ const sidePanelMessage = computed(() => {
   <section class="Settings">
     <ToolSettings :tool="documentStore.tool" />
     <Divider v-if="documentStore.selection.visible" vertical transparent />
-    <Tooltip v-if="documentStore.selection.visible" :message="$t('studio.tooltips.deselect')" position="bottom">
+    <Tooltip v-if="documentStore.selection.visible" message="studio.tooltips.deselect" position="bottom">
         <Button
           variant="setting"
           :label="$t('studio.deselect')"

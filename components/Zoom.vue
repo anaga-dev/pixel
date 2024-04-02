@@ -1,41 +1,43 @@
 <template>
   <section class="Zoom">
-    <Button
-      :label="$t('studio.zoom')"
-      variant="ghost"
-      @click.stop="toggleOverlay('zoom-settings')"
+    <Tooltip message="studio.tooltips.zoom" position="left bottom">
+      <Button
+        :label="$t('studio.zoom')"
+        variant="ghost"
+        @click.stop="toggleOverlay('zoom-settings')"
+      >
+        <Icon i="zoom-in" />
+      </Button>
+    </Tooltip>
+    <Dropdown
+      v-if="showOverlay === 'zoom-settings'"
+      class="ZoomMenu"
+      @close="toggleOverlay('zoom-settings')"
     >
-      <Icon i="zoom-in" />
-    </Button>
+      <h3>{{ $t('studio.zoom') }}</h3>
+      <Button
+        :label="$t('studio.zoom-in')"
+        @click="documentStore.zoom.increase()"
+      >
+        <Icon i="zoom-in" />
+        {{ $t('studio.zoom-in') }}
+      </Button>
+      <Button
+        :label="$t('studio.zoom-out')"
+        @click="documentStore.zoom.decrease()"
+      >
+        <Icon i="zoom-out" />
+        {{ $t('studio.zoom-out') }}
+      </Button>
+      <Button
+        :label="$t('studio.zoom-reset')"
+        @click="documentStore.zoom.reset()"
+      >
+        <Icon i="zoom-reset" />
+        {{ $t('studio.zoom-reset') }}
+      </Button>
+    </Dropdown>
   </section>
-  <Dropdown
-    v-if="showOverlay === 'zoom-settings'"
-    class="ZoomMenu"
-    @close="toggleOverlay('zoom-settings')"
-  >
-    <h3>{{ $t('studio.zoom') }}</h3>
-    <Button
-      :label="$t('studio.zoom-in')"
-      @click="documentStore.zoom.increase()"
-    >
-      <Icon i="zoom-in" />
-      {{ $t('studio.zoom-in') }}
-    </Button>
-    <Button
-      :label="$t('studio.zoom-out')"
-      @click="documentStore.zoom.decrease()"
-    >
-      <Icon i="zoom-out" />
-      {{ $t('studio.zoom-out') }}
-    </Button>
-    <Button
-      :label="$t('studio.zoom-reset')"
-      @click="documentStore.zoom.reset()"
-    >
-      <Icon i="zoom-reset" />
-      {{ $t('studio.zoom-reset') }}
-    </Button>
-  </Dropdown>
 </template>
 
 <script setup>
