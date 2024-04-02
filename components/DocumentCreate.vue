@@ -54,7 +54,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <Modal :name="$t('create-new-document')" nondismissable>
+  <Modal :title="$t('create-new-document')" nondismissable>
     <form class="form" @submit.prevent="onSubmit">
       <!--
 
