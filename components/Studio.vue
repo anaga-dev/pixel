@@ -200,7 +200,7 @@ const sidePanelMessage = computed(() => {
         <Divider />
         <Panel
           :title="$t('studio.layers')"
-          :expanded="showLayers"
+          :expanded="uiStore.showLayers"
           scrollable
           @toggle="toggleLayers"
         >
