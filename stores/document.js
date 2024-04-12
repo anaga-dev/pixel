@@ -1091,6 +1091,8 @@ export const useDocumentStore = defineStore('document', () => {
 
   function redrawCursor() {
     const context = CanvasContext2D.get(board.value, '2d')
+
+    // TODO: usar la forma y tamaño del pincel en Pencil y Eraser.
     context.fillStyle = tool.value === Tool.PENCIL ? color.value : '#f0f'
     context.fillRect(
       (drawingPointer.current.x.value / width.value) * drawingRect.width.value +

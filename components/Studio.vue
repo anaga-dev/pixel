@@ -157,7 +157,7 @@ const sidePanelMessage = computed(() => {
     </div>
     <Transition name="slide">
       <section
-        v-if="uiStore.showPanel"
+        v-if="uiStore.showSidePanel"
         class="PANELS"
       >
         <Panel
@@ -511,18 +511,6 @@ aside {
   width: 100%;
   height: 100%;
 }
-
-/*
-.BOARD {
-  grid-column: 1 / span 4;
-  grid-row: 1 / span 3;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background-color: var(--colorLayer0);
-  z-index: 0;
-}
-*/
 
 .BOARD:not(.dragging) {
   cursor: url('@/assets/cursors/crosshair.svg') 12 12, auto;
