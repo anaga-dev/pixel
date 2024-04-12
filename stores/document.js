@@ -100,12 +100,7 @@ export const useDocumentStore = defineStore('document', () => {
   const animation = useAnimationStore()
   const pointer = usePointer()
   const drawingRect = useDrawingRect(board, position, zoom, width, height)
-  const drawingPointer = useDrawingPointer(
-    pointer,
-    drawingRect,
-    width,
-    height
-  )
+  const drawingPointer = useDrawingPointer(pointer, drawingRect, width, height)
 
   // TODO: Meter toda esta lógica de redrawing
   // en una función o algo así y que el watcher
@@ -475,28 +470,29 @@ export const useDocumentStore = defineStore('document', () => {
     dither = null,
     mask = null
   ) {
-    doPaintOperation((imageData) =>
-      doSymmetry4Operation(
-        (imageData, x1, y1, x2, y2, color, dither, mask) =>
-          ImageDataUtils.line(
-            imageData,
-            x1,
-            y1,
-            x2,
-            y2,
-            Color.parseAsUint8(color),
-            dither,
-            mask
-          ),
-        imageData,
-        x1,
-        y1,
-        x2,
-        y2,
-        color,
-        dither,
-        mask
-      ),
+    doPaintOperation(
+      (imageData) =>
+        doSymmetry4Operation(
+          (imageData, x1, y1, x2, y2, color, dither, mask) =>
+            ImageDataUtils.line(
+              imageData,
+              x1,
+              y1,
+              x2,
+              y2,
+              Color.parseAsUint8(color),
+              dither,
+              mask
+            ),
+          imageData,
+          x1,
+          y1,
+          x2,
+          y2,
+          color,
+          dither,
+          mask
+        ),
       isTemp
     )
   }
@@ -526,29 +522,30 @@ export const useDocumentStore = defineStore('document', () => {
         x2 = x1 + absHeight * Math.sign(width)
       }
     }
-    doPaintOperation((imageData) =>
-      doSymmetry4Operation(
-        (imageData, x1, y1, x2, y2, color, dither, mask) =>
-          ImageDataUtils.rect(
-            imageData,
-            x1,
-            y1,
-            x2,
-            y2,
-            Color.parseAsUint8(color),
-            dither,
-            mask,
-            isFilled
-          ),
-        imageData,
-        x1,
-        y1,
-        x2,
-        y2,
-        color,
-        dither,
-        mask
-      ),
+    doPaintOperation(
+      (imageData) =>
+        doSymmetry4Operation(
+          (imageData, x1, y1, x2, y2, color, dither, mask) =>
+            ImageDataUtils.rect(
+              imageData,
+              x1,
+              y1,
+              x2,
+              y2,
+              Color.parseAsUint8(color),
+              dither,
+              mask,
+              isFilled
+            ),
+          imageData,
+          x1,
+          y1,
+          x2,
+          y2,
+          color,
+          dither,
+          mask
+        ),
       isTemp
     )
   }
@@ -578,29 +575,30 @@ export const useDocumentStore = defineStore('document', () => {
         x2 = x1 + absHeight * Math.sign(width)
       }
     }
-    doPaintOperation((imageData) =>
-      doSymmetry4Operation(
-        (imageData, x1, y1, x2, y2, color, dither, mask) =>
-          ImageDataUtils.ellipse(
-            imageData,
-            x1,
-            y1,
-            x2,
-            y2,
-            Color.parseAsUint8(color),
-            dither,
-            mask,
-            isFilled
-          ),
-        imageData,
-        x1,
-        y1,
-        x2,
-        y2,
-        color,
-        dither,
-        mask
-      ),
+    doPaintOperation(
+      (imageData) =>
+        doSymmetry4Operation(
+          (imageData, x1, y1, x2, y2, color, dither, mask) =>
+            ImageDataUtils.ellipse(
+              imageData,
+              x1,
+              y1,
+              x2,
+              y2,
+              Color.parseAsUint8(color),
+              dither,
+              mask,
+              isFilled
+            ),
+          imageData,
+          x1,
+          y1,
+          x2,
+          y2,
+          color,
+          dither,
+          mask
+        ),
       isTemp
     )
   }
@@ -659,7 +657,13 @@ export const useDocumentStore = defineStore('document', () => {
     const mask = selection.getMaskImageData()
 
     if (pencil.size === 1) {
-      putColor(drawingPointer.current.x.value, drawingPointer.current.y.value, toolColor, dither, mask)
+      putColor(
+        drawingPointer.current.x.value,
+        drawingPointer.current.y.value,
+        toolColor,
+        dither,
+        mask
+      )
     } else {
       const sizeHalf = toolSize / 2
       const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
@@ -712,7 +716,13 @@ export const useDocumentStore = defineStore('document', () => {
 
     if (e.type === 'pointerdown') {
       if (pencil.size === 1) {
-        putColor(drawingPointer.current.x.value, drawingPointer.current.y.value, toolColor, dither, mask)
+        putColor(
+          drawingPointer.current.x.value,
+          drawingPointer.current.y.value,
+          toolColor,
+          dither,
+          mask
+        )
       } else {
         const sizeHalf = toolSize / 2
         const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
@@ -949,10 +959,7 @@ export const useDocumentStore = defineStore('document', () => {
     // We need to check if we're moving
     // the canvas.
     if (moving.value || pointer.buttons.value === 4) {
-      moveBy(
-        pointer.movement.x.value,
-        pointer.movement.y.value
-      )
+      moveBy(pointer.movement.x.value, pointer.movement.y.value)
       return
     }
 
@@ -991,7 +998,7 @@ export const useDocumentStore = defineStore('document', () => {
       )
     }
     */
-   redrawAll()
+    redrawAll()
   }
 
   function redrawTransparentBackground() {
@@ -1058,6 +1065,57 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   /**
+   * Redraws pixel grid.
+   */
+  function redrawGrid() {
+    if (zoom.current.value > 12) {
+      const context = CanvasContext2D.get(board.value, '2d')
+      context.globalCompositeOperation = 'difference'
+      context.beginPath()
+      for (let x = 0; x < width.value; x++) {
+        context.moveTo(x * zoom.current.value, 0)
+        context.lineTo(
+          x * zoom.current.value,
+          height.value * zoom.current.value
+        )
+      }
+      for (let y = 0; y < height.value; y++) {
+        context.moveTo(0, y * zoom.current.value)
+        context.lineTo(width.value * zoom.current.value, y * zoom.current.value)
+      }
+      // TODO: Meter esto en algún lugar donde se pueda configurar.
+      context.strokeStyle = 'rgba(128, 128, 128, 0.4 )'
+      context.stroke()
+    }
+  }
+
+  function redrawCursor() {
+    const context = CanvasContext2D.get(board.value, '2d')
+    context.fillStyle = tool.value === Tool.PENCIL ? color.value : '#f0f'
+    context.fillRect(
+      (drawingPointer.current.x.value / width.value) * drawingRect.width.value +
+        drawingRect.x.value,
+      (drawingPointer.current.y.value / height.value) *
+        drawingRect.height.value +
+        drawingRect.y.value,
+      drawingRect.width.value / width.value,
+      drawingRect.height.value / height.value
+    )
+    context.strokeStyle = '#fff'
+    context.globalCompositeOperation = 'difference'
+    context.strokeRect(
+      (drawingPointer.current.x.value / width.value) * drawingRect.width.value +
+        drawingRect.x.value,
+      (drawingPointer.current.y.value / height.value) *
+        drawingRect.height.value +
+        drawingRect.y.value,
+      drawingRect.width.value / width.value,
+      drawingRect.height.value / height.value
+    )
+    context.globalCompositeOperation = 'source-over'
+  }
+
+  /**=
    * Redraws everything.
    */
   function redrawAll() {
@@ -1084,24 +1142,14 @@ export const useDocumentStore = defineStore('document', () => {
     // drawn OVER the pixel artwork.
     context.save()
     context.translate(context.canvas.width / 2, context.canvas.height / 2)
-    context.translate(position.x.value * zoom.current.value, position.y.value *zoom.current.value)
+    context.translate(
+      position.x.value * zoom.current.value,
+      position.y.value * zoom.current.value
+    )
 
     // TODO: Convertir esto en una constante o en un parámetro
     // configurable.
-    if (zoom.current.value > 12) {
-      context.beginPath()
-      for (let x = 0; x < width.value; x++) {
-        context.moveTo(x * zoom.current.value, 0)
-        context.lineTo(x * zoom.current.value, height.value * zoom.current.value)
-      }
-      for (let y = 0; y < height.value; y++) {
-        context.moveTo(0, y * zoom.current.value)
-        context.lineTo(width.value * zoom.current.value, y * zoom.current.value)
-      }
-      // TODO: Meter esto en algún lugar donde se pueda configurar.
-      context.strokeStyle = '#333'
-      context.stroke()
-    }
+    redrawGrid()
 
     context.restore()
 
@@ -1113,13 +1161,7 @@ export const useDocumentStore = defineStore('document', () => {
       drawingRect.height.value
     )
 
-    context.strokeStyle = '#0ff'
-    context.fillRect(
-      drawingPointer.current.x.value / width.value * drawingRect.width.value + drawingRect.x.value,
-      drawingPointer.current.y.value / height.value * drawingRect.height.value + drawingRect.y.value,
-      drawingRect.width.value / width.value,
-      drawingRect.height.value / height.value
-    )
+    redrawCursor()
   }
 
   /**
