@@ -1,17 +1,3 @@
-<template>
-  <div
-    ref="container"
-    class="HuePicker"
-    @pointerdown="startDragging"
-  >
-    <!-- Picker -->
-    <div
-      class="bar"
-      :style="{ left: `${((hue / 360) * 100)}%` }"
-    />
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   color: {
@@ -19,9 +5,11 @@ const props = defineProps({
     required: true
   }
 })
+const emit = defineEmits(['update'])
 
-const { hue } = props.color
+const { hue, style } = props.color
 
+const computedStyle = computed(() => ({ left: `${((hue.value / 360) * 100)}%` }))
 const container = ref()
 const boundingClientRect = computed(() => container.value.getBoundingClientRect())
 
@@ -38,12 +26,29 @@ function updateHue(e) {
   hue.value = Math.max(0, Math.min(360, Math.round((e.clientX - left) / width * 360)))
 }
 
-function stopDragging() {
+function stopDragging(e) {
   window.removeEventListener('pointermove', updateHue)
   window.removeEventListener('pointerup', stopDragging)
   window.removeEventListener('pointerleave', stopDragging)
+  if (e.type === 'pointerup') {
+    emit('update', style.value)
+  }
 }
 </script>
+
+<template>
+  <div
+    ref="container"
+    class="HuePicker"
+    @pointerdown="startDragging"
+  >
+    <!-- Picker -->
+    <div
+      class="bar"
+      :style="computedStyle"
+    />
+  </div>
+</template>
 
 <style scoped>
 .HuePicker {
@@ -68,6 +73,7 @@ function stopDragging() {
 }
 
 .bar {
+  user-select: none;
   pointer-events: none;
   position: absolute;
   width: 2px;
