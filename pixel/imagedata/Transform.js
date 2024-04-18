@@ -19,7 +19,7 @@ export function translate(imageData, tx, ty, tiling) {
     dy = ty < 0 ? Math.ceil(ty) : Math.floor(tx)
   }
   const source = new Uint32Array(imageData.data.buffer)
-  const target = new Uint32Array(imageData.data.slice().buffer)
+  const target = new Uint32Array(imageData.data.byteLength / 4)
   // Generate the translated buffer.
   for (let y = 0; y < imageData.height; y++) {
     for (let x = 0; x < imageData.width; x++) {
@@ -49,11 +49,11 @@ export function translate(imageData, tx, ty, tiling) {
 }
 
 export function rotate(imageData, angle, rx, ry, tiling) {
-
+  console.warn('TO BE IMPLEMENTED')
 }
 
 export function scale(imageData, sx, sy, tiling) {
-
+  console.warn('TO BE IMPLEMENTED')
 }
 
 /**
@@ -82,21 +82,13 @@ function flipGetSourceImageData(targetImageData, sourceImageData) {
  */
 export function flipHorizontally(targetImageData, sourceImageData) {
   const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
-  const limits = getImageLimits(imageData)
-
-  if (limits) {
-    const { x, width } = limits
-    const minX = x
-    const maxX = x + width - 1
-    for (let y = 0; y < imageData.height; y++) {
-      for (let x = minX; x <= (minX + maxX) / 2; x++) {
-        const fx = maxX - (x - minX)
-        const leftColor = getColor(imageData, x, y)
-        const rightColor = getColor(imageData, fx, y)
-
-        putColor(targetImageData, x, y, rightColor)
-        putColor(targetImageData, fx, y, leftColor)
-      }
+  const source = new Uint32Array(imageData.data.buffer)
+  const target = new Uint32Array(targetImageData.data.buffer)
+  for (let y = 0; y < imageData.height; y++) {
+    for (let x = 0; x < imageData.width; x++) {
+      const sourceOffset = y * imageData.width + x
+      const targetOffset = y * imageData.width + (imageData.width - 1 - x)
+      target[targetOffset] = source[sourceOffset]
     }
   }
   return targetImageData
@@ -111,22 +103,16 @@ export function flipHorizontally(targetImageData, sourceImageData) {
  */
 export function flipVertically(targetImageData, sourceImageData) {
   const imageData = flipGetSourceImageData(targetImageData, sourceImageData)
-  const limits = getImageLimits(imageData)
-
-  if (limits) {
-    const { y, height } = limits
-    const minY = y
-    const maxY = y + height - 1
-    for (let x = 0; x < imageData.width; x++) {
-      for (let y = minY; y <= (minY + maxY) / 2; y++) {
-        const fy = maxY - (y - minY)
-        const topColor = getColor(imageData, x, y)
-        const bottomColor = getColor(imageData, x, fy)
-
-        putColor(targetImageData, x, y, bottomColor)
-        putColor(targetImageData, x, fy, topColor)
-      }
-    }
+  const source = new Uint32Array(imageData.data.buffer)
+  const target = new Uint32Array(targetImageData.data.buffer)
+  for (let y = 0; y < imageData.height; y++) {
+    target.set(
+      source.subarray(
+        y * imageData.width,
+        y * imageData.width + imageData.width
+      ),
+      (imageData.height - 1 - y) * imageData.width
+    )
   }
   return targetImageData
 }

@@ -6,6 +6,9 @@ export const useShapeStore = defineStore('shape', () => {
   const lockAspectRatio = ref(false)
 
   function setType(shapeType) {
+    if (!Object.values(ShapeType).includes(shapeType)) {
+      throw new Error(`Invalid shape type: ${shapeType}`)
+    }
     type.value = shapeType
   }
 

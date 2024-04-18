@@ -26,22 +26,22 @@ const container = ref()
 const boundingClientRect = computed(() => container.value.getBoundingClientRect())
 
 function startDragging(e) {
-  const { width } = boundingClientRect.value
-  hue.value = Math.max(0, Math.min(360, Math.round(e.offsetX / width * 360)))
+  const { width, left } = boundingClientRect.value
+  hue.value = Math.max(0, Math.min(360, Math.round((e.clientX - left) / width * 360)))
   window.addEventListener('pointermove', updateHue)
   window.addEventListener('pointerup', stopDragging, { once: true })
-  container.addEventListener('pointerleave', stopDragging, { once: true })
+  window.addEventListener('pointerleave', stopDragging, { once: true })
 }
 
 function updateHue(e) {
-  const { width } = boundingClientRect.value
-  hue.value = Math.max(0, Math.min(360, Math.round(e.offsetX / width * 360)))
+  const { width, left } = boundingClientRect.value
+  hue.value = Math.max(0, Math.min(360, Math.round((e.clientX - left) / width * 360)))
 }
 
 function stopDragging() {
   window.removeEventListener('pointermove', updateHue)
   window.removeEventListener('pointerup', stopDragging)
-  container.removeEventListener('pointerleave', stopDragging)
+  window.removeEventListener('pointerleave', stopDragging)
 }
 </script>
 
@@ -64,6 +64,7 @@ function stopDragging() {
   );
   height: var(--spaceL);
   position: relative;
+  user-select: none;
 }
 
 .bar {

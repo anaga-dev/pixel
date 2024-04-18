@@ -97,9 +97,6 @@ useKeyShortcuts(
   ])
 )
 
-onKeyDown('Control', () => (ctrlDown.value = true))
-onKeyUp('Control', () => (ctrlDown.value = false))
-
 onKeyDown(' ', () => documentStore.startMoving())
 onKeyUp(' ', () => documentStore.stopMoving())
 
@@ -202,7 +199,7 @@ const sidePanelMessage = computed(() => {
           :title="$t('studio.layers')"
           :expanded="uiStore.showLayers"
           scrollable
-          @toggle="toggleLayers"
+          @toggle="uiStore.toggleLayers"
         >
           <template #actions>
             <Tooltip

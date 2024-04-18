@@ -3,7 +3,8 @@ import Color from '@/pixel/color/Color'
 import ColorMode from '@/pixel/enums/ColorMode'
 import Canvas from '@/pixel/canvas/Canvas'
 import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
-import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils'
+import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils.js'
+import Transform from '@/pixel/imagedata/Transform.js'
 import SymmetryAxis from '@/pixel/enums/SymmetryAxis'
 import Tool from '@/pixel/enums/Tool'
 import PencilShape from '@/pixel/enums/PencilShape'
@@ -27,6 +28,8 @@ import OpenRaster from '@/pixel/formats/images/OpenRaster.js'
 import WebImage from '@/pixel/formats/images/WebImage.js'
 
 import { reverse } from '@/pixel/generators/reverse'
+import { symmetryAxis } from '@/pixel/symmetry/axis.js'
+import { symmetryPoint } from '@/pixel/symmetry/point.js'
 
 import { usePoint } from '@/composables/usePoint'
 import { useRect } from '@/composables/useRect'
@@ -148,15 +151,11 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setPencilShape(shape) {
-    pencil.shape = shape
-    if (pencil.shape !== PencilShape.DITHER) {
-      pencil.dither.level = 0
-      pencil.dither.reset()
-    }
+    pencil.setShape(shape)
   }
 
   function setPencilSize(size) {
-    pencil.size = size
+    pencil.setSize(size)
   }
 
   function setPencilDitherLevel(level) {
@@ -164,11 +163,11 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setEraserShape(shape) {
-    eraser.shape = shape
+    eraser.setShape(shape)
   }
 
   function setEraserSize(size) {
-    eraser.size = size
+    eraser.setSize(size)
   }
 
   function setEraserDitherLevel(level) {
@@ -192,11 +191,11 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setFillType(type) {
-    fill.type.value = type
+    fill.setType(type)
   }
 
   function toggleFillContiguous() {
-    fill.contiguous = !fill.contiguous
+    fill.setContiguous(!fill.contiguous)
   }
 
   function setShapeType(type) {
@@ -262,6 +261,12 @@ export const useDocumentStore = defineStore('document', () => {
 
   function toggleDropperCompositeColor() {
     dropper.value.selectCompositeColor = !dropper.value.selectCompositeColor
+  }
+
+  function doClearTemp() {
+    ImageDataUtils.clear(drawingImageData.value, [0, 0, 0, 0])
+    const drawingContext = CanvasContext2D.get(drawingCanvas.value)
+    drawingContext.putImageData(drawingImageData.value, 0, 0)
   }
 
   function doTempPaintOperation(callback) {
@@ -345,25 +350,9 @@ export const useDocumentStore = defineStore('document', () => {
     dither,
     mask
   ) {
-    callback(imageData, x, y, color, dither, mask)
-    if (symmetry.axis === null) {
-      return
-    }
-    if (symmetry.axis === SymmetryAxis.HORIZONTAL) {
-      callback(imageData, width.value - 1 - x, y, color, dither, mask)
-    } else if (symmetry.axis === SymmetryAxis.VERTICAL) {
-      callback(imageData, x, height.value - 1 - y, color, dither, mask)
-    } else if (symmetry.axis === SymmetryAxis.BOTH) {
-      callback(imageData, width.value - 1 - x, y, color, dither, mask)
-      callback(imageData, x, height.value - 1 - y, color, dither, mask)
-      callback(
-        imageData,
-        width.value - 1 - x,
-        height.value - 1 - y,
-        color,
-        dither,
-        mask
-      )
+    for (const index of symmetryAxis(symmetry.axis)) {
+      const { x: sx, y: sy } = symmetryPoint(index, x, y, symmetry.position.x, symmetry.position.y, width, height)
+      callback(imageData, sx, sy, color, dither, mask)
     }
   }
 
@@ -378,68 +367,15 @@ export const useDocumentStore = defineStore('document', () => {
     dither,
     mask
   ) {
-    callback(imageData, x1, y1, x2, y2, color, dither, mask)
-    if (symmetry.axis === null) {
-      return
-    }
-    if (symmetry.axis === SymmetryAxis.HORIZONTAL) {
-      callback(
-        imageData,
-        width.value - 1 - x1,
-        y1,
-        width.value - 1 - x2,
-        y2,
-        color,
-        dither,
-        mask
-      )
-    } else if (symmetry.axis === SymmetryAxis.VERTICAL) {
-      callback(
-        imageData,
-        x1,
-        height.value - 1 - y1,
-        x2,
-        height.value - 1 - y2,
-        color,
-        dither,
-        mask
-      )
-    } else if (symmetry.axis === SymmetryAxis.BOTH) {
-      callback(
-        imageData,
-        width.value - 1 - x1,
-        y1,
-        width.value - 1 - x2,
-        y2,
-        color,
-        dither,
-        mask
-      )
-      callback(
-        imageData,
-        x1,
-        height.value - 1 - y1,
-        x2,
-        height.value - 1 - y2,
-        color,
-        dither,
-        mask
-      )
-      callback(
-        imageData,
-        width.value - 1 - x1,
-        height.value - 1 - y1,
-        width.value - 1 - x2,
-        height.value - 1 - y2,
-        color,
-        dither,
-        mask
-      )
+    for (const index of symmetryAxis(symmetry.axis)) {
+      const { x: sx1, y: sy1 } = symmetryPoint(index, x1, y1, symmetry.position.x, symmetry.position.y, width, height)
+      const { x: sx2, y: sy2 } = symmetryPoint(index, x2, y2, symmetry.position.x, symmetry.position.y, width, height)
+      callback(imageData, sx1, sy1, sx2, sy2, color, dither, mask)
     }
   }
 
-  function putColor(x, y, color, dither, mask) {
-    doLayerPaintOperation((imageData) =>
+  function putColor(x, y, color, isTemp = false, dither, mask) {
+    doPaintOperation((imageData) =>
       doSymmetry2Operation(
         (imageData, x, y, color, dither, mask) =>
           ImageDataUtils.putColor(
@@ -456,7 +392,7 @@ export const useDocumentStore = defineStore('document', () => {
         color,
         dither,
         mask
-      )
+      ), isTemp
     )
   }
 
@@ -603,8 +539,8 @@ export const useDocumentStore = defineStore('document', () => {
     )
   }
 
-  function precomputedCircle(x, y, radius, color, dither = null, mask = null) {
-    doLayerPaintOperation((imageData) =>
+  function precomputedCircle(x, y, radius, color, isTemp = false, dither = null, mask = null) {
+    doPaintOperation((imageData) =>
       doSymmetry2Operation(
         (imageData, x, y, color, dither, mask) =>
           ImageDataUtils.precomputedCircle(
@@ -623,31 +559,28 @@ export const useDocumentStore = defineStore('document', () => {
         dither,
         mask
       )
-    )
+    , isTemp)
   }
 
   function transformation(x, y) {
     doLayerPaintOperation((imageData) => {
-      ImageDataUtils.translate(imageData, x, y, transform.tiling)
+      Transform.translate(imageData, x, y, transform.tiling)
     })
   }
 
   function flipHorizontally() {
     doLayerPaintOperation((imageData) => {
-      ImageDataUtils.flipHorizontally(imageData)
+      Transform.flipHorizontally(imageData)
     })
   }
 
   function flipVertically() {
     doLayerPaintOperation((imageData) => {
-      ImageDataUtils.flipVertically(imageData)
+      Transform.flipVertically(imageData)
     })
   }
 
   function useToolPencilShadow(e, pointer) {
-    // TODO: Esta función debe ser la responsable de pintar la silueta
-    // de la herramienta que se está utilizando.
-    return
     /* eslint-disable no-unreachable */
     const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
     const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
@@ -661,6 +594,7 @@ export const useDocumentStore = defineStore('document', () => {
         drawingPointer.current.x.value,
         drawingPointer.current.y.value,
         toolColor,
+        'temp',
         dither,
         mask
       )
@@ -674,6 +608,7 @@ export const useDocumentStore = defineStore('document', () => {
           drawingPointer.current.y.value,
           toolSize,
           toolColor,
+          'temp',
           null,
           mask
         )
@@ -684,7 +619,7 @@ export const useDocumentStore = defineStore('document', () => {
           drawingPointer.current.x.value + addSizeHalf,
           drawingPointer.current.y.value + addSizeHalf,
           toolColor,
-          true,
+          'temp',
           true,
           false,
           null,
@@ -697,7 +632,7 @@ export const useDocumentStore = defineStore('document', () => {
           drawingPointer.current.x.value + addSizeHalf,
           drawingPointer.current.y.value + addSizeHalf,
           toolColor,
-          true,
+          'temp',
           true,
           false,
           dither
@@ -720,6 +655,7 @@ export const useDocumentStore = defineStore('document', () => {
           drawingPointer.current.x.value,
           drawingPointer.current.y.value,
           toolColor,
+          false,
           dither,
           mask
         )
@@ -733,6 +669,7 @@ export const useDocumentStore = defineStore('document', () => {
             drawingPointer.current.y.value,
             toolSize,
             toolColor,
+            false,
             null,
             mask
           )
@@ -796,7 +733,7 @@ export const useDocumentStore = defineStore('document', () => {
             drawingPointer.current.y.value
           )
           if (shape === PencilShape.ROUND) {
-            precomputedCircle(x, y, toolSize, toolColor, null, mask)
+            precomputedCircle(x, y, toolSize, toolColor, false, null, mask)
           } else if (shape === PencilShape.SQUARE) {
             rectangle(
               x - sizeHalf,
@@ -830,6 +767,9 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function useToolFill(e) {
+    if (e.type !== 'pointerup')
+      return
+
     if (fill.type === FillType.ERASE) {
       fillColor(
         'rgba(0,0,0,0)',
@@ -940,15 +880,17 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
-  function useToolEyedropper(e, pointer) {
+  function useToolEyedropper(e) {
     eyeDropper(drawingPointer.current.x.value, drawingPointer.current.y.value)
   }
 
-  function useToolTransform(e, pointer) {
-    // TODO: Esto es MUY mejorable.
-    const x = pointer.relative.x
-    const y = pointer.relative.y
-    transformation(x, y)
+  function useToolTransform(e) {
+    if (e.type === 'pointermove' && pointer.pressure.value > 0) {
+      // TODO: Esto es MUY mejorable.
+      const x = Math.floor(pointer.relative.x.value / zoom.current.value)
+      const y = Math.floor(pointer.relative.y.value / zoom.current.value)
+      transformation(x, y)
+    }
   }
 
   function useTool(e) {
@@ -963,6 +905,10 @@ export const useDocumentStore = defineStore('document', () => {
       return
     }
 
+    if (e.type === 'pointerup' && pointer.button.value === 1) {
+      return
+    }
+
     // We need to set the modified flag to true
     // to track changes.
     modified.value = true
@@ -972,8 +918,6 @@ export const useDocumentStore = defineStore('document', () => {
     if (layers.current.visible.value === false) {
       return
     }
-
-    console.log(e.type)
 
     if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
       useToolPencil(e)
@@ -998,6 +942,9 @@ export const useDocumentStore = defineStore('document', () => {
       )
     }
     */
+    if (e.type === 'pointerup') {
+      doClearTemp()
+    }
     redrawAll()
   }
 
@@ -1084,7 +1031,7 @@ export const useDocumentStore = defineStore('document', () => {
         context.lineTo(width.value * zoom.current.value, y * zoom.current.value)
       }
       // TODO: Meter esto en algún lugar donde se pueda configurar.
-      context.strokeStyle = 'rgba(255, 255, 255, 0.2)'
+      context.strokeStyle = 'rgba(128, 128, 128, 0.4 )'
       context.stroke()
     }
   }
@@ -1155,6 +1102,9 @@ export const useDocumentStore = defineStore('document', () => {
 
     context.restore()
 
+    // TODO: Borrar esto en algún momento porque sólo sirve
+    // para debuggear.
+    /*
     context.strokeStyle = '#f0f'
     context.strokeRect(
       drawingRect.x.value,
@@ -1162,8 +1112,11 @@ export const useDocumentStore = defineStore('document', () => {
       drawingRect.width.value,
       drawingRect.height.value
     )
+    */
 
-    redrawCursor()
+    // for (const index of symmetryAxis(symmetry.axis)) {
+      redrawCursor(/* x, y */)
+    // }
   }
 
   /**
