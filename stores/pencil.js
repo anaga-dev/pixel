@@ -1,4 +1,5 @@
 import PencilShape from '@/pixel/enums/PencilShape'
+import { useDither } from '@/composables/useDither'
 
 export const usePencilStore = defineStore('pencil', () => {
   const shape = ref(PencilShape.ROUND)
@@ -11,6 +12,22 @@ export const usePencilStore = defineStore('pencil', () => {
     size,
     sizeHalf,
     dither,
-    pixelPerfect
+    pixelPerfect,
+    setShape(value) {
+      if (!Object.values(PencilShape).includes(value)) {
+        throw new Error(`Invalid pencil shape: ${value}`)
+      }
+      shape.value = value
+      if (shape.value !== PencilShape.DITHER) {
+        dither.level = 0
+        dither.reset()
+      }
+    },
+    setSize(value) {
+      if (typeof value !== 'number' || value < 1 || !Number.isInteger(value)) {
+        throw new Error(`Invalid pencil size: ${value}`)
+      }
+      size.value = value
+    },
   }
 })

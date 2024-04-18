@@ -1,6 +1,9 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
+
 const documentStore = useDocumentStore()
+
+const removeMode = ref(false)
 
 const props = defineProps({
   color: {

@@ -123,6 +123,8 @@ export function usePointer(options) {
       current.y.value = offset.y.value
       relative.x.value = current.x.value - previous.x.value
       relative.y.value = current.y.value - previous.y.value
+      absolute.x.value -= relative.x.value
+      absolute.y.value -= relative.y.value
       if (e.type === 'pointerup') {
         end.x.value = current.x.value
         end.y.value = current.y.value
@@ -134,6 +136,8 @@ export function usePointer(options) {
       previous.y.value = current.y.value = offset.y.value
       relative.x.value = 0
       relative.y.value = 0
+      absolute.x.value = 0
+      absolute.y.value = 0
     }
 
     if (callback !== null && typeof callback === 'function') {

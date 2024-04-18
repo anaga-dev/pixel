@@ -32,6 +32,7 @@
     @click="document.toggleShapeFill()"
   />
   <ToolButton
+    v-if="document.shape.type !== 'line'"
     tooltip-text="studio.tooltips.shapes.lock-aspect-ratio"
     label="studio.lock-aspect-ratio"
     icon="lock"

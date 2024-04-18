@@ -997,44 +997,6 @@ export function copyToCanvas(targetImageData, canvas) {
 }
 
 /**
- * Translates an ImageData by tx and ty
- *
- * @param {ImageData} imageData
- * @param {number} tx
- * @param {number} ty
- * @param {*} mode TODO: implement this
- */
-/* export function translate(imageData, tx, ty, tiling) {
-  let dx = tx, dy = ty
-  if (!Number.isInteger(tx)) {
-    dx = tx < 0 ? Math.ceil(tx) : Math.floor(tx)
-  }
-  if (!Number.isInteger(ty)) {
-    dy = ty < 0 ? Math.ceil(ty) : Math.floor(tx)
-  }
-  const source = new Uint32Array(imageData.data.buffer)
-  const target = new Uint32Array(imageData.data.slice().buffer)
-  // Generamos el buffer desplazado.
-  for (let y = 0; y < imageData.height; y++) {
-    for (let x = 0; x < imageData.width; x++) {
-      let sy = (y - dy) % imageData.height
-      if (sy < 0) {
-        sy += imageData.height
-      }
-      let sx = (x - dx) % imageData.width
-      if (sx < 0) {
-        sx += imageData.width
-      }
-      const sourceOffset = sy * imageData.width + sx
-      const targetOffset = y * imageData.width + x
-      target[targetOffset] = source[sourceOffset]
-    }
-  }
-  // One buffer is dumped on top of the other when it's finished.
-  source.set(target, 0)
-} */
-
-/**
  *
  * @param {ImageData} imageData
  * @returns {Object|null}
@@ -1094,34 +1056,34 @@ export function alphaRound(imageData) {
 }
 
 export default {
-  isPrecomputedCircleInitialized,
-  initializePrecomputedCircle,
-  precomputedCircle,
-  getOffset,
-  putColor,
-  getColor,
-  replaceColor,
-  replaceColorAt,
-  line,
-  strokeRect,
-  fillRect,
-  rect,
-  strokeEllipse,
-  fillEllipse,
+  alphaCeil,
+  alphaFloor,
+  alphaFunc,
+  alphaRound,
   clear,
-  paint,
-  fill,
-  ellipse,
-  equals,
+  clone,
   copy,
+  copyContiguousSelectedAt,
   copyFromCanvas,
-  copyToCanvas,
   copySelected,
   copySelectedAt,
-  copyContiguousSelectedAt,
-  clone,
-  alphaFunc,
-  alphaFloor,
-  alphaCeil,
-  alphaRound
+  copyToCanvas,
+  ellipse,
+  equals,
+  fill,
+  fillEllipse,
+  fillRect,
+  getColor,
+  getOffset,
+  initializePrecomputedCircle,
+  isPrecomputedCircleInitialized,
+  line,
+  paint,
+  precomputedCircle,
+  putColor,
+  rect,
+  replaceColor,
+  replaceColorAt,
+  strokeEllipse,
+  strokeRect,
 }

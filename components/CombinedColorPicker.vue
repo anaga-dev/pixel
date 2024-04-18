@@ -27,6 +27,11 @@ const props = defineProps({
 const { value, valueSaturation, hue, saturation, lightness } = props.color
 
 const canvas = ref()
+
+let offsetX = 0
+let offsetY = 0
+let imageData = null
+
 const context = computed(() => canvas.value.getContext('2d', {
   willReadFrequently: true
 }))
@@ -48,11 +53,16 @@ function updateCanvas(color) {
     context.value.canvas.width,
     context.value.canvas.height
   )
+  imageData = context.value.getImageData(
+    0, 0, context.value.canvas.width, context.value.canvas.height
+  )
 }
 
 function updateFromPixel(x, y) {
-  const imageData = context.value.getImageData(x, y, 1, 1)
-  const [r, g, b] = imageData.data
+  const offset = (y * imageData.width + x) * 4
+  const r = imageData.data[offset + 0]
+  const g = imageData.data[offset + 1]
+  const b = imageData.data[offset + 2]
   const extractedColor = Color.fromRGBA(r, g, b)
   saturation.value = Color.saturation(extractedColor) * 100
   lightness.value = Color.lightness(extractedColor) * 100
@@ -60,28 +70,24 @@ function updateFromPixel(x, y) {
 
 const boundingClientRect = computed(() => canvas.value.getBoundingClientRect())
 
-function getOffsetCoordinates(event) {
-  // const source = element ?? event.currentTarget
+function updateOffsetCoordinates(e) {
+  // const source = element ?? e.currentTarget
   const { left, top, width, height } = boundingClientRect.value // source.getBoundingClientRect()
-  const x = Math.max(0, Math.min(width - 1, event.clientX - left))
-  const y = Math.max(0, Math.min(height - 1, event.clientY - top))
-  return {
-    x,
-    y
-  }
+  offsetX = Math.floor(Math.max(0, Math.min(width - 1, e.clientX - left)))
+  offsetY = Math.floor(Math.max(0, Math.min(height - 1, e.clientY - top)))
 }
 
 function startDragging(e) {
-  const { x, y } = getOffsetCoordinates(e, canvas.value)
-  updateFromPixel(x, y)
+  updateOffsetCoordinates(e, canvas.value)
+  updateFromPixel(offsetX, offsetY)
   window.addEventListener('pointermove', updateColor)
   window.addEventListener('pointerup', stopDragging, { once: true })
   window.addEventListener('pointerleave', stopDragging, { once: true })
 }
 
 function updateColor(e) {
-  const { x, y } = getOffsetCoordinates(e, canvas.value)
-  updateFromPixel(x, y)
+  updateOffsetCoordinates(e, canvas.value)
+  updateFromPixel(offsetX, offsetY)
 }
 
 function stopDragging() {
