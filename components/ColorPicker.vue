@@ -25,8 +25,8 @@
           </Button>
         </Tooltip>
       </div>
-      <CombinedColorPicker :color="current" />
-      <HuePicker :color="current" />
+      <CombinedColorPicker :color="current" @update="onUpdate" />
+      <HuePicker :color="current" @update="onUpdate" />
     </div>
     <div class="controls">
       <TabMenu>
@@ -82,12 +82,18 @@ function onUpdateHex(color) {
   current.blue.value = color.blue
 }
 
+function onUpdate(color) {
+  documentStore.setColor(color)
+}
+
+/*
 watch(
   () => current.style.value,
   (newValue) => {
     documentStore.setColor(newValue)
   }
 )
+*/
 </script>
 
 <style scoped>

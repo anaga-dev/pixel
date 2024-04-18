@@ -580,7 +580,7 @@ export const useDocumentStore = defineStore('document', () => {
     })
   }
 
-  function useToolPencilShadow(e, pointer) {
+  function useToolPreview(e, pointer) {
     /* eslint-disable no-unreachable */
     const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
     const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
@@ -895,7 +895,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function useTool(e) {
     if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
-      useToolPencilShadow(e, pointer)
+      useToolPreview(e)
     }
 
     // We need to check if we're moving
@@ -1036,10 +1036,10 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  // TODO: El cursor se pinta utilizando useToolPreview
   function redrawCursor() {
     const context = CanvasContext2D.get(board.value, '2d')
 
-    // TODO: usar la forma y tamaño del pincel en Pencil y Eraser.
     context.fillStyle = tool.value === Tool.PENCIL ? color.value : '#f0f'
     context.fillRect(
       (drawingPointer.current.x.value / width.value) * drawingRect.width.value +

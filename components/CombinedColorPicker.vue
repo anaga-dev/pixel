@@ -1,17 +1,3 @@
-<template>
-  <div class="CombinedColorPicker">
-    <canvas
-      ref="canvas"
-      draggable="false"
-      @pointerdown="startDragging"
-    />
-    <div
-      class="sample"
-      :style="style"
-    />
-  </div>
-</template>
-
 <script setup>
 import Canvas from '@/pixel/canvas/Canvas'
 import Color from '@/pixel/color/Color'
@@ -23,8 +9,9 @@ const props = defineProps({
     required: true
   }
 })
+const emit = defineEmits(['update'])
 
-const { value, valueSaturation, hue, saturation, lightness } = props.color
+const { value, valueSaturation, hue, saturation, lightness, style } = props.color
 
 const canvas = ref()
 
@@ -40,7 +27,7 @@ const context = computed(() => canvas.value.getContext('2d', {
   top: `${ -(this.props.hsv.v * 100) + 100 }%`,
   left: `${ this.props.hsv.s * 100 }%`,
 */
-const style = computed(() => ({
+const computedStyle = computed(() => ({
   top: `calc(${-(value.value * 100) + 100}%)`,
   left: `${valueSaturation.value * 100}%`
 }))
@@ -71,10 +58,9 @@ function updateFromPixel(x, y) {
 const boundingClientRect = computed(() => canvas.value.getBoundingClientRect())
 
 function updateOffsetCoordinates(e) {
-  // const source = element ?? e.currentTarget
-  const { left, top, width, height } = boundingClientRect.value // source.getBoundingClientRect()
-  offsetX = Math.floor(Math.max(0, Math.min(width - 1, e.clientX - left)))
-  offsetY = Math.floor(Math.max(0, Math.min(height - 1, e.clientY - top)))
+  const { left, top } = boundingClientRect.value // source.getBoundingClientRect()
+  offsetX = Math.floor(Math.max(0, Math.min(canvas.value.width - 1, e.clientX - left)))
+  offsetY = Math.floor(Math.max(0, Math.min(canvas.value.height - 1, e.clientY - top)))
 }
 
 function startDragging(e) {
@@ -90,10 +76,13 @@ function updateColor(e) {
   updateFromPixel(offsetX, offsetY)
 }
 
-function stopDragging() {
+function stopDragging(e) {
   window.removeEventListener('pointermove', updateColor)
   window.removeEventListener('pointerup', stopDragging)
   window.removeEventListener('pointerleave', stopDragging)
+  if (e.type === 'pointerup') {
+    emit('update', style.value)
+  }
 }
 
 watch(
@@ -107,8 +96,23 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <div class="CombinedColorPicker">
+    <canvas
+      ref="canvas"
+      draggable="false"
+      @pointerdown="startDragging"
+    />
+    <div
+      class="sample"
+      :style="computedStyle"
+    />
+  </div>
+</template>
+
 <style scoped>
 .CombinedColorPicker {
+  user-select: none;
   display: block;
   width: 100%;
   position: relative;
@@ -125,6 +129,7 @@ canvas {
   width: 8px;
   height: 8px;
   pointer-events: none;
+  user-select: none;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 0 2px hsl(0, 0%, 100%), 0 0 0 4px hsl(0, 0%, 0%);
 }
