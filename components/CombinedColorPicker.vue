@@ -11,7 +11,8 @@ const props = defineProps({
 })
 const emit = defineEmits(['update'])
 
-const { value, valueSaturation, hue, saturation, lightness, style } = props.color
+const { value, valueSaturation, hue, saturation, lightness, style } =
+  props.color
 
 const canvas = ref()
 
@@ -19,18 +20,30 @@ let offsetX = 0
 let offsetY = 0
 let imageData = null
 
-const context = computed(() => canvas.value.getContext('2d', {
-  willReadFrequently: true
-}))
+const context = computed(() =>
+  canvas.value.getContext('2d', {
+    willReadFrequently: true
+  })
+)
+
+const boundingClientRect = computed(() => canvas.value.getBoundingClientRect())
 
 /*
   top: `${ -(this.props.hsv.v * 100) + 100 }%`,
   left: `${ this.props.hsv.s * 100 }%`,
 */
-const computedStyle = computed(() => ({
+/* const computedStyle = computed(() => ({
   top: `calc(${-(value.value * 100) + 100}%)`,
   left: `${valueSaturation.value * 100}%`
-}))
+})) */
+
+const computedStyle = computed(() => {
+  const posX = canvas.value ? valueSaturation.value * canvas.value.width : 0
+  const posY = canvas.value ? (1 - value.value) * canvas.value.height : 0
+  console.log('Saturation', valueSaturation.value, 'Lightness', value.value)
+  console.log('Pos X', posX, 'Pos Y', posY)
+  return `transform: translate(calc(${posX}px - 50%), calc(${posY}px - 50%))`
+})
 
 function updateCanvas(color) {
   context.value.drawImage(
@@ -41,7 +54,10 @@ function updateCanvas(color) {
     context.value.canvas.height
   )
   imageData = context.value.getImageData(
-    0, 0, context.value.canvas.width, context.value.canvas.height
+    0,
+    0,
+    context.value.canvas.width,
+    context.value.canvas.height
   )
 }
 
@@ -55,12 +71,14 @@ function updateFromPixel(x, y) {
   lightness.value = Color.lightness(extractedColor) * 100
 }
 
-const boundingClientRect = computed(() => canvas.value.getBoundingClientRect())
-
 function updateOffsetCoordinates(e) {
   const { left, top } = boundingClientRect.value // source.getBoundingClientRect()
-  offsetX = Math.floor(Math.max(0, Math.min(canvas.value.width - 1, e.clientX - left)))
-  offsetY = Math.floor(Math.max(0, Math.min(canvas.value.height - 1, e.clientY - top)))
+  offsetX = Math.floor(
+    Math.max(0, Math.min(canvas.value.width - 1, e.clientX - left))
+  )
+  offsetY = Math.floor(
+    Math.max(0, Math.min(canvas.value.height - 1, e.clientY - top))
+  )
 }
 
 function startDragging(e) {
@@ -98,15 +116,8 @@ onMounted(() => {
 
 <template>
   <div class="CombinedColorPicker">
-    <canvas
-      ref="canvas"
-      draggable="false"
-      @pointerdown="startDragging"
-    />
-    <div
-      class="sample"
-      :style="computedStyle"
-    />
+    <canvas ref="canvas" draggable="false" @pointerdown="startDragging" />
+    <div class="sample" :style="computedStyle" />
   </div>
 </template>
 
@@ -126,11 +137,13 @@ canvas {
 
 .sample {
   position: absolute;
-  width: 8px;
-  height: 8px;
+
+  width: 0.5rem;
+  height: 0.5rem;
   pointer-events: none;
   user-select: none;
-  transform: translate(-50%, -50%);
+  left: 0;
+  top: 0;
   box-shadow: 0 0 0 2px hsl(0, 0%, 100%), 0 0 0 4px hsl(0, 0%, 0%);
 }
 </style>

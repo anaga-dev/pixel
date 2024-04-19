@@ -1150,7 +1150,7 @@ export const useDocumentStore = defineStore('document', () => {
         context.lineTo(width.value * zoom.current.value, y * zoom.current.value)
       }
       // TODO: Meter esto en algún lugar donde se pueda configurar.
-      context.strokeStyle = 'rgba(128, 128, 128, 0.4 )'
+      context.strokeStyle = 'rgba(256, 256, 256, 0.25 )'
       context.stroke()
     }
   }
