@@ -104,29 +104,29 @@ export function useColor(string) {
 
   const red = computed({
     set(value) {
-      rgb.r = value / 0xFF
+      rgb.r = value / 0xff
       updateFromRGB(rgb.r, rgb.g, rgb.b)
     },
     get() {
-      return Math.floor(rgb.r * 0xFF)
+      return Math.floor(rgb.r * 0xff)
     }
   })
   const green = computed({
     set(value) {
-      rgb.g = value / 0xFF
+      rgb.g = value / 0xff
       updateFromRGB(rgb.r, rgb.g, rgb.b)
     },
     get() {
-      return Math.floor(rgb.g * 0xFF)
+      return Math.floor(rgb.g * 0xff)
     }
   })
   const blue = computed({
     set(value) {
-      rgb.b = value / 0xFF
+      rgb.b = value / 0xff
       updateFromRGB(rgb.r, rgb.g, rgb.b)
     },
     get() {
-      return Math.floor(rgb.b * 0xFF)
+      return Math.floor(rgb.b * 0xff)
     }
   })
   const hue = computed({
@@ -158,7 +158,9 @@ export function useColor(string) {
   })
 
   const value = computed(() => max(rgb.r, rgb.g, rgb.b))
-  const valueSaturation = computed(() => 1 - (min(rgb.r, rgb.g, rgb.b) / max(rgb.r, rgb.g, rgb.b)))
+  const valueSaturation = computed(
+    () => 1 - min(rgb.r, rgb.g, rgb.b) / max(rgb.r, rgb.g, rgb.b)
+  )
 
   const style = computed({
     set(value) {

@@ -18,14 +18,14 @@ const computedStyle = computed(() => {
   const containerWidth = container.value
     ? boundingClientRect.value.width
     : 0
-  const translateX = (hue.value / 360) * containerWidth
-  console.log('translate', hue, translateX)
+  const translateX = Math.round((hue.value / 360) * containerWidth)
+  console.log('translate', hue.value, translateX)
   return `transform: translateX(${translateX}px);`
 })
 
 function startDragging(e) {
   const { width } = boundingClientRect.value
-  hue.value = Math.max(0, Math.min(360, Math.round((e.offsetX / width) * 360)))
+  hue.value = Math.round((e.offsetX / width) * 360)
   window.addEventListener('pointermove', updateHue)
   window.addEventListener('pointerup', stopDragging, { once: true })
   window.addEventListener('pointerleave', stopDragging, { once: true })
@@ -87,8 +87,18 @@ function stopDragging(e) {
   user-select: none;
   pointer-events: none;
   position: absolute;
+  left: 0;
+  width: 0;
+  height: 100%;
+}
+
+.bar::after {
+  position: absolute;
+  content: '';
+  display: block;
   width: 2px;
   height: 100%;
+  translate: -50% 0%;
   background-color: var(--colorLayer0);
   outline: 2px solid var(--colorTextPrimary);
 }
