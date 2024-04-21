@@ -20,22 +20,15 @@ import DitherAlignment from '@/pixel/enums/DitherAlignment'
 export function useDither() {
   const dither = new Dither()
 
-  const level = computed({
-    get() { return dither.level },
-    set(value) { dither.level = value }
-  })
-  const alignment = computed({
-    get() { return dither.alignment },
-    set(value) { dither.alignment = value }
-  })
-  const dx = computed({
-    get() { return dither.dx },
-    set(value) { dither.dx = value }
-  })
-  const dy = computed({
-    get() { return dither.dy },
-    set(value) { dither.dy = value }
-  })
+  const level = ref(dither.level)
+  const alignment = ref(dither.alignment)
+  const dx = ref(dither.dx)
+  const dy = ref(dither.dy)
+
+  watch(level, (newLevel) => dither.level = newLevel)
+  watch(alignment, (newAlignment) => dither.alignment = newAlignment)
+  watch(dx, (newDx) => dither.dx = newDx)
+  watch(dy, (newDy) => dither.dy = newDy)
 
   function set(x, y) {
     dx.value = x
@@ -55,8 +48,20 @@ export function useDither() {
     alignment,
     dx,
     dy,
+    setLevel(newLevel) {
+      if (!Number.isInteger(newLevel) && newLevel < 0) {
+        throw new Error('Invalid level')
+      }
+      level.value = newLevel
+    },
+    setAlignment(newAlignment) {
+      if (!Object.values(DitherAlignment).includes(newAlignment)) {
+        throw new Error('Invalid alignment')
+      }
+      alignment.value = newAlignment
+    },
     set,
     reset,
-    shouldPaint
+    shouldPaint,
   }
 }

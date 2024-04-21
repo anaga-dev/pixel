@@ -13,6 +13,7 @@ import FillType from '@/pixel/enums/FillType'
 import PaletteTypes from '@/pixel/constants/PaletteTypes'
 import ImageTypes from '@/pixel/constants/ImageTypes'
 import Interpolation from '@/pixel/math/Interpolation'
+import SelectionType from '@/pixel/selection/SelectionType'
 
 import FilePicker from '@/pixel/io/FilePicker'
 
@@ -159,7 +160,7 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setPencilDitherLevel(level) {
-    pencil.dither.level = level
+    pencil.dither.setLevel(level)
   }
 
   function setEraserShape(shape) {
@@ -171,7 +172,7 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function setEraserDitherLevel(level) {
-    eraser.dither.level = level
+    eraser.dither.setLevel(level)
   }
 
   function setSelectType(type) {
@@ -222,7 +223,19 @@ export const useDocumentStore = defineStore('document', () => {
     symmetry.axis = axis
   }
 
+  let frameID = null
+  function onFrame(time)
+  {
+    selection.render(drawingRect.width.value, drawingRect.height.value)
+    redrawAll()
+    frameID = requestAnimationFrame(onFrame)
+  }
+
   function setTool(newTool) {
+    if (tool.value === newTool) {
+      return
+    }
+    const oldTool = tool.value
     history.add({
       type: 'setTool',
       payload: {
@@ -231,6 +244,13 @@ export const useDocumentStore = defineStore('document', () => {
       }
     })
     tool.value = newTool
+    if (oldTool === Tool.SELECT) {
+      console.log('cancelAnimationFrame', frameID)
+      // cancelAnimationFrame(frameID)
+    } else if (newTool === Tool.SELECT) {
+      console.log('requestAnimationFrame')
+      // frameID = requestAnimationFrame(onFrame)
+    }
   }
 
   function getLayerContext(composite) {
@@ -708,17 +728,6 @@ export const useDocumentStore = defineStore('document', () => {
             null,
             mask
           )
-          /*
-          precomputedCircle(
-            drawingPointer.current.x.value,
-            drawingPointer.current.y.value,
-            toolSize,
-            toolColor,
-            false,
-            null,
-            mask
-          )
-          */
         } else if (shape === PencilShape.SQUARE) {
           doSymmetry4Operation(
             (imageData, x1, y1, x2, y2, color, dither, mask) =>
@@ -1012,6 +1021,29 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  function useToolSelect(e) {
+    const x = drawingPointer.current.x.value / width.value
+    const y = drawingPointer.current.y.value / height.value
+    if (e.type === 'pointerdown') {
+      if (selection.type.value !== SelectionType.COLOR) {
+        selection.start(
+          x,
+          y
+        )
+      }
+    } else if (e.type === 'pointermove' && pointer.pressure.value > 0) {
+      selection.update(
+        x,
+        y
+      )
+    } else if (e.type === 'pointerup') {
+      selection.end(
+        x,
+        y
+      )
+    }
+  }
+
   function useTool(e) {
     if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
       useToolPreview(e)
@@ -1048,19 +1080,9 @@ export const useDocumentStore = defineStore('document', () => {
       useToolEyedropper(e)
     } else if (tool.value === Tool.TRANSFORM) {
       useToolTransform(e)
+    } else if (tool.value === Tool.SELECT) {
+      useToolSelect(e)
     }
-    /*
-    else if (tool.value === Tool.SELECT && pointer.pressure > 0) {
-      const x = drawingPointer.current.x.value
-      const y = drawingPointer.current.y.value
-      ImageDataUtils.putColor(
-        selection.getMaskImageData(),
-        x,
-        y,
-        Color.fromRGBA(1, 1, 1, 1)
-      )
-    }
-    */
     if (e.type === 'pointerup') {
       doClearTemp()
     }
@@ -1152,6 +1174,7 @@ export const useDocumentStore = defineStore('document', () => {
       // TODO: Meter esto en algún lugar donde se pueda configurar.
       context.strokeStyle = 'rgba(256, 256, 256, 0.25 )'
       context.stroke()
+      context.globalCompositeOperation = 'source-over'
     }
   }
 
@@ -1183,7 +1206,22 @@ export const useDocumentStore = defineStore('document', () => {
     context.globalCompositeOperation = 'source-over'
   }
 
-  /**=
+  /**
+   * Redraw selection.
+   *
+   * TODO: Necesitamos una forma de repintar la selección
+   * sin repintar todo lo demás.
+   */
+  function redrawSelection() {
+    selection.render(drawingRect.width.value, drawingRect.height.value)
+    const context = CanvasContext2D.get(board.value, '2d')
+    const canvas = selection.getCanvas()
+    if (canvas) {
+      context.drawImage(canvas, 0, 0)
+    }
+  }
+
+  /**
    * Redraws everything.
    */
   function redrawAll() {
@@ -1218,6 +1256,7 @@ export const useDocumentStore = defineStore('document', () => {
     // TODO: Convertir esto en una constante o en un parámetro
     // configurable.
     redrawGrid()
+    redrawSelection()
 
     context.restore()
 
@@ -1273,7 +1312,7 @@ export const useDocumentStore = defineStore('document', () => {
     canvasRect.value = null
 
     // Selection
-    selection.init(canvas.value, width.value, height.value)
+    selection.init(width.value, height.value)
     redrawAll()
   }
 
