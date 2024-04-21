@@ -5,68 +5,17 @@ import Selection from '@/pixel/selection/Selection'
 export const useSelectionStore = defineStore('selection', () => {
   const selection = new Selection()
 
-  const typeRef = ref(selection.type)
-  const modeRef = ref(selection.mode)
-
-  // freehand, rectangular, color
-  const type = computed({
-    set(newType) {
-      selection.type = newType
-      typeRef.value = newType
-    },
-    get() {
-      return typeRef.value
-    }
-  })
-
-  // add, subtract, transform
-  const mode = computed({
-    set(newMode) {
-      selection.mode = newMode
-      modeRef.value = newMode
-    },
-    get() {
-      return modeRef.value
-    }
-  })
+  const type = ref(selection.type)
+  const mode = ref(selection.mode)
 
   // sólo válido en el modo de color
   const contiguous = ref(true)
   const visible = ref(false)
 
-  let canvas = null
-
-  function init(target, width, height) {
-    selection.setup(width, height)
-
-    canvas = Canvas.createOrGet(canvas, width, height)
-
-    const onPointer = (e) => {
-      // Set the selection as visible
-      visible.value = true
-
-      // Get the relative coordinates of the pointer
-      const { top, left, width, height } = target.getBoundingClientRect()
-      const x = (e.clientX - left) / width
-      const y = (e.clientY - top) / height
-
-      if (e.type === 'pointerdown') {
-        if (type.value !== SelectionType.COLOR) {
-          selection.start(x, y)
-          window.addEventListener('pointermove', onPointer)
-          window.addEventListener('pointerup', onPointer)
-        }
-      } else if (e.type === 'pointermove') {
-        selection.update(x, y)
-      } else if (e.type === 'pointerup') {
-        selection.end(x, y)
-        window.removeEventListener('pointermove', onPointer)
-        window.removeEventListener('pointerup', onPointer)
-      }
-    }
-
-    canvas.addEventListener('pointerdown', onPointer)
-  }
+  watch(type, (newType) => selection.type = newType)
+  watch(mode, (newMode) => selection.mode = newMode)
+  watch(contiguous, (newContiguous) => selection.contiguous = newContiguous)
+  watch(visible, (newVisible) => selection.visible = newVisible)
 
   return {
     type,
@@ -74,25 +23,33 @@ export const useSelectionStore = defineStore('selection', () => {
     visible,
     contiguous,
     getCanvas() {
-      return canvas
-    },
-    getMaskCanvas() {
-      return selection.mask?.canvas ?? null
+      return selection.canvas
     },
     getMaskImageData() {
-      return selection.mask?.imageData ?? null
-    },
-    getPattern() {
-      return selection.pattern
-    },
-    getPath2D(width, height) {
-      return selection.getPath2D(width, height)
+      return selection.mask?.imageData
     },
     clear() {
       visible.value = false
       return selection.clear()
     },
-    init
+    init(width, height) {
+      selection.setup(width, height)
+    },
+    start(x, y) {
+      console.log('selection.start', x, y)
+      return selection.start(x, y)
+    },
+    update(x, y) {
+      console.log('selection.update', x, y)
+      return selection.update(x, y)
+    },
+    end(x, y) {
+      console.log('selection.end', x, y)
+      return selection.end(x, y)
+    },
+    render(width, height) {
+      return selection.render(width, height)
+    }
   }
 })
 
