@@ -627,7 +627,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function useToolPreview(e, pointer) {
     /* eslint-disable no-unreachable */
-    const toolColor = tool.value === Tool.PENCIL ? color.value : 'rgba(0,0,0,0)'
+    const toolColor = tool.value === Tool.PENCIL ? color.value : '#f0f'
     const toolSize = tool.value === Tool.PENCIL ? pencil.size : eraser.size
     const shape = tool.value === Tool.PENCIL ? pencil.shape : eraser.shape
     const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
