@@ -1015,8 +1015,8 @@ export const useDocumentStore = defineStore('document', () => {
   function useToolTransform(e) {
     if (e.type === 'pointermove' && pointer.pressure.value > 0) {
       // TODO: Esto es MUY mejorable.
-      const x = Math.floor(pointer.relative.x.value / zoom.current.value)
-      const y = Math.floor(pointer.relative.y.value / zoom.current.value)
+      const x = Math.trunc(pointer.relative.x.value / zoom.current.value)
+      const y = Math.trunc(pointer.relative.y.value / zoom.current.value)
       transformation(x, y)
     }
   }
