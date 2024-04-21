@@ -36,15 +36,12 @@ export const useSelectionStore = defineStore('selection', () => {
       selection.setup(width, height)
     },
     start(x, y) {
-      console.log('selection.start', x, y)
       return selection.start(x, y)
     },
     update(x, y) {
-      console.log('selection.update', x, y)
       return selection.update(x, y)
     },
     end(x, y) {
-      console.log('selection.end', x, y)
       return selection.end(x, y)
     },
     render(width, height) {

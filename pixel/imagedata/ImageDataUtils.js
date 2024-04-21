@@ -236,6 +236,8 @@ export function fill(
   const fillStack = new FillStack(imageData.width, imageData.height)
   fillStack.push(x, y)
 
+  debugger
+
   while (!fillStack.isEmpty) {
     const [x, y] = fillStack.pop()
     visited.putColor(x, y, VISITED_COLOR)
@@ -760,6 +762,7 @@ export function precomputedCircle(
 ) {
   const brushIndex = Math.max(1, Math.min(32, radius)) - 1
   const brushImageData = brushImageDataList[brushIndex]
+  console.log(brushIndex, brushImageData)
   const isRadiusEven = radius % 2 === 0
 
   const ix = isRadiusEven ? x : Math.floor(x)
