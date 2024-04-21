@@ -367,7 +367,7 @@ export const useDocumentStore = defineStore('document', () => {
       doLayerPaintOperation((imageData) =>
         doSymmetry2Operation(
           // eslint-disable-next-line no-unused-vars
-          (imageData, x, y, color, dither) =>
+          (imageData, x, y, color, dither, mask) =>
             ImageDataUtils.fill(
               imageData,
               x,
@@ -716,7 +716,7 @@ export const useDocumentStore = defineStore('document', () => {
                 imageData,
                 x,
                 y,
-                radius,
+                toolSize,
                 Color.parseAsUint8(color),
                 dither,
                 mask
@@ -828,7 +828,7 @@ export const useDocumentStore = defineStore('document', () => {
                   imageData,
                   x,
                   y,
-                  sizeHalf,
+                  toolSize,
                   Color.parseAsUint8(color),
                   dither,
                   mask
