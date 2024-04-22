@@ -1,13 +1,9 @@
 <script setup>
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
-import { storeToRefs } from 'pinia'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
-
-const { showOverlay } = storeToRefs(uiStore)
-const { toggleOverlay } = uiStore
 </script>
 
 <template>
@@ -16,13 +12,13 @@ const { toggleOverlay } = uiStore
       <Button
         :label="$t('studio.zoom')"
         variant="ghost"
-        @click.stop="toggleOverlay('zoom-settings')"
+        @click.stop="uiStore.toggleOverlay('zoom-settings')"
       >
         <Icon i="zoom-in" />
       </Button>
     </Tooltip>
     <Dropdown
-      v-if="showOverlay === 'zoom-settings'"
+      v-if="uiStore.showOverlay === 'zoom-settings'"
       class="ZoomMenu"
       @close="toggleOverlay('zoom-settings')"
     >

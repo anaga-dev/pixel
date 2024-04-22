@@ -102,17 +102,17 @@ onKeyUp(' ', () => documentStore.stopMoving())
 
 function loadPalette() {
   documentStore.loadPalette()
-  uiStore.showOverlay = null
+  uiStore.closeOverlay()
 }
 
 function savePalette() {
   documentStore.savePaletteAs()
-  uiStore.showOverlay = null
+  uiStore.closeOverlay()
 }
 
 function clearPalette() {
   documentStore.clearPalette()
-  uiStore.showOverlay = null
+  uiStore.closeOverlay()
 }
 
 const expandSidePanelIcon = computed(() => {

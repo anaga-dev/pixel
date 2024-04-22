@@ -2,49 +2,45 @@
 import { useUIStore } from '@/stores/ui'
 import { useDocumentStore } from '@/stores/document'
 import { useConfirmationStore } from '@/stores/confirmation'
-import { storeToRefs } from 'pinia'
 
 const overlay = 'general-settings'
 
 const uiStore = useUIStore()
 
-const { showOverlay } = storeToRefs(uiStore)
-const { showDocumentCreation } = storeToRefs(uiStore)
-
 const documentStore = useDocumentStore()
 const confirmationStore = useConfirmationStore()
 
 async function newFile() {
-  showOverlay.value = null
+  uiStore.closeOverlay()
   if (documentStore.modified) {
     const confirmation = await confirmationStore.openDialog(
       'studio.new-artwork-confirmation'
     )
     if (confirmation) {
       documentStore.newFile()
-      showDocumentCreation.value = true
+      uiStore.showDocumentCreation = true
     }
   }
 }
 
 function openFile() {
   documentStore.openFile()
-  showOverlay.value = null
+  uiStore.closeOverlay()
 }
 
 function saveFile() {
   documentStore.saveFileAs()
-  showOverlay.value = null
+  uiStore.closeOverlay()
 }
 
 function exportFile() {
-  uiStore.showExportMenu = true
-  showOverlay.value = null
+  uiStore.showExportMenu()
+  uiStore.closeOverlay()
 }
 </script>
 
 <template>
-  <Dropdown @close="showOverlay = null">
+  <Dropdown @close="uiStore.closeOverlay">
     <Button @click="newFile">
       {{ $t('new-artwork') }}
     </Button>

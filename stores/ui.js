@@ -73,6 +73,10 @@ export const useUIStore = defineStore('ui', () => {
     showDocumentCreation.value = true
   }
 
+  function closeOverlay() {
+    showOverlay.value = null
+  }
+
   return {
     showDocumentCreation,
     emitterBox,
@@ -98,7 +102,8 @@ export const useUIStore = defineStore('ui', () => {
     toggleColorPicker,
     toggleExportMenu,
     showTooltip,
-    showDocumentCreationModal
+    showDocumentCreationModal,
+    closeOverlay
   }
 })
 
