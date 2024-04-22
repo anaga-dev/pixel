@@ -258,12 +258,17 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function eyeDropper(x, y) {
-    if (x < 0 || x > width || y < 0 || y > height) return
+    console.log('eyeDropper', x,y )
+    if (x < 0 || x > width || y < 0 || y > height)
+      return
+
     const context = getLayerContext(dropper.value.selectCompositeColor)
     const sampledColor = CanvasContext2D.getColor(context, x, y)
+    console.log(sampledColor)
 
     const alpha = parseFloat(sampledColor.match(/(\d+\.\d+|\d+)/g)[3])
-    if (alpha === 0) return
+    if (alpha === 0)
+      return
 
     const previousColor = color
     const nextColor = sampledColor
@@ -372,6 +377,7 @@ export const useDocumentStore = defineStore('document', () => {
               x,
               y,
               Color.parseAsUint8(color),
+              null,
               mask
             ),
           imageData,
@@ -1048,16 +1054,21 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function useToolEyedropper(e) {
+    if (e.type !== 'pointerdown') {
+      return
+    }
     eyeDropper(drawingPointer.current.x.value, drawingPointer.current.y.value)
   }
 
   function useToolTransform(e) {
-    if (e.type === 'pointermove' && pointer.pressure.value > 0) {
-      // TODO: Esto es MUY mejorable.
-      const x = Math.trunc(pointer.relative.x.value / zoom.current.value)
-      const y = Math.trunc(pointer.relative.y.value / zoom.current.value)
-      transformation(x, y)
+    if (e.type !== 'pointermove' || pointer.pressure.value === 0) {
+      return
     }
+
+    // TODO: Esto es MUY mejorable.
+    const x = Math.trunc(pointer.relative.x.value / zoom.current.value)
+    const y = Math.trunc(pointer.relative.y.value / zoom.current.value)
+    transformation(x, y)
   }
 
   function useToolSelect(e) {

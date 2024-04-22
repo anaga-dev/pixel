@@ -236,8 +236,6 @@ export function fill(
   const fillStack = new FillStack(imageData.width, imageData.height)
   fillStack.push(x, y)
 
-  debugger
-
   while (!fillStack.isEmpty) {
     const [x, y] = fillStack.pop()
     visited.putColor(x, y, VISITED_COLOR)

@@ -5,7 +5,7 @@ export const Tool = {
   SHAPE: 'shape',
   TRANSFORM: 'transform',
   SELECT: 'select',
-  DROPPER: 'dropper'
+  EYEDROPPER: 'eyedropper'
 }
 
 export default Tool
