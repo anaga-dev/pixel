@@ -115,8 +115,8 @@ function clearPalette() {
   uiStore.showOverlay = null
 }
 
-const icon = computed(() => {
-  return uiStore.showSidePanel.value ? 'collapse-side-panel' : 'expand-side-panel'
+const expandSidePanelIcon = computed(() => {
+  return uiStore.showSidePanel ? 'collapse-side-panel' : 'expand-side-panel'
 })
 
 const sidePanelMessage = computed(() => {
@@ -235,9 +235,9 @@ const sidePanelMessage = computed(() => {
         >
           <Button
             variant="ghost"
-            @click="uiStore.togglePanel"
+            @click="uiStore.toggleSidePanel()"
           >
-            <Icon :i="icon" />
+            <Icon :i="expandSidePanelIcon" />
           </Button>
         </Tooltip>
         <Tooltip
@@ -617,7 +617,7 @@ aside {
 @media (orientation: portrait) {
   .CONTAINER {
     grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto 1fr auto;
   }
   .SETTINGS {
     grid-column: 1 / span 2;
@@ -635,6 +635,10 @@ aside {
   }
   .PANELS {
     display: none;
+  }
+  .ANIMATION {
+    grid-column: 1 / span 2;
+    grid-row: 4;
   }
   .settings-menu {
     top: 4.5rem;
