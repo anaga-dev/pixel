@@ -73,8 +73,8 @@ const documentStore = useDocumentStore()
       label="studio.eyedropper"
       icon="eyedropper"
       variant="icon"
-      :active="documentStore.tool === Tool.DROPPER"
-      @click="documentStore.setTool(Tool.DROPPER)"
+      :active="documentStore.tool === Tool.EYEDROPPER"
+      @click="documentStore.setTool(Tool.EYEDROPPER)"
     />
     <!--
         FIXME: This is a performance sinkhole, I guess it's because `documentStore.history.canUndo`
