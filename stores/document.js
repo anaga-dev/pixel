@@ -4,6 +4,7 @@ import ColorMode from '@/pixel/enums/ColorMode'
 import Canvas from '@/pixel/canvas/Canvas'
 import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
 import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils.js'
+import PrecomputedCircle from '@/pixel/imagedata/PrecomputedCircle.js'
 import Transform from '@/pixel/imagedata/Transform.js'
 import SymmetryAxis from '@/pixel/enums/SymmetryAxis'
 import Tool from '@/pixel/enums/Tool'
@@ -116,11 +117,6 @@ export const useDocumentStore = defineStore('document', () => {
 
   // Frames that will be shown in the animation preview.
   const frames = ref([])
-
-  // FIXME: I don't like this approach.
-  if (!ImageDataUtils.isPrecomputedCircleInitialized()) {
-    ImageDataUtils.initializePrecomputedCircle()
-  }
 
   const layer = computed(() => layers.current)
   const imageData = computed(() => {
@@ -758,7 +754,7 @@ export const useDocumentStore = defineStore('document', () => {
         if (shape === PencilShape.ROUND) {
           doSymmetry2Operation(
             (imageData, x, y, color, dither, mask) =>
-              ImageDataUtils.precomputedCircle(
+              PrecomputedCircle.circle(
                 imageData,
                 x,
                 y,
@@ -870,7 +866,7 @@ export const useDocumentStore = defineStore('document', () => {
           if (shape === PencilShape.ROUND) {
             doSymmetry2Operation(
               (imageData, x, y, color, dither, mask) =>
-                ImageDataUtils.precomputedCircle(
+                PrecomputedCircle.circle(
                   imageData,
                   x,
                   y,
@@ -1344,6 +1340,7 @@ export const useDocumentStore = defineStore('document', () => {
     canvasRect.value = null
 
     // Selection
+    PrecomputedCircle.init()
     selection.init(width.value, height.value)
     redrawAll()
   }
