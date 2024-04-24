@@ -50,29 +50,6 @@
   "delete": "Borrar",
   "delete-account": "Borrar cuenta",
   "plan-and-billing": "Plan y facturación",
-  "homepage": {
-    "use-it": "Úsalo gratis",
-    "start-now": "Empieza a crear!",
-    "made-by": "Hecho por",
-    "in-madrid": "en Madrid",
-    "hero": {
-      "title": [
-        "Create pixel art",
-        "on any device"
-      ],
-      "description": "Pixel is a progressive web application that lets you create pixel art on any device, operating system, and browser. Unleash your creativity without boundaries."
-    },
-    "features": {
-      "any-device": {
-        "title": "Create pixel art on any device",
-        "description": "You can use Pixel on the browser or install it as an app on any desktop computer, tablet or even phone."
-      },
-      "sync": {
-        "title": "Keep your art always in sync on the cloud",
-        "description": "Your files are always up to date, no matter where you are. And you can always go back to previous versions thanks to the version history."
-      }
-    }
-  },
   "studio": {
     "add-to-palette":"Añadir a la paleta",
     "back-to-dashboard": "Volver al panel",

@@ -11,7 +11,7 @@ export const useUIStore = defineStore('ui', () => {
 
   const showAnimation = ref(false)
   const showOverlay = ref(null)
-  const showDocumentCreation = computed(() => !documentStore.canvas)
+  const showDocumentCreation = ref(false)
   const showSidePanel = ref(true)
   const showPanel = ref(null)
   const showColorPicker = ref(false)
