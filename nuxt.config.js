@@ -61,9 +61,7 @@ export default defineNuxtConfig({
       ]
     }
   },
-  plugins: [
-    '~/plugins/directives.client',
-  ],
+  plugins: ['~/plugins/directives.client'],
   modules: [
     // '@nuxtjs/eslint-module',
     '@nuxt/devtools',
@@ -74,7 +72,7 @@ export default defineNuxtConfig({
     '@nuxt/image'
   ],
   eslint: {
-    lintOnStart: false,
+    lintOnStart: false
   },
   i18n: {
     locales: [
@@ -89,6 +87,7 @@ export default defineNuxtConfig({
       redirectOn: 'root'
     },
     strategy: 'prefix_and_default',
+    lazy: true
   },
   css: [
     '/styles/reset.css',
@@ -154,7 +153,7 @@ export default defineNuxtConfig({
       runtimeCaching: [
         {
           urlPattern: '/',
-          handler: 'NetworkFirst',
+          handler: 'NetworkFirst'
         }
       ]
     },

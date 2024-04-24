@@ -8,7 +8,7 @@
   --colorTextSecondary: hsl(0 0% 54%);
   --colorAccent: hsl(94 66% 52%);
   --colorPro: hsl(64 66% 52%);
-  --colorCritical: hsl(352 66% 52%);
+  --colorCritical: hsl(352 86% 64%);
   --colorShade: hsl(0 0% 96% / 12%);
   --colorHover: hsl(0 0% 30%);
   --colorShadow: hsl(0 0% 0% / 12%);
@@ -30,6 +30,8 @@
 
   --widthToolbar: 4rem;
   --widthSidebar: 20rem;
+
+  --transition: all 240ms ease-in-out;
 
   --pixelCorners: polygon(
     0% var(--spaceXS),
