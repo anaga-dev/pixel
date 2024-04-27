@@ -61,7 +61,10 @@ export default defineNuxtConfig({
       ]
     }
   },
-  plugins: ['~/plugins/directives.client'],
+  plugins: [
+    '~/plugins/directives.server',
+    '~/plugins/directives.client',
+  ],
   modules: [
     // '@nuxtjs/eslint-module',
     '@nuxt/devtools',

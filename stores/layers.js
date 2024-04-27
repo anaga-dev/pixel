@@ -77,11 +77,19 @@ export function duplicateLayer(layer) {
   })
 }
 
+/**
+ * Store de Layers
+ */
 export const useLayersStore = defineStore('layers', () => {
   const current = ref(null)
   const list = reactive([])
   const settings = ref(null)
 
+  /**
+   *
+   * @param {LayerOptions} options
+   * @returns {AddLayerResult}
+   */
   function add(options) {
     const created = shallowReactive(createLayer(options))
     const index = list.findIndex(
@@ -97,12 +105,23 @@ export const useLayersStore = defineStore('layers', () => {
     return { index: newIndex, layer: created }
   }
 
+  /**
+   *
+   * @param {number} index
+   * @param {Layer} layer
+   * @returns {AddLayerResult}
+   */
   function addAt(index, layer) {
     list.splice(index, 0, layer)
     current.value = layer
     return { index, layer }
   }
 
+  /**
+   *
+   * @param {Layer} layer
+   * @returns {RemoveLayerResult}
+   */
   function remove(layer) {
     const index = list.findIndex((currentLayer) => currentLayer.id === layer.id)
     if (index < 0) {
@@ -112,6 +131,11 @@ export const useLayersStore = defineStore('layers', () => {
     return { index, layer: removedLayer }
   }
 
+  /**
+   *
+   * @param {number} index
+   * @returns {RemoveLayerResult}
+   */
   function removeAt(index) {
     const [removedLayer] = list.splice(index, 1)
     return { index, layer: removedLayer }
@@ -120,6 +144,7 @@ export const useLayersStore = defineStore('layers', () => {
   /**
    *
    * @param {*} layer
+   * @returns {DuplicateLayerResult}
    */
   function duplicate(layer) {
     const duplicated = shallowReactive(duplicateLayer(layer))
@@ -132,15 +157,28 @@ export const useLayersStore = defineStore('layers', () => {
     return { index, layer: duplicated }
   }
 
+  /**
+   * Swaps to layers
+   *
+   * @param {number} fromIndex
+   * @param {number} toIndex
+   */
   function swap(fromIndex, toIndex) {
     const [fromLayer] = list.splice(fromIndex, 1)
     list.splice(toIndex, 0, fromLayer)
   }
 
+  /**
+   *
+   * @param {Layer} layer
+   */
   function toggle(layer) {
     layer.visible.value = !layer.visible.value
   }
 
+  /**
+   *
+   */
   function moveUp() {
     const index = list.findIndex((layer) => layer === layer)
     if (index < 0) {
@@ -150,6 +188,9 @@ export const useLayersStore = defineStore('layers', () => {
     list.splice(index + 1, 0, removed)
   }
 
+  /**
+   *
+   */
   function moveDown() {
     const index = list.findIndex((layer) => layer === layer)
     if (index < 0) {
@@ -159,11 +200,19 @@ export const useLayersStore = defineStore('layers', () => {
     list.splice(index - 1, 0, removed)
   }
 
+  /**
+   *
+   * @param {Array<Layer>} layers
+   */
   function set(layers) {
+    console.log('set', layers)
     list.length = 0
     layers.forEach(layer => add(layer))
   }
 
+  /**
+   * Clears the layers list
+   */
   function clear() {
     list.splice(0, list.length)
   }

@@ -1378,7 +1378,10 @@ export const useDocumentStore = defineStore('document', () => {
     const newLayers = options.layers ?? [
       { name: 'Background', width: width.value, height: height.value }
     ]
+
+    // We need to pass document width and height to the layers
     layers.set(newLayers)
+
     const id = uuid()
     const canvas = Canvas.createWith(width.value, height.value, {
       id: id,

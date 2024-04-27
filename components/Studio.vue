@@ -19,6 +19,10 @@ const props = defineProps({
   offline: {
     type: Boolean,
     default: false
+  },
+  preventCreation: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -145,7 +149,7 @@ const sidePanelMessage = computed(() => {
         class="button-show"
         type="button"
         :class="{ expanded: uiStore.showAnimation }"
-        :aria-label="uiStore.showAnimation ? $('studio.anim') : 'Show animation panel'"
+        :aria-label="uiStore.showAnimation ? $t('studio.anim') : 'Show animation panel'"
         @click="uiStore.toggleAnimation"
       >
         <Icon :i="uiStore.showAnimation ? 'arrow-down' : 'arrow-up'" />
@@ -413,7 +417,9 @@ const sidePanelMessage = computed(() => {
     v-if="uiStore.showOverlay === 'symmetry-settings'"
     class="symmetry-settings"
   />
-  <DocumentCreate v-if="uiStore.showDocumentCreation" />
+  <DocumentCreate
+    v-if="!props.preventCreation && uiStore.showDocumentCreation"
+  />
   <ColorPicker
     v-if="uiStore.showColorPicker"
     @close="uiStore.toggleColorPicker()"

@@ -196,6 +196,8 @@ export async function load(blob) {
         opacity: parseFloat(layerElement.getAttribute('opacity')),
         visible: layerElement.getAttribute('visibility') === 'visible',
         blendMode: getBlendMode(layerElement.getAttribute('composite-op')),
+        width: canvas.width,
+        height: canvas.height,
         canvas,
         context,
         frames: [frame]

@@ -2053,6 +2053,9 @@ const brushData = new Uint8Array([
 
 const brushImageDataList = []
 
+/**
+ * Initialize the precomputed circle.
+ */
 export function init() {
   brushImageDataList.length = 0
   for (let i = 0; i < 32; i++) {
@@ -2069,6 +2072,7 @@ export function init() {
 }
 
 /**
+ * Draw a circle using a precomputed table of circles.
  *
  * @param {ImageData} imageData
  * @param {number} x
