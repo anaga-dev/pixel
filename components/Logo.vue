@@ -16,3 +16,8 @@
   </svg>
 </template>
   
+<style scoped>
+svg {
+  fill: currentColor;
+}
+</style>

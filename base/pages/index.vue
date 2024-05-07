@@ -105,7 +105,9 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
+@import '@/styles/base.website.css';
+
 .PAGE {
   --headerHeight: 6rem;
   --colorBgHome: hsl(94 66% 52%);

@@ -37,17 +37,6 @@ small {
   line-height: 1.5;
 }
 
-a:not([class]) {
-  color: var(--colorTextPrimary);
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 4px;
-}
-
-a:not([class]):hover {
-  color: var(--colorAccent);
-}
-
 *::-webkit-scrollbar {
   width: var(--spaceS);
 }
@@ -75,6 +64,7 @@ button {
   margin: 0;
   padding: 0;
   border: none;
+  position: relative;
   background-color: transparent;
   color: var(--colorText);
   text-align: center;
@@ -173,4 +163,13 @@ canvas {
   opacity: 0;
 }
 
+.link {
+  color: var(--colorTextPrimary);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+}
 
+.link:hover {
+  color: var(--colorAccent);
+}

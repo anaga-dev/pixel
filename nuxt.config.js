@@ -95,8 +95,8 @@ export default defineNuxtConfig({
   css: [
     '/styles/reset.css',
     '/styles/fonts.css',
-    '/styles/global.css',
-    '/styles/variables.css'
+    '/styles/variables.css',
+    '/styles/base.css'
   ],
   pinia: {
     autoImports: ['defineStore', 'acceptHMRUpdate', 'storeToRefs']
