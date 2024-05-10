@@ -21,7 +21,9 @@ const description = computed(() => {
       </h1>
       <p>{{ $t(description) }}</p>
       <p>
-        <NuxtLink to="/">{{ $t('error.link') }}</NuxtLink>
+        <NuxtLink :to="localePath('/')">
+          {{ $t('error.link') }}
+        </NuxtLink>
       </p>
     </div>
   </div>
