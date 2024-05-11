@@ -6,30 +6,31 @@ const { notifications, systemNotification } = storeToRefs(notificationStore)
 </script>
 
 <template>
-  <ul v-if="notifications?.length > 0 || systemNotification">
-    <TransitionGroup name="list">
-      <li
-        v-if="notifications && notifications.length > 0"
-        v-for="(notification, index) in notifications"
-        :key="index"
-      >
-        {{ notification.message }}
-        <Button variant="ghost" @click="dismissNotification(index)"
-          ><Icon i="close"
-        /></Button>
-      </li>
-      <li v-if="systemNotification" key="system">
-        {{ $t(systemNotification) }}
-      </li>
-    </TransitionGroup>
-  </ul>
+  <Transition name="list">
+    <ul v-if="notifications?.length > 0 || systemNotification">
+      <TransitionGroup name="list">
+        <li
+          v-if="notifications && notifications.length > 0"
+          v-for="(notification, index) in notifications"
+          :key="index"
+        >
+          {{ notification.message }}
+          <Button v-if="notification.type !== 'auto'" variant="ghost" @click="dismissNotification(index)"
+            ><Icon i="close"
+          /></Button>
+        </li>
+        <li v-if="systemNotification" key="system">
+          {{ $t(systemNotification) }}
+        </li>
+      </TransitionGroup>
+    </ul>
+  </Transition>
 </template>
 
 <style scoped>
 ul {
   position: fixed;
-  bottom: 0;
-  left: 0;
+  top: 0;
   right: 0;
   list-style: none;
   padding: var(--spaceL);
@@ -43,6 +44,7 @@ ul {
 li {
   padding: var(--spaceM) var(--spaceL);
   background-color: var(--colorLayer2);
+  color: var(--colorTextPrimary);
   box-shadow: var(--shadowLayer);
   display: flex;
   gap: var(--spaceS);
@@ -57,6 +59,6 @@ li {
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
-  scale: 0.25;
+  translate: 100% 0;
 }
 </style>

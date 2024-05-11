@@ -78,6 +78,7 @@ button {
   background-color: transparent;
   color: var(--colorText);
   text-align: center;
+  position: relative;
 }
 
 input:is(

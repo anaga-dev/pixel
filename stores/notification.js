@@ -1,10 +1,20 @@
 export const useNotificationStore = defineStore('notification', () => {
   const notifications = reactive([])
   const resolve = ref([])
-  const systemNotification = ref(null)
 
-  const pushNotification = (msg, dsmss) => {
-    notifications.push({ message: msg, dismissable: dsmss })
+  const DISMISS_TIMEOUT = 6000
+
+  const pushNotification = (notification) => {
+    const index = notifications.length
+    notifications.push({
+      message: notification.message,
+      type: notification.type
+    })
+    if (notification.type === 'auto') {
+      setTimeout(() => {
+        dismissNotification(index)
+      }, DISMISS_TIMEOUT)
+    }
     return new Promise((rslv) => {
       resolve.value = rslv
     })
@@ -17,7 +27,6 @@ export const useNotificationStore = defineStore('notification', () => {
   return {
     notifications,
     resolve,
-    systemNotification,
     pushNotification,
     dismissNotification
   }
