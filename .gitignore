@@ -344,3 +344,6 @@ pixel-cloud
 
 nw/out
 nw/cache
+
+# Local Netlify folder
+.netlify
