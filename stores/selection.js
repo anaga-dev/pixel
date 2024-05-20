@@ -42,6 +42,7 @@ export const useSelectionStore = defineStore('selection', () => {
       return selection.update(x, y)
     },
     end(x, y) {
+      visible.value = true
       return selection.end(x, y)
     },
     render(width, height) {

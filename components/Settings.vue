@@ -7,6 +7,7 @@ const documentStore = useDocumentStore()
 <template>
   <section class="Settings">
     <ToolSettings :tool="documentStore.tool" />
+    {{ documentStore.selection }}
     <Divider
       v-if="documentStore.selection.visible"
       vertical
