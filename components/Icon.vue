@@ -17,30 +17,30 @@ const props = defineProps({
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
   >
-    <use :xlink:href="`#${props.i}`" />
+    <use :href="`#${props.i}`" />
     <defs>
-      <g id="add-item">
+      <symbol id="add-item">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 4H24H28H32H36H40H44V8V12V16V20V24V28V32V36V40H40H36V44H32H28H24H20H16H12H8H4V40V36V32V28V24V20V16V12H8V8V4H12H16H20ZM40 36V32V28V24V20V16V12V8H36H32H28H24H20H16H12V12V16V20V24V28V32V36H16H20H24H28H32H36H40ZM24 20H20H16V24H20H24V28V32H28V28V24H32H36V20H32H28V16V12H24V16V20Z"
         />
-      </g>
-      <g id="add-layer">
+      </symbol>
+      <symbol id="add-layer">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M8 4H12H16H20H24H28H32V8V12V16V20V24V28H28V24V20V16V12V8H24H20H16H12H8V12V16V20V24V28H12H16H20H24H28V32H24H20H16H12H8H4V28V24V20V16V12V8V4H8ZM44 16H40H36V20H40V24V28V32V36V40H36H32H28H24H20V36H16V40V44H20H24H28H32H36H40V40H44V36V32V28V24V20V16ZM20 12H16V16H12V20H16V24H20V20H24V16H20V12Z"
         />
-      </g>
-      <g id="add-palette">
+      </symbol>
+      <symbol id="add-palette">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 8H16V4H20H24H28V8H24H20ZM36 16H32V12H28V8H32H36V12V16ZM40 36V32V28V24H36V20V16H40V20H44V24V28V32V36H40ZM36 40V36H40V40H36ZM16 36H20H24V40H28H32H36V44H32H28H24H20V40H16V36ZM8 28H12V32H16V36H12H8V32V28ZM8 16V20V24V28H4V24V20V16H8ZM8 16H12V12H16V8H12H8V12V16ZM20 20V16H24V20H28V24H24V28H20V24H16V20H20ZM32 32H36V28H32V32ZM32 32H28V36H32V32Z"
         />
-      </g>
-      <g id="add-to-palette">
+      </symbol>
+      <symbol id="add-to-palette">
         <path d="M12 8H36V12H12V8Z" />
         <path d="M8 16V12H12V16H8Z" />
         <path d="M8 36H4V16H8V36Z" />
@@ -51,145 +51,145 @@ const props = defineProps({
         <path d="M40 16H44V28H40V16Z" />
         <path d="M40 16V12H36V16H40Z" />
         <path d="M26 20V16H22V20H18V24H22V28H26V24H30V20H26Z" />
-      </g>
-      <g id="arrow-down">
+      </symbol>
+      <symbol id="arrow-down">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M12 20H8V24H12V28H16V32H20V36H28V32H32V28H36V24H40V20H36V24H32V28H28V32H20V28H16V24H12V20Z"
         />
-      </g>
-      <g id="arrow-left">
+      </symbol>
+      <symbol id="arrow-left">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M32 8H28V12H24V16H20V20H16V24V28H20V32H24V36H28V40H32V36H28V32H24V28H20V24V20H24V16H28V12H32V8Z"
         />
-      </g>
-      <g id="arrow-right">
+      </symbol>
+      <symbol id="arrow-right">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 8H20V12H24V16H28V20H32V28H28V32H24V36H20V40H16V36H20V32H24V28H28V20H24V16H20V12H16V8Z"
         />
-      </g>
-      <g id="arrow-up">
+      </symbol>
+      <symbol id="arrow-up">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M12 32H8V28H12V24H16V20H20V16H28V20H32V24H36V28H40V32H36V28H32V24H28V20H20V24H16V28H12V32Z"
         />
-      </g>
-      <g id="brush-square">
+      </symbol>
+      <symbol id="brush-square">
         <path d="M8 8H40V40H8V8Z" />
-      </g>
-      <g id="brush-round">
+      </symbol>
+      <symbol id="brush-round">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 8H20H24H28H32V12H36V16H40V20V24V28V32H36V36H32V40H28H24H20H16V36H12V32H8V28V24V20V16H12V12H16V8Z"
         />
-      </g>
-      <g id="brush-dither">
+      </symbol>
+      <symbol id="brush-dither">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 8H24V12H20V8ZM20 16V12H16V16H12V20H8V24H12V28H8V32H12V36H16V40H20V36H24V40H28V36H32V32H36V28H40V24H36V20H40V16H36V12H32V8H28V12H24V16H20ZM20 20V16H16V20H12V24H16V28H12V32H16V36H20V32H24V36H28V32H32V28H36V24H32V20H36V16H32V12H28V16H24V20H20ZM20 24H16V20H20V24ZM24 24V20H28V24H24ZM24 28V24H20V28H16V32H20V28H24ZM28 28V32H24V28H28ZM28 28V24H32V28H28ZM28 20V16H32V20H28Z"
         />
-      </g>
-      <g id="contiguous">
+      </symbol>
+      <symbol id="contiguous">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4V8H20V16H4V44H32V28H40V24H44V8H40V4H24ZM40 8V24H28V40H8V20H24V8H40Z"
         />
-      </g>
-      <g id="deselect">
+      </symbol>
+      <symbol id="deselect">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M8 4H4V8V12H8V8V4ZM4 16H8V20V24H4V20V16ZM4 28H8V32H4V28ZM16 40H20H24V44H20H16V40ZM28 40H32H36V44H32H28V40ZM40 44V40V36H44V40V44H40ZM40 32V28V24H44V28V32H40ZM40 20V16H44V20H40ZM12 4H16H20V8H16H12V4ZM24 4H28H32V8H28H24V4ZM40 4H44V8H40V4ZM36 12V8H40V12H36ZM32 16V12H36V16H32ZM32 16H28V20H24V24H20V28H16V32H12V36H8V40H4V44H8V40H12V36H16V32H20V28H24V24H28V20H32V16Z"
         />
-      </g>
-      <g id="dither-0">
+      </symbol>
+      <symbol id="dither-0">
         <DitherPattern level="0" />
-      </g>
-      <g id="dither-1">
+      </symbol>
+      <symbol id="dither-1">
         <DitherPattern level="1" />
-      </g>
-      <g id="dither-2">
+      </symbol>
+      <symbol id="dither-2">
         <DitherPattern level="2" />
-      </g>
-      <g id="dither-3">
+      </symbol>
+      <symbol id="dither-3">
         <DitherPattern level="3" />
-      </g>
-      <g id="dither-4">
+      </symbol>
+      <symbol id="dither-4">
         <DitherPattern level="4" />
-      </g>
-      <g id="dither-5">
+      </symbol>
+      <symbol id="dither-5">
         <DitherPattern level="5" />
-      </g>
-      <g id="dither-6">
+      </symbol>
+      <symbol id="dither-6">
         <DitherPattern level="6" />
-      </g>
-      <g id="dither-7">
+      </symbol>
+      <symbol id="dither-7">
         <DitherPattern level="7" />
-      </g>
-      <g id="dither-8">
+      </symbol>
+      <symbol id="dither-8">
         <DitherPattern level="8" />
-      </g>
-      <g id="dither-9">
+      </symbol>
+      <symbol id="dither-9">
         <DitherPattern level="9" />
-      </g>
-      <g id="dither-10">
+      </symbol>
+      <symbol id="dither-10">
         <DitherPattern level="10" />
-      </g>
-      <g id="dither-11">
+      </symbol>
+      <symbol id="dither-11">
         <DitherPattern level="11" />
-      </g>
-      <g id="dither-12">
+      </symbol>
+      <symbol id="dither-12">
         <DitherPattern level="12" />
-      </g>
-      <g id="dither-13">
+      </symbol>
+      <symbol id="dither-13">
         <DitherPattern level="13" />
-      </g>
-      <g id="circle">
+      </symbol>
+      <symbol id="circle">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 4H20H24H28H32V8H28H24H20H16V4ZM12 12V8H16V12H12ZM8 16V12H12V16H8ZM8 32V28V24V20V16H4V20V24V28V32H8ZM12 36H8V32H12V36ZM16 40H12V36H16V40ZM32 40V44H28H24H20H16V40H20H24H28H32ZM36 36V40H32V36H36ZM40 32V36H36V32H40ZM40 16H44V20V24V28V32H40V28V24V20V16ZM36 12H40V16H36V12ZM36 12V8H32V12H36Z"
         />
-      </g>
-      <g id="badge">
+      </symbol>
+      <symbol id="badge">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 8H20H24H28H32V12H36V16H40V20V24V28V32H36V36H32V40H28H24H20H16V36H12V32H8V28V24V20V16H12V12H16V8Z"
         />
-      </g>
-      <g id="close">
+      </symbol>
+      <symbol id="close">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M12 8H8V12H12V16H16V20H20V24V28H16V32H12V36H8V40H12V36H16V32H20V28H24H28V32H32V36H36V40H40V36H36V32H32V28H28V24V20H32V16H36V12H40V8H36V12H32V16H28V20H24H20V16H16V12H12V8Z"
         />
-      </g>
-      <g id="color">
+      </symbol>
+      <symbol id="color">
         <rect
           x="8"
           y="8"
           width="32"
           height="32"
         />
-      </g>
-      <g id="color-outline">
+      </symbol>
+      <symbol id="color-outline">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M8 4V8H4V40H8V44H40V40H44V8H40V4H8ZM40 8H8V40H40V8Z"
         />
-      </g>
-      <g id="composite">
+      </symbol>
+      <symbol id="composite">
         <path d="M20 20H24V24H20V20Z" />
         <path d="M28 24H32V20H28V24Z" />
         <path d="M28 28V24H24V28H20V32H24V28H28Z" />
@@ -200,169 +200,169 @@ const props = defineProps({
           clip-rule="evenodd"
           d="M12 4V8H8V12H4V28H8V32H12V36H16V40H20V44H36V40H40V36H44V20H40V16H36V12H32V8H28V4H12ZM12 8V12H8V28H12V20H16V24H20V28H16V32H20V36H24V32H28V36H32V32H36V28H32V24H36V20H32V16H28V20H24V16H20V12H28V8H12Z"
         />
-      </g>
-      <g id="contract">
+      </symbol>
+      <symbol id="contract">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M8 12H12V16H8V12ZM16 20H12V16H16V20ZM16 28V20H20V28H16ZM12 32V28H16V32H12ZM12 32V36H8V32H12ZM32 20H28V28H32V32H36V36H40V32H36V28H32V20ZM36 16V20H32V16H36ZM36 16V12H40V16H36Z"
         />
-      </g>
-      <g id="delete">
+      </symbol>
+      <symbol id="delete">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4H28V8H32H36H40H44V12H40H36H32H28H24H20H16H12H8H4V8H8H12H16H20V4H24ZM36 24V20V16H40V20V24V28V32V36V40H36V36V32V28V24ZM12 40H16H20H24H28H32H36V44H32H28H24H20H16H12V40ZM12 40V36V32V28V24V20V16H8V20V24V28V32V36V40H12Z"
         />
-      </g>
-      <g id="droplet">
+      </symbol>
+      <symbol id="droplet">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4H20V8V12H16V16V20H12V24H8V28V32V36H12V40H16V44H20H24H28H32V40H36V36H40V32V28V24H36V20H32V16V12H28V8V4H24ZM28 12V16V20H32V24H36V28V32V36H32V40H28H24H20H16V36H12V32V28V24H16V20H20V16V12H24H28Z"
         />
-      </g>
-      <g id="duplicate">
+      </symbol>
+      <symbol id="duplicate">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 4H16V8V12V16H12H8H4V20V24V28V32V36V40V44H8H12H16H20H24H28H32V40V36V32H36H40H44V28V24V20V16V12V8V4H40H36H32H28H24H20ZM40 24V28H36H32H28V32V36V40H24H20H16H12H8V36V32V28V24V20H12H16H20V16V12V8H24H28H32H36H40V12V16V20V24ZM28 12H24V16H28V20H24V24H20V28H16V32H20V28H24V24H28V20H32V24H36V20V16V12H32H28Z"
         />
-      </g>
-      <g id="edit">
+      </symbol>
+      <symbol id="edit">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M12 4H8V8H4V12V16V20V24V28V32V36V40H8V44H12H16H20H24H28H32H36H40V40H44V36V32V28V24V20H40V24V28V32V36V40H36H32H28H24H20H16H12H8V36V32V28V24V20V16V12V8H12H16H20H24H28V4H24H20H16H12ZM36 4H40H44V8V12H40V16H36V12H32V8H36V4ZM20 28V24V20H24V16H28V12H32V16H36V20H32V24H28V28H24H20ZM20 28V32H16V28H20Z"
         />
-      </g>
-      <g id="eraser">
+      </symbol>
+      <symbol id="eraser">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4H28V8H24V4ZM20 12V8H24V12H20ZM16 16V12H20V16H16ZM16 20V16H12V20H8V24H4V28V32H8V36H12V40H16H20V44H24H28H32V40H36H40H44V36H40H36H32V40H28H24H20V36H24V32H28V28H32V24H36V20H40V16H36V12H32V8H28V12H32V16H36V20H32V24H28V28H24V24H20V20H16ZM16 20V24H20V28H24V32H20V36H16H12V32H8V28V24H12V20H16Z"
         />
-      </g>
-      <g id="eyedropper">
+      </symbol>
+      <symbol id="eyedropper">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M36 4H40V8H36H32V4H36ZM28 12V8H32V12H28ZM24 16V12H28V16H24ZM32 24H28V20H24V16H20V12H16V16H20V20V24H16V28H12V32H8V36V40H4V44H8V40H12H16V36H20V32H24V28H28H32V32H36V28H32V24ZM36 20V24H32V20H36ZM40 16V20H36V16H40ZM40 16H44V12V8H40V12V16ZM20 28V24H24V28H20ZM16 32V28H20V32H16ZM16 32V36H12V32H16Z"
         />
-      </g>
-      <g id="expand">
+      </symbol>
+      <symbol id="expand">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M32 12H36V16H32V12ZM40 20H36V16H40V20ZM40 28V20H44V28H40ZM36 32V28H40V32H36ZM36 32V36H32V32H36ZM8 20H4V28H8V32H12V36H16V32H12V28H8V20ZM12 16V20H8V16H12ZM12 16V12H16V16H12Z"
         />
-      </g>
-      <g id="expand-side-panel">
+      </symbol>
+      <symbol id="expand-side-panel">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 12H20V16H16V12ZM12 20V16H16V20H12ZM12 28H8V24V20H12V24V28ZM16 32H12V28H16V32ZM16 32H20V36H16V32ZM32 12H36V16H32V12ZM28 20V16H32V20H28ZM28 28H24V24V20H28V24V28ZM32 32H28V28H32V32ZM32 32H36V36H32V32Z"
         />
-      </g>
-      <g id="collapse-side-panel">
+      </symbol>
+      <symbol id="collapse-side-panel">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 12H12V16H16V20H20V24V28H16V32H12V36H16V32H20V28H24V24V20H20V16H16V12ZM32 12H28V16H32V20H36V24V28H32V32H28V36H32V32H36V28H40V24V20H36V16H32V12Z"
         />
-      </g>
-      <g id="fill">
+      </symbol>
+      <symbol id="fill">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M28 4H24V8H20V12H16V16H12V20H8V24V28V32H12V36H16V40H20H24H28V36H32V32H36V28H40V32V36V40V44H44V40V36V32V28V24V20H40V16H36V12H32V8H28V4ZM28 8V12H32V16H36V20H40V24H36H32H28H24H20H16H12V20H16V16H20V12H24V8H28Z"
         />
-      </g>
-      <g id="flip-horizontal">
+      </symbol>
+      <symbol id="flip-horizontal">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 4V12H16V20H12V28H8V36H4V44H44V36H40V28H36V20H32V12H28V4H20ZM28 12H24V40H40V36H36V28H32V20H28V12Z"
         />
-      </g>
-      <g id="flip-vertical">
+      </symbol>
+      <symbol id="flip-vertical">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M44 20H36V16H28V12H20V8H12V4H4V44H12V40H20V36H28V32H36V28H44V20ZM36 28V24H8V40H12V36H20V32H28V28H36Z"
         />
-      </g>
-      <g id="freehand">
+      </symbol>
+      <symbol id="freehand">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 4H12V8H8V12H12V8H16V4ZM24 4H20V8H24H28V4H24ZM12 16H8V20H12V24H16V20H12V16ZM24 20H20V24H24H28V20H24ZM32 8H36V12H32V8ZM36 12H40V16H36V12ZM36 20H40V24H36V20ZM36 24V28H32V24H36ZM24 32H28V36H24H20V32H24ZM12 36H16V40H12V36ZM12 40V44H8V40H12Z"
         />
-      </g>
-      <g id="hidden">
+      </symbol>
+      <symbol id="hidden">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M44 4H40V8H36V12H32V16H28V20H24V24H20V28H16V32H12V33V36H8V40H4V44H8V40H12V36H16V40H20H24H28H32V36H36V32H40V28H44V24V20H40V24V28H36V32H32V36H28H24H20H16V32H20V28H24V24H28V20H32V16H36V12H40V8H44V4ZM20 8H24H28V12H24H20H16V8H20ZM12 16V12H16V16H12ZM8 20V16H12V20H8ZM8 20V24V28H4V24V20H8Z"
         />
-      </g>
-      <g id="layers">
+      </symbol>
+      <symbol id="layers">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 4H28V8H20V4ZM12 12V8H16H20V12H16H12ZM8 20V16H12V12H8H4V16V20V24H8H12V28H16H20V32H28V28H32H36V24H40H44V20V16V12H40H36V8H32H28V12H32H36V16H40V20H36V24H32H28V28H20V24H16H12V20H8ZM20 40H28V44H20V40ZM12 36H16H20V40H16H12V36ZM12 36H8H4V32H8H12V36ZM36 36H32H28V40H32H36V36ZM36 36H40H44V32H40H36V36Z"
         />
-      </g>
-      <g id="line">
+      </symbol>
+      <symbol id="line">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M40 4H44V8H40V12H36V16H32V20H28V24H24V28H20V32H16V36H12V40H8V44H4V40V36H8V32H12V28H16V24H20V20H24V16H28V12H32V8H36V4H40Z"
         />
-      </g>
-      <g id="linked">
+      </symbol>
+      <symbol id="linked">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M32 4H28V8H24V12H20V16H24V12H28V8H32H36V12H40V16V20H36V24H32V28H36V24H40V20H44V16V12H40V8H36V4H32ZM24 20H28V24H24V20ZM20 28V24H24V28H20ZM20 28V32H16V28H20ZM28 20V16H32V20H28ZM12 20H16V24H12V20ZM8 28V24H12V28H8ZM8 36H4V32V28H8V32V36ZM12 40H8V36H12V40ZM20 40V44H16H12V40H16H20ZM24 36V40H20V36H24ZM24 36V32H28V36H24Z"
         />
-      </g>
-      <g id="load">
+      </symbol>
+      <symbol id="load">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 8V4H24V8H28V12H24V16V20V24V28V32H20V28V24V20V16V12H16V8H20ZM12 16V12H16V16H12ZM12 16V20H8V16H12ZM32 16H28V12H32V16ZM32 16H36V20H32V16ZM40 32H44V36H40V32ZM36 40V36H40V40H36ZM8 40H12H16H20H24H28H32H36V44H32H28H24H20H16H12H8V40ZM8 40H4V36H8V40Z"
         />
-      </g>
-      <g id="lock">
+      </symbol>
+      <symbol id="lock">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4H20V8H16V12H12V16V20H8V24V28V32V36V40H12V44H16H20H24H28H32H36V40H40V36V32V28V24V20H36V16V12H32V8H28V4H24ZM32 20V16V12H28V8H24H20V12H16V16V20H20H24H28H32ZM32 24H28H24H20H16H12V28V32V36V40H16H20H24H28H32H36V36V32V28V24H32ZM20 28H24H28V32V36H24H20V32V28Z"
         />
-      </g>
-      <g id="menu">
+      </symbol>
+      <symbol id="menu">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M27.2 10H30.4H33.6H36.8H40V14H36.8H33.6H30.4H27.2H24H20.8H17.6H14.4H11.2H8V10H11.2H14.4H17.6H20.8H24H27.2ZM27.2 22H30.4H33.6H36.8H40V26H36.8H33.6H30.4H27.2H24H20.8H17.6H14.4H11.2H8V22H11.2H14.4H17.6H20.8H24H27.2ZM27.2 34H30.4H33.6H36.8H40V38H36.8H33.6H30.4H27.2H24H20.8H17.6H14.4H11.2H8V34H11.2H14.4H17.6H20.8H24H27.2Z"
         />
-      </g>
-      <g id="more">
+      </symbol>
+      <symbol id="more">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M10 22H14V26H10V22ZM22 22H26V26H22V22ZM38 22H34V26H38V22Z"
         />
-      </g>
-      <g id="navigator">
+      </symbol>
+      <symbol id="navigator">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M22 2H26V6V10H30V14V18H34H38V22H42H46V26H42H38V30H34H30V34V38H26V42V46H22V42V38H18V34V30H14H10V26H6H2V22H6H10V18H14H18V14V10H22V6V2Z"
         />
-      </g>
-      <g id="offline">
+      </symbol>
+      <symbol id="offline">
         <path
           d="M44 4H40V8H36V12H32V16H28V20H24V24H20V28H16V20H20V16H16V20H12V28H16V32H12V36H8V40H4V44H8V40H12V36H16V32H20V28H24V24H28V20H32V28H28V32H32V28H36V20H32V16H36V12H40V8H44V4Z"
         />
@@ -370,8 +370,8 @@ const props = defineProps({
         <path d="M12 12V16H8V12H12Z" />
         <path d="M12 12V8H16V12H12Z" />
         <path d="M44 16H40V32H36V36H32V40H36V36H40V32H44V16Z" />
-      </g>
-      <g id="palette">
+      </symbol>
+      <symbol id="palette">
         <path d="M32 20H36V24H32V20Z" />
         <path d="M28 16H24V20H28V16Z" />
         <path d="M16 16H20V20H16V16Z" />
@@ -381,148 +381,148 @@ const props = defineProps({
           clip-rule="evenodd"
           d="M12 8V12H8V16H4V36H8V40H12V44H20V36H36V32H40V28H44V16H40V12H36V8H12ZM36 12V16H40V28H36V32H20V36H16V40H12V36H8V16H12V12H36Z"
         />
-      </g>
-      <g id="pause">
+      </symbol>
+      <symbol id="pause">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M12 8H8V12V16V20V24V28V32V36V40H12H16H20V36V32V28V24V20V16V12V8H16H12ZM16 32V36H12V32V28V24V20V16V12H16V16V20V24V28V32ZM28 8H32H36H40V12V16V20V24V28V32V36V40H36H32H28V36V32V28V24V20V16V12V8ZM36 36V32V28V24V20V16V12H32V16V20V24V28V32V36H36Z"
         />
-      </g>
-      <g id="pencil">
+      </symbol>
+      <symbol id="pencil">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M36 4H32V8H28V12H24V16H20V20H16V24H12V28H8V32H4V36V40V44H8H12H16V40H20V36H24V32H28V28H32V24H36V20H40V16H44V12H40V8H36V4ZM36 8V12H40V16H36V20H32V24H28V28H24V32H20V36H16V32H12V28H16V24H20V20H24V16H28V12H32V8H36ZM12 32V36H16V40H12H8V36V32H12Z"
         />
-      </g>
-      <g id="play">
+      </symbol>
+      <symbol id="play">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 8H12H8V12V16V20V24V28V32V36V40H12H16V36H20H24V32H28H32V28H36H40V24V20H36H32V16H28H24V12H20H16V8ZM16 12V16H20H24V20H28H32V24V28H28H24V32H20H16V36H12V32V28V24V20V16V12H16Z"
         />
-      </g>
-      <g id="pointer">
+      </symbol>
+      <symbol id="pointer">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M4 4H8V8H4V4ZM20 12V8H16H12H8V12V16V20V24H12V28V32V36H16V40V44H20V40H24V36H28V32H32V28H36H40V24H44V20H40H36V16H32H28V12H24H20ZM20 12V16H24H28V20H32H36V24H32V28H28V32H24V36H20H16V32V28V24H12V20V16V12H16H20Z"
         />
-      </g>
-      <g id="redo">
+      </symbol>
+      <symbol id="redo">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M28 4H32V8H28V4ZM36 12H32V8H36V12ZM36 24H40V20H44V16H40V12H36V16H32H28H24H20H16H12V20H8V24H4V28V32V36H8V40H12V44H16H20H24H28V40H24H20H16H12V36H8V32V28V24H12V20H16H20H24H28H32H36V24ZM32 28H36V24H32V28ZM32 28H28V32H32V28Z"
         />
-      </g>
-      <g id="save">
+      </symbol>
+      <symbol id="save">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4H20V8V12V16V20V24H16V20H12V16H8V20H12V24H16V28H20V32H24V28H28V24H32V20H36V16H32V20H28V24H24V20V16V12V8V4ZM40 32H44V36H40V32ZM36 40V36H40V40H36ZM8 40H12H16H20H24H28H32H36V44H32H28H24H20H16H12H8V40ZM8 40H4V36H8V40Z"
         />
-      </g>
-      <g id="selection">
+      </symbol>
+      <symbol id="selection">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M8 4H4V8V12H8V8V4ZM4 16H8V20V24H4V20V16ZM4 28H8V32V36H4V32V28ZM4 40H8H12V44H8H4V40ZM16 40H20H24V44H20H16V40ZM28 40H32H36V44H32H28V40ZM40 44V40V36H44V40V44H40ZM40 32V28V24H44V28V32H40ZM40 20V16V12H44V16V20H40ZM12 4H16H20V8H16H12V4ZM24 4H28H32V8H28H24V4ZM36 4H40H44V8H40H36V4Z"
         />
-      </g>
-      <g id="selection-ellipse">
+      </symbol>
+      <symbol id="selection-ellipse">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 4H20H24V8H20H16V4ZM12 12H8V16H4V20H8V16H12V12ZM8 24H4V28V32H8V28V24ZM28 4H32V8H28V4ZM32 8H36V12H32V8ZM40 16H44V20V24H40V20V16ZM44 28H40V32H36V36H40V32H44V28ZM28 40H32V44H28H24V40H28ZM16 40H20V44H16V40ZM16 40H12V36H16V40Z"
         />
-      </g>
-      <g id="selection-add">
+      </symbol>
+      <symbol id="selection-add">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 4H20V12H16V4ZM24 4H32V8H24V4ZM44 4H36V8H44V4ZM40 12H44V20H40V12ZM44 24H40V32H44V24ZM36 28V32H28V28H36ZM24 44V40H16V44H24ZM4 40H12V44H4V40ZM20 20V16H12V20H20ZM4 16H8V20V24H4V20V16ZM4 32V36H8V32V28H4V32ZM28 36H32V40V44H28V40V36Z"
         />
-      </g>
-      <g id="selection-substract">
+      </symbol>
+      <symbol id="selection-substract">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 4H20V12H16V4ZM24 4H32V8H24V4ZM44 4H36V8H44V4ZM40 12H44V20H40V12ZM44 24H40V32H44V24ZM28 16H32V20H28V16ZM28 24V20H24V16H20V20H16V16H12V20H8V16H4V20H8V24H4V28H8V32H4V36H8V40H4V44H8V40H12V44H16V40H20V44H24V40H28V44H32V40H28V36H32V32H36V28H32V24H28ZM28 28H32V32H28V28ZM24 28H28V24H24V20H20V24H16V20H12V24H8V28H12V32H8V36H12V40H16V36H20V40H24V36H28V32H24V28ZM20 28V24H24V28H20ZM20 32V28H16V24H12V28H16V32H12V36H16V32H20ZM20 32V36H24V32H20Z"
         />
-      </g>
-      <g id="shapes">
+      </symbol>
+      <symbol id="shapes">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M24 4H20V8H16V12V16H12V20H16H20H24H28H32V16H28V12V8H24V4ZM20 16V12H24V16H20ZM4 32V28H8H12H16H20V32V36V40V44H16H12H8H4V40V36V32ZM8 40V36V32H12H16V36V40H12H8ZM32 28H36H40V32H36H32V28ZM32 36V32H28V36V40H32V44H36H40V40H44V36V32H40V36V40H36H32V36Z"
         />
-      </g>
-      <g id="skip-first">
+      </symbol>
+      <symbol id="skip-first">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M8 12H12V16V20V24V28V32V36H8V32V28V24V20V16V12ZM16 28H20H24V32H28H32V36H36H40V32V28V24V20V16V12H36H32V16H28H24V20H20H16V24V28ZM36 20V16H32V20H28V24V28H32V32H36V28V24V20Z"
         />
-      </g>
-      <g id="skip-last">
+      </symbol>
+      <symbol id="skip-last">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M40 12H36V16V20V24V28V32V36H40V32V28V24V20V16V12ZM32 28H28H24V32H20H16V28H20V24V20H16V16H20H24V20H28H32V24V28ZM12 20V16H16V12H12H8V16V20V24V28V32V36H12H16V32H12V28V24V20Z"
         />
-      </g>
-      <g id="skip-next">
+      </symbol>
+      <symbol id="skip-next">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M28 12H24V16V20H20H16V16H12H8V12H4V16V20V24V28V32V36H8V32H12H16V28H20H24V32V36H28V32H32H36V28H40H44V24V20H40H36V16H32H28V12ZM8 20V24V28H12V24V20H8ZM28 20V24V28H32V24V20H28Z"
         />
-      </g>
-      <g id="skip-previous">
+      </symbol>
+      <symbol id="skip-previous">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 12H24V20H32V16H40V12H44V36H40V32H32V28H24V36H20V32H12V28H4V20H12V16H20V12ZM40 20H36V28H40V20ZM20 20H16V28H20V20Z"
         />
-      </g>
-      <g id="square">
+      </symbol>
+      <symbol id="square">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M4 4H8H12H16H20H24H28H32H36H40H44V8V12V16V20V24V28V32V36V40V44H40H36H32H28H24H20H16H12H8H4V40V36V32V28V24V20V16V12V8V4ZM8 36V40H12H16H20H24H28H32H36H40V36V32V28V24V20V16V12V8H36H32H28H24H20H16H12H8V12V16V20V24V28V32V36Z"
         />
-      </g>
-      <g id="settings">
+      </symbol>
+      <symbol id="settings">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M36 10V14H40H44V18H40H36V22H32H28V18H24H20H16H12H8H4L4 14H8H12H16H20H24H28V10H32H36ZM4 30H8V26H12H16V30H20H24H28H32H36H40H44V34H40H36H32H28H24H20H16V38H12H8V34H4L4 30Z"
         />
-      </g>
-      <g id="symmetry-horizontal">
+      </symbol>
+      <symbol id="symmetry-horizontal">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M4 4H8V8H4V4ZM12 12H8V8H12V12ZM16 20H12V16V12H16V16V20ZM16 28V24V20H20V24V28H16ZM12 36V32V28H16V32V36H12ZM8 40V36H12V40H8ZM8 40V44H4V40H8ZM36 12H32V16V20H28V24V28H32V32V36H36V40H40V44H44V40H40V36H36V32V28H32V24V20H36V16V12ZM40 8V12H36V8H40ZM40 8V4H44V8H40Z"
         />
-      </g>
-      <g id="symmetry-vertical">
+      </symbol>
+      <symbol id="symmetry-vertical">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M4 44V40H8V44H4ZM12 36V40H8V36H12ZM20 32V36H12V32H20ZM28 32H20V28H28V32ZM36 36H28V32H36V36ZM40 40H36V36H40V40ZM40 40H44V44H40V40ZM12 12V16H20V20H28V16H36V12H40V8H44V4H40V8H36V12H28V16H20V12H12ZM8 8H12V12H8V8ZM8 8H4V4H8V8Z"
         />
-      </g>
-      <g id="symmetry-two-axis">
+      </symbol>
+      <symbol id="symmetry-two-axis">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M16 4H12V8H16V12V16H12H8V12H4V16H8V20H12H16V16H20V12V8H16V4ZM32 8H28V12V16H32V20H36H40V16H44V12H40V16H36H32V12V8ZM32 8H36V4H32V8ZM16 40H20V36V32H16V28H12H8V32H4V36H8V32H12H16V36V40ZM16 40H12V44H16V40ZM32 40H28V36V32H32V36V40ZM32 40H36V44H32V40ZM36 28H32V32H36H40V36H44V32H40V28H36Z"
         />
-      </g>
-      <g id="tiling">
+      </symbol>
+      <symbol id="tiling">
         <path d="M16 32V36H12V32H16Z" />
         <path d="M20 28V32H16V28H20Z" />
         <path
@@ -535,55 +535,55 @@ const props = defineProps({
           clip-rule="evenodd"
           d="M44 4H4V44H44V4ZM20 36V40H28V36H32V40H36V36H40V32H36V28H40V20H36V16H40V12H36V8H32V12H28V8H20V12H16V8H12V12H8V16H12V20H8V28H12V32H8V36H12V40H16V36H20Z"
         />
-      </g>
-      <g id="transform">
+      </symbol>
+      <symbol id="transform">
         <path d="M26 2H22V6H18V10H22V18H26V10H30V6H26V2Z" />
         <path d="M18 22V26H10V30H6V26H2V22H6V18H10V22H18Z" />
         <path d="M38 18H42V22H46V26H42V30H38V26H30V22H38V18Z" />
         <path d="M26 38H30V42H26V46H22V42H18V38H22V30H26V38Z" />
-      </g>
-      <g id="undo">
+      </symbol>
+      <symbol id="undo">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 4H16V8H12V12H8V16H4V20H8V24H12V28H16V32H20V28H16V24H12V20H16H20H24H28H32H36V24H40V28V32V36H36V40H32H28H24H20V44H24H28H32H36V40H40V36H44V32V28V24H40V20H36V16H32H28H24H20H16H12V12H16V8H20V4Z"
         />
-      </g>
-      <g id="unlinked">
+      </symbol>
+      <symbol id="unlinked">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M32 4H28V8H24V12H20V16H24V12H28V8H32H36V12H40V16V20H36V24H32V28H36V24H40V20H44V16V12H40V8H36V4H32ZM12 20H16V24H12V20ZM8 28V24H12V28H8ZM8 36H4V32V28H8V32V36ZM12 40H8V36H12V40ZM20 40V44H16H12V40H16H20ZM24 36V40H20V36H24ZM24 36V32H28V36H24Z"
         />
-      </g>
-      <g id="visible">
+      </symbol>
+      <symbol id="visible">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 8H24H28H32V12H28H24H20H16V8H20ZM12 16V12H16V16H12ZM8 20V16H12V20H8ZM8 28H4V24V20H8V24V28ZM12 32H8V28H12V32ZM16 36H12V32H16V36ZM32 36V40H28H24H20H16V36H20H24H28H32ZM36 32V36H32V32H36ZM40 28V32H36V28H40ZM40 20H44V24V28H40V24V20ZM36 16H40V20H36V16ZM36 16V12H32V16H36ZM24 20H20V24V28H24H28V24V20H24Z"
         />
-      </g>
-      <g id="zoom-in">
+      </symbol>
+      <symbol id="zoom-in">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 8H16V12H12V16H8V20V24V28H12V32H16V36H20H24H28V32H32V36H36V40H40V44H44V40H40V36H36V32H32V28H36V24V20V16H32V12H28V8H24H20ZM28 12V16H32V20V24V28H28V32H24H20H16V28H12V24V20V16H16V12H20H24H28ZM24 16H20V20H16V24H20V28H24V24H28V20H24V16Z"
         />
-      </g>
-      <g id="zoom-out">
+      </symbol>
+      <symbol id="zoom-out">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M20 8H16V12H12V16H8V20V24V28H12V32H16V36H20H24H28V32H32V36H36V40H40V44H44V40H40V36H36V32H32V28H36V24V20V16H32V12H28V8H24H20ZM28 12V16H32V20V24V28H28V32H24H20H16V28H12V24V20V16H16V12H20H24H28ZM20 20H16V24H20H24H28V20H24H20Z"
         />
-      </g>
-      <g id="zoom-reset">
+      </symbol>
+      <symbol id="zoom-reset">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M28 4H24V8H20V12H16V16H20V20H24V24H28V20H24V16H28H32V20H36V24V28V32V36H32V40H28H24H20H16V36H12V32V28V24H8V28V32V36H12V40H16V44H20H24H28H32V40H36V36H40V32V28V24V20H36V16H32V12H28H24V8H28V4Z"
         />
-      </g>
+      </symbol>
     </defs>
   </svg>
 </template>

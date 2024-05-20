@@ -64,7 +64,7 @@ watch(() => props.data, (newValue) => {
 <style scoped>
 .Slider {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 5rem;
   gap: var(--spaceM);
 }
 
@@ -107,23 +107,25 @@ input[type=range]::-moz-range-thumb {
   border-radius: 0;
   background-color: var(--colorAccent);
   width: var(--spaceL);
+  height: var(--spaceL);
   aspect-ratio: 1;
   top: 50%;
-  transform: translateY(-50%);
   z-index: 2;
   box-shadow: var(--shadowLayer);
 }
 
-input[type="range"]::before {
+/* input[type="range"]::before {
   content: '';
   position: absolute;
   width: var(--percent, 100%);
   max-width: 100%;
-  height: var(--spaceS);
+  height: var(--spaceL);
   background: var(--colorAccent);
   pointer-events: none;
   z-index: 1;
   top: 50%;
   transform: translateY(-50%);
+  box-shadow: var(--shadowLayer);
 }
-</style>
+ */
+ </style>
