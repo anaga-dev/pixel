@@ -1915,36 +1915,38 @@ export const useDocumentStore = defineStore('document', () => {
 
   /**
    * Export file
+   *
+   * @param {string} name
+   * @param {string} format
+   * @param {number} scale
+   * @param {number} quality
    */
   async function exportFileAs(name, format, scale, quality) {
-    const fileExtension = `.${format}`
     const transformedQuality = quality / 100
 
     // Calculate new size
-    const originalWidth = canvas.width
-    const originalHeight = canvas.height
+    const originalWidth = canvas.value.width
+    const originalHeight = canvas.value.height
 
-    const newWidth = originalWidth * scale
-    const newHeight = originalHeight * scale
+    const newWidth = Math.floor(originalWidth * scale)
+    const newHeight = Math.floor(originalHeight * scale)
 
     // Create new canvas with modified size
-    const scaledCanvas = document.createElement('canvas')
+    const scaledCanvas = Canvas.createOffscreen(newWidth, newHeight)
     scaledCanvas.width = newWidth
     scaledCanvas.height = newHeight
 
-    const scaledCtx = scaledCanvas.getContext('2d')
+    const scaledCtx = CanvasContext2D.get(scaledCanvas)
 
     // Copy original image to new canvas with modified size
     scaledCtx.imageSmoothingEnabled = false
-    scaledCtx.drawImage(canvas, 0, 0, newWidth, newHeight)
+    scaledCtx.drawImage(canvas.value, 0, 0, newWidth, newHeight)
 
-    const dataURL = scaledCanvas.toDataURL(
-      `image/${format}`,
-      transformedQuality
-    )
+    const blob = Canvas.createBlob(scaledCanvas, `image/${format}`, transformedQuality)
+    const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = dataURL
-    a.download = name + fileExtension
+    a.href = url
+    a.download = `${name}.${format}`
     a.click()
   }
 

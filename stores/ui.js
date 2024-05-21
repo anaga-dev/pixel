@@ -24,16 +24,12 @@ export const useUIStore = defineStore('ui', () => {
   const ctrlDown = ref(false)
   const spaceDown = ref(false)
 
-  function toggleOverlay(el) {
-    if (visibleOverlay.value !== el) {
-      visibleOverlay.value = el
-    } else if (visibleOverlay.value === el) {
+  function toggleOverlay(newValue) {
+    if (visibleOverlay.value !== newValue) {
+      visibleOverlay.value = newValue
+    } else if (visibleOverlay.value === newValue) {
       visibleOverlay.value = null
     }
-  }
-
-  function toggleSidePanel() {
-    isSidebarExpanded.value = !isSidebarExpanded.value
   }
 
   function togglePanel(panel) {
@@ -44,19 +40,23 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  function toggleLayers() {
-    isLayersOverlayVisible.value = !isLayersOverlayVisible.value
-  }
-  function togglePalette() {
-    isPaletteVisible.value = !isPaletteVisible.value
+  function toggleSidePanel(newValue = !isSidebarExpanded.value) {
+    isSidebarExpanded.value = newValue
   }
 
-  function toggleColorPicker() {
-    isColorPickerVisible.value = !isColorPickerVisible.value
+  function toggleLayers(newValue = !isLayersOverlayVisible.value) {
+    isLayersOverlayVisible.value = newValue
+  }
+  function togglePalette(newValue = !isPaletteVisible.value) {
+    isPaletteVisible.value = newValue
   }
 
-  function toggleExportMenu() {
-    isExportMenuVisible.value = !isExportMenuVisible.value
+  function toggleColorPicker(newValue = !isColorPickerVisible.value) {
+    isColorPickerVisible.value = newValue
+  }
+
+  function toggleExportMenu(newValue = !isExportMenuVisible.value) {
+    isExportMenuVisible.value = newValue
   }
 
   function showTooltip(rect, message) {

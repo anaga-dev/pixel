@@ -471,7 +471,7 @@ const sidePanelMessage = computed(() => {
   </FloatingPanel>
   <ExportMenu
     v-if="uiStore.isExportMenuVisible"
-    @close="toggleExportMenu()"
+    @close="uiStore.toggleExportMenu()"
   />
 </template>
 

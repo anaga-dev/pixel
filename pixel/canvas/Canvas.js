@@ -179,12 +179,15 @@ export function clone(source) {
 /**
  * Creates a new canvas with the specified width and height
  *
- * @param {HTMLCanvasElement} canvas
+ * @param {HTMLCanvasElement|OffscreenCanvas} canvas
  * @param {'image/png'|'image/jpeg'|'image/webp'} [type]
  * @param {number} [quality]
- * @returns {Blob}
+ * @returns {Promise<Blob>}
  */
 export function createBlob(canvas, type, quality) {
+  if ('convertToBlob' in canvas && typeof canvas.convertToBlob === 'function') {
+    return canvas.convertToBlob({ type, quality })
+  }
   return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, quality))
 }
 
