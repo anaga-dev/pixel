@@ -120,11 +120,11 @@ function clearPalette() {
 }
 
 const expandSidePanelIcon = computed(() => {
-  return uiStore.showSidePanel ? 'collapse-side-panel' : 'expand-side-panel'
+  return uiStore.isSidebarExpanded ? 'collapse-side-panel' : 'expand-side-panel'
 })
 
 const sidePanelMessage = computed(() => {
-  return uiStore.showSidePanel.value
+  return uiStore.isSidebarExpanded.value
     ? 'studio.tooltips.collapse-side-panel'
     : 'studio.tooltips.expand-side-panel'
 })
@@ -148,22 +148,22 @@ const sidePanelMessage = computed(() => {
       <button
         class="button-show"
         type="button"
-        :class="{ expanded: uiStore.showAnimation }"
-        :aria-label="uiStore.showAnimation ? $t('studio.anim') : 'Show animation panel'"
+        :class="{ expanded: uiStore.isAnimationVisible }"
+        :aria-label="uiStore.isAnimationVisible ? $t('studio.anim') : 'Show animation panel'"
         @click="uiStore.toggleAnimation"
       >
-        <Icon :i="uiStore.showAnimation ? 'arrow-down' : 'arrow-up'" />
+        <Icon :i="uiStore.isAnimationVisible ? 'arrow-down' : 'arrow-up'" />
       </button>
-      <Animation v-if="uiStore.showAnimation" />
+      <Animation v-if="uiStore.isAnimationVisible" />
     </div>
     <Transition name="slide">
       <section
-        v-if="uiStore.showSidePanel"
+        v-if="uiStore.isSidebarExpanded"
         class="PANELS"
       >
         <Panel
           :title="$t('palette')"
-          :expanded="uiStore.showPalette"
+          :expanded="uiStore.isPaletteVisible"
           scrollable
           @toggle="uiStore.togglePalette"
         >
@@ -184,7 +184,7 @@ const sidePanelMessage = computed(() => {
           <Palette />
         </Panel>
         <Dropdown
-          v-if="uiStore.showOverlay === 'palette-options'"
+          v-if="uiStore.isOverlayVisible === 'palette-options'"
           class="palette-menu"
           @close="uiStore.toggleOverlay('palette-options')"
         >
@@ -201,7 +201,7 @@ const sidePanelMessage = computed(() => {
         <Divider />
         <Panel
           :title="$t('studio.layers')"
-          :expanded="uiStore.showLayers"
+          :expanded="uiStore.isLayersOverlayVisible"
           scrollable
           @toggle="uiStore.toggleLayers"
         >
@@ -382,7 +382,7 @@ const sidePanelMessage = computed(() => {
           <Button
             variant="ghost"
             :label="$t('studio.show-palette')"
-            :active="uiStore.showPanel === 'palette'"
+            :active="uiStore.isPanelVisible === 'palette'"
             @click="uiStore.togglePanel('palette')"
           >
             <Icon i="palette" />
@@ -395,7 +395,7 @@ const sidePanelMessage = computed(() => {
           <Button
             :label="$t('studio.show-layers')"
             variant="ghost"
-            :active="uiStore.showPanel === 'layers'"
+            :active="uiStore.isPanelVisible === 'layers'"
             @click="uiStore.togglePanel('layers')"
           >
             <Icon i="layers" />
@@ -405,7 +405,7 @@ const sidePanelMessage = computed(() => {
     </aside>
   </div>
   <SettingsMenu
-    v-if="uiStore.showOverlay === 'settings-menu'"
+    v-if="uiStore.isOverlayVisible === 'settings-menu'"
     class="settings-menu"
   />
   <LayerSettings
@@ -414,21 +414,21 @@ const sidePanelMessage = computed(() => {
     class="layer-settings"
   />
   <SymmetrySettings
-    v-if="uiStore.showOverlay === 'symmetry-settings'"
+    v-if="uiStore.isOverlayVisible === 'symmetry-settings'"
     class="symmetry-settings"
   />
   <DocumentCreate
-    v-if="!props.preventCreation && uiStore.showDocumentCreation"
+    v-if="!props.preventCreation && uiStore.isDocumentCreationVisible"
   />
   <ColorPicker
-    v-if="uiStore.showColorPicker"
+    v-if="uiStore.isColorPickerVisible"
     @close="uiStore.toggleColorPicker()"
   />
   <FloatingPanel
-    v-if="uiStore.showPanel === 'palette'"
+    v-if="uiStore.isPanelVisible === 'palette'"
     :title="$t('palette')"
     class="single-panel-palette"
-    @close="uiStore.showPanel = null"
+    @close="uiStore.isPanelVisible = null"
   >
     <template #actions>
       <Tooltip
@@ -447,10 +447,10 @@ const sidePanelMessage = computed(() => {
     <Palette />
   </FloatingPanel>
   <FloatingPanel
-    v-if="uiStore.showPanel === 'layers'"
+    v-if="uiStore.isPanelVisible === 'layers'"
     :title="$t('studio.layers')"
     class="single-panel-layers"
-    @close="uiStore.showPanel = null"
+    @close="uiStore.isPanelVisible = null"
   >
     <template #actions>
       <Tooltip
@@ -469,7 +469,7 @@ const sidePanelMessage = computed(() => {
     <Layers />
   </FloatingPanel>
   <ExportMenu
-    v-if="uiStore.showExportMenu"
+    v-if="uiStore.isExportMenuVisible"
     @close="toggleExportMenu()"
   />
 </template>

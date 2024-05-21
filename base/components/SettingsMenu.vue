@@ -18,7 +18,7 @@ async function newFile() {
     )
     if (confirmation) {
       documentStore.newFile()
-      uiStore.showDocumentCreation = true
+      uiStore.isDocumentCreationVisible = true
     }
   }
 }
@@ -34,7 +34,7 @@ function saveFile() {
 }
 
 function exportFile() {
-  uiStore.showExportMenu()
+  uiStore.isExportMenuVisible()
   uiStore.closeOverlay()
 }
 </script>

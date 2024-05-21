@@ -18,7 +18,7 @@ const uiStore = useUIStore()
       </Button>
     </Tooltip>
     <Dropdown
-      v-if="uiStore.showOverlay === 'zoom-settings'"
+      v-if="uiStore.isOverlayVisible === 'zoom-settings'"
       class="ZoomMenu"
       @close="toggleOverlay('zoom-settings')"
     >

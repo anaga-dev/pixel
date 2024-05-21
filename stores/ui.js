@@ -9,55 +9,54 @@ export const useUIStore = defineStore('ui', () => {
     height: 0
   })
 
-  const showAnimation = ref(false)
-  const showOverlay = ref(null)
-  const showDocumentCreation = ref(false)
-  const showSidePanel = ref(true)
-  const showPanel = ref(null)
-  const showColorPicker = ref(false)
-  const showPalette = ref(true)
-  const showLayers = ref(true)
-  const showExportMenu = ref(false)
+  const isAnimationVisible = ref(false)
+  const isOverlayVisible = ref(null)
+  const isDocumentCreationVisible = ref(false)
+  const isSidebarExpanded = ref(true)
+  const isPanelVisible = ref(null)
+  const isColorPickerVisible = ref(false)
+  const isPaletteVisible = ref(true)
+  const isLayersOverlayVisible = ref(true)
+  const isExportMenuVisible = ref(false)
   const tooltip = ref(null)
-  const showLayerSettings = ref(false)
-  const expandedSidebar = ref(true)
+  const isLayerSettingsVisible = ref(false)
 
   const ctrlDown = ref(false)
   const spaceDown = ref(false)
 
   function toggleOverlay(el) {
-    if (showOverlay.value !== el) {
-      showOverlay.value = el
-    } else if (showOverlay.value === el) {
-      showOverlay.value = null
+    if (isOverlayVisible.value !== el) {
+      isOverlayVisible.value = el
+    } else if (isOverlayVisible.value === el) {
+      isOverlayVisible.value = null
     }
   }
 
   function toggleSidePanel() {
-    showSidePanel.value = !showSidePanel.value
+    isSidebarExpanded.value = !isSidebarExpanded.value
   }
 
   function togglePanel(panel) {
-    if (showPanel.value !== null) {
-      showPanel.value = null
+    if (isPanelVisible.value !== null) {
+      isPanelVisible.value = null
     } else {
-      showPanel.value = panel
+      isPanelVisible.value = panel
     }
   }
 
   function toggleLayers() {
-    showLayers.value = !showLayers.value
+    isLayersOverlayVisible.value = !isLayersOverlayVisible.value
   }
   function togglePalette() {
-    showPalette.value = !showPalette.value
+    isPaletteVisible.value = !isPaletteVisible.value
   }
 
   function toggleColorPicker() {
-    showColorPicker.value = !showColorPicker.value
+    isColorPickerVisible.value = !isColorPickerVisible.value
   }
 
   function toggleExportMenu() {
-    showExportMenu.value = !showExportMenu.value
+    isExportMenuVisible.value = !isExportMenuVisible.value
   }
 
   function showTooltip(rect, message) {
@@ -66,30 +65,30 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   function toggleAnimation() {
-    showAnimation.value = !showAnimation.value
+    isAnimationVisible.value = !isAnimationVisible.value
   }
 
-  function showDocumentCreationModal() {
-    showDocumentCreation.value = true
+  function isDocumentCreationVisibleModal() {
+    isDocumentCreationVisible.value = true
   }
 
   function closeOverlay() {
-    showOverlay.value = null
+    isOverlayVisible.value = null
   }
 
   return {
-    showDocumentCreation,
+    isDocumentCreationVisible,
     emitterBox,
-    showAnimation,
-    showOverlay,
-    showPanel,
-    showSidePanel,
-    showColorPicker,
-    showPalette,
-    showLayers,
-    showExportMenu,
+    isAnimationVisible,
+    isOverlayVisible,
+    isPanelVisible,
+    isSidebarExpanded,
+    isColorPickerVisible,
+    isPaletteVisible,
+    isLayersOverlayVisible,
+    isExportMenuVisible,
     tooltip,
-    showLayerSettings,
+    isLayerSettingsVisible,
     expandedSidebar,
     ctrlDown,
     spaceDown,
@@ -102,7 +101,7 @@ export const useUIStore = defineStore('ui', () => {
     toggleColorPicker,
     toggleExportMenu,
     showTooltip,
-    showDocumentCreationModal,
+    isDocumentCreationVisibleModal,
     closeOverlay
   }
 })

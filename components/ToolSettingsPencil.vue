@@ -26,18 +26,18 @@
     <Icon :i="`dither-${documentStore.pencil.dither.level}`" />
   </Button>
   <BrushSelector
-    v-if="showOverlay === 'brush-shape'"
+    v-if="isOverlayVisible === 'brush-shape'"
     @select="onBrushShape"
     @close="toggleOverlay('brush-shape')"
   />
   <BrushSize
-    v-else-if="showOverlay === 'brush-size'"
+    v-else-if="isOverlayVisible === 'brush-size'"
     :size="documentStore.pencil.size"
     @update="onBrushSize"
     @close="toggleOverlay('brush-size')"
   />
   <BrushDither
-    v-else-if="showOverlay === 'brush-dither'"
+    v-else-if="isOverlayVisible === 'brush-dither'"
     @select="onBrushDither"
     @close="toggleOverlay('brush-dither')"
   />
@@ -51,7 +51,7 @@ import { storeToRefs } from 'pinia'
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
-const { showOverlay } = storeToRefs(uiStore)
+const { isOverlayVisible } = storeToRefs(uiStore)
 const { toggleOverlay } = uiStore
 
 function onBrushShape(shape) {

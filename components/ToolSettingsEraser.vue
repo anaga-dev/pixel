@@ -45,19 +45,19 @@ function onEraserDither(dither) {
     <Icon :i="`dither-${documentStore.eraser.dither.level}`" />
   </Button>
   <BrushSelector
-    v-if="uiStore.showOverlay === 'eraser-shape'"
+    v-if="uiStore.isOverlayVisible === 'eraser-shape'"
     :shape="documentStore.eraser.shape"
     @select="onEraserShape"
     @close="uiStore.toggleOverlay('eraser-shape')"
   />
   <BrushSize
-    v-else-if="uiStore.showOverlay === 'eraser-size'"
+    v-else-if="uiStore.isOverlayVisible === 'eraser-size'"
     :size="documentStore.eraser.size"
     @update="onEraserSize"
     @close="uiStore.toggleOverlay('eraser-size')"
   />
   <BrushDither
-    v-else-if="uiStore.showOverlay === 'eraser-dither'"
+    v-else-if="uiStore.isOverlayVisible === 'eraser-dither'"
     @select="onEraserDither"
     @close="uiStore.toggleOverlay('eraser-dither')"
   />
