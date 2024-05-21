@@ -1395,12 +1395,16 @@ export const useDocumentStore = defineStore('document', () => {
       id: id,
       className: 'preview-canvas'
     })
-    position.x.value = -width.value / 2
-    position.y.value = -height.value / 2
-    frames.value.push({
+    position.set(
+      -width.value / 2,
+      -height.value / 2
+    )
+    zoom.reset()
+
+    frames.value = [{
       id,
       canvas
-    })
+    }]
     tool.value = Tool.PENCIL
     init()
   }
