@@ -50,7 +50,7 @@ onMounted(() => {
       <div class="actions">
         <button
           v-if="installable"
-          class="button-install"
+          class="button-header"
           @click="handleInstallClick"
         >
           {{ $t('install') }}
@@ -204,12 +204,6 @@ section {
   grid-auto-flow: column;
   gap: var(--spaceM);
   place-content: center;
-}
-
-.button-install {
-  color: var(--colorAccent);
-  border: 4px solid currentColor;
-  height: 3rem;
 }
 
 .links > * {

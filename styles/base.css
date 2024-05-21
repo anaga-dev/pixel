@@ -37,10 +37,6 @@ small {
   line-height: 1.5;
 }
 
-*::-webkit-scrollbar {
-  width: var(--spaceS);
-}
-
 h1 {
   font-size: var(--fontSizeXL);
 }
