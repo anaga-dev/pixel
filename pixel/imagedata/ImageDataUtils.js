@@ -728,64 +728,6 @@ export async function createImageDataFromURL(url, options) {
   return createImageDataFromImage(image)
 }
 
-export function isPrecomputedCircleInitialized() {
-  return brushImageDataList.length > 0
-}
-
-export async function initializePrecomputedCircle() {
-  brushImageDataList.length = 0
-  brushImageDataList.push(
-    ...(await createImageDataListFromURL('/brushes/rounded.png', 32, 32))
-  )
-}
-
-/**
- *
- * @param {ImageData} imageData
- * @param {number} x
- * @param {number} y
- * @param {number} radius
- * @param {Color} color
- * @param {Dither} dither
- * @param {ImageData} [maskImageData]
- */
-export function precomputedCircle(
-  imageData,
-  x,
-  y,
-  radius,
-  color,
-  dither,
-  maskImageData
-) {
-  const brushIndex = Math.max(1, Math.min(32, radius)) - 1
-  const brushImageData = brushImageDataList[brushIndex]
-  console.log(brushIndex, brushImageData)
-  const isRadiusEven = radius % 2 === 0
-
-  const ix = isRadiusEven ? x : Math.floor(x)
-  const iy = isRadiusEven ? y : Math.floor(y)
-  const ccx = isRadiusEven ? (radius / 2 - Math.round(x - Math.floor(x))) : (radius / 2) - 1
-  const ccy =  isRadiusEven ? (radius / 2 - Math.round(y - Math.floor(y))) : (radius / 2) - 1
-
-  for (let cy = 0; cy < brushImageData.height; cy++) {
-    for (let cx = 0; cx < brushImageData.width; cx++) {
-      const offset = (cy * brushImageData.width + cx) * 4
-      if (brushImageData.data[offset] === 0x00) {
-        continue
-      }
-      putColor(
-        imageData,
-        ix + cx - ccx,
-        iy + cy - ccy,
-        color,
-        dither,
-        maskImageData
-      )
-    }
-  }
-}
-
 /**
  * Compares two ImageData and returns true if the are equals.
  *
@@ -1076,11 +1018,8 @@ export default {
   fillRect,
   getColor,
   getOffset,
-  initializePrecomputedCircle,
-  isPrecomputedCircleInitialized,
   line,
   paint,
-  precomputedCircle,
   putColor,
   rect,
   replaceColor,

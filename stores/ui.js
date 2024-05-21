@@ -10,10 +10,10 @@ export const useUIStore = defineStore('ui', () => {
   })
 
   const isAnimationVisible = ref(false)
-  const isOverlayVisible = ref(null)
-  const isDocumentCreationVisible = ref(false)
+  const visibleOverlay = ref(null)
+  const isDocumentCreationVisible = ref(true)
   const isSidebarExpanded = ref(true)
-  const isPanelVisible = ref(null)
+  const visiblePanel = ref(null)
   const isColorPickerVisible = ref(false)
   const isPaletteVisible = ref(true)
   const isLayersOverlayVisible = ref(true)
@@ -25,10 +25,10 @@ export const useUIStore = defineStore('ui', () => {
   const spaceDown = ref(false)
 
   function toggleOverlay(el) {
-    if (isOverlayVisible.value !== el) {
-      isOverlayVisible.value = el
-    } else if (isOverlayVisible.value === el) {
-      isOverlayVisible.value = null
+    if (visibleOverlay.value !== el) {
+      visibleOverlay.value = el
+    } else if (visibleOverlay.value === el) {
+      visibleOverlay.value = null
     }
   }
 
@@ -37,10 +37,10 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   function togglePanel(panel) {
-    if (isPanelVisible.value !== null) {
-      isPanelVisible.value = null
+    if (visiblePanel.value !== null) {
+      visiblePanel.value = null
     } else {
-      isPanelVisible.value = panel
+      visiblePanel.value = panel
     }
   }
 
@@ -68,20 +68,28 @@ export const useUIStore = defineStore('ui', () => {
     isAnimationVisible.value = !isAnimationVisible.value
   }
 
-  function isDocumentCreationVisibleModal() {
+  function showDocumentCreation() {
     isDocumentCreationVisible.value = true
   }
 
+  function hideDocumentCreation() {
+    isDocumentCreationVisible.value = false
+  }
+
   function closeOverlay() {
-    isOverlayVisible.value = null
+    visibleOverlay.value = null
+  }
+
+  function closePanel() {
+    visiblePanel.value = null
   }
 
   return {
     isDocumentCreationVisible,
     emitterBox,
     isAnimationVisible,
-    isOverlayVisible,
-    isPanelVisible,
+    visibleOverlay,
+    visiblePanel,
     isSidebarExpanded,
     isColorPickerVisible,
     isPaletteVisible,
@@ -89,7 +97,6 @@ export const useUIStore = defineStore('ui', () => {
     isExportMenuVisible,
     tooltip,
     isLayerSettingsVisible,
-    expandedSidebar,
     ctrlDown,
     spaceDown,
     toggleAnimation,
@@ -101,8 +108,10 @@ export const useUIStore = defineStore('ui', () => {
     toggleColorPicker,
     toggleExportMenu,
     showTooltip,
-    isDocumentCreationVisibleModal,
-    closeOverlay
+    showDocumentCreation,
+    hideDocumentCreation,
+    closeOverlay,
+    closePanel
   }
 })
 

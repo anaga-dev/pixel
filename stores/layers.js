@@ -205,7 +205,6 @@ export const useLayersStore = defineStore('layers', () => {
    * @param {Array<Layer>} layers
    */
   function set(layers) {
-    console.log('set', layers)
     list.length = 0
     layers.forEach(layer => add(layer))
   }

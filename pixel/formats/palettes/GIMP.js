@@ -9,7 +9,6 @@ import Color from '@/pixel/color/Color'
 export async function load(blob)
 {
   const text = await blob.text()
-  console.log(text)
   const lines = text.split('\n')
   const [start] = lines
   if (!start.startsWith('GIMP Palette'))
@@ -23,9 +22,7 @@ export async function load(blob)
     throw new Error('No colors found in palette file')
 
   const palette = colors.map((color) => {
-    console.log(color)
     const [r, g, b, hex] = color.split(/\s+/)
-    console.log(r, g, b, hex)
     return `#${hex}`
   })
 

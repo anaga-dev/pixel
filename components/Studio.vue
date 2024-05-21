@@ -184,7 +184,7 @@ const sidePanelMessage = computed(() => {
           <Palette />
         </Panel>
         <Dropdown
-          v-if="uiStore.isOverlayVisible === 'palette-options'"
+          v-if="uiStore.visibleOverlay === 'palette-options'"
           class="palette-menu"
           @close="uiStore.toggleOverlay('palette-options')"
         >
@@ -382,7 +382,7 @@ const sidePanelMessage = computed(() => {
           <Button
             variant="ghost"
             :label="$t('studio.show-palette')"
-            :active="uiStore.isPanelVisible === 'palette'"
+            :active="uiStore.visiblePanel === 'palette'"
             @click="uiStore.togglePanel('palette')"
           >
             <Icon i="palette" />
@@ -395,7 +395,7 @@ const sidePanelMessage = computed(() => {
           <Button
             :label="$t('studio.show-layers')"
             variant="ghost"
-            :active="uiStore.isPanelVisible === 'layers'"
+            :active="uiStore.visiblePanel === 'layers'"
             @click="uiStore.togglePanel('layers')"
           >
             <Icon i="layers" />
@@ -405,7 +405,7 @@ const sidePanelMessage = computed(() => {
     </aside>
   </div>
   <SettingsMenu
-    v-if="uiStore.isOverlayVisible === 'settings-menu'"
+    v-if="uiStore.visibleOverlay === 'settings-menu'"
     class="settings-menu"
   />
   <LayerSettings
@@ -414,21 +414,22 @@ const sidePanelMessage = computed(() => {
     class="layer-settings"
   />
   <SymmetrySettings
-    v-if="uiStore.isOverlayVisible === 'symmetry-settings'"
+    v-if="uiStore.visibleOverlay === 'symmetry-settings'"
     class="symmetry-settings"
   />
   <DocumentCreate
     v-if="!props.preventCreation && uiStore.isDocumentCreationVisible"
+    @created="uiStore.hideDocumentCreation()"
   />
   <ColorPicker
     v-if="uiStore.isColorPickerVisible"
     @close="uiStore.toggleColorPicker()"
   />
   <FloatingPanel
-    v-if="uiStore.isPanelVisible === 'palette'"
+    v-if="uiStore.visiblePanel === 'palette'"
     :title="$t('palette')"
     class="single-panel-palette"
-    @close="uiStore.isPanelVisible = null"
+    @close="uiStore.closePanel()"
   >
     <template #actions>
       <Tooltip
@@ -447,10 +448,10 @@ const sidePanelMessage = computed(() => {
     <Palette />
   </FloatingPanel>
   <FloatingPanel
-    v-if="uiStore.isPanelVisible === 'layers'"
+    v-if="uiStore.visiblePanel === 'layers'"
     :title="$t('studio.layers')"
     class="single-panel-layers"
-    @close="uiStore.isPanelVisible = null"
+    @close="uiStore.closePanel()"
   >
     <template #actions>
       <Tooltip

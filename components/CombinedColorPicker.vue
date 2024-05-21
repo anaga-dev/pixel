@@ -40,9 +40,6 @@ const boundingClientRect = computed(() => canvas.value.getBoundingClientRect())
 const computedStyle = computed(() => {
   const posX = canvas.value ? Math.round(valueSaturation.value * canvas.value.width) : 0
   const posY = canvas.value ? Math.round((1 - value.value) * canvas.value.height) : 0
-  console.log('Saturation', valueSaturation.value, 'Lightness', value.value)
-  console.log('Pos X', posX, 'Pos Y', posY)
-  console.log('Offset X', offsetX, 'Offset Y', offsetY)
   return `transform: translate(${posX}px, ${posY}px)`
 })
 
@@ -80,8 +77,6 @@ function updateOffsetCoordinates(e) {
   offsetY = Math.round(
     Math.max(0, Math.min(boundingClientRect.value.height, e.clientY - top))
   )
-  console.log('Mouserrrrl', e.clientX, e.clientY)
-  console.log('Offset X', offsetX, 'Offset Y', offsetY)
 }
 
 function startDragging(e) {

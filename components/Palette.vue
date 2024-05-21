@@ -17,7 +17,6 @@ const options = {
 }
 
 function handleUpdatePalette(e) {
-  console.log('Update palette', e.oldIndex, e.newIndex)
   documentStore.swapPaletteColors(e.oldIndex, e.newIndex)
 }
 
@@ -26,7 +25,6 @@ function onDropToRemove(e) {
 }
 
 function handleSelectColor(newStyle) {
-  console.log('Select color', newStyle)
   current.style.value = newStyle
   activeColor.value = newStyle
 }

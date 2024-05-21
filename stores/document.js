@@ -106,6 +106,21 @@ export const useDocumentStore = defineStore('document', () => {
   const pointer = usePointer()
   const drawingRect = useDrawingRect(board, position, zoom, width, height)
   const drawingPointer = useDrawingPointer(pointer, drawingRect, width, height)
+  const isSelectionVisible = ref(false)
+
+  // TODO: Esto no debería estar aquí.
+  let frameId = null
+  let startTime
+  function onFrame(currentTime) {
+    if (startTime === undefined) {
+      startTime = currentTime
+    }
+    if (currentTime - startTime > 33) {
+      startTime = currentTime
+      redrawAll()
+    }
+    frameId = requestAnimationFrame(onFrame)
+  }
 
   // TODO: Meter toda esta lógica de redrawing
   // en una función o algo así y que el watcher
@@ -114,6 +129,13 @@ export const useDocumentStore = defineStore('document', () => {
   watch(position.x, () => redrawAll())
   watch(position.y, () => redrawAll())
   watch(zoom.current, () => redrawAll())
+  watch(isSelectionVisible, (newVisible) => {
+    if (newVisible === false) {
+      cancelAnimationFrame(frameId)
+    } else {
+      frameId = requestAnimationFrame(onFrame)
+    }
+  })
 
   // Frames that will be shown in the animation preview.
   const frames = ref([])
@@ -185,6 +207,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function deselect() {
     selection.clear()
+    isSelectionVisible.value = false
   }
 
   function setFillType(type) {
@@ -219,13 +242,6 @@ export const useDocumentStore = defineStore('document', () => {
     symmetry.axis = axis
   }
 
-  let frameID = null
-  function onFrame(time) {
-    selection.render(drawingRect.width.value, drawingRect.height.value)
-    redrawAll()
-    frameID = requestAnimationFrame(onFrame)
-  }
-
   function setTool(newTool) {
     if (tool.value === newTool) {
       return
@@ -239,13 +255,6 @@ export const useDocumentStore = defineStore('document', () => {
       }
     })
     tool.value = newTool
-    if (oldTool === Tool.SELECT) {
-      console.log('cancelAnimationFrame', frameID)
-      // cancelAnimationFrame(frameID)
-    } else if (newTool === Tool.SELECT) {
-      console.log('requestAnimationFrame')
-      // frameID = requestAnimationFrame(onFrame)
-    }
   }
 
   function getLayerContext(composite) {
@@ -254,13 +263,11 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function eyeDropper(x, y) {
-    console.log('eyeDropper', x,y )
     if (x < 0 || x > width || y < 0 || y > height)
       return
 
     const context = getLayerContext(dropper.value.selectCompositeColor)
     const sampledColor = CanvasContext2D.getColor(context, x, y)
-    console.log(sampledColor)
 
     const alpha = parseFloat(sampledColor.match(/(\d+\.\d+|\d+)/g)[3])
     if (alpha === 0)
@@ -624,7 +631,7 @@ export const useDocumentStore = defineStore('document', () => {
       (imageData) =>
         doSymmetry2Operation(
           (imageData, x, y, color, dither, mask) =>
-            ImageDataUtils.precomputedCircle(
+            PrecomputedCircle.circle(
               imageData,
               x,
               y,
@@ -1078,6 +1085,7 @@ export const useDocumentStore = defineStore('document', () => {
       selection.update(x, y)
     } else if (e.type === 'pointerup') {
       selection.end(x, y)
+      isSelectionVisible.value = true
     }
   }
 
@@ -1259,7 +1267,7 @@ export const useDocumentStore = defineStore('document', () => {
     redrawFrames()
 
     if (!board.value) {
-      console.log('Board not set')
+      console.warn('Board not set')
       return
     }
     const context = CanvasContext2D.get(board.value, '2d')
@@ -2107,6 +2115,7 @@ export const useDocumentStore = defineStore('document', () => {
     transform,
     width,
     zoom,
+    isSelectionVisible,
     addFrame,
     addLayer,
     addPaletteColor,

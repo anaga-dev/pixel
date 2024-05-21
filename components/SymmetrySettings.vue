@@ -1,7 +1,7 @@
 <template>
   <Dropdown
     class="SymmetrySettings"
-    @close="toggleOverlay('symmetry-settings')"
+    @close="uiStore.toggleOverlay('symmetry-settings')"
   >
     <h3>{{ $t('studio.symmetry.title') }}</h3>
     <Button
@@ -38,13 +38,11 @@ import { useUIStore } from '@/stores/ui'
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
-const { toggleOverlay } = uiStore
-
 const axis = ref(documentStore.symmetry.axis)
 
 function onClick(axis) {
   documentStore.setSymmetrySettings(axis)
-  toggleOverlay('symmetry-settings')
+  uiStore.toggleOverlay('symmetry-settings')
 }
 </script>
 

@@ -1,15 +1,37 @@
+<script setup>
+import { useDocumentStore } from '@/stores/document'
+import { useUIStore } from '@/stores/ui'
+
+const documentStore = useDocumentStore()
+const uiStore = useUIStore()
+
+function onBrushShape(shape) {
+  documentStore.setPencilShape(shape)
+  uiStore.toggleOverlay('brush-shape')
+}
+
+function onBrushSize(size) {
+  documentStore.setPencilSize(size)
+}
+
+function onBrushDither(dither) {
+  documentStore.setPencilDitherLevel(dither)
+  uiStore.toggleOverlay('brush-dither')
+}
+</script>
+
 <template>
   <Button
     variant="dropdown"
     label="Brush shape"
-    @click.stop="toggleOverlay('brush-shape')"
+    @click.stop="uiStore.toggleOverlay('brush-shape')"
   >
     <Icon :i="`brush-${documentStore.pencil.shape}`" />
   </Button>
   <Button
     variant="dropdown"
     label="Brush size"
-    @click.stop="toggleOverlay('brush-size')"
+    @click.stop="uiStore.toggleOverlay('brush-size')"
   >
     {{ documentStore.pencil.size }}px
   </Button>
@@ -26,48 +48,22 @@
     <Icon :i="`dither-${documentStore.pencil.dither.level}`" />
   </Button>
   <BrushSelector
-    v-if="isOverlayVisible === 'brush-shape'"
+    v-if="uiStore.visibleOverlay === 'brush-shape'"
     @select="onBrushShape"
-    @close="toggleOverlay('brush-shape')"
+    @close="uiStore.toggleOverlay('brush-shape')"
   />
   <BrushSize
-    v-else-if="isOverlayVisible === 'brush-size'"
+    v-else-if="uiStore.visibleOverlay === 'brush-size'"
     :size="documentStore.pencil.size"
     @update="onBrushSize"
-    @close="toggleOverlay('brush-size')"
+    @close="uiStore.toggleOverlay('brush-size')"
   />
   <BrushDither
-    v-else-if="isOverlayVisible === 'brush-dither'"
+    v-else-if="uiStore.visibleOverlay === 'brush-dither'"
     @select="onBrushDither"
-    @close="toggleOverlay('brush-dither')"
+    @close="uiStore.toggleOverlay('brush-dither')"
   />
 </template>
-
-<script setup>
-import { useDocumentStore } from '@/stores/document'
-import { useUIStore } from '@/stores/ui'
-import { storeToRefs } from 'pinia'
-
-const documentStore = useDocumentStore()
-const uiStore = useUIStore()
-
-const { isOverlayVisible } = storeToRefs(uiStore)
-const { toggleOverlay } = uiStore
-
-function onBrushShape(shape) {
-  documentStore.setPencilShape(shape)
-  toggleOverlay('brush-shape')
-}
-
-function onBrushSize(size) {
-  documentStore.setPencilSize(size)
-}
-
-function onBrushDither(dither) {
-  documentStore.setPencilDitherLevel(dither)
-  toggleOverlay('brush-dither')
-}
-</script>
 
 <style scoped>
 button {

@@ -62,7 +62,6 @@ export class Selection {
     this.#mask = new SelectionMask(width, height)
     this.#context = CanvasContext2D.createOffscreen(width, height, '2d')
     this.#canvas = this.#context.canvas
-    console.log(this.#canvas, this.#context)
   }
 
   render(width, height) {

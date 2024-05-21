@@ -18,9 +18,9 @@ const uiStore = useUIStore()
       </Button>
     </Tooltip>
     <Dropdown
-      v-if="uiStore.isOverlayVisible === 'zoom-settings'"
+      v-if="uiStore.visibleOverlay === 'zoom-settings'"
       class="ZoomMenu"
-      @close="toggleOverlay('zoom-settings')"
+      @close="uiStore.toggleOverlay('zoom-settings')"
     >
       <h3>{{ $t('studio.zoom') }}</h3>
       <Button

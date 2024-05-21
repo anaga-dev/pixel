@@ -8,12 +8,12 @@ const documentStore = useDocumentStore()
   <section class="Settings">
     <ToolSettings :tool="documentStore.tool" />
     <Divider
-      v-if="documentStore.selection.visible"
+      v-if="documentStore.isSelectionVisible"
       vertical
       transparent
     />
     <Tooltip
-      v-if="documentStore.selection.visible"
+      v-if="documentStore.isSelectionVisible"
       message="studio.tooltips.deselect"
       position="bottom"
     >

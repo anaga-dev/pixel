@@ -10,17 +10,14 @@ export const useSelectionStore = defineStore('selection', () => {
 
   // sólo válido en el modo de color
   const contiguous = ref(true)
-  const visible = ref(false)
 
   watch(type, (newType) => selection.type = newType)
   watch(mode, (newMode) => selection.mode = newMode)
   watch(contiguous, (newContiguous) => selection.contiguous = newContiguous)
-  watch(visible, (newVisible) => selection.visible = newVisible)
 
   return {
     type,
     mode,
-    visible,
     contiguous,
     getCanvas() {
       return selection.canvas
@@ -29,7 +26,6 @@ export const useSelectionStore = defineStore('selection', () => {
       return selection.mask?.imageData
     },
     clear() {
-      visible.value = false
       return selection.clear()
     },
     init(width, height) {
@@ -42,7 +38,6 @@ export const useSelectionStore = defineStore('selection', () => {
       return selection.update(x, y)
     },
     end(x, y) {
-      visible.value = true
       return selection.end(x, y)
     },
     render(width, height) {

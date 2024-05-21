@@ -19,7 +19,6 @@ const computedStyle = computed(() => {
     ? boundingClientRect.value.width
     : 0
   const translateX = Math.round((hue.value / 360) * containerWidth)
-  console.log('translate', hue.value, translateX)
   return `transform: translateX(${translateX}px);`
 })
 
