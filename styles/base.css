@@ -88,7 +88,8 @@ select {
 }
 
 option {
-  padding: var(--spaceXS) 0;
+  appearance: none;
+  padding: var(--spaceS);
 }
 
 /**

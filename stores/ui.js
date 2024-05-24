@@ -1,4 +1,4 @@
-import { useDocumentStore } from "./document.js"
+import { useDocumentStore } from './document.js'
 
 export const useUIStore = defineStore('ui', () => {
   const documentStore = useDocumentStore()
@@ -40,7 +40,7 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  function toggleSidePanel(newValue = !isSidebarExpanded.value) {
+  function toggleSidebar(newValue = !isSidebarExpanded.value) {
     isSidebarExpanded.value = newValue
   }
 
@@ -103,7 +103,7 @@ export const useUIStore = defineStore('ui', () => {
     toggleOverlay,
     toggleLayers,
     togglePalette,
-    toggleSidePanel,
+    toggleSidebar,
     togglePanel,
     toggleColorPicker,
     toggleExportMenu,

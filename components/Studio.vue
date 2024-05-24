@@ -239,7 +239,7 @@ const sidePanelMessage = computed(() => {
         >
           <Button
             variant="ghost"
-            @click="uiStore.toggleSidePanel()"
+            @click="uiStore.toggleSidebar()"
           >
             <Icon :i="expandSidePanelIcon" />
           </Button>
