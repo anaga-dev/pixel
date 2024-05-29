@@ -76,7 +76,7 @@ export const useDocumentStore = defineStore('document', () => {
   const canvasRect = ref(null)
   const tool = ref(Tool.PENCIL)
   const isMoving = ref(false)
-  const drawing = ref(false)
+  const isDrawing = ref(false)
   const copyImageData = ref(null)
   const drawingImageData = ref(null)
   const drawingCanvas = ref(null)
@@ -111,6 +111,8 @@ export const useDocumentStore = defineStore('document', () => {
   // TODO: Esto no debería estar aquí.
   let frameId = null
   let startTime
+  let drawTimeout
+
   function onFrame(currentTime) {
     if (startTime === undefined) {
       startTime = currentTime
@@ -740,95 +742,97 @@ export const useDocumentStore = defineStore('document', () => {
     const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
     const mask = selection.getMaskImageData()
-    console.log('pencil', e.isPrimary)
-
-    if (e.type === 'pointerdown' && e.isPrimary) {
-      startLayerPaintOperation()
-      if (pencil.size === 1) {
-        putColor(
-          drawingPointer.current.x.value,
-          drawingPointer.current.y.value,
-          toolColor,
-          false,
-          dither,
-          mask
-        )
-      } else {
-        const sizeHalf = toolSize / 2
-        const subSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
-        const addSizeHalf = toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
-        if (shape === PencilShape.ROUND) {
-          doSymmetry2Operation(
-            (imageData, x, y, color, dither, mask) =>
-              PrecomputedCircle.circle(
-                imageData,
-                x,
-                y,
-                toolSize,
-                Color.parseAsUint8(color),
+    // TODO: meter un timeout aquí -> comprobar que solo hay un dedo -> si hay más de uno, no hacer nada -> si hay uno, empezar a dibujar.
+    if (e.type === 'pointerdown') {
+      clearTimeout(drawTimeout)
+      drawTimeout = setTimeout(() => {
+        if (pointer.activePointers.value === 1) {
+          startLayerPaintOperation()
+          if (pencil.size === 1) {
+            putColor(
+              drawingPointer.current.x.value,
+              drawingPointer.current.y.value,
+              toolColor,
+              false,
+              dither,
+              mask
+            )
+          } else {
+            const sizeHalf = toolSize / 2
+            const subSizeHalf =
+              toolSize % 2 === 0 ? sizeHalf : Math.floor(sizeHalf)
+            const addSizeHalf =
+              toolSize % 2 === 0 ? sizeHalf : Math.ceil(sizeHalf)
+            if (shape === PencilShape.ROUND) {
+              doSymmetry2Operation(
+                (imageData, x, y, color, dither, mask) =>
+                  PrecomputedCircle.circle(
+                    imageData,
+                    x,
+                    y,
+                    toolSize,
+                    Color.parseAsUint8(color),
+                    dither,
+                    mask
+                  ),
+                imageData.value,
+                drawingPointer.current.x.value,
+                drawingPointer.current.y.value,
+                toolColor,
+                null,
+                mask
+              )
+            } else if (shape === PencilShape.SQUARE) {
+              doSymmetry4Operation(
+                (imageData, x1, y1, x2, y2, color, dither, mask) =>
+                  ImageDataUtils.rect(
+                    imageData,
+                    x1,
+                    y1,
+                    x2,
+                    y2,
+                    Color.parseAsUint8(color),
+                    dither,
+                    mask,
+                    true
+                  ),
+                imageData.value,
+                drawingPointer.current.x.value - subSizeHalf,
+                drawingPointer.current.y.value - subSizeHalf,
+                drawingPointer.current.x.value + addSizeHalf,
+                drawingPointer.current.y.value + addSizeHalf,
+                toolColor,
+                null,
+                mask
+              )
+            } else if (shape === PencilShape.DITHER) {
+              doSymmetry4Operation(
+                (imageData, x1, y1, x2, y2, color, dither, mask) =>
+                  ImageDataUtils.rect(
+                    imageData,
+                    x1,
+                    y1,
+                    x2,
+                    y2,
+                    Color.parseAsUint8(color),
+                    dither,
+                    mask,
+                    true
+                  ),
+                imageData.value,
+                drawingPointer.current.x.value - subSizeHalf,
+                drawingPointer.current.y.value - subSizeHalf,
+                drawingPointer.current.x.value + addSizeHalf,
+                drawingPointer.current.y.value + addSizeHalf,
+                toolColor,
                 dither,
                 mask
-              ),
-            imageData.value,
-            drawingPointer.current.x.value,
-            drawingPointer.current.y.value,
-            toolColor,
-            null,
-            mask
-          )
-        } else if (shape === PencilShape.SQUARE) {
-          doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither, mask) =>
-              ImageDataUtils.rect(
-                imageData,
-                x1,
-                y1,
-                x2,
-                y2,
-                Color.parseAsUint8(color),
-                dither,
-                mask,
-                true
-              ),
-            imageData.value,
-            drawingPointer.current.x.value - subSizeHalf,
-            drawingPointer.current.y.value - subSizeHalf,
-            drawingPointer.current.x.value + addSizeHalf,
-            drawingPointer.current.y.value + addSizeHalf,
-            toolColor,
-            null,
-            mask
-          )
-        } else if (shape === PencilShape.DITHER) {
-          doSymmetry4Operation(
-            (imageData, x1, y1, x2, y2, color, dither, mask) =>
-              ImageDataUtils.rect(
-                imageData,
-                x1,
-                y1,
-                x2,
-                y2,
-                Color.parseAsUint8(color),
-                dither,
-                mask,
-                true
-              ),
-            imageData.value,
-            drawingPointer.current.x.value - subSizeHalf,
-            drawingPointer.current.y.value - subSizeHalf,
-            drawingPointer.current.x.value + addSizeHalf,
-            drawingPointer.current.y.value + addSizeHalf,
-            toolColor,
-            dither,
-            mask
-          )
+              )
+            }
+          }
         }
-      }
-    } else if (
-      e.type === 'pointermove' &&
-      pointer.pressure.value > 0 &&
-      e.isPrimary
-    ) {
+      }, 50)
+    } else if (e.type === 'pointermove' && pointer.pressure.value > 0 && pointer.activePointers.value === 1) {
       if (toolSize === 1) {
         doSymmetry4Operation(
           (imageData, x1, y1, x2, y2, color, dither, mask) =>
@@ -941,7 +945,8 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }
       }
-    } else if (e.type === 'pointerup') {
+    } else if (e.type === 'pointerup' || e.type === 'pointercancel') {
+      clearTimeout(drawTimeout)
       endLayerPaintOperation()
     }
   }
@@ -970,7 +975,8 @@ export const useDocumentStore = defineStore('document', () => {
     if (shape.type === ShapeType.LINE) {
       if (
         e.type === 'pointerdown' ||
-        (e.type === 'pointermove' && pointer.pressure.value > 0)
+        (e.type === 'pointermove' && pointer.pressure.value > 0) &&
+        pointer.activePointers.value === 1
       ) {
         line(
           drawingPointer.start.x.value,
@@ -1104,7 +1110,7 @@ export const useDocumentStore = defineStore('document', () => {
       return
     }
 
-    if (e.type === 'pointerup' && pointer.isPrimary.value) {
+    if (e.type === 'pointerup' && pointer.pointerId.value === 1) {
       return
     }
 
@@ -1321,7 +1327,7 @@ export const useDocumentStore = defineStore('document', () => {
    */
   function init() {
     // Drawing
-    drawing.value = false
+    isDrawing.value = false
     // TODO: We should completely remake so it uses putImageData
     // instead of drawImage.
     drawingCanvas.value = Canvas.createOrGet(
@@ -1424,7 +1430,7 @@ export const useDocumentStore = defineStore('document', () => {
     layers.clear()
     frames.value.splice(0, frames.value.length)
     tool.value = Tool.PENCIL
-    drawing.value = false
+    isDrawing.value = false
     drawingCanvas.value = null
     drawingImageData.value = null
     copyCanvas.value = null
@@ -2101,7 +2107,7 @@ export const useDocumentStore = defineStore('document', () => {
     colorPicker,
     copyCanvas,
     copyImageData,
-    drawing,
+    isDrawing,
     drawingCanvas,
     drawingImageData,
     dropper,

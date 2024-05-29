@@ -18,6 +18,7 @@ export function usePointer(options) {
   const button = ref(0)
   const buttons = ref(0)
   const isPrimary = ref(null) // e.isPrimary
+  const activePointers = ref(0)
   const isMouse = computed(() => pointerType.value === 'mouse')
   const isPen = computed(() => pointerType.value === 'pen')
   const isTouch = computed(() => pointerType.value === 'touch')
@@ -46,6 +47,7 @@ export function usePointer(options) {
     target.value.addEventListener('pointerdown', onPointer)
     target.value.addEventListener('pointermove', onPointer)
     target.value.addEventListener('pointerup', onPointer)
+    target.value.addEventListener('pointerleave', onPointer)
   }
 
   function unlisten() {
@@ -54,6 +56,7 @@ export function usePointer(options) {
     target.value.removeEventListener('pointerdown', onPointer)
     target.value.removeEventListener('pointermove', onPointer)
     target.value.removeEventListener('pointerup', onPointer)
+    target.value.removeEventListener('pointerleave', onPointer)
   }
 
   const composable = {
@@ -74,6 +77,7 @@ export function usePointer(options) {
     pointerType,
     pressure,
     tangentialPressure,
+    activePointers,
     width,
     height,
     button,
@@ -92,6 +96,15 @@ export function usePointer(options) {
    * @param {PointerEvent} e
    */
   function onPointer(e) {
+    if (e.type === 'pointerdown') {
+      activePointers.value++
+    }
+    if (e.type === 'pointerup') {
+      if (activePointers.value > 0) {
+        activePointers.value--
+      }
+    }
+
     button.value = e.button
     buttons.value = e.buttons
     twist.value = e.twist
