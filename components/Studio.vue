@@ -434,9 +434,6 @@ const sidePanelMessage = computed(() => {
     v-if="uiStore.isExportMenuVisible"
     @close="uiStore.toggleExportMenu()"
   />
-  <div style="position: fixed; bottom: 2rem; left: 2rem;">
-    <small>Is Primary: {{ documentStore.pointer.isPrimary }}</small>
-  </div>
 </template>
 
 <style scoped>
