@@ -75,7 +75,7 @@ export const useDocumentStore = defineStore('document', () => {
   const canvas = ref(null)
   const canvasRect = ref(null)
   const tool = ref(Tool.PENCIL)
-  const moving = ref(false)
+  const isMoving = ref(false)
   const drawing = ref(false)
   const copyImageData = ref(null)
   const drawingImageData = ref(null)
@@ -150,11 +150,11 @@ export const useDocumentStore = defineStore('document', () => {
   })
 
   function startMoving() {
-    moving.value = true
+    isMoving.value = true
   }
 
   function stopMoving() {
-    moving.value = false
+    isMoving.value = false
   }
 
   function updateCanvasRect() {
@@ -263,15 +263,13 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function eyeDropper(x, y) {
-    if (x < 0 || x > width || y < 0 || y > height)
-      return
+    if (x < 0 || x > width || y < 0 || y > height) return
 
     const context = getLayerContext(dropper.value.selectCompositeColor)
     const sampledColor = CanvasContext2D.getColor(context, x, y)
 
     const alpha = parseFloat(sampledColor.match(/(\d+\.\d+|\d+)/g)[3])
-    if (alpha === 0)
-      return
+    if (alpha === 0) return
 
     const previousColor = color
     const nextColor = sampledColor
@@ -683,7 +681,7 @@ export const useDocumentStore = defineStore('document', () => {
 
     const mask = selection.getMaskImageData()
 
-    if (pencil.size === 1) {
+    if (toolSize === 1) {
       putColor(
         drawingPointer.current.x.value,
         drawingPointer.current.y.value,
@@ -742,8 +740,9 @@ export const useDocumentStore = defineStore('document', () => {
     const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
     const mask = selection.getMaskImageData()
+    console.log('pencil', e.isPrimary)
 
-    if (e.type === 'pointerdown') {
+    if (e.type === 'pointerdown' && e.isPrimary) {
       startLayerPaintOperation()
       if (pencil.size === 1) {
         putColor(
@@ -825,7 +824,11 @@ export const useDocumentStore = defineStore('document', () => {
           )
         }
       }
-    } else if (e.type === 'pointermove' && pointer.pressure.value > 0) {
+    } else if (
+      e.type === 'pointermove' &&
+      pointer.pressure.value > 0 &&
+      e.isPrimary
+    ) {
       if (toolSize === 1) {
         doSymmetry4Operation(
           (imageData, x1, y1, x2, y2, color, dither, mask) =>
@@ -1096,12 +1099,12 @@ export const useDocumentStore = defineStore('document', () => {
 
     // We need to check if we're moving
     // the canvas.
-    if (moving.value || pointer.buttons.value === 4) {
+    if (isMoving.value || pointer.buttons.value === 4) {
       moveBy(pointer.movement.x.value, pointer.movement.y.value)
       return
     }
 
-    if (e.type === 'pointerup' && pointer.button.value === 1) {
+    if (e.type === 'pointerup' && pointer.isPrimary.value) {
       return
     }
 
@@ -1395,16 +1398,15 @@ export const useDocumentStore = defineStore('document', () => {
       id: id,
       className: 'preview-canvas'
     })
-    position.set(
-      -width.value / 2,
-      -height.value / 2
-    )
+    position.set(-width.value / 2, -height.value / 2)
     zoom.reset()
 
-    frames.value = [{
-      id,
-      canvas
-    }]
+    frames.value = [
+      {
+        id,
+        canvas
+      }
+    ]
     tool.value = Tool.PENCIL
     init()
   }
@@ -1942,7 +1944,11 @@ export const useDocumentStore = defineStore('document', () => {
     scaledCtx.imageSmoothingEnabled = false
     scaledCtx.drawImage(canvas.value, 0, 0, newWidth, newHeight)
 
-    const blob = Canvas.createBlob(scaledCanvas, `image/${format}`, transformedQuality)
+    const blob = Canvas.createBlob(
+      scaledCanvas,
+      `image/${format}`,
+      transformedQuality
+    )
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -2108,11 +2114,12 @@ export const useDocumentStore = defineStore('document', () => {
     keys,
     layers,
     modified,
-    moving,
+    isMoving,
     onionSkin,
     palette,
     pencil,
     position,
+    pointer,
     previewCanvas,
     selection,
     shape,
