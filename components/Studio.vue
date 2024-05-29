@@ -5,7 +5,7 @@ import { useKeyShortcuts } from '@/composables/useKeyShortcuts'
 import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
-import { onKeyDown, onKeyUp } from '@vueuse/core'
+import { onKeyDown, onKeyUp, set } from '@vueuse/core'
 import Tool from '@/pixel/enums/Tool'
 
 const documentStore = useDocumentStore()
@@ -36,30 +36,32 @@ useBeforeUnload(
 
 useResizeObserver(board, () => documentStore.updateCanvasRect())
 
-useWheel(
-  (e) => documentStore.zoom.fromEvent(e),
-  { domTarget: board, passive: true }
-)
+useWheel((e) => documentStore.zoom.fromEvent(e), {
+  domTarget: board,
+  passive: true
+})
 
 useTouch(
   (e) => {
     if (e.type === 'touchend' || e.type === 'touchcancel') {
-      documentStore.moving.value = false
+      documentStore.stopMoving()
     }
-    if (e.touches < MIN_TOUCHES) {
-      documentStore.moving.value = false
-      return
-    }
-    if (e.type === 'touchstart') {
-      documentStore.moving.value = true
-    }
-    const { x: currentX, y: currentY } = e.currentCenter
-    const { x: previousX, y: previousY } = e.previousCenter
-    const deltaX = currentX.value - previousX.value
-    const deltaY = currentY.value - previousY.value
-    const z = e.distance
+    setTimeout(() => {
+      if (e.touches < MIN_TOUCHES) {
+        documentStore.stopMoving()
+        return
+      }
+      if (e.type === 'touchstart') {
+        documentStore.startMoving()
+      }
+      const { x: currentX, y: currentY } = e.currentCenter
+      const { x: previousX, y: previousY } = e.previousCenter
+      const deltaX = currentX.value - previousX.value
+      const deltaY = currentY.value - previousY.value
+      const z = e.distance
 
-    documentStore.moveAndZoom(deltaX, deltaY, z)
+      documentStore.moveAndZoom(deltaX, deltaY, z)
+    }, 150)
   },
   { domTarget: board }
 )
@@ -97,7 +99,7 @@ useKeyShortcuts(
     [['='], () => documentStore.zoom.increase()],
     [['z'], () => documentStore.zoom.increase()],
     [['-'], () => documentStore.zoom.decrease()],
-    [['x'], () => documentStore.zoom.decrease()],
+    [['x'], () => documentStore.zoom.decrease()]
   ])
 )
 
@@ -139,17 +141,18 @@ const sidePanelMessage = computed(() => {
       <Tools />
     </div>
     <!-- UI Canvas -->
-    <canvas
-      ref="board"
-      class="BOARD"
-    ></canvas>
+    <canvas ref="board" class="BOARD"></canvas>
     <!-- / UI Canvas -->
     <div class="ANIMATION">
       <button
         class="button-show"
         type="button"
         :class="{ expanded: uiStore.isAnimationVisible }"
-        :aria-label="uiStore.isAnimationVisible ? $t('studio.anim') : 'Show animation panel'"
+        :aria-label="
+          uiStore.isAnimationVisible
+            ? $t('studio.anim')
+            : 'Show animation panel'
+        "
         @click="uiStore.toggleAnimation"
       >
         <Icon :i="uiStore.isAnimationVisible ? 'arrow-down' : 'arrow-up'" />
@@ -157,10 +160,7 @@ const sidePanelMessage = computed(() => {
       <Animation v-if="uiStore.isAnimationVisible" />
     </div>
     <Transition name="slide">
-      <section
-        v-if="uiStore.isSidebarExpanded"
-        class="PANELS"
-      >
+      <section v-if="uiStore.isSidebarExpanded" class="PANELS">
         <Panel
           :title="$t('palette')"
           :expanded="uiStore.isPaletteVisible"
@@ -206,10 +206,7 @@ const sidePanelMessage = computed(() => {
           @toggle="uiStore.toggleLayers"
         >
           <template #actions>
-            <Tooltip
-              message="studio.tooltips.new-layer"
-              position="bottom left"
-            >
+            <Tooltip message="studio.tooltips.new-layer" position="bottom left">
               <Button
                 :label="$t('studio.add-layer')"
                 variant="ghost"
@@ -233,14 +230,8 @@ const sidePanelMessage = computed(() => {
           <Icon i="menu" />
         </Button>
         <Divider />
-        <Tooltip
-          :message="sidePanelMessage"
-          position="left bottom"
-        >
-          <Button
-            variant="ghost"
-            @click="uiStore.toggleSidebar()"
-          >
+        <Tooltip :message="sidePanelMessage" position="left bottom">
+          <Button variant="ghost" @click="uiStore.toggleSidebar()">
             <Icon :i="expandSidePanelIcon" />
           </Button>
         </Tooltip>
@@ -250,17 +241,11 @@ const sidePanelMessage = computed(() => {
           class="badge-offline"
           message="studio.tooltips.offline"
         >
-          <Icon
-            class="badge-offline"
-            i="offline"
-          />
+          <Icon class="badge-offline" i="offline" />
         </Tooltip>
       </div>
       <div class="group">
-        <Tooltip
-          message="studio.tooltips.symmetry"
-          position="left bottom"
-        >
+        <Tooltip message="studio.tooltips.symmetry" position="left bottom">
           <Button
             variant="ghost"
             :label="$t('studio.symmetry-aid')"
@@ -275,17 +260,11 @@ const sidePanelMessage = computed(() => {
               v-else-if="documentStore.symmetry.axis === 'both'"
               i="symmetry-two-axis"
             />
-            <Icon
-              v-else
-              i="symmetry-horizontal"
-            />
+            <Icon v-else i="symmetry-horizontal" />
           </Button>
         </Tooltip>
         <Divider />
-        <Tooltip
-          message="studio.tooltips.zoom"
-          position="left bottom"
-        >
+        <Tooltip message="studio.tooltips.zoom" position="left bottom">
           <Zoom />
         </Tooltip>
         <Divider class="zoom-divider" />
@@ -326,15 +305,9 @@ const sidePanelMessage = computed(() => {
           position="bottom"
           class="badge-offline"
         >
-          <Icon
-            class="badge-offline"
-            i="offline"
-          />
+          <Icon class="badge-offline" i="offline" />
         </Tooltip>
-        <Tooltip
-          message="studio.tooltips.symmetry"
-          position="bottom"
-        >
+        <Tooltip message="studio.tooltips.symmetry" position="bottom">
           <Button
             variant="ghost"
             :label="$t('studio.symmetry-aid')"
@@ -349,10 +322,7 @@ const sidePanelMessage = computed(() => {
               v-else-if="documentStore.symmetry.axis === 'both'"
               i="symmetry-two-axis"
             />
-            <Icon
-              v-else
-              i="symmetry-horizontal"
-            />
+            <Icon v-else i="symmetry-horizontal" />
           </Button>
         </Tooltip>
         <Divider vertical />
@@ -388,10 +358,7 @@ const sidePanelMessage = computed(() => {
             <Icon i="palette" />
           </Button>
         </Tooltip>
-        <Tooltip
-          message="studio.tooltips.toggle-layers"
-          position="left bottom"
-        >
+        <Tooltip message="studio.tooltips.toggle-layers" position="left bottom">
           <Button
             :label="$t('studio.show-layers')"
             variant="ghost"
@@ -432,10 +399,7 @@ const sidePanelMessage = computed(() => {
     @close="uiStore.closePanel()"
   >
     <template #actions>
-      <Tooltip
-        message="studio.tooltips.more-options"
-        position="bottom left"
-      >
+      <Tooltip message="studio.tooltips.more-options" position="bottom left">
         <Button
           :label="$t('studio.more-options')"
           variant="ghost"
@@ -454,10 +418,7 @@ const sidePanelMessage = computed(() => {
     @close="uiStore.closePanel()"
   >
     <template #actions>
-      <Tooltip
-        message="studio.tooltips.new-layer"
-        position="bottom left"
-      >
+      <Tooltip message="studio.tooltips.new-layer" position="bottom left">
         <Button
           :label="$t('studio.add-layer')"
           variant="ghost"
@@ -473,6 +434,9 @@ const sidePanelMessage = computed(() => {
     v-if="uiStore.isExportMenuVisible"
     @close="uiStore.toggleExportMenu()"
   />
+  <div style="position: fixed; bottom: 2rem; left: 2rem;">
+    <small>Is Primary: {{ documentStore.pointer.isPrimary }}</small>
+  </div>
 </template>
 
 <style scoped>
