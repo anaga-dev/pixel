@@ -13,6 +13,7 @@ import ShapeType from '@/pixel/enums/ShapeType'
 import FillType from '@/pixel/enums/FillType'
 import PaletteTypes from '@/pixel/constants/PaletteTypes'
 import ImageTypes from '@/pixel/constants/ImageTypes'
+import ToolSettings from '@/pixel/constants/ToolSettings'
 import Interpolation from '@/pixel/math/Interpolation'
 import SelectionType from '@/pixel/selection/SelectionType'
 
@@ -831,8 +832,12 @@ export const useDocumentStore = defineStore('document', () => {
             }
           }
         }
-      }, 50)
-    } else if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
+      }, ToolSettings.DRAW_TIMEOUT)
+    } else if (
+      ((e.type === 'pointermove' && pointer.pressure.value > 0) ||
+        e.type === 'touchmove') &&
+      isUsingTool.value
+    ) {
       if (toolSize === 1) {
         doSymmetry4Operation(
           (imageData, x1, y1, x2, y2, color, dither, mask) =>
@@ -945,7 +950,11 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }
       }
-    } else if (e.type === 'pointerup' || e.type === 'pointerleave') {
+    } else if (
+      e.type === 'pointerup' ||
+      e.type === 'pointerleave' ||
+      e.pressure === 0
+    ) {
       endLayerPaintOperation()
     }
   }
@@ -955,25 +964,23 @@ export const useDocumentStore = defineStore('document', () => {
       clearTimeout(drawTimeout)
       drawTimeout = setTimeout(() => {
         if (pointer.activePointers.value === 1) {
-          isUsingTool.value = true
+          if (fill.type === FillType.ERASE) {
+            fillColor(
+              'rgba(0,0,0,0)',
+              drawingPointer.current.x.value,
+              drawingPointer.current.y.value,
+              selection.getMaskImageData()
+            )
+          } else if (fill.type === FillType.FILL) {
+            fillColor(
+              color.value,
+              drawingPointer.current.x.value,
+              drawingPointer.current.y.value,
+              selection.getMaskImageData()
+            )
+          }
         }
-      }, 50)
-    } else if (e.type === 'pointerup' && isUsingTool.value) {
-      if (fill.type === FillType.ERASE) {
-        fillColor(
-          'rgba(0,0,0,0)',
-          drawingPointer.current.x.value,
-          drawingPointer.current.y.value,
-          selection.getMaskImageData()
-        )
-      } else if (fill.type === FillType.FILL) {
-        fillColor(
-          color.value,
-          drawingPointer.current.x.value,
-          drawingPointer.current.y.value,
-          selection.getMaskImageData()
-        )
-      }
+      }, ToolSettings.DRAW_TIMEOUT)
     }
   }
 
@@ -995,9 +1002,12 @@ export const useDocumentStore = defineStore('document', () => {
               selection.getMaskImageData()
             )
           }
-        }, 50)
-      }
-      if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
+        }, ToolSettings.DRAW_TIMEOUT)
+      } else if (
+        ((e.type === 'pointermove' && pointer.pressure.value > 0) ||
+          e.type === 'touchmove') &&
+        isUsingTool.value
+      ) {
         line(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1039,9 +1049,13 @@ export const useDocumentStore = defineStore('document', () => {
               selection.getMaskImageData()
             )
           }
-        }, 50)
+        }, ToolSettings.DRAW_TIMEOUT)
       }
-      if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
+      if (
+        ((e.type === 'pointermove' && pointer.pressure.value > 0) ||
+          e.type === 'touchmove') &&
+        isUsingTool.value
+      ) {
         rectangle(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1087,9 +1101,13 @@ export const useDocumentStore = defineStore('document', () => {
               selection.getMaskImageData()
             )
           }
-        }, 50)
+        }, ToolSettings.DRAW_TIMEOUT)
       }
-      if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
+      if (
+        ((e.type === 'pointermove' && pointer.pressure.value > 0) ||
+          e.type === 'touchmove') &&
+        isUsingTool.value
+      ) {
         ellipse(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1102,7 +1120,7 @@ export const useDocumentStore = defineStore('document', () => {
           null,
           selection.getMaskImageData()
         )
-      } else if (e.type === 'pointerup') {
+      } else if (e.type === 'pointerup' && isUsingTool.value) {
         ellipse(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1126,7 +1144,7 @@ export const useDocumentStore = defineStore('document', () => {
         if (pointer.activePointers.value === 1) {
           isUsingTool.value = true
         }
-      }, 50)
+      }, ToolSettings.DRAW_TIMEOUT)
     } else if (e.type === 'pointerup' && isUsingTool.value) {
       eyeDropper(drawingPointer.current.x.value, drawingPointer.current.y.value)
     }
@@ -1156,8 +1174,12 @@ export const useDocumentStore = defineStore('document', () => {
             selection.start(x, y)
           }
         }
-      }, 50)
-    } else if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
+      }, ToolSettings.DRAW_TIMEOUT)
+    } else if (
+      ((e.type === 'pointermove' && pointer.pressure.value > 0) ||
+        e.type === 'touchmove') &&
+      isUsingTool.value
+    ) {
       selection.update(x, y)
     } else if (e.type === 'pointerup' && isUsingTool.value) {
       selection.end(x, y)
@@ -1169,7 +1191,6 @@ export const useDocumentStore = defineStore('document', () => {
     if (tool.value === Tool.PENCIL || tool.value === Tool.ERASER) {
       useToolPreview(e)
     }
-
     // We need to check if we're moving
     // the canvas.
     if (isMoving.value || pointer.buttons.value === 4) {
@@ -1177,9 +1198,9 @@ export const useDocumentStore = defineStore('document', () => {
       return
     }
 
-    if (e.type === 'pointerup' && pointer.pointerId.value === 1) {
+    /*     if (e.type === 'pointerup' && pointer.pointerId.value === 1) {
       return
-    }
+    } */
 
     // We need to set the modified flag to true
     // to track changes.
@@ -1204,10 +1225,14 @@ export const useDocumentStore = defineStore('document', () => {
     } else if (tool.value === Tool.SELECT) {
       useToolSelect(e)
     }
-    if (e.type === 'pointerup' || e.type === 'pointerleave') {
-      doClearTemp()
-      clearTimeout(drawTimeout)
+    if (
+      e.type === 'pointerup' ||
+      e.type === 'touchend' ||
+      e.type === 'pointerleave'
+    ) {
       isUsingTool.value = false
+      clearTimeout(drawTimeout)
+      doClearTemp()
     }
     redrawAll()
   }
