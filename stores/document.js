@@ -832,7 +832,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }
       }, 50)
-    } else if (e.type === 'pointermove' && isUsingTool.value) {
+    } else if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
       if (toolSize === 1) {
         doSymmetry4Operation(
           (imageData, x1, y1, x2, y2, color, dither, mask) =>
@@ -997,7 +997,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }, 50)
       }
-      if (e.type === 'pointermove' && isUsingTool.value) {
+      if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
         line(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1041,7 +1041,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }, 50)
       }
-      if (e.type === 'pointermove' && isUsingTool.value) {
+      if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
         rectangle(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1089,7 +1089,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }, 50)
       }
-      if (e.type === 'pointermove' && isUsingTool.value) {
+      if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
         ellipse(
           drawingPointer.start.x.value,
           drawingPointer.start.y.value,
@@ -1157,7 +1157,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }
       }, 50)
-    } else if (e.type === 'pointermove' && isUsingTool.value) {
+    } else if ((e.type === 'pointermove' || e.type === 'touchmove') && isUsingTool.value) {
       selection.update(x, y)
     } else if (e.type === 'pointerup' && isUsingTool.value) {
       selection.end(x, y)
