@@ -747,6 +747,7 @@ export const useDocumentStore = defineStore('document', () => {
       clearTimeout(drawTimeout)
       drawTimeout = setTimeout(() => {
         if (pointer.activePointers.value === 1) {
+          isDrawing.value = true
           startLayerPaintOperation()
           if (pencil.size === 1) {
             putColor(
@@ -832,7 +833,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }
       }, 50)
-    } else if (e.type === 'pointermove' && pointer.pressure.value > 0 && pointer.activePointers.value === 1) {
+    } else if (e.type === 'pointermove' && pointer.pressure.value > 0 && isDrawing.value) {
       if (toolSize === 1) {
         doSymmetry4Operation(
           (imageData, x1, y1, x2, y2, color, dither, mask) =>
@@ -947,6 +948,7 @@ export const useDocumentStore = defineStore('document', () => {
       }
     } else if (e.type === 'pointerup' || e.type === 'pointercancel') {
       clearTimeout(drawTimeout)
+      isDrawing.value = false
       endLayerPaintOperation()
     }
   }
