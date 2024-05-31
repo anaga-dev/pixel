@@ -39,6 +39,7 @@ import { useRect } from '@/composables/useRect'
 import { useDrawingRect } from '../composables/useDrawingRect'
 import { useDrawingPointer } from '../composables/useDrawingPointer'
 import { useZoom } from '@/composables/useZoom'
+import useInput from '@/composables/useInput'
 import { useMagicKeys } from '@vueuse/core'
 import { useLayersStore } from './layers'
 import { useAnimationStore } from './animation'
@@ -104,7 +105,7 @@ export const useDocumentStore = defineStore('document', () => {
   const layers = useLayersStore()
   const palette = usePaletteStore()
   const animation = useAnimationStore()
-  const pointer = usePointer()
+  const pointer = useInput()
   const drawingRect = useDrawingRect(board, position, zoom, width, height)
   const drawingPointer = useDrawingPointer(pointer, drawingRect, width, height)
   const isSelectionVisible = ref(false)
@@ -743,7 +744,7 @@ export const useDocumentStore = defineStore('document', () => {
     const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
     const mask = selection.getMaskImageData()
-    if (e.type === 'pointerdown') {
+    if (e.type === 'pointerdown' || e.type === 'touchstart') {
       clearTimeout(drawTimeout)
       drawTimeout = setTimeout(() => {
         if (pointer.activePointers.value === 1) {

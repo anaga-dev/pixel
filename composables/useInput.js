@@ -6,7 +6,8 @@ import useEventListeners from './useEventListeners'
  *
  * @param {Object} options
  */
-export function usePointer(options) {
+export function useInput(options) {
+
   const target = ref(null)
   const twist = ref(null) //e.twist
   const pointerId = ref(null) //e.pointerId
@@ -44,20 +45,31 @@ export function usePointer(options) {
     }
     callback = cb
     target.value = unref(domTarget ?? window)
+
+    target.value.addEventListener('touchstart', onPointer)
+    target.value.addEventListener('touchmove', onPointer)
+    target.value.addEventListener('touchstop', onPointer)
+    target.value.addEventListener('touchcancel', onPointer)
+
     target.value.addEventListener('pointerdown', onPointer)
     target.value.addEventListener('pointermove', onPointer)
     target.value.addEventListener('pointerup', onPointer)
     target.value.addEventListener('pointerleave', onPointer)
-    target.value.addEventListener('touchmove', onPointer)
   }
 
   function unlisten() {
     callback = null
     if (!target.value) return
+
+    target.value.removeEventListener('touchstart', onPointer)
+    target.value.removeEventListener('touchmove', onPointer)
+    target.value.removeEventListener('touchstop', onPointer)
+    target.value.removeEventListener('touchcancel', onPointer)
+
     target.value.removeEventListener('pointerdown', onPointer)
     target.value.removeEventListener('pointermove', onPointer)
     target.value.removeEventListener('pointerup', onPointer)
-    target.value.removeEventListener('touchmove', onPointer)
+    target.value.removeEventListener('pointerleave', onPointer)
   }
 
   const composable = {
@@ -97,6 +109,7 @@ export function usePointer(options) {
    * @param {PointerEvent} e
    */
   function onPointer(e) {
+    e.preventDefault()
     if (e.type === 'pointerdown') {
       activePointers.value++
     }
@@ -161,4 +174,4 @@ export function usePointer(options) {
   return composable
 }
 
-export default usePointer
+export default useInput
