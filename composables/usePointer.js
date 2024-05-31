@@ -48,6 +48,10 @@ export function usePointer(options) {
     target.value.addEventListener('pointermove', onPointer)
     target.value.addEventListener('pointerup', onPointer)
     target.value.addEventListener('pointerleave', onPointer)
+
+    target.value.addEventListener('touchstart', onPointer)
+    target.value.addEventListener('touchmove', onPointer)
+    target.value.addEventListener('touchstop', onPointer)
   }
 
   function unlisten() {
@@ -57,6 +61,10 @@ export function usePointer(options) {
     target.value.removeEventListener('pointermove', onPointer)
     target.value.removeEventListener('pointerup', onPointer)
     target.value.removeEventListener('pointerleave', onPointer)
+
+    target.value.removeEventListener('touchstart', onPointer)
+    target.value.removeEventListener('touchmove', onPointer)
+    target.value.removeEventListener('touchstop', onPointer)
   }
 
   const composable = {
