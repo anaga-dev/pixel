@@ -6,7 +6,6 @@ import CanvasContext2D from '@/pixel/canvas/CanvasContext2D'
 import ImageDataUtils from '@/pixel/imagedata/ImageDataUtils.js'
 import PrecomputedCircle from '@/pixel/imagedata/PrecomputedCircle.js'
 import Transform from '@/pixel/imagedata/Transform.js'
-import SymmetryAxis from '@/pixel/enums/SymmetryAxis'
 import Tool from '@/pixel/enums/Tool'
 import PencilShape from '@/pixel/enums/PencilShape'
 import ShapeType from '@/pixel/enums/ShapeType'
@@ -84,6 +83,10 @@ export const useDocumentStore = defineStore('document', () => {
   const drawingCanvas = ref(null)
   const copyCanvas = ref(null)
   const previewCanvas = ref(null)
+  const layersBeforeCanvas = ref(null)
+  const layersAfterCanvas = ref(null)
+  const overlayCanvas = ref(null)
+  const interactiveCanvas = ref(null)
   const modified = ref(false)
   const color = ref('#000000')
   const colorMode = ref(ColorMode.HSL)
@@ -121,18 +124,18 @@ export const useDocumentStore = defineStore('document', () => {
     }
     if (currentTime - startTime > 33) {
       startTime = currentTime
-      redrawAll()
+      renderAll()
     }
     frameId = requestAnimationFrame(onFrame)
   }
 
-  // TODO: Meter toda esta lógica de redrawing
+  // TODO: Meter toda esta lógica de rendering
   // en una función o algo así y que el watcher
   // se añada también a otras acciones que
   // ahora mismo se llaman de forma no reactiva.
-  watch(position.x, () => redrawAll())
-  watch(position.y, () => redrawAll())
-  watch(zoom.current, () => redrawAll())
+  watch(position.x, () => renderAll())
+  watch(position.y, () => renderAll())
+  watch(zoom.current, () => renderAll())
   watch(isSelectionVisible, (newVisible) => {
     if (newVisible === false) {
       cancelAnimationFrame(frameId)
@@ -352,7 +355,7 @@ export const useDocumentStore = defineStore('document', () => {
         previousImageData
       }
     })
-    redrawAll()
+    renderAll()
   }
 
   function doPaintOperation(callback, isTemp) {
@@ -1239,10 +1242,10 @@ export const useDocumentStore = defineStore('document', () => {
       clearTimeout(drawTimeout)
       doClearTemp()
     }
-    redrawAll()
+    renderAll()
   }
 
-  function redrawTransparentBackground() {
+  function renderTransparentBackground() {
     const context = CanvasContext2D.get(canvas.value)
     const tileSize = 8 // Adjust the size of each tile as needed
     const numTilesX = Math.ceil(context.canvas.width / tileSize)
@@ -1261,14 +1264,17 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
-  function redraw() {
+  function render() {
     const context = CanvasContext2D.get(canvas.value)
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     const frame = animation.current
-    redrawTransparentBackground()
+    renderTransparentBackground()
     for (const layer of reverse(layers.list)) {
       if (!layer.visible.value) {
         continue
+      }
+      if (layer === layers.current.value) {
+
       }
       context.save()
       context.globalAlpha = layer.opacity.value
@@ -1279,7 +1285,7 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
-  function redrawPreview() {
+  function renderPreview() {
     const context = CanvasContext2D.get(previewCanvas.value)
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     context.drawImage(canvas.value, 0, 0)
@@ -1288,7 +1294,7 @@ export const useDocumentStore = defineStore('document', () => {
   /**
    * Redraws all the frames in the animation preview.
    */
-  function redrawFrames() {
+  function renderFrames() {
     for (let index = 0; index < frames.value.length; index++) {
       const frame = frames.value[index]
       const context = CanvasContext2D.get(frame.canvas)
@@ -1308,7 +1314,7 @@ export const useDocumentStore = defineStore('document', () => {
   /**
    * Redraws pixel grid.
    */
-  function redrawGrid() {
+  function renderGrid() {
     if (zoom.current.value > 12) {
       const context = CanvasContext2D.get(board.value, '2d')
       context.globalCompositeOperation = 'difference'
@@ -1332,7 +1338,8 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   // TODO: El cursor se pinta utilizando useToolPreview
-  function redrawCursor() {
+  /*
+  function renderCursor() {
     if (tool.value === Tool.FILL || tool.value === Tool.SHAPE) {
       const context = CanvasContext2D.get(board.value, '2d')
 
@@ -1349,6 +1356,7 @@ export const useDocumentStore = defineStore('document', () => {
       )
     }
   }
+  */
 
   /**
    * Redraw selection.
@@ -1356,7 +1364,7 @@ export const useDocumentStore = defineStore('document', () => {
    * TODO: Necesitamos una forma de repintar la selección
    * sin repintar todo lo demás.
    */
-  function redrawSelection() {
+  function renderSelection() {
     selection.render(drawingRect.width.value, drawingRect.height.value)
     const context = CanvasContext2D.get(board.value, '2d')
     const canvas = selection.getCanvas()
@@ -1368,11 +1376,11 @@ export const useDocumentStore = defineStore('document', () => {
   /**
    * Redraws everything.
    */
-  function redrawAll() {
+  function renderAll() {
     resizeBoard()
-    redraw()
-    redrawPreview()
-    redrawFrames()
+    render()
+    renderPreview()
+    renderFrames()
 
     if (!board.value) {
       console.warn('Board not set')
@@ -1399,8 +1407,8 @@ export const useDocumentStore = defineStore('document', () => {
 
     // TODO: Convertir esto en una constante o en un parámetro
     // configurable.
-    redrawGrid()
-    redrawSelection()
+    renderGrid()
+    renderSelection()
 
     context.restore()
 
@@ -1417,7 +1425,7 @@ export const useDocumentStore = defineStore('document', () => {
     */
 
     // for (const index of symmetryAxis(symmetry.axis)) {
-    redrawCursor()
+    // renderCursor()
     // }
   }
 
@@ -1427,6 +1435,31 @@ export const useDocumentStore = defineStore('document', () => {
   function init() {
     // Drawing
     isUsingTool.value = false
+
+    layersBeforeCanvas.value = Canvas.createOrGet(
+      layersBeforeCanvas.value,
+      width.value,
+      height.value
+    )
+
+    layersAfterCanvas.value = Canvas.createOrGet(
+      layersAfterCanvas.value,
+      width.value,
+      height.value
+    )
+
+    interactiveCanvas.value = Canvas.createOrGet(
+      interactiveCanvas.value,
+      width.value,
+      height.value
+    )
+
+    overlayCanvas.value = Canvas.createOrGet(
+      overlayCanvas.value,
+      width.value,
+      height.value
+    )
+
     // TODO: We should completely remake so it uses putImageData
     // instead of drawImage.
     drawingCanvas.value = Canvas.createOrGet(
@@ -1458,7 +1491,7 @@ export const useDocumentStore = defineStore('document', () => {
     // Selection
     PrecomputedCircle.init()
     selection.init(width.value, height.value)
-    redrawAll()
+    renderAll()
   }
 
   function createFromDocument(document) {
@@ -1469,7 +1502,7 @@ export const useDocumentStore = defineStore('document', () => {
       palette: document.palette,
       layers: document.layers
     })
-    redrawAll()
+    renderAll()
   }
 
   function isValidSize(size) {
@@ -1544,7 +1577,7 @@ export const useDocumentStore = defineStore('document', () => {
    ***************************************************************************/
   function updateLayers(list) {
     layers.set(list)
-    redrawAll()
+    renderAll()
   }
 
   /*
@@ -1576,12 +1609,12 @@ export const useDocumentStore = defineStore('document', () => {
 
   function setLayerBlendMode(layer, blendMode) {
     layer.blendMode.value = blendMode
-    redrawAll()
+    renderAll()
   }
 
   function setLayerOpacity(layer, opacity) {
     layer.opacityPercentage.value = opacity
-    redrawAll()
+    renderAll()
   }
 
   function hideLayerSettings() {
@@ -1598,12 +1631,12 @@ export const useDocumentStore = defineStore('document', () => {
 
   function moveLayerUp() {
     layers.moveUp()
-    redrawAll()
+    renderAll()
   }
 
   function moveLayerDown() {
     layers.moveDown()
-    redrawAll()
+    renderAll()
   }
 
   function addLayer() {
@@ -1623,12 +1656,12 @@ export const useDocumentStore = defineStore('document', () => {
       type: 'duplicateLayer',
       payload: { index, layer: duplicatedLayer }
     })
-    redrawAll()
+    renderAll()
   }
 
   function toggleLayer(layer) {
     layers.toggle(layer)
-    redrawAll()
+    renderAll()
   }
 
   function removeLayer(layer) {
@@ -1642,7 +1675,7 @@ export const useDocumentStore = defineStore('document', () => {
           : layers.list[layerIndex + 1]
     }
     const { index, layer: removedLayer } = layers.remove(layer)
-    redrawAll()
+    renderAll()
     history.add({
       type: 'removeLayer',
       payload: { index, layer: removedLayer }
@@ -1655,7 +1688,7 @@ export const useDocumentStore = defineStore('document', () => {
       type: 'swapLayers',
       payload: { from: fromIndex, toIndex: toIndex }
     })
-    redrawAll()
+    renderAll()
   }
 
   function changeLayerName(layer, name) {
@@ -1833,7 +1866,7 @@ export const useDocumentStore = defineStore('document', () => {
       canvas
     })
     animation.add()
-    redrawAll()
+    renderAll()
   }
 
   /**
@@ -1862,7 +1895,7 @@ export const useDocumentStore = defineStore('document', () => {
       canvas
     })
     animation.add()
-    redrawAll()
+    renderAll()
   }
 
   /**
@@ -1878,7 +1911,7 @@ export const useDocumentStore = defineStore('document', () => {
     }
     const [removedFrame] = frames.value.splice(frame, 1)
     animation.remove()
-    redrawAll()
+    renderAll()
     return removedFrame
   }
 
@@ -1913,7 +1946,7 @@ export const useDocumentStore = defineStore('document', () => {
       throw new Error('Invalid frame value')
     }
     animation.go(currentFrame)
-    redrawAll()
+    renderAll()
   }
 
   /**
@@ -1922,7 +1955,7 @@ export const useDocumentStore = defineStore('document', () => {
   function goToFirstFrame() {
     if (animation.canGoFirst) {
       animation.first()
-      redrawAll()
+      renderAll()
     }
   }
 
@@ -1932,7 +1965,7 @@ export const useDocumentStore = defineStore('document', () => {
   function goToLastFrame() {
     if (animation.canGoLast) {
       animation.last()
-      redrawAll()
+      renderAll()
     }
   }
 
@@ -1942,7 +1975,7 @@ export const useDocumentStore = defineStore('document', () => {
   function goToNextFrame() {
     if (animation.canGoNext) {
       animation.next()
-      redrawAll()
+      renderAll()
     }
   }
 
@@ -1952,7 +1985,7 @@ export const useDocumentStore = defineStore('document', () => {
   function goToPreviousFrame() {
     if (animation.canGoPrevious) {
       animation.previous()
-      redrawAll()
+      renderAll()
     }
   }
 
@@ -2087,7 +2120,7 @@ export const useDocumentStore = defineStore('document', () => {
           actionToUndo.payload.imageData,
           actionToUndo.payload.previousImageData
         )
-        redrawAll()
+        renderAll()
         break
       case 'duplicateLayer':
       case 'addLayer':
@@ -2134,7 +2167,7 @@ export const useDocumentStore = defineStore('document', () => {
           actionToRedo.payload.imageData,
           actionToRedo.payload.nextImageData
         )
-        redrawAll()
+        renderAll()
         break
       case 'duplicateLayer':
       case 'addLayer':
@@ -2264,7 +2297,7 @@ export const useDocumentStore = defineStore('document', () => {
     pause,
     play,
     redo,
-    redrawAll,
+    renderAll,
     removeFrame,
     removeLayer,
     removePaletteColor,

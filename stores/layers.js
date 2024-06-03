@@ -86,6 +86,7 @@ export const useLayersStore = defineStore('layers', () => {
   const settings = ref(null)
 
   /**
+   * Adds a new layer to the layer list.
    *
    * @param {LayerOptions} options
    * @returns {AddLayerResult}
@@ -106,6 +107,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
+   * Add a new layer at a specified index.
    *
    * @param {number} index
    * @param {Layer} layer
@@ -118,6 +120,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
+   * Removes a layer.
    *
    * @param {Layer} layer
    * @returns {RemoveLayerResult}
@@ -132,6 +135,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
+   * Removes a layer at a specified index.
    *
    * @param {number} index
    * @returns {RemoveLayerResult}
@@ -142,8 +146,9 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
+   * Duplicates a layer
    *
-   * @param {*} layer
+   * @param {Layer} layer
    * @returns {DuplicateLayerResult}
    */
   function duplicate(layer) {
@@ -169,6 +174,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
+   * Toggles layer visibility.
    *
    * @param {Layer} layer
    */
@@ -177,7 +183,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
-   *
+   * Moves the currently selected layer up.
    */
   function moveUp() {
     const index = list.findIndex((layer) => layer === layer)
@@ -189,7 +195,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
-   *
+   * Moves the currently selected layer down.
    */
   function moveDown() {
     const index = list.findIndex((layer) => layer === layer)
@@ -201,6 +207,7 @@ export const useLayersStore = defineStore('layers', () => {
   }
 
   /**
+   * Sets layer list to the specified one.
    *
    * @param {Array<Layer>} layers
    */
