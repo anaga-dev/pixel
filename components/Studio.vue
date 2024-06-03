@@ -7,7 +7,6 @@ import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
 import { onKeyDown, onKeyUp, set } from '@vueuse/core'
 import Tool from '@/pixel/enums/Tool'
-import { onMounted } from 'vue'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
@@ -130,10 +129,6 @@ const sidePanelMessage = computed(() => {
   return uiStore.isSidebarExpanded.value
     ? 'studio.tooltips.collapse-side-panel'
     : 'studio.tooltips.expand-side-panel'
-})
-
-onMounted(() => {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera
 })
 </script>
 
@@ -441,14 +436,7 @@ onMounted(() => {
   />
   <!-- Overlay for debugging -->
 <!--   <div style="position: fixed; left: 2rem; bottom: 2rem">
-    <p>Is iOS: {{ $device.isIos }}</p>
-    <p>Is Apple: {{ $device.isApple }}</p>
-    <p>Is Tablet: {{ $device.isTablet }}</p>
-    <p>Is Mobile: {{ $device.isMobile }}</p>
-    <p>Is Desktop: {{ $device.isDesktop }}</p>
-    <p>Is iPad: {{ $device.isIpadOs }}</p>
-    <p>Is MacOS: {{ $device.isMacOS }}</p>
-    <p>Is iPadOS: {{ $device.isiPadOS }}</p>
+    <p>Name: {{ documentStore.name }}</p>
   </div> -->
 </template>
 

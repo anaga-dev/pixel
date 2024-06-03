@@ -153,6 +153,10 @@ export const useDocumentStore = defineStore('document', () => {
     return layer.value.frames[frame]
   })
 
+  function setName(n) {
+    name.value = n
+  }
+
   function startMoving() {
     isMoving.value = true
   }
@@ -1459,7 +1463,7 @@ export const useDocumentStore = defineStore('document', () => {
 
   function createFromDocument(document) {
     create({
-      name: document.name,
+      name: document.name ?? name.value,
       width: document.width,
       height: document.height,
       palette: document.palette,
@@ -2307,7 +2311,8 @@ export const useDocumentStore = defineStore('document', () => {
     updateLayers,
     useTool,
     getFile,
-    setFile
+    setFile,
+    setName
   }
 })
 
