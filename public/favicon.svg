@@ -1,14 +1,8 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <style>
-    path {
-      fill: #fafafa;
-    }
-    @media (prefers-color-scheme: light) {
-      path {
-        fill: #292929;
-      }
-    }
-  </style>
   <rect x="8" y="40" width="16" height="16" fill="#7AD534"/>
-  <path d="M8 8V24H24V40H56V8H8Z"/>
+  <rect x="8" y="8" width="16" height="16" fill="#7AD534"/>
+  <rect x="24" y="8" width="16" height="16" fill="#7AD534"/>
+  <rect x="40" y="8" width="16" height="16" fill="#7AD534"/>
+  <rect x="40" y="24" width="16" height="16" fill="#7AD534"/>
+  <rect x="24" y="24" width="16" height="16" fill="#7AD534"/>
 </svg>
