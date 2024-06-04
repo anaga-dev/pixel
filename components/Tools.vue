@@ -76,10 +76,6 @@ const documentStore = useDocumentStore()
       :active="documentStore.tool === Tool.EYEDROPPER"
       @click="documentStore.setTool(Tool.EYEDROPPER)"
     />
-    <!--
-        FIXME: This is a performance sinkhole, I guess it's because `documentStore.history.canUndo`
-        is recalculated every time we paint a pixel.
-            -->
   </div>
 </template>
 

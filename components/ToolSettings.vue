@@ -17,7 +17,7 @@ const props = defineProps({
     <ToolSettingsShape v-else-if="props.tool === Tool.SHAPE" />
     <ToolSettingsTransform v-else-if="props.tool === Tool.TRANSFORM" />
     <ToolSettingsSelect v-else-if="props.tool === Tool.SELECT" />
-    <ToolSettingsEyedropper v-else-if="props.tool === Tool.DROPPER" />
+    <ToolSettingsEyedropper v-else-if="props.tool === Tool.EYEDROPPER" />
   </div>
 </template>
 
