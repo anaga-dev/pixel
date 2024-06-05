@@ -317,15 +317,24 @@ export const useDocumentStore = defineStore('document', () => {
     nextImageData: null
   }
 
+  let isTransactionalLayerPaintOperationOngoing = false
   function startLayerPaintOperation() {
+    if (isTransactionalLayerPaintOperationOngoing)
+      return false
+
+    isTransactionalLayerPaintOperationOngoing = true
     const currentImageData = imageData.value
     const previousImageData = ImageDataUtils.clone(currentImageData)
     transactionalLayerPaintOperation.imageData = currentImageData
     transactionalLayerPaintOperation.nextImageData = currentImageData
     transactionalLayerPaintOperation.previousImageData = previousImageData
+    return true
   }
 
   function endLayerPaintOperation() {
+    if (!isTransactionalLayerPaintOperationOngoing)
+      return false
+
     history.add({
       type: 'paintOperation',
       payload: {
@@ -334,9 +343,14 @@ export const useDocumentStore = defineStore('document', () => {
         previousImageData: transactionalLayerPaintOperation.previousImageData
       }
     })
+    isTransactionalLayerPaintOperationOngoing = false
+    return true
   }
 
   function doLayerPaintOperation(callback) {
+    if (isTransactionalLayerPaintOperationOngoing) {
+      return false
+    }
     const currentImageData = imageData.value
     const previousImageData = ImageDataUtils.clone(currentImageData)
     callback(currentImageData)
@@ -353,9 +367,10 @@ export const useDocumentStore = defineStore('document', () => {
       }
     })
     redrawAll()
+    return true
   }
 
-  function doPaintOperation(callback, isTemp) {
+  function doPaintOperation(callback, isTemp = false) {
     if (isTemp) {
       doTempPaintOperation(callback)
     } else {
@@ -748,7 +763,8 @@ export const useDocumentStore = defineStore('document', () => {
     const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
     const mask = selection.getMaskImageData()
-    if (e.type === 'pointerdown' || e.type === 'touchstart') {
+    if (e.type === 'pointerdown'
+     || e.type === 'touchstart') {
       clearTimeout(drawTimeout)
       drawTimeout = setTimeout(() => {
         if (pointer.activePointers.value === 1) {
@@ -957,8 +973,7 @@ export const useDocumentStore = defineStore('document', () => {
       }
     } else if (
       e.type === 'pointerup' ||
-      e.type === 'pointerleave' ||
-      e.pressure === 0
+      e.type === 'pointerleave'
     ) {
       endLayerPaintOperation()
     }
