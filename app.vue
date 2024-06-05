@@ -2,7 +2,6 @@
 import { useConfirmationStore } from '@/stores/confirmation'
 const confirmationStore = useConfirmationStore()
 
-const { showDialog } = storeToRefs(confirmationStore)
 </script>
 
 <template>
@@ -10,6 +9,6 @@ const { showDialog } = storeToRefs(confirmationStore)
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <Dialog v-if="showDialog" />
+  <Dialog v-if="confirmationStore.isShowingDialog" />
   <Notifications />
 </template>

@@ -1,6 +1,21 @@
+<script setup>
+import { useConfirmationStore } from '@/stores/confirmation'
+const confirmationStore = useConfirmationStore()
+
+const confirm = () => {
+  confirmationStore.resolve(true)
+  confirmationStore.closeDialog()
+}
+
+const cancel = () => {
+  confirmationStore.resolve(false)
+  confirmationStore.closeDialog()
+}
+</script>
+
 <template>
   <Modal :non-dismissable="true">
-    <p>{{ $t(message) }}</p>
+    <p>{{ $t(confirmationStore.message) }}</p>
     <footer>
       <Button
         variant="primary"
@@ -14,24 +29,6 @@
     </footer>
   </Modal>
 </template>
-
-<script setup>
-import { useConfirmationStore } from '@/stores/confirmation'
-import { storeToRefs } from 'pinia'
-const confirmationStore = useConfirmationStore()
-
-const { showDialog, message } = storeToRefs(confirmationStore)
-
-const confirm = () => {
-  confirmationStore.resolve(true)
-  showDialog.value = false
-}
-
-const cancel = () => {
-  confirmationStore.resolve(false)
-  showDialog.value = false
-}
-</script>
 
 <style scoped>
 p {

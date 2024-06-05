@@ -1,20 +1,25 @@
 export const useConfirmationStore = defineStore('confirmation', () => {
-  const showDialog = ref(false)
+  const isShowingDialog = ref(false)
   const message = ref('')
   const resolve = ref(null)
 
   const openDialog = (msg) => {
     message.value = msg
-    showDialog.value = true
+    isShowingDialog.value = true
     return new Promise((rslv) => {
       resolve.value = rslv
     })
   }
 
+  const closeDialog = () => {
+    isShowingDialog.value = false
+  }
+
   return {
-    showDialog,
+    isShowingDialog,
     message,
     resolve,
-    openDialog
+    openDialog,
+    closeDialog
   }
 })
