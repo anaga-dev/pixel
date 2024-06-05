@@ -220,7 +220,7 @@ const sidePanelMessage = computed(() => {
         </Panel>
       </section>
     </Transition>
-    <aside class="SIDEBAR-DESKTOP">
+    <div class="SIDEBAR-DESKTOP">
       <div class="group">
         <Button
           :label="$t('settings')"
@@ -287,8 +287,8 @@ const sidePanelMessage = computed(() => {
           @click="documentStore.redo()"
         />
       </div>
-    </aside>
-    <aside class="SIDEBAR-MOBILE">
+    </div>
+    <div class="SIDEBAR-MOBILE">
       <div class="group">
         <Button
           :label="$t('settings')"
@@ -369,7 +369,7 @@ const sidePanelMessage = computed(() => {
           </Button>
         </Tooltip>
       </div>
-    </aside>
+    </div>
   </div>
   <SettingsMenu
     v-if="uiStore.visibleOverlay === 'settings-menu'"
@@ -453,7 +453,7 @@ const sidePanelMessage = computed(() => {
 
 .TOOLS,
 .ANIMATION,
-aside {
+[class^='SIDEBAR'] {
   background-color: var(--colorLayer1);
 }
 
@@ -510,7 +510,7 @@ aside {
   align-content: start;
 }
 
-aside {
+[class^='SIDEBAR'] {
   z-index: 5;
   display: grid;
   padding: var(--spaceS);
@@ -518,6 +518,7 @@ aside {
   gap: var(--spaceS);
   align-content: space-between;
 }
+
 .SIDEBAR-DESKTOP {
   grid-column: 4;
   grid-row: 1 / span 2;
