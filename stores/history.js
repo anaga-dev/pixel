@@ -63,6 +63,29 @@ export const useHistoryStore = defineStore('history', () => {
     return item
   }
 
+
+  /**
+   * Sets history to a specific step.
+   *
+   * @returns {HistoryEntry}
+   */
+  function goTo(i) {
+    if (i < 0 || i >= list.length) {
+      return
+    }
+    index.value = i
+    const item = list[index.value]
+    return item
+  }
+
+  /**
+   * Clears history
+   */
+  function clear() {
+    list.splice(0, list.length)
+    index.value = -1
+  }
+
   return {
     canUndo,
     canRedo,
@@ -71,7 +94,9 @@ export const useHistoryStore = defineStore('history', () => {
     last,
     add,
     undo,
-    redo
+    redo,
+    goTo,
+    clear
   }
 })
 

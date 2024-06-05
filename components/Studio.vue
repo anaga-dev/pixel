@@ -435,9 +435,11 @@ const sidePanelMessage = computed(() => {
     @close="uiStore.toggleExportMenu()"
   />
   <!-- Overlay for debugging -->
-<!--   <div style="position: fixed; left: 2rem; bottom: 2rem">
-    <p>Name: {{ documentStore.name }}</p>
-  </div> -->
+  <div style="position: fixed; left: 8rem; padding: 2rem; bottom: 2rem; max-width: 24rem; max-height: 60vh; background-color: black; overflow-y: auto;">
+    <ul v-if="documentStore.history.list">
+      <li v-for="(step, index) in documentStore.history.list">{{ index }} {{ step.type }}</li>
+    </ul>
+  </div>
 </template>
 
 <style scoped>
