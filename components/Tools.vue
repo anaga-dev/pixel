@@ -64,12 +64,6 @@ const documentStore = useDocumentStore()
       @click="documentStore.setTool(Tool.SELECT)"
     />
     -->
-    <Tooltip
-      message="studio.tooltips.color-picker"
-      position="right"
-    >
-      <ToolColor :color="documentStore.color" />
-    </Tooltip>
     <ToolButton
       tooltip-text="studio.tooltips.eyedropper"
       tooltip-position="right"
@@ -79,6 +73,9 @@ const documentStore = useDocumentStore()
       :active="documentStore.tool === Tool.EYEDROPPER"
       @click="documentStore.setTool(Tool.EYEDROPPER)"
     />
+    <Tooltip message="studio.tooltips.color-picker" position="right">
+      <ToolColor :color="documentStore.color" />
+    </Tooltip>
   </div>
 </template>
 

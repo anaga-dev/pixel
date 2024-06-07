@@ -95,4 +95,13 @@ const props = defineProps({
 .tooltip-container:hover .Tooltip.left {
   transform-origin: right center;
 }
+
+@media (pointer: coarse) {
+  .tooltip-container:hover .Tooltip {
+    visibility: hidden;
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+
 </style>
