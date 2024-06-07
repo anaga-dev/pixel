@@ -43,6 +43,8 @@ const documentStore = useDocumentStore()
       :active="documentStore.tool === Tool.SHAPE"
       @click="documentStore.setTool(Tool.SHAPE)"
     />
+    <!-- TODO: show selection and transform when finished -->
+    <!--
     <ToolButton
       tooltip-text="studio.tooltips.transform"
       tooltip-position="right"
@@ -61,6 +63,7 @@ const documentStore = useDocumentStore()
       :active="documentStore.tool === Tool.SELECT"
       @click="documentStore.setTool(Tool.SELECT)"
     />
+    -->
     <Tooltip
       message="studio.tooltips.color-picker"
       position="right"

@@ -61,7 +61,7 @@ useTouch(
       const z = e.distance
 
       documentStore.moveAndZoom(deltaX, deltaY, z)
-    }, 150)
+    }, 50)
   },
   { domTarget: board }
 )
@@ -103,8 +103,15 @@ useKeyShortcuts(
   ])
 )
 
-onKeyDown(' ', () => documentStore.startMoving())
-onKeyUp(' ', () => documentStore.stopMoving())
+onKeyDown(' ', (e) => {
+  e.preventDefault()
+  documentStore.startMoving()
+})
+
+onKeyUp(' ', (e) => {
+  e.preventDefault()
+  documentStore.stopMoving()
+})
 
 function loadPalette() {
   documentStore.loadPalette()
@@ -143,6 +150,8 @@ const sidePanelMessage = computed(() => {
     <!-- UI Canvas -->
     <canvas ref="board" class="BOARD"></canvas>
     <!-- / UI Canvas -->
+    <!-- TODO: Finish animation panel -->
+    <!--
     <div class="ANIMATION">
       <button
         class="button-show"
@@ -159,6 +168,7 @@ const sidePanelMessage = computed(() => {
       </button>
       <Animation v-if="uiStore.isAnimationVisible" />
     </div>
+    -->
     <Transition name="slide">
       <section v-if="uiStore.isSidebarExpanded" class="PANELS">
         <Panel
@@ -435,7 +445,7 @@ const sidePanelMessage = computed(() => {
     @close="uiStore.toggleExportMenu()"
   />
   <!-- Overlay for debugging -->
-<!--   <div style="position: fixed; left: 2rem; bottom: 2rem">
+  <!--   <div style="position: fixed; left: 2rem; bottom: 2rem">
     <p>Name: {{ documentStore.name }}</p>
   </div> -->
 </template>
