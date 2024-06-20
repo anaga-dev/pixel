@@ -1,4 +1,6 @@
 <script setup>
+const { t } = useI18n()
+
 const props = defineProps({
   type: {
     type: String,
@@ -22,14 +24,16 @@ const props = defineProps({
     type: Boolean
   }
 })
+
+const localeLabel = computed(() => props.label ? t(props.label) : null)
 </script>
 
 <template>
   <div :class="{ 'button-wrap': props.variant !== 'ghost' }">
     <button
       :type="props.type"
-      :aria-label="props.label"
-      :aria-selected="props.active === true"
+      :aria-label="localeLabel"
+      :aria-pressed="props.active"
       :class="[props.variant, { active: props.active }, { disabled: props.disabled }]"
     >
       <slot />

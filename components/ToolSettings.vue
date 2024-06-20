@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="ToolSettings">
+  <div class="ToolSettings" role="toolbar">
     <ToolSettingsPencil v-if="props.tool === Tool.PENCIL" />
     <ToolSettingsEraser v-else-if="props.tool === Tool.ERASER" />
     <ToolSettingsFill v-else-if="props.tool === Tool.FILL" />

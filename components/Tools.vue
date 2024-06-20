@@ -6,7 +6,7 @@ const documentStore = useDocumentStore()
 </script>
 
 <template>
-  <div class="Tools">
+  <div class="Tools" role="toolbar">
     <ToolButton
       tooltip-text="studio.tooltips.pencil"
       tooltip-position="right"
