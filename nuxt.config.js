@@ -61,10 +61,7 @@ export default defineNuxtConfig({
       ]
     }
   },
-  plugins: [
-    '~/plugins/directives.server',
-    '~/plugins/directives.client',
-  ],
+  plugins: ['~/plugins/directives.server', '~/plugins/directives.client'],
   modules: [
     // '@nuxtjs/eslint-module',
     '@nuxt/devtools',
@@ -72,7 +69,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vite-pwa/nuxt',
     '@nuxtjs/i18n',
-    '@nuxt/image'
+    '@nuxt/image',
+    '@nuxtjs/plausible'
   ],
   eslint: {
     lintOnStart: false
@@ -149,6 +147,11 @@ export default defineNuxtConfig({
           }
         }
       ]
+    },
+    plausible: {
+      domain: 'pixel.anaga.dev',
+      apiHost: process.env.PLAUSIBLE_APIHOST,
+      ignoredHostnames: ['localhost', '127.0.0.1', '192.168.1.231']
     },
     workbox: {
       navigateFallback: '/',
