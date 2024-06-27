@@ -1,6 +1,7 @@
 import IndexedImageData from './IndexedImageData.js'
 import CanvasContext2D from '@/pixel/canvas/CanvasContext2D.js'
 import FillStack from '@/pixel/paint/FillStack.js'
+import ImageUtils from '@/pixel/image/ImageUtils.js'
 
 /**
  * Returns true if the given coordinates are inside the image data.
@@ -671,19 +672,6 @@ export function ellipse(
 
 const brushImageDataList = []
 
-export function createImageFromURL(url, options) {
-  return new Promise((resolve, reject) => {
-    const image = new Image()
-    image.onload = () => resolve(image)
-    image.onerror = (error) => reject(error)
-    image.onabort = () => reject(new Error('Abort'))
-    image.src = url
-    image.crossOrigin = options?.crossOrigin ?? ''
-    image.decoding = options?.decoding ?? 'sync'
-    image.loading = options?.loading ?? 'eager'
-  })
-}
-
 export function createImageDataFromImage(image) {
   const context = CanvasContext2D.createOffscreen(image.width, image.height)
   context.drawImage(image, 0, 0)
@@ -719,12 +707,12 @@ export async function createImageDataListFromURL(
   itemHeight,
   options
 ) {
-  const image = await createImageFromURL(url, options)
+  const image = await ImageUtils.createImageFromURL(url, options)
   return createImageDataListFromImage(image, itemWidth, itemHeight)
 }
 
 export async function createImageDataFromURL(url, options) {
-  const image = await createImageFromURL(url, options)
+  const image = await ImageUtils.createImageFromURL(url, options)
   return createImageDataFromImage(image)
 }
 

@@ -9,6 +9,13 @@ function isTextInputElement(element) {
   return ['INPUT', 'SELECT', 'TEXTAREA'].includes(element.nodeName)
 }
 
+function isClipboardEvent(e) {
+  if (e.ctrlKey && ['v','c','x'].includes(e.key)) {
+    return true
+  }
+  return false
+}
+
 /**
  * TODO: Could be improved a bit using a tree with mapped keys like this:
  *
@@ -21,7 +28,8 @@ export function useKeyShortcuts(bindings, target) {
   useEventListener(target ?? globalThis, 'keydown', (e) => {
     // If the current selected element is <input>, <select> or <textarea>
     // this function is stopped.
-    if (isTextInputElement(document.activeElement)) {
+    if (isTextInputElement(document.activeElement)
+     || isClipboardEvent(e)) {
       return
     }
 

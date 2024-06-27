@@ -26,8 +26,34 @@ const props = defineProps({
   }
 })
 
-onMounted(() => documentStore.setBoard(board.value))
-onUnmounted(() => documentStore.unsetBoard())
+/**
+ *
+ * @param {ClipboardEvent} e
+ */
+function onCopy(e) {
+  documentStore.doCopy(e)
+}
+
+function onCut(e) {
+  documentStore.doCut(e)
+}
+
+function onPaste(e) {
+  documentStore.doPaste(e)
+}
+
+onMounted(() => {
+  document.addEventListener('copy', onCopy)
+  document.addEventListener('cut', onCut)
+  document.addEventListener('paste', onPaste)
+  documentStore.setBoard(board.value)
+})
+onUnmounted(() => {
+  document.removeEventListener('copy', onCopy)
+  document.removeEventListener('cut', onCut)
+  document.removeEventListener('paste', onPaste)
+  documentStore.unsetBoard()
+})
 
 useBeforeUnload(
   () => true,

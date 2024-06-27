@@ -2209,6 +2209,68 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  /**
+   *
+   * @param {ClipboardEvent} e
+   */
+  async function doCopy(e) {
+    console.log(e.type)
+    e.preventDefault()
+    if (ClipboardItem.supports('image/png')) {
+      const layer = layers.current
+      const blob = await Canvas.createBlob(layer.canvas, 'image/png', 9)
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type] : blob
+        })
+      ])
+    }
+  }
+
+  /**
+   *
+   * @param {ClipboardEvent} e
+   */
+  async function doCut(e) {
+    console.log(e.type)
+    e.preventDefault()
+    if (ClipboardItem.supports('image/png')) {
+      const layer = layers.current
+      const blob = await Canvas.createBlob(layer.canvas, 'image/png', 9)
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob
+        })
+      ])
+      layers.remove(layer)
+    }
+  }
+
+  /**
+   *
+   * @param {ClipboardEvent} e
+   */
+  async function doPaste(e) {
+    console.log(e.type, e.clipboardData.items, e.clipboardData.files, e.clipboardData.types)
+    e.preventDefault()
+    let fileToPaste = null
+    for (const file of e.clipboardData.files) {
+      if (file.type === 'image/png') {
+        fileToPaste = file
+        break
+      }
+    }
+    if (!fileToPaste) return
+    const canvas = await Canvas.createFromBlob(fileToPaste)
+    const width = canvas.width
+    const height = canvas.height
+    layers.add({
+      width,
+      height,
+      canvas
+    })
+  }
+
   return {
     state,
     name,
@@ -2327,7 +2389,10 @@ export const useDocumentStore = defineStore('document', () => {
     useTool,
     getFile,
     setFile,
-    setName
+    setName,
+    doCopy,
+    doCut,
+    doPaste
   }
 })
 

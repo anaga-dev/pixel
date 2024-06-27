@@ -1,3 +1,4 @@
+import { createImageFromURL } from '../image/ImageUtils'
 import CanvasContext2D from './CanvasContext2D'
 
 /**
@@ -191,6 +192,27 @@ export function createBlob(canvas, type, quality) {
   return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, quality))
 }
 
+/**
+ *
+ * @param {Blob|File} blob
+ * @returns {HTMLCanvasElement}
+ */
+export async function createFromBlob(blob) {
+  if (['image/png', 'image/jpeg'].includes(blob.type)) {
+    const url = URL.createObjectURL(blob)
+    /**
+     * @type {Image}
+     */
+    const image = await createImageFromURL(url)
+    URL.revokeObjectURL(url)
+    const canvas = create(image.naturalWidth, image.naturalHeight)
+    const context = canvas.getContext('2d')
+    context.drawImage(image, 0, 0)
+    return canvas
+  }
+  return Promise.reject(new Error('Unsupported image file type'))
+}
+
 export default {
   create,
   createOrGet,
@@ -198,6 +220,7 @@ export default {
   createWith,
   createWithClasses,
   createOrGetWithClasses,
+  createFromBlob,
   resize,
   resizeTo,
   duplicate,
