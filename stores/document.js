@@ -2077,7 +2077,7 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   /**
-   * History
+   * Undoes the last action.
    */
   function undo() {
     const actionToUndo = history.undo()
@@ -2126,6 +2126,9 @@ export const useDocumentStore = defineStore('document', () => {
     }
   }
 
+  /**
+   * Redoes the last action.
+   */
   function redo() {
     const actionToRedo = history.redo()
     if (!actionToRedo) {
@@ -2187,6 +2190,11 @@ export const useDocumentStore = defineStore('document', () => {
     pointer.unlisten()
   }
 
+  /**
+   * Returns a compatible `.ora` file.
+   *
+   * @returns {Promise<File>}
+   */
   async function getFile() {
     const blob = await OpenRaster.save({
       canvas: canvas.value,
@@ -2200,6 +2208,12 @@ export const useDocumentStore = defineStore('document', () => {
     })
   }
 
+  /**
+   * Establishes the current file from a compatible `.ora` file.
+   *
+   * @param {File|Blob} file
+   * @param {Promise}
+   */
   async function setFile(file) {
     if (file === null) {
       destroy()
