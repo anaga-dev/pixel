@@ -2210,11 +2210,14 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   /**
+   * This method is called when the user copies from the studio.
+   *
+   * When you don't have a selection, this copies the full current
+   * layer.
    *
    * @param {ClipboardEvent} e
    */
   async function doCopy(e) {
-    console.log(e.type)
     e.preventDefault()
     if (ClipboardItem.supports('image/png')) {
       const layer = layers.current
@@ -2228,11 +2231,13 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   /**
+   * This method is called when the user cuts from the studio.
+   *
+   * When you don't have
    *
    * @param {ClipboardEvent} e
    */
   async function doCut(e) {
-    console.log(e.type)
     e.preventDefault()
     if (ClipboardItem.supports('image/png')) {
       const layer = layers.current
@@ -2242,16 +2247,18 @@ export const useDocumentStore = defineStore('document', () => {
           [blob.type]: blob
         })
       ])
-      layers.remove(layer)
+      // If there's only one layer, then we don't
+      // remove it from the list of layers.
+      if (layers.list.length > 1) {
+        layers.remove(layer)
+      }
     }
   }
 
   /**
-   *
    * @param {ClipboardEvent} e
    */
   async function doPaste(e) {
-    console.log(e.type, e.clipboardData.items, e.clipboardData.files, e.clipboardData.types)
     e.preventDefault()
     let fileToPaste = null
     for (const file of e.clipboardData.files) {
