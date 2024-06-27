@@ -29,11 +29,12 @@ export function createLayer(options) {
       opacity.value = newValue / 100
     }
   })
-  const frames = shallowReactive(
-    options?.frames ?? [markRaw(new ImageData(width, height))]
-  )
   const canvas = markRaw(options?.canvas ?? Canvas.create(width, height))
   const context = markRaw(canvas.getContext('2d'))
+  const frames = shallowReactive(options?.frames ?? [])
+  if (frames.length === 0) {
+    frames.push(markRaw(context.getImageData(0, 0, width, height)))
+  }
 
   const newLayer = {
     id,
