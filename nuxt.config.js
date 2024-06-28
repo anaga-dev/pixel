@@ -149,7 +149,6 @@ export default defineNuxtConfig({
       ]
     },
     plausible: {
-      domain: 'pixel.anaga.dev',
       apiHost: process.env.PLAUSIBLE_APIHOST,
       ignoredHostnames: ['localhost', '127.0.0.1', '192.168.1.231']
     },
