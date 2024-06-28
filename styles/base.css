@@ -1,20 +1,14 @@
 *,
 *::before,
 *::after {
-  scrollbar-color: var(--colorTextSecondary) transparent;
+/*   scrollbar-color: var(--colorTextSecondary) transparent; */
   accent-color: var(--colorAccent);
   scroll-behavior: smooth;
-  scrollbar-width: thin;
 }
 
 html {
   background-color: var(--colorLayer0);
   color: var(--colorText);
-}
-
-html,
-body {
-  touch-action: none;
 }
 
 *:not(p) {

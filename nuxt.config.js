@@ -56,8 +56,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-icon.png' },
-        { rel: 'manifest', href: '/manifest.webmanifest' }
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-icon.png' }
       ]
     }
   },
@@ -148,10 +147,6 @@ export default defineNuxtConfig({
         }
       ]
     },
-    plausible: {
-      apiHost: process.env.PLAUSIBLE_APIHOST,
-      ignoredHostnames: ['localhost', '127.0.0.1', '192.168.1.231']
-    },
     workbox: {
       navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,json,svg,png,webp}'],
@@ -161,10 +156,14 @@ export default defineNuxtConfig({
           handler: 'NetworkFirst'
         }
       ]
-    },
-    devOptions: {
-      enabled: false,
-      type: 'module'
     }
+  },
+  plausible: {
+    apiHost: process.env.PLAUSIBLE_APIHOST,
+    /* ignoredHostnames: ['localhost', '127.0.0.1', '192.168.1.231'] */
+  },
+  devOptions: {
+    enabled: false,
+    type: 'module'
   }
 })

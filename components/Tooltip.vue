@@ -99,8 +99,6 @@ const props = defineProps({
 @media (pointer: coarse) {
   .tooltip-container:hover .Tooltip {
     visibility: hidden;
-    opacity: 0;
-    scale: 0.2;
   }
 }
 
