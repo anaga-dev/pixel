@@ -80,7 +80,7 @@ button:is(.ghost, .dropdown).active {
 }
 
 button.primary {
-  color: var(--colorTextAlt);
+  --colorText: var(--colorLayer0);
   background-color: var(--colorAccent);
 }
 

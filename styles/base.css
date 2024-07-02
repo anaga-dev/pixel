@@ -1,18 +1,15 @@
 *,
 *::before,
 *::after {
-/*   scrollbar-color: var(--colorTextSecondary) transparent; */
+  scrollbar-color: var(--colorTextSecondary) transparent;
   accent-color: var(--colorAccent);
   scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
 html {
   background-color: var(--colorLayer0);
   color: var(--colorText);
-}
-
-*:not(p) {
-  font-weight: bold;
 }
 
 html,
@@ -31,13 +28,17 @@ small {
   line-height: 1.5;
 }
 
+
+h1, h2, h3, h4 {
+  font-weight: bold;
+}
+
 h1 {
   font-size: var(--fontSizeXL);
 }
 
 h2 {
   font-size: var(--fontSizeL);
-  color: var(--colorTextSecondary);
 }
 
 .active {
