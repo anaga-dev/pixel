@@ -11,6 +11,8 @@ import Tool from '@/pixel/enums/Tool'
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
 
+const currentColor = useColor(documentStore.color)
+
 const board = ref(null)
 
 const MIN_TOUCHES = 2
@@ -40,6 +42,11 @@ function onCut(e) {
 
 function onPaste(e) {
   documentStore.doPaste(e)
+}
+
+function onPaletteColorSelect(color) {
+  currentColor.style.value = color
+  uiStore.closePanel()
 }
 
 onMounted(() => {
@@ -445,7 +452,7 @@ const sidePanelMessage = computed(() => {
         </Button>
       </Tooltip>
     </template>
-    <Palette />
+    <Palette @select="onPaletteColorSelect" />
   </FloatingPanel>
   <FloatingPanel
     v-if="uiStore.visiblePanel === 'layers'"

@@ -3,6 +3,7 @@ import { useDocumentStore } from '@/stores/document'
 import { Sortable } from 'sortablejs-vue3'
 
 const documentStore = useDocumentStore()
+const uiStore = useUIStore()
 
 const draggingColor = ref(false)
 
@@ -10,6 +11,8 @@ const activeColor = ref(null)
 const removeMode = ref(false)
 const overBin = ref(false)
 const current = useColor(documentStore.color)
+
+const emit = defineEmits(['select'])
 
 const options = {
   delay: 250,
@@ -25,8 +28,11 @@ function onDropToRemove(e) {
 }
 
 function handleSelectColor(newStyle) {
-  current.style.value = newStyle
+  documentStore.setColor(newStyle)
   activeColor.value = newStyle
+  if (uiStore.visiblePanel) {
+    uiStore.closePanel() // TODO: find a better way to do this.. uiStore.closePanel()
+  }
 }
 
 function handleRemoveColor(index) {
@@ -51,12 +57,12 @@ function handleKeyUp(e) {
   removeMode.value = false
 }
 
-watch(
-  () => current.style.value,
+/* watch(
+  () => activeColor.value,
   (newValue) => {
     documentStore.setColor(newValue)
   }
-)
+) */
 </script>
 
 <template>
