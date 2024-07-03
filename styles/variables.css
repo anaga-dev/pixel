@@ -1,80 +1,94 @@
 :root {
-  --colorLayer0: hsl(0, 0%, 10%);
-  --colorLayer1: hsl(0 0% 15%);
-  --colorLayer2: hsl(0 0% 18%);
-  --colorText: hsl(0 0% 72%);
-  --colorTextPrimary: hsl(0 0% 96%);
-  --colorTextAlt: hsl(0 0% 6%);
-  --colorTextSecondary: hsl(0 0% 54%);
-  --colorAccent: hsl(94 66% 52%);
-  --colorPro: hsl(64 66% 52%);
-  --colorCritical: hsl(352 86% 64%);
-  --colorShade: hsl(0 0% 96% / 12%);
-  --colorHover: hsl(0 0% 30%);
-  --colorShadow: hsl(0 0% 0% / 12%);
-  --colorOverlay: hsl(0 0% 8% / 80%);
+  /*
+   * Base colors
+   */
+  --color-base-950: hsl(0, 0%, 10%);
+  --color-base-900: hsl(0 0% 15%);
+  --color-base-800: hsl(0 0% 18%);
+  --color-base-600: hsl(0 0% 30%);
+  --color-base-200: hsl(0 0% 54%);
+  --color-base-100: hsl(0 0% 72%);
+  --color-base-50: hsl(0 0% 96%);
 
-  --spaceXXS: 0.125rem;
-  --spaceXS: 0.25rem;
-  --spaceS: 0.5rem;
-  --spaceM: 1rem;
-  --spaceL: 1.5rem;
-  --spaceXL: 2.5rem;
-  --spaceXXL: 3rem;
+  /*
+   * Semantic colors
+   */
+  --color-brand: hsl(94 66% 52%);
+  --color-pro: hsl(64 66% 52%);
+  --color-critical: hsl(352 86% 64%);
+  --color-highlight: hsl(0 0% 96% / 12%);
+  --color-shadow: hsl(0 0% 0% / 12%);
+  --color-overlay: hsl(0 0% 8% / 80%);
 
-  --fontSizeS: 0.75rem;
-  --fontSizeM: 1rem;
-  --fontSizeL: 1.25rem;
-  --fontSizeXL: 2.5rem;
-  --fontSizeXXL: 5rem;
+  /*
+   * Spacing
+   */
+  --space-xxs: 0.125rem;
+  --space-xs: 0.25rem;
+  --space-s: 0.5rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-xxl: 3rem;
 
-  --widthToolbar: 4rem;
-  --widthSidebar: 20rem;
+  --font-size-m: 1rem;
+  --font-size-l: 1.25rem;
+  --font-size-xl: 2.5rem;
+  --font-size-xxl: 5rem;
+
+  --size-toolbar: 4rem;
+  --size-sidebar: 20rem;
 
   --transition: all 240ms ease-in-out;
 
-  --pixelCorners: polygon(
-    0% var(--spaceXS),
-    var(--spaceXS) var(--spaceXS),
-    var(--spaceXS) 0%,
-    calc(100% - var(--spaceXS)) 0%,
-    calc(100% - var(--spaceXS)) var(--spaceXS),
-    100% var(--spaceXS),
-    100% calc(100% - var(--spaceXS)),
-    calc(100% - var(--spaceXS)) calc(100% - var(--spaceXS)),
-    calc(100% - var(--spaceXS)) 100%,
-    var(--spaceXS) 100%,
-    var(--spaceXS) calc(100% - var(--spaceXS)),
-    0% calc(100% - var(--spaceXS))
+  /*
+   * Clip path for pixelated corners
+   */
+  --clip-corners: polygon(
+    0% var(--space-xs),
+    var(--space-xs) var(--space-xs),
+    var(--space-xs) 0%,
+    calc(100% - var(--space-xs)) 0%,
+    calc(100% - var(--space-xs)) var(--space-xs),
+    100% var(--space-xs),
+    100% calc(100% - var(--space-xs)),
+    calc(100% - var(--space-xs)) calc(100% - var(--space-xs)),
+    calc(100% - var(--space-xs)) 100%,
+    var(--space-xs) 100%,
+    var(--space-xs) calc(100% - var(--space-xs)),
+    0% calc(100% - var(--space-xs))
   );
 
-  --pixelCornersOuter: polygon(
-    0% calc(var(--spaceXS) * 2),
-    var(--spaceXS) calc(var(--spaceXS) * 2),
-    var(--spaceXS) var(--spaceXS),
-    calc(var(--spaceXS) * 2) var(--spaceXS),
-    calc(var(--spaceXS) * 2) 0%,
-    calc(100% - var(--spaceXS) * 2) 0%,
-    calc(100% - var(--spaceXS) * 2) var(--spaceXS),
-    calc(100% - var(--spaceXS)) var(--spaceXS),
-    calc(100% - var(--spaceXS)) calc(var(--spaceXS) * 2),
-    100% calc(var(--spaceXS) * 2),
-    100% calc(100% - var(--spaceXS) * 2),
-    calc(100% - var(--spaceXS)) calc(100% - var(--spaceXS) * 2),
-    calc(100% - var(--spaceXS)) calc(100% - var(--spaceXS)),
-    calc(100% - var(--spaceXS) * 2) calc(100% - var(--spaceXS)),
-    calc(100% - var(--spaceXS) * 2) 100%,
-    calc(100% - var(--spaceXS)) 100%,
-    calc(var(--spaceXS) * 2) 100%,
-    calc(var(--spaceXS) * 2) calc(100% - var(--spaceXS)),
-    var(--spaceXS) calc(100% - var(--spaceXS)),
-    var(--spaceXS) calc(100% - var(--spaceXS) * 2),
-    0% calc(100% - var(--spaceXS) * 2)
+  --clip-corners-outer: polygon(
+    0% calc(var(--space-xs) * 2),
+    var(--space-xs) calc(var(--space-xs) * 2),
+    var(--space-xs) var(--space-xs),
+    calc(var(--space-xs) * 2) var(--space-xs),
+    calc(var(--space-xs) * 2) 0%,
+    calc(100% - var(--space-xs) * 2) 0%,
+    calc(100% - var(--space-xs) * 2) var(--space-xs),
+    calc(100% - var(--space-xs)) var(--space-xs),
+    calc(100% - var(--space-xs)) calc(var(--space-xs) * 2),
+    100% calc(var(--space-xs) * 2),
+    100% calc(100% - var(--space-xs) * 2),
+    calc(100% - var(--space-xs)) calc(100% - var(--space-xs) * 2),
+    calc(100% - var(--space-xs)) calc(100% - var(--space-xs)),
+    calc(100% - var(--space-xs) * 2) calc(100% - var(--space-xs)),
+    calc(100% - var(--space-xs) * 2) 100%,
+    calc(100% - var(--space-xs)) 100%,
+    calc(var(--space-xs) * 2) 100%,
+    calc(var(--space-xs) * 2) calc(100% - var(--space-xs)),
+    var(--space-xs) calc(100% - var(--space-xs)),
+    var(--space-xs) calc(100% - var(--space-xs) * 2),
+    0% calc(100% - var(--space-xs) * 2)
   );
 
-  --shadowLayer:
-    inset 0 0 0 2px var(--colorLayer2),
-    calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow),
-    calc(var(--spaceM) * -1) var(--spaceM) 0 var(--colorShadow);
-  --shadowInput: inset var(--spaceS) var(--spaceS) 0 var(--colorShadow);
+  /*
+   * Shadows
+   */
+  --shadow-floating-element: inset 0 0 0 2px var(--color-base-800),
+    calc(var(--space-s) * -1) var(--space-s) 0 var(--color-shadow),
+    calc(var(--space-m) * -1) var(--space-m) 0 var(--color-shadow);
+
+  --shadow-input: inset var(--space-s) var(--space-s) 0 var(--color-shadow);
 }

@@ -51,6 +51,6 @@ const { hue, saturation, lightness } = props.color
 .ColorHSL {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceL);
+  gap: var(--space-l);
 }
 </style>

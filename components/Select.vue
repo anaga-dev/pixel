@@ -33,13 +33,13 @@ const emit = defineEmits(['update:modelValue'])
 }
 
 select {
-  padding-right: var(--spaceXL);
+  padding-right: var(--space-xl);
 }
 
 .icon {
   justify-self: end;
   align-self: center;
-  margin-right: var(--spaceS);
+  margin-right: var(--space-s);
   pointer-events: none;
 }
 

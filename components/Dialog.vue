@@ -32,11 +32,11 @@ const cancel = () => {
 
 <style scoped>
 p {
-  font-size: var(--fontSizeL);
-  padding: var(--spaceM) 0;
+  font-size: var(--font-size-l);
+  padding: var(--space-m) 0;
 }
 footer {
   display: flex;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 </style>

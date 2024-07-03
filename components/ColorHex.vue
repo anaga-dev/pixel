@@ -114,7 +114,7 @@ function onKeyButton(key) {
   grid-auto-flow: column;
   justify-content: start;
   align-items: center;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 .hex {
@@ -122,11 +122,11 @@ function onKeyButton(key) {
   font-weight: bold;
   appearance: none;
   border: none;
-  height: var(--spaceXL);
+  height: var(--space-xl);
   display: grid;
   align-items: center;
-  padding: 0 var(--spaceS);
-  background-color: var(--colorLayer0);
+  padding: 0 var(--space-s);
+  background-color: var(--color-base-950);
   color: var(--colorPrimary);
 }
 
@@ -140,7 +140,7 @@ function onKeyButton(key) {
 .key-button {
   padding: 1rem;
   font-size: 2rem;
-  background: var(--colorShade);
+  background: var(--color-highlight);
 }
 
 .form-input {

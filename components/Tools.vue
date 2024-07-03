@@ -83,16 +83,16 @@ const documentStore = useDocumentStore()
 .Tools {
   display: grid;
   justify-content: center;
-  gap: var(--spaceM);
-  padding: var(--spaceM) var(--spaceS);
-  background-color: var(--colorLayer1);
-  box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
+  gap: var(--space-m);
+  padding: var(--space-m) var(--space-s);
+  background-color: var(--color-base-900);
+  box-shadow: calc(var(--space-xs) * -1) 0 0 var(--color-shadow);
 }
 
 @media (max-height: 480px) {
   .Tools {
-    gap: var(--spaceM);
-    padding: var(--spaceM);
+    gap: var(--space-m);
+    padding: var(--space-m);
     grid-template-columns: repeat(2, 1fr);
   }
   .divider {

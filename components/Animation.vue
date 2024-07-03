@@ -86,7 +86,7 @@ const documentStore = useDocumentStore()
 <style scoped>
 .Animation {
   display: grid;
-  padding-bottom: var(--spaceM);
+  padding-bottom: var(--space-m);
   grid-template-areas:
     "playback actions"
     "frames frames";
@@ -95,10 +95,10 @@ const documentStore = useDocumentStore()
 }
 
 .playback, .actions {
-  padding: var(--spaceS) var(--spaceM);
+  padding: var(--space-s) var(--space-m);
   display: grid;
   grid-auto-flow: column;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 .playback {
@@ -116,7 +116,7 @@ const documentStore = useDocumentStore()
   justify-self: center;
   display: grid;
   grid-auto-flow: column;
-  gap: var(--spaceM);
+  gap: var(--space-m);
   max-width: 100vw;
   overflow-y: hidden;
   overflow-x: auto;

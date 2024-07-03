@@ -97,11 +97,11 @@ function handleExport() {
 <style scoped>
 .ExportMenu {
   display: grid;
-  gap: var(--spaceL);
+  gap: var(--space-l);
 }
 
 .row {
   display: grid;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 </style>

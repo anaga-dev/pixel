@@ -10,7 +10,6 @@ const draggingColor = ref(false)
 const activeColor = ref(null)
 const removeMode = ref(false)
 const overBin = ref(false)
-const current = useColor(documentStore.color)
 
 const emit = defineEmits(['select'])
 
@@ -56,13 +55,6 @@ function handleKeyDown(e) {
 function handleKeyUp(e) {
   removeMode.value = false
 }
-
-/* watch(
-  () => activeColor.value,
-  (newValue) => {
-    documentStore.setColor(newValue)
-  }
-) */
 </script>
 
 <template>
@@ -104,7 +96,7 @@ function handleKeyUp(e) {
   grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
   gap: 2px;
   padding: 2px;
-  background-color: var(--colorLayer1);
+  background-color: var(--color-base-900);
 }
 
 .remove-area {
@@ -112,13 +104,13 @@ function handleKeyUp(e) {
   place-content: center;
   align-items: center;
   grid-auto-flow: column;
-  gap: var(--spaceS);
-  padding: var(--spaceL);
+  gap: var(--space-s);
+  padding: var(--space-l);
 }
 
 .remove-area.over {
-  background-color: var(--colorShade);
-  color: var(--colorTextPrimary);
+  background-color: var(--color-highlight);
+  color: var(--color-base-50);
 }
 
 .remove {

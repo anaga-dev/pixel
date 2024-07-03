@@ -41,6 +41,6 @@ button {
 }
 
 .outline {
-  color: var(--colorText);
+  color: var(--color-base-100);
 }
 </style>

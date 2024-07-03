@@ -51,16 +51,16 @@ onMounted(() => {
 <style scoped>
 .BoundingBox {
   position: absolute;
-  border: 2px solid var(--colorAccent);
+  border: 2px solid var(--color-brand);
   pointer-events: none;
 }
 
 .corner {
   position: absolute;
-  width: var(--spaceM);
+  width: var(--space-m);
   aspect-ratio: 1;
-  background-color: var(--colorLayer0);
-  border: 2px solid var(--colorAccent);
+  background-color: var(--color-base-950);
+  border: 2px solid var(--color-brand);
 }
 
 .corner.left {

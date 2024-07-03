@@ -45,7 +45,7 @@ const localeLabel = computed(() => props.label ? t(props.label) : null)
 <style scoped>
 .button-wrap {
   filter: drop-shadow(
-    calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow)
+    calc(var(--space-s) * -1) var(--space-s) 0 var(--color-shadow)
   );
   transition: all 60ms ease;
 }
@@ -56,17 +56,17 @@ button {
   grid-auto-flow: column;
   justify-content: center;
   align-items: center;
-  gap: var(--spaceS);
+  gap: var(--space-s);
   font-weight: bold;
   line-height: 24px;
-  padding: var(--spaceS) var(--spaceM);
-  background-color: var(--colorShade);
-  clip-path: var(--pixelCorners);
+  padding: var(--space-s) var(--space-m);
+  background-color: var(--color-highlight);
+  clip-path: var(--clip-corners);
   transition: background-color 240ms ease, transform 60ms ease;
 }
 
 button.ghost {
-  padding: var(--spaceS);
+  padding: var(--space-s);
   background-color: transparent;
   color: inherit;
 }
@@ -76,25 +76,25 @@ button:is(.dropdown, .setting) {
 }
 
 button:is(.ghost, .dropdown).active {
-  color: var(--colorAccent);
+  color: var(--color-brand);
 }
 
 button.primary {
-  --colorText: var(--colorLayer0);
-  background-color: var(--colorAccent);
+  --color-base-100: var(--color-base-950);
+  background-color: var(--color-brand);
 }
 
 button.critical {
-  color: var(--colorTextPrimary);
-  background-color: var(--colorCritical);
+  color: var(--color-base-50);
+  background-color: var(--color-critical);
 }
 
 button:is(:not(.ghost, .dropdown, .primary, .critical)):hover {
-  background-color: var(--colorHover);
+  background-color: var(--color-base-600);
 }
 
 button.ghost:hover {
-  background-color: var(--colorShade);
+  background-color: var(--color-highlight);
 }
 
 button.account {
@@ -102,15 +102,15 @@ button.account {
 }
 
 button:is(.dropdown, .setting) {
-  background-color: var(--colorLayer1);
+  background-color: var(--color-base-900);
 }
 
 button:is(.dropdown, .setting):hover {
-  background-color: var(--colorLayer2);
+  background-color: var(--color-base-800);
 }
 
 button:active {
-  transform: translate(0, var(--spaceXS));
+  transform: translate(0, var(--space-xs));
 }
 
 button.disabled {

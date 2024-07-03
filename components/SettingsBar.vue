@@ -16,14 +16,14 @@
   grid-auto-flow: column;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--spaceM);
+  padding: 0 var(--space-m);
 }
 
 div {
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  gap: var(--spaceM);
+  gap: var(--space-m);
 }
 
 .right {

@@ -35,8 +35,8 @@ const documentStore = useDocumentStore()
   grid-auto-flow: column;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spaceS);
-  padding: var(--spaceS);
+  gap: var(--space-s);
+  padding: var(--space-s);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -49,7 +49,7 @@ const documentStore = useDocumentStore()
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 .group > *:last-child {

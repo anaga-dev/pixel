@@ -77,7 +77,7 @@ function stopDragging(e) {
     hsl(330, 100%, 50%),
     hsl(360, 100%, 50%)
   );
-  height: var(--spaceL);
+  height: var(--space-l);
   position: relative;
   user-select: none;
 }
@@ -98,7 +98,7 @@ function stopDragging(e) {
   width: 2px;
   height: 100%;
   translate: -50% 0%;
-  background-color: var(--colorLayer0);
-  outline: 2px solid var(--colorTextPrimary);
+  background-color: var(--color-base-950);
+  outline: 2px solid var(--color-base-50);
 }
 </style>

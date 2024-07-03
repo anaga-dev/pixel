@@ -58,21 +58,21 @@ const emit = defineEmits(['toggle'])
 header {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: var(--spaceS);
-  padding: var(--spaceXS) 0;
+  gap: var(--space-s);
+  padding: var(--space-xs) 0;
   justify-content: space-between;
   align-items: center;
   position: relative;
 }
 
 h2 {
-  font-size: var(--fontSizeM);
-  color: var(--colorText);
+  font-size: var(--font-size-m);
+  color: var(--color-base-100);
 }
 .actions {
   display: grid;
   grid-auto-flow: column;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 .content {

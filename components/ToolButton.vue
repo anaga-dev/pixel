@@ -55,15 +55,15 @@ const props = defineProps({
 button {
   display: grid;
   place-content: center;
-  height: var(--spaceXL);
-  padding: 0 var(--spaceS);
+  height: var(--space-xl);
+  padding: 0 var(--space-s);
   background-color: transparent;
-  clip-path: var(--pixelCorners);
+  clip-path: var(--clip-corners);
   transition: all 240ms ease;
 }
 
 button:hover {
-  background-color: var(--colorShade);
+  background-color: var(--color-highlight);
 }
 
 .icon span {

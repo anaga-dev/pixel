@@ -24,16 +24,16 @@ const props = defineProps({
   display: grid;
   grid-auto-flow: column;
   justify-content: stretch;
-  gap: var(--spaceXS);
+  gap: var(--space-xs);
 }
 
 button {
   font-weight: bold;
-  padding: var(--spaceS) var(--spaceM);
+  padding: var(--space-s) var(--space-m);
   transition: all 200ms;
 }
 
 button:hover {
-  color: var(--colorAccent);
+  color: var(--color-brand);
 }
 </style>

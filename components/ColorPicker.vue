@@ -98,12 +98,12 @@ watch(
 
 <style scoped>
 .ColorPicker {
-  left: calc(var(--widthToolbar) + var(--spaceS));
+  left: calc(var(--size-toolbar) + var(--space-s));
   top: 50%;
   translate: 0% -50%;
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceM);
+  gap: var(--space-m);
 }
 
 .form-input {
@@ -114,19 +114,19 @@ watch(
 .colors {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: var(--spaceS);
+  gap: var(--space-s);
   align-items: center;
 }
 
 .samples {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  clip-path: var(--pixelCorners);
+  clip-path: var(--clip-corners);
   overflow: hidden;
 }
 
 .sample {
-  padding: var(--spaceM);
+  padding: var(--space-m);
   display: grid;
   place-content: center;
 }
@@ -141,13 +141,13 @@ watch(
 .controls {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 @media (max-height: 640px) {
   .ColorPicker {
     grid-template-columns: 24vw 1fr;
-    gap: var(--spaceL);
+    gap: var(--space-l);
     left: 9rem;
   }
 }

@@ -39,21 +39,21 @@ const description = computed(() => {
 .Error {
   width: 40%;
   display: grid;
-  gap: var(--spaceM);
+  gap: var(--space-m);
 }
 
 h1 {
   font-family: 'Silkscreen';
   font-size: 6vw;
-  color: var(--colorTextPrimary);
+  color: var(--color-base-50);
 }
 
 p {
-  font-size: var(--fontSizeL);
+  font-size: var(--font-size-l);
 }
 
 .code {
-  color: var(--colorCritical);
+  color: var(--color-critical);
 }
 
 a:is(:link, :visited) {
@@ -63,6 +63,6 @@ a:is(:link, :visited) {
 }
 
 a:is(:link, :visited):hover {
-  color: var(--colorAccent);
+  color: var(--color-brand);
 }
 </style>

@@ -32,12 +32,12 @@ useElement(preview, props.frame.canvas)
 .Frame {
   width: 5rem;
   aspect-ratio: 1;
-  border: 2px solid var(--colorLayer0);
+  border: 2px solid var(--color-base-950);
   transition: all 100ms;
   overflow: hidden;
 }
 
 .active {
-  border: 2px solid var(--colorAccent);
+  border: 2px solid var(--color-brand);
 }
 </style>

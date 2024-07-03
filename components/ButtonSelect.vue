@@ -34,13 +34,13 @@ const emit = defineEmits(['update:modelValue'])
 }
 button {
   flex: 1;
-  padding: var(--spaceM);
+  padding: var(--space-m);
   text-transform: uppercase;
-  background-color: var(--colorShade);
+  background-color: var(--color-highlight);
 }
 
 .selected {
-  background-color: var(--colorAccent);
-  color: var(--colorLayer0);
+  background-color: var(--color-brand);
+  color: var(--color-base-950);
 }
 </style>

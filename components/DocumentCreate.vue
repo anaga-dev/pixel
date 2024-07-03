@@ -239,13 +239,13 @@ async function onSubmit() {
 form {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceL);
+  gap: var(--space-l);
 }
 .size {
   display: grid;
   grid-auto-flow: column;
   align-items: end;
   justify-content: start;
-  gap: var(--spaceM);
+  gap: var(--space-m);
 }
 </style>

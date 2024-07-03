@@ -40,34 +40,34 @@ onClickOutside(menu, (e) => {
 
 .button-locale {
   display: flex;
-  gap: var(--spaceS);
+  gap: var(--space-s);
   height: 100%;
   place-content: center;
   align-items: center;
-  padding: 0 var(--spaceM);
-  color: var(--colorTextPrimary);
+  padding: 0 var(--space-m);
+  color: var(--color-base-50);
 }
 
 .button-locale:hover {
-  color: var(--colorAccent);
+  color: var(--color-brand);
 }
 
 .LanguageSwitcherMenu {
   position: absolute;
   right: 0;
-  bottom: calc(100% + var(--spaceM));
-  background-color: var(--colorLayer0);
-  color: var(--colorText);
-  box-shadow: var(--shadowLayer);
-  padding: var(--spaceM);
+  bottom: calc(100% + var(--space-m));
+  background-color: var(--color-base-950);
+  color: var(--color-base-100);
+  box-shadow: var(--shadow-floating-element);
+  padding: var(--space-m);
 }
 
 .language {
   display: block;
-  padding: var(--spaceM) var(--spaceL);
+  padding: var(--space-m) var(--space-l);
   transition: var(--transition);
 }
 .language:hover {
-  color: var(--colorAccent);
+  color: var(--color-brand);
 }
 </style>

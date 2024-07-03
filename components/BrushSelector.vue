@@ -30,6 +30,6 @@ const emit = defineEmits(['select'])
 
 <style scoped>
 .BrushSelector {
-  top: calc(var(--widthToolbar) + var(--spaceS));
+  top: calc(var(--size-toolbar) + var(--space-s));
 }
 </style>

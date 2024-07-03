@@ -31,9 +31,9 @@ const props = defineProps({
 
 .Tooltip {
   position: absolute;
-  padding: var(--spaceM) var(--spaceL);
-  background-color: var(--colorLayer2);
-  box-shadow: var(--shadowLayer);
+  padding: var(--space-m) var(--space-l);
+  background-color: var(--color-base-800);
+  box-shadow: var(--shadow-floating-element);
   z-index: 1000;
   pointer-events: none;
   visibility: hidden;
@@ -44,13 +44,13 @@ const props = defineProps({
 }
 
 .Tooltip.top {
-  bottom: calc(100% + var(--spaceS));
+  bottom: calc(100% + var(--space-s));
   left: 50%;
   translate: -50% 0;
 }
 
 .Tooltip.bottom {
-  top: calc(100% + var(--spaceS));
+  top: calc(100% + var(--space-s));
   left: 50%;
   translate: -50% 0;
 }
@@ -58,24 +58,24 @@ const props = defineProps({
 .Tooltip.left {
   top: 50%;
   translate: 0 -50%;
-  right: calc(100% + var(--spaceS));
+  right: calc(100% + var(--space-s));
 }
 
 .Tooltip.right {
   top: 50%;
   translate: 0 -50%;
-  left: calc(100% + var(--spaceS));
+  left: calc(100% + var(--space-s));
 }
 
 .Tooltip.left.bottom {
-  top: calc(100% + var(--spaceS));
+  top: calc(100% + var(--space-s));
   left: auto;
   right: 0;
   translate: 0 0;
 }
 
 .Tooltip.right.bottom {
-  top: calc(100% + var(--spaceS));
+  top: calc(100% + var(--space-s));
   left: 0;
   right: auto;
   translate: 0 0;

@@ -19,14 +19,14 @@ const props = defineProps({
 <style scoped>
 .Divider {
   width: 100%;
-  height: var(--spaceXXS);
-  background: var(--colorShade);
+  height: var(--space-xxs);
+  background: var(--color-highlight);
 }
 
 .Divider.vertical {
   height: 100%;
-  width: var(--spaceXXS);
-  background: var(--colorShade);
+  width: var(--space-xxs);
+  background: var(--color-highlight);
 }
 
 .Divider.transparent {

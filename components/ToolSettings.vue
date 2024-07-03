@@ -26,6 +26,6 @@ const props = defineProps({
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 </style>

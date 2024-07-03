@@ -53,7 +53,7 @@ const uiStore = useUIStore()
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 .percentage {
@@ -63,6 +63,6 @@ const uiStore = useUIStore()
 
 .ZoomMenu {
   bottom: 0;
-  right: var(--widthToolbar);
+  right: var(--size-toolbar);
 }
 </style>

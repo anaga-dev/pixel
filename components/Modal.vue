@@ -48,10 +48,10 @@ const emit = defineEmits(['close'])
   display: grid;
   grid-auto-flow: row;
   justify-content: stretch;
-  gap: var(--spaceM);
-  padding: var(--spaceL) var(--spaceL);
-  background-color: var(--colorLayer2);
-  box-shadow: var(--shadowLayer);
+  gap: var(--space-m);
+  padding: var(--space-l) var(--space-l);
+  background-color: var(--color-base-800);
+  box-shadow: var(--shadow-floating-element);
   z-index: 1001;
 }
 

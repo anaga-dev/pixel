@@ -67,6 +67,6 @@ function onBrushDither(dither) {
 
 <style scoped>
 button {
-  background-color: var(--colorLayer1);
+  background-color: var(--color-base-900);
 }
 </style>

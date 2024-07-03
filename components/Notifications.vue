@@ -34,21 +34,21 @@ ul {
   top: 0;
   right: 0;
   list-style: none;
-  padding: var(--spaceL);
+  padding: var(--space-l);
   margin: 0;
   z-index: 1000;
   display: grid;
-  gap: var(--spaceM);
+  gap: var(--space-m);
   justify-items: center;
 }
 
 li {
-  padding: var(--spaceM) var(--spaceL);
-  background-color: var(--colorLayer2);
-  color: var(--colorTextPrimary);
-  box-shadow: var(--shadowLayer);
+  padding: var(--space-m) var(--space-l);
+  background-color: var(--color-base-800);
+  color: var(--color-base-50);
+  box-shadow: var(--shadow-floating-element);
   display: flex;
-  gap: var(--spaceS);
+  gap: var(--space-s);
   align-items: center;
 }
 

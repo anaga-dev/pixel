@@ -43,6 +43,6 @@ const options = {
 <style scoped>
 .Layers {
   display: grid;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 </style>

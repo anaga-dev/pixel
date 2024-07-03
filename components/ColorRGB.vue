@@ -51,6 +51,6 @@ const { red, green, blue } = props.color
 .ColorRGB {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceL);
+  gap: var(--space-l);
 }
 </style>

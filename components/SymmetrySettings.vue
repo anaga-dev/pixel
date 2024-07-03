@@ -48,7 +48,7 @@ function onClick(axis) {
 
 <style scoped>
 .SymmetrySettings {
-  right: calc(var(--widthToolbar) + var(--spaceS));
+  right: calc(var(--size-toolbar) + var(--space-s));
   bottom: 9rem;
 }
 </style>

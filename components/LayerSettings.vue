@@ -142,13 +142,13 @@ function onDelete(layer) {
   width: 20rem;
   display: grid;
   justify-content: stretch;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 .name {
   max-width: 100%;
   font-weight: bold;
-  height: var(--spaceXL);
+  height: var(--space-xl);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -157,7 +157,7 @@ function onDelete(layer) {
 .layer-visibility {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 
 input {
@@ -167,6 +167,6 @@ input {
 .actions {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 </style>

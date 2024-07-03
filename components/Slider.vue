@@ -65,7 +65,7 @@ watch(() => props.data, (newValue) => {
 .Slider {
   display: grid;
   grid-template-columns: 1fr 5rem;
-  gap: var(--spaceM);
+  gap: var(--space-m);
 }
 
 input[type=range] {
@@ -77,13 +77,13 @@ input[type=range] {
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-  background: var(--colorLayer0);
-  height: var(--spaceS);
+  background: var(--color-base-950);
+  height: var(--space-s);
 }
 
 input[type=range]::-moz-range-track {
-  background: var(--colorLayer0);
-  height: var(--spaceS);
+  background: var(--color-base-950);
+  height: var(--space-s);
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -91,13 +91,13 @@ input[type=range]::-webkit-slider-thumb {
   appearance: none;
   position: relative;
   border-radius: 0;
-  background-color: var(--colorAccent);
-  width: var(--spaceL);
+  background-color: var(--color-brand);
+  width: var(--space-l);
   aspect-ratio: 1;
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
-  box-shadow: var(--shadowLayer);
+  box-shadow: var(--shadow-floating-element);
 }
 
 input[type=range]::-moz-range-thumb {
@@ -105,13 +105,13 @@ input[type=range]::-moz-range-thumb {
   border: none;
   position: relative;
   border-radius: 0;
-  background-color: var(--colorAccent);
-  width: var(--spaceL);
-  height: var(--spaceL);
+  background-color: var(--color-brand);
+  width: var(--space-l);
+  height: var(--space-l);
   aspect-ratio: 1;
   top: 50%;
   z-index: 2;
-  box-shadow: var(--shadowLayer);
+  box-shadow: var(--shadow-floating-element);
 }
 
 /* input[type="range"]::before {
@@ -119,13 +119,13 @@ input[type=range]::-moz-range-thumb {
   position: absolute;
   width: var(--percent, 100%);
   max-width: 100%;
-  height: var(--spaceL);
-  background: var(--colorAccent);
+  height: var(--space-l);
+  background: var(--color-brand);
   pointer-events: none;
   z-index: 1;
   top: 50%;
   transform: translateY(-50%);
-  box-shadow: var(--shadowLayer);
+  box-shadow: var(--shadow-floating-element);
 }
  */
  </style>

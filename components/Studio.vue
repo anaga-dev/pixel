@@ -490,14 +490,14 @@ const sidePanelMessage = computed(() => {
   overflow: hidden;
   display: grid;
   user-select: none;
-  grid-template-columns: auto 1fr var(--widthSidebar) auto;
+  grid-template-columns: auto 1fr var(--size-sidebar) auto;
   grid-template-rows: auto 1fr auto;
 }
 
 .TOOLS,
 .ANIMATION,
 [class^='SIDEBAR'] {
-  background-color: var(--colorLayer1);
+  background-color: var(--color-base-900);
 }
 
 .SETTINGS {
@@ -545,20 +545,20 @@ const sidePanelMessage = computed(() => {
   z-index: 4;
   position: relative;
   overflow: hidden;
-  padding: var(--spaceM);
-  background-color: var(--colorLayer1);
-  box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
+  padding: var(--space-m);
+  background-color: var(--color-base-900);
+  box-shadow: calc(var(--space-xs) * -1) 0 0 var(--color-shadow);
   display: grid;
-  gap: var(--spaceM);
+  gap: var(--space-m);
   align-content: start;
 }
 
 [class^='SIDEBAR'] {
   z-index: 5;
   display: grid;
-  padding: var(--spaceS);
-  box-shadow: calc(var(--spaceXS) * -1) 0 0 var(--colorShadow);
-  gap: var(--spaceS);
+  padding: var(--space-s);
+  box-shadow: calc(var(--space-xs) * -1) 0 0 var(--color-shadow);
+  gap: var(--space-s);
   align-content: space-between;
 }
 
@@ -568,35 +568,35 @@ const sidePanelMessage = computed(() => {
 }
 
 .layer-settings {
-  top: calc(var(--widthToolbar) + var(--spaceS));
-  right: calc(var(--widthSidebar) + var(--widthToolbar) + var(--spaceS));
+  top: calc(var(--size-toolbar) + var(--space-s));
+  right: calc(var(--size-sidebar) + var(--size-toolbar) + var(--space-s));
 }
 
 .group {
   display: grid;
-  gap: var(--spaceS);
+  gap: var(--space-s);
   justify-content: center;
 }
 
 .badge-offline {
-  color: var(--colorCritical);
-  margin: var(--spaceS) auto 0;
+  color: var(--color-critical);
+  margin: var(--space-s) auto 0;
 }
 
 .button-show {
   position: absolute;
   top: 0;
   left: 50%;
-  height: var(--spaceXL);
-  padding: 0 var(--spaceL);
-  background-color: var(--colorLayer1);
-  box-shadow: calc(var(--spaceS) * -1) var(--spaceS) 0 var(--colorShadow);
-  transform: translate(-50%, calc(var(--spaceXL) * -1));
+  height: var(--space-xl);
+  padding: 0 var(--space-l);
+  background-color: var(--color-base-900);
+  box-shadow: calc(var(--space-s) * -1) var(--space-s) 0 var(--color-shadow);
+  transform: translate(-50%, calc(var(--space-xl) * -1));
 }
 
 .button-show.expanded {
   box-shadow: none;
-  transform: translate(-50%, calc(var(--spaceM) * -1));
+  transform: translate(-50%, calc(var(--space-m) * -1));
 }
 
 .palette-menu {
@@ -620,14 +620,14 @@ const sidePanelMessage = computed(() => {
 }
 
 .settings-menu {
-  top: var(--spaceS);
-  right: calc(var(--spaceXL) + var(--spaceM));
+  top: var(--space-s);
+  right: calc(var(--space-xl) + var(--space-m));
 }
 
 .single-panel-layers,
 .single-panel-palette {
   top: 4.5rem;
-  right: var(--spaceS);
+  right: var(--space-s);
   display: none;
 }
 
@@ -660,7 +660,7 @@ const sidePanelMessage = computed(() => {
   .settings-menu {
     top: 4.5rem;
     right: auto;
-    left: var(--spaceS);
+    left: var(--space-s);
   }
   .single-panel-palette,
   .single-panel-layers {
@@ -668,12 +668,12 @@ const sidePanelMessage = computed(() => {
   }
 
   .layer-settings {
-    right: calc(var(--widthSidebar) + var(--spaceS) * 2);
+    right: calc(var(--size-sidebar) + var(--space-s) * 2);
   }
   .symmetry-settings {
     top: 4.5rem;
     bottom: auto;
-    right: var(--spaceXXL);
+    right: var(--space-xxl);
   }
 }
 

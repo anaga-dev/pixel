@@ -133,8 +133,8 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
 }
 
 .Layer.active {
-  background-color: var(--colorAccent);
-  color: var(--colorTextAlt);
+  background-color: var(--color-brand);
+  color: var(--color-base-950);
 }
 
 .Layer.invisible {
@@ -149,7 +149,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
 
 .name {
   font-weight: bold;
-  padding: var(--spaceS);
+  padding: var(--space-s);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -157,7 +157,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
 
 .input-name {
   width: 100%;
-  color: var(--colorTextPrimary);
+  color: var(--color-base-50);
 }
 
 .preview {
@@ -176,7 +176,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
   top: -2px;
   height: 4px;
   left: 0;
-  background-color: var(--colorAccent);
+  background-color: var(--color-brand);
 }
 
 .bottom::after {
@@ -186,7 +186,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
   bottom: -2px;
   height: 4px;
   left: 0;
-  background-color: var(--colorAccent);
+  background-color: var(--color-brand);
 }
 
 canvas {

@@ -22,6 +22,6 @@ const props = defineProps({
 .Field {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spaceS);
+  gap: var(--space-s);
 }
 </style>

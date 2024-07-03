@@ -52,6 +52,6 @@ const handleOver = () => {
 }
 
 .active {
-  outline: 2px solid var(--colorTextPrimary);
+  outline: 2px solid var(--color-base-50);
 }
 </style>

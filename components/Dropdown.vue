@@ -29,10 +29,10 @@ onClickOutside(target, (e) => {
   display: grid;
   grid-auto-flow: row;
   justify-content: stretch;
-  gap: var(--spaceM);
-  padding: var(--spaceM);
-  background-color: var(--colorLayer1);
-  box-shadow: var(--shadowLayer);
+  gap: var(--space-m);
+  padding: var(--space-m);
+  background-color: var(--color-base-900);
+  box-shadow: var(--shadow-floating-element);
   position: absolute;
   z-index: 1000;
 }
