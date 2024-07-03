@@ -31,10 +31,11 @@
   --space-xl: 2.5rem;
   --space-xxl: 3rem;
 
-  --font-size-m: 1rem;
-  --font-size-l: 1.25rem;
-  --font-size-xl: 2.5rem;
-  --font-size-xxl: 5rem;
+  --font-size-base: clamp(0.75rem, 0.75rem + 5vmin, 1rem);
+  --font-size-m: calc(var(--font-size-base) * 1);
+  --font-size-l: calc(var(--font-size-base) * 1.375);
+  --font-size-xl: calc(var(--font-size-base) * 2.5);
+  --font-size-xxl: calc(var(--font-size-base) * 3.5);
 
   --size-toolbar: 4rem;
   --size-sidebar: 20rem;

@@ -60,6 +60,7 @@ button {
   color: var(--color-base-100);
   text-align: center;
   position: relative;
+  font-weight: bold;
   cursor: pointer;
 }
 
