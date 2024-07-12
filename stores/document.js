@@ -764,10 +764,12 @@ export const useDocumentStore = defineStore('document', () => {
 
     const mask = selection.getMaskImageData()
     if (e.type === 'pointerdown'
-     || e.type === 'touchstart') {
+      || e.type === 'touchstart') {
+      console.log('starting pointer down')
       clearTimeout(drawTimeout)
       drawTimeout = setTimeout(() => {
         if (pointer.activePointers.value === 1) {
+          console.log('definitely starting pointer down')
           isUsingTool.value = true
           startLayerPaintOperation()
           if (pencil.size === 1) {

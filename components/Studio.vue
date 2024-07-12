@@ -1,4 +1,7 @@
 <script setup>
+useHead({
+  title: 'Studio | Anaga Pixel'
+})
 import { useDocumentStore } from '@/stores/document'
 import { useUIStore } from '@/stores/ui'
 import { useKeyShortcuts } from '@/composables/useKeyShortcuts'

@@ -345,5 +345,11 @@ pixel-cloud
 nw/out
 nw/cache
 
-# Local Netlify folder
-.netlify
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

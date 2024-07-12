@@ -68,8 +68,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vite-pwa/nuxt',
     '@nuxtjs/i18n',
-    '@nuxt/image',
-    '@nuxtjs/plausible'
+    '@nuxt/image'
   ],
   eslint: {
     lintOnStart: false
@@ -157,10 +156,6 @@ export default defineNuxtConfig({
         }
       ]
     }
-  },
-  plausible: {
-    apiHost: process.env.PLAUSIBLE_APIHOST,
-    /* ignoredHostnames: ['localhost', '127.0.0.1', '192.168.1.231'] */
   },
   devOptions: {
     enabled: false,
