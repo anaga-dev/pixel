@@ -254,14 +254,6 @@ export const useDocumentStore = defineStore('document', () => {
     if (tool.value === newTool) {
       return
     }
-    const oldTool = tool.value
-    history.add({
-      type: 'setTool',
-      payload: {
-        tool: newTool,
-        previousTool: tool.value
-      }
-    })
     tool.value = newTool
   }
 
@@ -2133,6 +2125,7 @@ export const useDocumentStore = defineStore('document', () => {
    */
   function redo() {
     const actionToRedo = history.redo()
+    console.log('actionToRedo', actionToRedo)
     if (!actionToRedo) {
       return
     }
@@ -2146,10 +2139,8 @@ export const useDocumentStore = defineStore('document', () => {
       case 'setColor':
         color.value = actionToRedo.payload.color
         break
-      case 'setTool':
-        tool.value = actionToRedo.payload.tool
-        break
       case 'paintOperation':
+        console.log('actionToRedo', actionToRedo)
         ImageDataUtils.copy(
           actionToRedo.payload.imageData,
           actionToRedo.payload.nextImageData

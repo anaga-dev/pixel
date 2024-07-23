@@ -9,7 +9,6 @@ import { useWheel } from '@/composables/useWheel'
 import { useBeforeUnload } from '@/composables/useBeforeUnload'
 import { useTouch } from '@/composables/useTouch'
 import { onKeyDown, onKeyUp, set } from '@vueuse/core'
-import Tool from '@/pixel/enums/Tool'
 
 const documentStore = useDocumentStore()
 const uiStore = useUIStore()
@@ -17,6 +16,7 @@ const uiStore = useUIStore()
 const currentColor = useColor(documentStore.color)
 
 const board = ref(null)
+const debugging = ref(true)
 
 const MIN_TOUCHES = 2
 
@@ -140,12 +140,10 @@ useKeyShortcuts(
 )
 
 onKeyDown(' ', (e) => {
-  e.preventDefault()
   documentStore.startMoving()
 })
 
 onKeyUp(' ', (e) => {
-  e.preventDefault()
   documentStore.stopMoving()
 })
 
@@ -481,9 +479,10 @@ const sidePanelMessage = computed(() => {
     @close="uiStore.toggleExportMenu()"
   />
   <!-- Overlay for debugging -->
-  <!--   <div style="position: fixed; left: 2rem; bottom: 2rem">
-    <p>Name: {{ documentStore.name }}</p>
-  </div> -->
+  <div v-if="debugging" style="position: fixed; left: 2rem; bottom: 2rem">
+    <p>History step: {{ documentStore.history.index }}</p>
+    <p>Step type: {{ documentStore.history.list[documentStore.history.index] }}</p>
+  </div>
 </template>
 
 <style scoped>
