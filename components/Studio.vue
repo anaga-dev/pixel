@@ -16,7 +16,7 @@ const uiStore = useUIStore()
 const currentColor = useColor(documentStore.color)
 
 const board = ref(null)
-const debugging = ref(true)
+const debugging = ref(false)
 
 const MIN_TOUCHES = 2
 
