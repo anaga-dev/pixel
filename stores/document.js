@@ -311,8 +311,10 @@ export const useDocumentStore = defineStore('document', () => {
 
   let isTransactionalLayerPaintOperationOngoing = false
   function startLayerPaintOperation() {
-    if (isTransactionalLayerPaintOperationOngoing)
+    if (isTransactionalLayerPaintOperationOngoing) {
       return false
+    }
+    console.log('Start paint operation')
 
     isTransactionalLayerPaintOperationOngoing = true
     const currentImageData = imageData.value
@@ -324,17 +326,22 @@ export const useDocumentStore = defineStore('document', () => {
   }
 
   function endLayerPaintOperation() {
-    if (!isTransactionalLayerPaintOperationOngoing)
+    if (!isTransactionalLayerPaintOperationOngoing) {
       return false
+    }
+    console.log('End paint operation')
+    const currentImageData = imageData.value
+    const nextImageData = ImageDataUtils.clone(currentImageData)
 
     history.add({
       type: 'paintOperation',
       payload: {
         imageData: transactionalLayerPaintOperation.imageData,
-        nextImageData: transactionalLayerPaintOperation.nextImageData,
+        nextImageData: nextImageData,
         previousImageData: transactionalLayerPaintOperation.previousImageData
       }
     })
+
     isTransactionalLayerPaintOperationOngoing = false
     return true
   }
@@ -343,6 +350,7 @@ export const useDocumentStore = defineStore('document', () => {
     if (isTransactionalLayerPaintOperationOngoing) {
       return false
     }
+
     const currentImageData = imageData.value
     const previousImageData = ImageDataUtils.clone(currentImageData)
     callback(currentImageData)
@@ -755,8 +763,7 @@ export const useDocumentStore = defineStore('document', () => {
     const dither = tool.value === Tool.PENCIL ? pencil.dither : eraser.dither
 
     const mask = selection.getMaskImageData()
-    if (e.type === 'pointerdown'
-      || e.type === 'touchstart') {
+    if (e.type === 'pointerdown' || e.type === 'touchstart') {
       console.log('starting pointer down')
       clearTimeout(drawTimeout)
       drawTimeout = setTimeout(() => {
@@ -965,10 +972,7 @@ export const useDocumentStore = defineStore('document', () => {
           }
         }
       }
-    } else if (
-      e.type === 'pointerup' ||
-      e.type === 'pointerleave'
-    ) {
+    } else if (e.type === 'pointerup' || e.type === 'pointerleave') {
       endLayerPaintOperation()
     }
   }
@@ -2231,7 +2235,7 @@ export const useDocumentStore = defineStore('document', () => {
       const blob = await Canvas.createBlob(layer.canvas, 'image/png', 9)
       await navigator.clipboard.write([
         new ClipboardItem({
-          [blob.type] : blob
+          [blob.type]: blob
         })
       ])
     }
