@@ -99,7 +99,7 @@ onMounted(() => preview.value.appendChild(props.layer.canvas))
       class="name"
       @dblclick="onToggleLayerNameEdit"
     >
-      {{ layer.name.value }}
+      {{ index }} {{ layer.name.value }}
     </div>
     <input
       v-else

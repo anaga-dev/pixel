@@ -96,13 +96,9 @@ export const useLayersStore = defineStore('layers', () => {
     const index = list.findIndex(
       (currentLayer) => currentLayer.id === current.value.id
     )
-    const newIndex = index - 1
+    const newIndex = Math.max(0, index - 1)
     current.value = created
-    if (newIndex === -1) {
-      list.splice(0, 0, created)
-    } else {
-      list.splice(newIndex, 0, created)
-    }
+    list.splice(newIndex, 0, created)
     return { index: newIndex, layer: created }
   }
 

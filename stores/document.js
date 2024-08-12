@@ -1624,7 +1624,7 @@ export const useDocumentStore = defineStore('document', () => {
       width: width.value,
       height: height.value
     })
-    history.add({
+        history.add({
       type: 'addLayer',
       payload: { index, layer }
     })
