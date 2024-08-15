@@ -2100,7 +2100,6 @@ export const useDocumentStore = defineStore('document', () => {
           actionToUndo.payload.imageData,
           actionToUndo.payload.previousImageData
         )
-        redrawAll()
         break
       case 'duplicateLayer':
       case 'addLayer':
@@ -2122,6 +2121,7 @@ export const useDocumentStore = defineStore('document', () => {
       default:
         console.log('To implement', actionToUndo)
     }
+    redrawAll()
   }
 
   /**
@@ -2149,7 +2149,6 @@ export const useDocumentStore = defineStore('document', () => {
           actionToRedo.payload.imageData,
           actionToRedo.payload.nextImageData
         )
-        redrawAll()
         break
       case 'duplicateLayer':
       case 'addLayer':
@@ -2170,6 +2169,7 @@ export const useDocumentStore = defineStore('document', () => {
       default:
         console.log('To implement', actionToRedo)
     }
+    redrawAll()
   }
 
   function resizeBoard() {
